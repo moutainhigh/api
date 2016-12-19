@@ -178,12 +178,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>commons-logging</artifactId>
-      <groupId>commons-logging</groupId>
-      <version>1.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-dbcp2</artifactId>
       <version>2.0.1</version>
@@ -198,6 +192,18 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.0</version>
+    </dependency>
+    <dependency>
+      <artifactId>commons-logging</artifactId>
+      <groupId>commons-logging</groupId>
+      <version>1.0</version>
+    </dependency>
+
+    <!--http-->
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.3.5</version>
     </dependency>
 
   </dependencies>

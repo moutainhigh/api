@@ -14,6 +14,9 @@
 
     <!-- 静态资源映射 -->
     <mvc:annotation-driven/>
+    <mvc:resources mapping="/*.txt" location="/" />
+    <mvc:resources mapping="/*.html" location="/" />
+
 
     <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
     <bean id="mappingJacksonHttpMessageConverter"

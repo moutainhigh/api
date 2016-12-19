@@ -1,15 +1,12 @@
 package com.zhsj.interceptors;
 
-import com.sun.javafx.tools.packager.CommonParams;
 import com.zhsj.util.WebUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ClassUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * 抽象拦截器，提供子类调用方法
