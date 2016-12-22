@@ -99,6 +99,7 @@ public abstract class WebUtils {
 		Map<String, List<String>> headers = new HashMap<String, List<String>>();
 		for (Enumeration<?> headerNames = request.getHeaderNames(); headerNames.hasMoreElements();) {
 			String headerName = (String) headerNames.nextElement();
+			headerName = headerName.toLowerCase();
 			for (Enumeration<?> headerEnumers = request.getHeaders(headerName); headerEnumers.hasMoreElements();) {
 				String headerValue = (String) headerEnumers.nextElement();
 				List<String> headerValues = headers.get(headerName);
