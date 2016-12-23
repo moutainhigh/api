@@ -546,30 +546,60 @@ public class HttpClient {
 	static String Url = "http://115.159.235.109:8208";
 	//static String Url = "http://127.0.0.1:8208";
 
+	public static void merchant()
+	{
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("reg_contact_tel", "18601345718"); //商户手机号
+		parameters.put("legal_person", "王军");//法定代表人姓名
+		parameters.put("legal_person_id", "14232219840929001X"); //法定代表人身份证号
+		parameters.put("mer_email", "289220440@qq.com");//商户联系邮箱
+		parameters.put("filed1", "18601345718"); //入驻商户的客服电话
+//		parameters.put("paykey", "01b0e7c141634a1e8ed4c0bd3c51bb58");//此字符串由民生提供，作为商户的唯一标识
+		parameters.put("wx_business_type", "111"); //商户营业类别
+		parameters.put("ali_business_type", "2015062600009243"); //支付宝口碑类目2015062600009243
+		parameters.put("mer_name", "智慧商街"); //商户全称
+		parameters.put("wx_rate", "0.5");   //微信费率     示例:0.5，代表和该入驻商户签约千分之5的费率
+		parameters.put("ali_rate", "0.5");   //支付宝费率     示例:0.5，代表和该入驻商户签约千分之5的费率
+		parameters.put("sa_name", "王军");   //结算账户名称
+		parameters.put("sa_num", "6216920053824716");   //结算账户账号
+		parameters.put("sa_bank_name", "中国民生银行");   //结算账户银行
+		parameters.put("sa_bank_type", "01");   //结算账户类型(对公=01)(对私=00)
+		parameters.put("settlement_type", "D0");   //商户结算类型D0:实时清算,T1:隔天清算,T0:当天清算  若不传，默认D0清算
+
+		String sign = getSign(parameters, "6244125c3c0c44a599feb9ebd513ea95");////paySec 此字符串由民生提供，用作代理商投递信息加密用，请妥善保管，请只放在服务器端
+		parameters.put("sign",sign);
+
+//        String postUrl = Url+"/qthd-pay-web-gateway/scanPay/wxNativePay";
+		String postUrl = "http://115.28.58.174:8208/CBMSOnLine/merSettled.do";
+		String result = sendPost(postUrl ,  parameters);
+		System.out.println(result);
+	}
+
 	/* 主函数，测试请求 */
 	public static void main(String[] args) {
-		String method = "/CBMSOnLine/merSettled.do";
-		String reg_contact_tel = "" ;//商户手机号（唯一标识） 32
-		String legal_person = "" ;//法定代表人姓名  32
-		String legal_person_id = ""; //法定代表人身份证号码 32
-		String mer_email = ""; //商户联系邮箱 20
-		String filed1 = "";//入驻商户的客服电话 20
-
-		String wx_business_type= ""; //商户营业类别，见附件1（示例：17）否（若有微信支付业务，必填 50
-		String ali_business_type = "" ;// 支付宝口碑类目，见附件2（示例：2016031800154367）否（若有支付宝支付业务，必填） 30
-		String mer_name = ""; //商户全称 50
-
-		String wx_rate = "" ;//微信费率（示例:0.5，代表和该入驻商户签约千分之5的费率）否（若有微信支付业务，必填） 200
-
-		String ali_rate = "" ;// 支付宝费率（示例:0.5，代表和该入驻商户签约千分之5的费率）否（若开通支付宝业务必填） 500
-
-		String sa_name = "";//结算账户名称 500
-		String sa_num = "";//结算账户账号 500
-		String sa_bank_name = "";//结算账户银行，参照银行对照表（示例：工商银行）500
-		String sa_bank_type = "";//结算账户类型 500
-		String paykey = "";//平台分配（该paykey是平台分配代理商的paykey）500
-		String sign =	"";//	签名字段 32
-		String settlement_type=	"";//商户结算周期及模式：T1：工作日第二天到账（一笔）；T0：工作日当天到账（多笔）；D0：自然日当天到账（逐笔）否（默认D0） 10
+		merchant();
+//		String method = "/CBMSOnLine/merSettled.do";
+//		String reg_contact_tel = "18601345718" ;//商户手机号（唯一标识） 32
+//		String legal_person = "王军" ;//法定代表人姓名  32
+//		String legal_person_id = "14232219840929001X"; //法定代表人身份证号码 32
+//		String mer_email = "289220440@qq.com"; //商户联系邮箱 20
+//		String filed1 = "18601345718";//入驻商户的客服电话 20
+//
+//		String wx_business_type= ""; //商户营业类别，见附件1（示例：17）否（若有微信支付业务，必填 50
+//		String ali_business_type = "" ;// 支付宝口碑类目，见附件2（示例：2016031800154367）否（若有支付宝支付业务，必填） 30
+//		String mer_name = "智慧商街"; //商户全称 50
+//
+//		String wx_rate = "0.5" ;//微信费率（示例:0.5，代表和该入驻商户签约千分之5的费率）否（若有微信支付业务，必填） 200
+//
+//		String ali_rate = "0.5" ;// 支付宝费率（示例:0.5，代表和该入驻商户签约千分之5的费率）否（若开通支付宝业务必填） 500
+//
+//		String sa_name = "王军";//结算账户名称 500
+//		String sa_num = "6216920053824716";//结算账户账号 500
+//		String sa_bank_name = "中国民生银行";//结算账户银行，参照银行对照表（示例：工商银行）500
+//		String sa_bank_type = "";//结算账户类型 500
+//		String paykey = "";//平台分配（该paykey是平台分配代理商的paykey）500
+//		String sign =	"";//	签名字段 32
+//		String settlement_type=	"";//商户结算周期及模式：T1：工作日第二天到账（一笔）；T0：工作日当天到账（多笔）；D0：自然日当天到账（逐笔）否（默认D0） 10
 
 
 		// createSgin_Test();
