@@ -6,7 +6,6 @@ logs
 .project
 .classpath
 .settings
-*/target
 */.settings
 */.classpath
 */.project
@@ -18,8 +17,6 @@ logs
 */build
 .DS_Store
 */logs
-target
-target/*
 .tomcatplugin
 
 /bin/
