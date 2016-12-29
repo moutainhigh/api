@@ -16,9 +16,9 @@ public class Merchant
 		 * 
 		 * 使用前请先修改StaticConfig中的证书路径配置
 		 */
-		StaticConfig.REQ_URL = "https://115.28.58.174:6789/merSettled.do";
+//		StaticConfig.REQ_URL = "https://115.28.58.174:6789/merSettled.do";
 		//商户入驻
-		mersettled(); 
+		mersettled();
 		//商户信息修改
 //		updateMerchantByPaykey();
 	}
@@ -30,7 +30,7 @@ public class Merchant
         reqData.put("legal_person_id", "14232219840929001X"); //法定代表人身份证号
         reqData.put("mer_email", "289220440@qq.com");//商户联系邮箱
         reqData.put("filed1", "18601345718"); //入驻商户的客服电话
-        reqData.put("agent_no", "95272016081310000003");//此字符串由民生提供
+        reqData.put("agent_no", "95272016121410000062");//此字符串由民生提供
         reqData.put("wx_business_type", "277"); //商户营业类别
         reqData.put("ali_business_type", "2016062900190196"); //支付宝口碑类目
         reqData.put("mer_name", "智慧商街"); //商户全称
@@ -73,8 +73,8 @@ public class Merchant
 	
 	public static void updateMerchantByPaykey() {
 		Map<String, String> reqData = new HashMap<String, String>();
-		reqData.put("paykey", "4f6e859db0f746dabe9fd224c0192f6e"); //修改商户的paykey
-        reqData.put("agent_no", "95272016081310000003");//代理商编号
+		reqData.put("paykey", "85a6c4e20bf54505bea8e75bc870d587"); //修改商户的paykey
+        reqData.put("agent_no", "95272016121410000062");//代理商编号
         reqData.put("wx_rate", "0.4"); //微信费率
         reqData.put("ali_rate", "0.4");//支付宝费率
         reqData.put("settlement_type", "D0");//商户结算周期

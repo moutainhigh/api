@@ -29,9 +29,9 @@ public class StaticConfig
 	static {
 		REQ_URL = "https://115.28.58.174:6789/updateMerchantByPaykey.do";
 		PUBLIC_KEY_CER_PATH = "D:/zhengshu/col_test.cer";
-		JSSECACERTS_PATH = "D:/zhsj_worksapce/zhengshu/jssecacerts";
-		CERT_PATH_JKS = "D:/zhsj_worksapce/zhengshu/bjwwt@95272016121410000062.jks";
-		CERT_PATH_P12 = "D:/zhsj_worksapce/zhengshu/bjwwt@95272016121410000062.p12";
+		JSSECACERTS_PATH = "/Users/lcg/Desktop/aaa/jssecacerts";
+		CERT_PATH_JKS = "/Users/lcg/Desktop/aaa/bjwwt@95272016121410000062.jks";
+		CERT_PATH_P12 = "/Users/lcg/Desktop/aaa/bjwwt@95272016121410000062.p12";
 		CERT_JKS_P12_PASSWORD = "bjwwt123456";
 	}
 }

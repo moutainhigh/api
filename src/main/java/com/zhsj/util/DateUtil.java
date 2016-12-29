@@ -68,6 +68,10 @@ public class DateUtil
 		}
 	}
 
+	public static long unixTime() {
+		return (long)(System.currentTimeMillis() / 1000L);
+	}
+
 	public static void main(String[] args)
 	{
 		String time = DateUtil.getCurrentTimeHaveHR();
