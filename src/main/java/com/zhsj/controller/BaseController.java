@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhsj.service.AbcService;
 import com.zhsj.util.CommonResult;
 import com.zhsj.util.WebUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,7 @@ import java.util.*;
 
 @Controller
 public class BaseController {
+    Logger logger = LoggerFactory.getLogger(BaseController.class);
 
     @Autowired
     private AbcService service;
@@ -41,6 +44,7 @@ public class BaseController {
         }else {
 
         }
+        logger.info("ddddddd e={}","aa");
     }
 
 
