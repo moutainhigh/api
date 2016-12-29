@@ -480,7 +480,7 @@ public class HttpClient {
 //		WxNativePay_Test();
 
 		//订单查询
-		 queryOrder_Test("cmbc13979965_20161225224522");
+//		 queryOrder_Test("cmbc13979965_20161225224522");
 
 		//退款测试
 		//refund_Test("cmbc13979965_20160905013649");
