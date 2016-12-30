@@ -409,7 +409,7 @@ public class HttpClient {
 
 	/* 主函数，测试请求 */
 	public static void main(String[] args) {
-		merchant();
+//		merchant();
 //		String method = "/CBMSOnLine/merSettled.do";
 //		String reg_contact_tel = "18601345718" ;//商户手机号（唯一标识） 32
 //		String legal_person = "王军" ;//法定代表人姓名  32
@@ -448,7 +448,7 @@ public class HttpClient {
 		//动态二维码
 		//NativePay_Ali_Wx_Test("ALIF2F");
 		//门店固定二维码
-		//AliFixPay_Test("2088102926587215");
+//		AliFixPay_Test("2088102926587215");
 		// 订单查询
 		//queryOrder_Test("cmbc20161025112252");
 		//查询清算信息
@@ -474,10 +474,10 @@ public class HttpClient {
 		//WX_Test("130196521175151625");
 
 		//wx公众号被扫
-		//WxPrePay_Test();
+//		WxPrePay_Test();
 
 		//native
-//		WxNativePay_Test();
+		WxNativePay_Test();
 
 		//订单查询
 //		 queryOrder_Test("cmbc13979965_20161225224522");
