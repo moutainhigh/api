@@ -51,10 +51,12 @@ public class PaymentController {
     }
 
 
-    @RequestMapping(value = "/getUser", method = RequestMethod.GET)
+    @RequestMapping(value = "/getUserOpenId", method = RequestMethod.GET)
     @ResponseBody
     public void getUser(@RequestParam("code") String code,@RequestParam("status") String status) throws Exception {
-        wxService.getOpenId(code,appId,secret);
+        String appId = "wx31626c1d3ab34e12";
+        String secret = "045a93654391302593eb3fcdeecefc54";
+        String openId = wxService.getOpenId(code,appId,secret);
     }
 
 

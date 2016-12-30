@@ -13,6 +13,6 @@ public class StoreService {
     Logger logger = LoggerFactory.getLogger(StoreService.class);
 
     public StoreBean getStoreByNO(String storeNo){
-
+        return null;
     }
 }
