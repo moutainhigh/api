@@ -19,7 +19,7 @@ public class MultipleDataSource extends AbstractRoutingDataSource {
     @Override
     protected Object determineCurrentLookupKey() {
         String dsName = (String)dataSourceKey.get();
-        dataSourceKey.remove();
+//        dataSourceKey.remove();
         return dsName;
     }
 

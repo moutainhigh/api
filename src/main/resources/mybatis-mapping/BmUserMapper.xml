@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.dao.BmUserDao">
+    <sql id="SELECT_FIELDS">
+        id,open_id,nick_name,head_img,sex,city,province,country,privilege,unionid,utime,ctime
+    </sql>
+
+    <select id="getUserByOpenId" resultType="userBean" >
+        select <include refid="SELECT_FIELDS"/>
+        FROM tb_user
+        WHERE open_id = #{openId}
+    </select>
+
+    <insert id="insertOpenId" keyProperty="userBean.id" useGeneratedKeys="true">
+        insert into tb_user (open_id) VALUE (#{userBean.openId})
+    </insert>
+
+
+
+</mapper>

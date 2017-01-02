@@ -11,8 +11,14 @@
         <setting name="useColumnLabel" value="true"/>
         <setting name="defaultExecutorType" value="SIMPLE"/>
         <setting name="defaultStatementTimeout" value="25000"/>
-        <setting name="mapUnderscoreToCamelCase" value="false"/>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
         <!-- 是否使用插入数据后自增主键的值，需要配合keyProperty使用 -->
         <setting name="useGeneratedKeys" value="true"/>
     </settings>
+
+    <typeAliases>
+        <typeAlias type="com.zhsj.bean.UserBean" alias="userBean"/>
+        <typeAlias type="com.zhsj.bean.StorePayInfo" alias="storePayInfo"/>
+        <typeAlias type="com.zhsj.bean.StoreBean" alias="storeBean"/>
+    </typeAliases>
 </configuration>

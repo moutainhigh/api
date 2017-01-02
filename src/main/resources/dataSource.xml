@@ -12,7 +12,7 @@
 
     <util:properties id="dataSourceProps" location="classpath:database.properties"/>
     <!-- 配置数据源 使用的是Druid数据源 -->
-    <bean name="dataSourceManage" class="com.alibaba.druid.pool.DruidDataSource"
+    <bean id="dataSourceManage" class="com.alibaba.druid.pool.DruidDataSource"
           init-method="init" destroy-method="close">
         <property name="url" value="#{dataSourceProps['jdbc.manage.url']}" />
         <property name="username" value="#{dataSourceProps['jdbc.manage.username']}" />
@@ -49,7 +49,7 @@
         <property name="filters" value="mergeStat" />
     </bean>
 
-    <bean name="dataSourceFlow" class="com.alibaba.druid.pool.DruidDataSource"
+    <bean id="dataSourceFlow" class="com.alibaba.druid.pool.DruidDataSource"
           init-method="init" destroy-method="close">
         <property name="url" value="#{dataSourceProps['jdbc.flow.url']}" />
         <property name="username" value="#{dataSourceProps['jdbc.flow.username']}" />
@@ -94,12 +94,6 @@
                 <entry key="dbFlow" value-ref="dataSourceFlow"/>
             </map>
         </property>
-        <!--默认数据源-->
-        <!--<property name="packageDataSource"> 包级别数据源配置 &ndash;&gt;-->
-        <!--<map>-->
-        <!--<entry key="com.sankuai.meituan.banma.thrift.dao" value="dbBmRead"/>-->
-        <!--</map>-->
-        <!--</property>-->
     </bean>
 
     <!-- myBatis文件 -->
@@ -112,7 +106,7 @@
 
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="org.andy.shop.dao" />
+        <property name="basePackage" value="com.zhsj.dao" />
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
     </bean>
 
@@ -128,24 +122,22 @@
     <!-- 拦截器方式配置事物 -->
     <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
         <tx:attributes>
-            <tx:method name="insert*" propagation="REQUIRED" />
-            <tx:method name="update*" propagation="REQUIRED" />
-            <tx:method name="delete*" propagation="REQUIRED" />
-
-            <tx:method name="get*" propagation="SUPPORTS" read-only="true" />
-            <tx:method name="find*" propagation="SUPPORTS" read-only="true" />
-            <tx:method name="select*" propagation="SUPPORTS" read-only="true" />
-
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="insert*" propagation="REQUIRED"/>
+            <tx:method name="add*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+            <tx:method name="remove*" propagation="REQUIRED"/>
+            <tx:method name="accept*" propagation="REQUIRED"/>
+            <tx:method name="reject*" propagation="REQUIRED"/>
+            <tx:method name="execute*" propagation="REQUIRED"/>
+            <tx:method name="del*" propagation="REQUIRED"/>
+            <tx:method name="recover*" propagation="REQUIRED"/>
+            <tx:method name="sync*" propagation="REQUIRED"/>
+            <tx:method name="*" read-only="true"/>
         </tx:attributes>
     </tx:advice>
 
-    <!-- Spring aop事务管理 -->
-    <aop:config>
-        <aop:pointcut id="transactionPointcut"
-                      expression="execution(* com.zhsj.service..*Impl.*(..))" />
-        <aop:advisor pointcut-ref="transactionPointcut"
-                     advice-ref="transactionAdvice" />
-    </aop:config>
 
     <bean id="multiDataSourceAspect" class="com.zhsj.util.db.MultipleDataSourceAspect"/>
     <aop:config>

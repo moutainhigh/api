@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PACKAGE, ElementType.TYPE, ElementType.METHOD})
-public @interface DataSource {
+public @interface DynamicDataSource {
     String value();
 }

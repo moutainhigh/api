@@ -41,12 +41,12 @@ public class MultipleDataSourceAspect {
             if(signature instanceof MethodSignature) {
                 MethodSignature methodSignature = (MethodSignature)signature;
                 Method method = methodSignature.getMethod();
-                if(method.isAnnotationPresent(DataSource.class)) {
+                if(method.isAnnotationPresent(DynamicDataSource.class)) {
                     return this.dsSettingInMethod(method);
                 }
 
                 Class declaringClazz = method.getDeclaringClass();
-                if(declaringClazz.isAnnotationPresent(DataSource.class)) {
+                if(declaringClazz.isAnnotationPresent(DynamicDataSource.class)) {
                     try {
                         return this.dsSettingInConstructor(declaringClazz);
                     } catch (Exception var6) {
@@ -60,12 +60,12 @@ public class MultipleDataSourceAspect {
     }
 
     private String dsSettingInMethod(Method method) {
-        DataSource dataSource = (DataSource)method.getAnnotation(DataSource.class);
+        DynamicDataSource dataSource = (DynamicDataSource)method.getAnnotation(DynamicDataSource.class);
         return dataSource.value();
     }
 
     private String dsSettingInConstructor(Class clazz) {
-        DataSource dataSource = (DataSource)clazz.getAnnotation(DataSource.class);
+        DynamicDataSource dataSource = (DynamicDataSource)clazz.getAnnotation(DynamicDataSource.class);
         return dataSource.value();
     }
 
