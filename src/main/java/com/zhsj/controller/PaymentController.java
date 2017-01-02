@@ -87,13 +87,20 @@ public class PaymentController {
 
     //获取微信ID
     @RequestMapping(value = "/getBuyerId", method = {RequestMethod.GET,RequestMethod.POST})
-    public void getBuyerId(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView getBuyerId(HttpServletRequest request, HttpServletResponse response) throws Exception {
         logger.info("getBuyerId"+"=====");
         Map<String,Object> map = request.getParameterMap();
         for(String name: map.keySet()){
 
             logger.info("getBuyerId"+name+"====="+request.getParameter(name));
+            //getBuyerIdstoreNo=====586886032dc?buyer_id=2088002710568883
         }
+        String buyer_id = request.getParameter("buyer_id");
+        Map<String,String> resultMap = minshengService.payAli(buyer_id);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("pay/alicommit");
+        modelAndView.addObject("data",resultMap.get("trade_no"));
+        return modelAndView;
     }
     
     @RequestMapping(value = "/payMoney2", method = RequestMethod.GET)

@@ -126,7 +126,41 @@ public class MinshengService {
 
 		return signStr;
 	}
-	
+
+
+	public  Map<String,String> payAli(String buyer_id){
+		String payKey = "85a6c4e20bf54505bea8e75bc870d587";//此字符串由民生提供，作为商户的唯一标识
+		String  paySec = "60f811a8b472495fa6c656c507f44cdc";
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("buyer_id", buyer_id); // 支付费用单位：元，支付一分钱
+		parameters.put("order_price", "0.01"); // 支付费用单位：元，支付一分钱
+		parameters.put("paykey", payKey);// 此字符串由民生提供，作为商户的唯一标识
+		parameters.put("order_date", new SimpleDateFormat("yyyyMMdd").format(new Date()));
+		parameters.put("order_time", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+		parameters.put("store_id", "一号店"); // 附件内容
+		parameters.put("operator_id", "oper001"); //
+		parameters.put("order_ip", "114.215.223.220"); // 发起交易的服务器地址
+
+		parameters.put("order_no", "cmbc139" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())); //// 入驻商户号+yyyyMMddHHmmss
+		parameters.put("product_name", "ali二维码支付测试"); // 产品名称，商户根据自己的需求填写
+		parameters.put("remark", "ali二维码 alpha zhang"); // 附件内容
+
+		parameters.put("order_period", "5"); // 必填 ，分钟
+
+
+		String sign = getSign(parameters, paySec);//// paySec
+		//// 此字符串由民生提供，用作商户投递信息加密用，请妥善保管，请只放在服务器端
+		parameters.put("sign", sign);
+
+		String postUrl = MtConfig.getProperty("ms_URL","http://115.159.235.109:8208") + "/qthd-pay-web-gateway/scanPay/createAliFixPayEx";
+		String result = HttpClient.sendPost(postUrl, parameters);
+		Map<String,String> map = JSON.parseObject(result, Map.class);
+		logger.info("#MinshengService.payWeChat# result={}", result);
+		return map;
+	}
+
+
 	public static void main(String[] args) {
+		new MinshengService().payAli("2088002710568883");
 	}
 }
