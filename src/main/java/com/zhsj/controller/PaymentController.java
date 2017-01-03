@@ -153,6 +153,17 @@ public class PaymentController {
     	for(String name: map.keySet()){
 
             logger.info(name+"====="+map.get(name));
+//            sign=====[Ljava.lang.String;@58372003
+//            result_code=====[Ljava.lang.String;@742599c
+//            pay_way_code=====[Ljava.lang.String;@1509147d
+//            remark=====[Ljava.lang.String;@7202555
+//            order_time=====[Ljava.lang.String;@4f72f31a
+//            product_name=====[Ljava.lang.String;@3b658b6
+//            field1=====[Ljava.lang.String;@387a16a1
+//            order_date=====[Ljava.lang.String;@5763c0fe
+//            paykey=====[Ljava.lang.String;@56139084
+//            order_price=====[Ljava.lang.String;@1e74f642
+//             order_no=====[Ljava.lang.String;@10d376ad
         }
 
     }

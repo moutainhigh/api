@@ -2,11 +2,11 @@
          pageEncoding="UTF-8"%>
 <html>
 <head>
-    <script src="https://as.alipayobjects.com/g/component/antbridge/1.1.1/antbridge.min.js\"></script>
+    <script src="https://as.alipayobjects.com/g/component/antbridge/1.1.1/antbridge.min.js"></script>
     <script type="text/javascript">
 
         document.addEventListener('AlipayJSBridgeReady', function () {
-            AlipayJSBridge.call("tradePay", {tradeNO:${data}}, function (result) {
+            AlipayJSBridge.call("tradePay", {tradeNO:"${data}"}, function (result) {
                 alert(JSON.stringify(result));
             });}, false);
 
