@@ -35,7 +35,7 @@ public class MinshengService {
 	@Autowired
 	private BmStorePayInfoDao bmStorePayInfoDao;
 	@Autowired
-	private BmUserBindStoreDao bmUserBindStoreDao;
+	private OrderService orderService;
 
     /*此二字段由民生提供给各个商户*/
 //	static String  payKey = "85a6c4e20bf54505bea8e75bc870d587";//此字符串由民生提供，作为商户的唯一标识

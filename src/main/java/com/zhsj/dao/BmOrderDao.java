@@ -15,4 +15,7 @@ public interface BmOrderDao {
 
     int insertOrder(@Param("bean") OrderBean orderBean);
 
+    int updateOrderByOrderId(@Param("status") int status,
+                             @Param("orderId") String orderId);
+
 }

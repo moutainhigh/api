@@ -3,6 +3,7 @@ package com.zhsj.controller;
 import com.zhsj.bean.PayBean;
 import com.zhsj.bean.UserBean;
 import com.zhsj.service.MinshengService;
+import com.zhsj.service.OrderService;
 import com.zhsj.service.UserService;
 import com.zhsj.service.WXService;
 import com.zhsj.util.MtConfig;
@@ -36,6 +37,8 @@ public class PaymentController {
     private MinshengService minshengService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private OrderService orderService;
 
 
     @RequestMapping(value = "/scanCode", method = RequestMethod.GET)
@@ -129,21 +132,27 @@ public class PaymentController {
         String order_no = request.getParameter("order_no");
         String field1 = request.getParameter("field1");
         logger.info("#PaymentController.payNotifyWeChat# result_code={},order_no={},field1={}",result_code,order_no,field1);
+        if("SUCCESS".equals(result_code)){
+            orderService.updateOrderByOrderId(1,field1);
+        }else {
+            orderService.updateOrderByOrderId(2,field1);
+        }
+
 
     	Map<String,Object> map = request.getParameterMap();
     	for(String name: map.keySet()){
             logger.info(name+"====="+request.getParameter(name));
-//            sign=====[Ljava.lang.String;@58372003
-//            result_code=====[Ljava.lang.String;@742599c
-//            pay_way_code=====[Ljava.lang.String;@1509147d
-//            remark=====[Ljava.lang.String;@7202555
-//            order_time=====[Ljava.lang.String;@4f72f31a
-//            product_name=====[Ljava.lang.String;@3b658b6
-//            field1=====[Ljava.lang.String;@387a16a1
-//            order_date=====[Ljava.lang.String;@5763c0fe
-//            paykey=====[Ljava.lang.String;@56139084
-//            order_price=====[Ljava.lang.String;@1e74f642
-//             order_no=====[Ljava.lang.String;@10d376ad
+//          result_code=====SUCCESS
+//            pay_way_code=====WXF2F
+//            remark=====测试商家-支付
+//            order_time=====20170107141624
+//            product_name=====测试商家-支付
+//            field1=====oFvcxwfZrQxlisYN4yIPbxmOT8KM
+//            order_date=====20170107
+//            paykey=====85a6c4e20bf54505bea8e75bc870d587
+//            order_price=====0.010
+//            order_no=====20170107141624252SN0ba482a1d
+
         }
 
     }
@@ -151,25 +160,11 @@ public class PaymentController {
     @RequestMapping(value = "/payNotifyAli", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public void payNotifyAli(HttpServletRequest request, HttpServletResponse response) throws Exception {
-//        String result_code = request.getParameter("result_code");
-//        String order_no = request.getParameter("order_no");
-//        String field1 = request.getParameter("field1");
-//        logger.info("#PaymentController.payNotifyAli# result_code={},order_no={},field1={}",result_code,order_no,field1);
+        logger.info("#PaymentController.payNotifyAli# ");
 
         Map<String,Object> map = request.getParameterMap();
         for(String name: map.keySet()){
             logger.info(name+"====="+request.getParameter(name));
-//            sign=====[Ljava.lang.String;@58372003
-//            result_code=====[Ljava.lang.String;@742599c
-//            pay_way_code=====[Ljava.lang.String;@1509147d
-//            remark=====[Ljava.lang.String;@7202555
-//            order_time=====[Ljava.lang.String;@4f72f31a
-//            product_name=====[Ljava.lang.String;@3b658b6
-//            field1=====[Ljava.lang.String;@387a16a1
-//            order_date=====[Ljava.lang.String;@5763c0fe
-//            paykey=====[Ljava.lang.String;@56139084
-//            order_price=====[Ljava.lang.String;@1e74f642
-//             order_no=====[Ljava.lang.String;@10d376ad
         }
 
     }
