@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @DynamicDataSource(DS.DB_MANAGE)
 public interface BmUserDao {
 
-    UserBean getUserByOpenId(@Param("openId")String openId);
+    UserBean getUserByOpenId(@Param("openId")String openId,@Param("type")int type);
 
     Long insertOpenId(@Param("userBean")UserBean userBean);
 

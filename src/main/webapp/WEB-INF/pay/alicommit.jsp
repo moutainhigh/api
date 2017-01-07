@@ -3,11 +3,13 @@
 <html>
 <head>
     <script src="https://as.alipayobjects.com/g/component/antbridge/1.1.1/antbridge.min.js"></script>
+    <script src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript">
 
         document.addEventListener('AlipayJSBridgeReady', function () {
             AlipayJSBridge.call("tradePay", {tradeNO:"${data}"}, function (result) {
-                alert(JSON.stringify(result));
+//                $.post("payNotifyAli",result);
+//                alert(JSON.stringify(result));
             });}, false);
 
     </script>

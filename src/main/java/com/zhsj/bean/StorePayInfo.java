@@ -6,6 +6,7 @@ package com.zhsj.bean;
 public class StorePayInfo {
     private long id;
     private String storeNo;
+    private String storeName;
     private int payType;
     private String payMethod;
     private int status;
@@ -30,6 +31,14 @@ public class StorePayInfo {
 
     public void setStoreNo(String storeNo) {
         this.storeNo = storeNo;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
     }
 
     public int getPayType() {

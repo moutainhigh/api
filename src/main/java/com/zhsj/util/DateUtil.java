@@ -55,7 +55,7 @@ public class DateUtil
 	 * @return 成功： yyyyMMddHHmmss 字符串 <br>
 	 *         失败： null
 	 */
-	public static String getCurrentTimeNotBlank()
+	public static String getCurrentTime()
 	{
 		try
 		{

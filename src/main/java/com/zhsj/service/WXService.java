@@ -21,7 +21,7 @@ public class WXService {
     @Autowired
     private BmUserDao bmUserDao;
 
-    public UserBean getUserByCode(String code,String storeNo){
+    public String getOpenId(String code){
         String openId = "";
         try {
             StringBuilder stringBuilder = new StringBuilder();
@@ -35,18 +35,10 @@ public class WXService {
             String result = SSLUtil.getSSL(stringBuilder.toString());
             Map<String,String> map = JSON.parseObject(result, Map.class);
             openId = map.get("openid");
-            UserBean userBean = bmUserDao.getUserByOpenId(openId);
-            if (userBean != null){
-                return userBean;
-            }
-            userBean = new UserBean();
-            userBean.setOpenId(openId);
-            bmUserDao.insertOpenId(userBean);
-            return userBean;
         }catch (Exception e){
-            logger.error("#WXService.getUserByCode# code={},storeNo={},e={}",code,storeNo,e.getMessage(),e);
+            logger.error("#WXService.getUserByCode# code={},storeNo={},openId={},e={}",code,openId,e);
         }
-        return null;
+        return openId;
     }
 
 }

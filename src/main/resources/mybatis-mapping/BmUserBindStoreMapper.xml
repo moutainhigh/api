@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.dao.BmUserBindStoreDao">
+
+    <select id="getByStoreAndUser" resultType="userBindStoreBean" >
+        select id,user_type,user_id,store_no
+        FROM tb_user_bind_store
+        WHERE user_id=#{userId} and store_no = #{storeNo}
+    </select>
+
+    <insert id="save">
+        INSERT INTO tb_user_bind_store
+        (user_id,user_type,store_no,ctime)
+        VALUES
+        (#{userId},#{userType},#{storeNO},unix_timestamp(now()))
+    </insert>
+
+
+</mapper>

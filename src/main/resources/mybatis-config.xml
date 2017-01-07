@@ -20,5 +20,6 @@
         <typeAlias type="com.zhsj.bean.UserBean" alias="userBean"/>
         <typeAlias type="com.zhsj.bean.StorePayInfo" alias="storePayInfo"/>
         <typeAlias type="com.zhsj.bean.StoreBean" alias="storeBean"/>
+        <typeAlias type="com.zhsj.bean.UserBindStoreBean" alias="userBindStoreBean"/>
     </typeAliases>
 </configuration>

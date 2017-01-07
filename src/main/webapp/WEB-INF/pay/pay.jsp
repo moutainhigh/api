@@ -11,6 +11,7 @@ ${openId}
     <input value="${openId}" id="openId" name="openId">
     <input value="${no}" id="storeNo" name="storeNo">
     <input value="${payMethod}" id="payMethod" name="payMethod">
+    <input value="${buyerId}" id="buyerId" name="buyerId">
     金额：<input value="" id="orderPrice" name="orderPrice">
     <input type="submit" name="提交">
 </form>

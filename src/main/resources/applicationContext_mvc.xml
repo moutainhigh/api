@@ -16,6 +16,7 @@
     <mvc:annotation-driven/>
     <mvc:resources mapping="/*.txt" location="/" />
     <mvc:resources mapping="/*.html" location="/" />
+    <mvc:resources mapping="/resource/js/*.*" location="/WEB-INF/resource/js/" />
 
 
     <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
@@ -43,7 +44,7 @@
     <bean  class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
         <property name="viewClass"
                   value="org.springframework.web.servlet.view.JstlView" />
-        <property name="prefix" value="/" />
+        <property name="prefix" value="/WEB-INF/" />
         <property name="suffix" value=".jsp" />
     </bean>
 

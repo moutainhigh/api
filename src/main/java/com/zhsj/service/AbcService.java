@@ -32,7 +32,7 @@ public class AbcService {
     public String getOpenId(String code){
         String tokenJson = "";
         try {
-            String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx31626c1d3ab34e12&secret=045a93654391302593eb3fcdeecefc54&code="+code+"&grant_type=authorization_code";
+            String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx8651744246a92699&secret=7d33f606a68a8473a4919e8ff772447e&code="+code+"&grant_type=authorization_code";
             tokenJson += url;
             tokenJson += SSLUtil.getSSL(url);
         }catch (Exception e){
@@ -58,21 +58,9 @@ public class AbcService {
 
 
     public static void main(String[] args){
-        List<Integer> ids = new ArrayList<>();
-        ids.add(1);
-        ids.add(2);
-        ids.add(3);ids.add(4);
-        ids.add(5);
-        ids.add(6);
-        ids.add(7);
-        ids.add(8);
-
-        int offset = 8;
-        int size = 0;
-        ids = ids.subList(offset,offset+size);
-        System.out.println("===========================");
-        System.out.println(ids);
-        System.out.println("===========================");
-
+        AbcService abcService = new AbcService();
+//        System.out.println(abcService.abc());
+        String token = "FnGbTVWamObKS8FdcRofrtLtK9Hv51PPbEGywRKx81iDlsJxQt0HlPUtzXe2fse9n2RiYhTv8ky-6vneefTYID_f9cMtVpx0GA4EhjzN72Nu35adMU-Oxx5sdONSRCqrMYZfAGAPBC";
+        System.out.println(abcService.getUserInfo(token, "oFvcxwdPHqk7HaHqSxrdSMg5lAKk"));
     }
 }

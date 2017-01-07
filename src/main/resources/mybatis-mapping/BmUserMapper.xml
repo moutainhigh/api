@@ -8,11 +8,11 @@
     <select id="getUserByOpenId" resultType="userBean" >
         select <include refid="SELECT_FIELDS"/>
         FROM tb_user
-        WHERE open_id = #{openId}
+        WHERE open_id = #{openId} and type = #{type}
     </select>
 
     <insert id="insertOpenId" keyProperty="userBean.id" useGeneratedKeys="true">
-        insert into tb_user (open_id) VALUE (#{userBean.openId})
+        insert into tb_user (open_id,type) VALUE (#{userBean.openId},#{userBean.type})
     </insert>
 
 

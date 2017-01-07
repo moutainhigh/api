@@ -6,6 +6,7 @@ package com.zhsj.bean;
 public class UserBean {
     private long id;
     private String openId;
+    private int type;
     private String nickName;
     private String headImg;
     private int sex;
@@ -16,6 +17,14 @@ public class UserBean {
     private String unionid;
     private int utime;
     private int ctime;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public long getId() {
         return id;

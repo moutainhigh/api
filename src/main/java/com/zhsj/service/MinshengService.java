@@ -34,6 +34,9 @@ public class MinshengService {
 	private BmUserDao bmUserDao;
 	@Autowired
 	private BmStorePayInfoDao bmStorePayInfoDao;
+	@Autowired
+	private BmUserBindStoreDao bmUserBindStoreDao;
+
     /*此二字段由民生提供给各个商户*/
 //	static String  payKey = "85a6c4e20bf54505bea8e75bc870d587";//此字符串由民生提供，作为商户的唯一标识
 //	static String  paySec = "60f811a8b472495fa6c656c507f44cdc";//此字符串由民生提供，用作商户投递信息加密用，请妥善保管，请只放在服务器端
@@ -43,36 +46,12 @@ public class MinshengService {
 		try{
 			String storeNo = payBean.getStoreNo();
 			if(StringUtils.isEmpty(storeNo)){
-
+				map.put("return_code","FAIL");
+				return map;
 			}
-			//查询商家
-			StoreBean storeBean = bmStoreDao.getStoreByNo(storeNo);
-			//查询商家支付方式
-			StorePayInfo storePayInfo = bmStorePayInfoDao.getStorePayInfoByNO(storeNo);
-			//查询商家绑定组织
-			Long orgId = bmStoreBindOrgDao.getOrgIdByStoreNO(storeNo);
-			//查询人员信息
-			UserBean userBean = bmUserDao.getUserByOpenId(payBean.getOpenId());
 			//获定单号
 			String orderNo = StoreUtils.getOrderNO(storeNo);
-			//保存定单
-			OrderBean orderBean = new OrderBean();
-			orderBean.setOrderId(orderNo);
-			orderBean.setActualChargeAmount(payBean.getOrderPrice());
-			orderBean.setPlanChargeAmount(payBean.getOrderPrice());
-			orderBean.setStatus(0);
-			orderBean.setDiscountType(0);
-			orderBean.setDiscountId(0);
-
-			orderBean.setPayType(storePayInfo.getPayType());
-			orderBean.setPayMethod(String.valueOf(payBean.getPayMethod()));
-			orderBean.setStoreNo(storeNo);
-			orderBean.setParentStoreNo(storeBean.getParentNo());
-			orderBean.setOrgId(orgId);
-			orderBean.setUserId(userBean.getId());
-			orderBean.setUtime(DateUtil.unixTime());
-			orderBean.setCtime(DateUtil.unixTime());
-			int num = bmOrderDao.insertOrder(orderBean);
+			StorePayInfo storePayInfo = prePay(payBean,orderNo);
 			//调用接口
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("order_price", String.valueOf(payBean.getOrderPrice())); //支付费用单位：元，支付一分钱
@@ -81,9 +60,9 @@ public class MinshengService {
 			parameters.put("order_date", new SimpleDateFormat("yyyyMMdd").format(new Date()));
 			parameters.put("order_time", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
 			parameters.put("paykey", storePayInfo.getField1());//此字符串由民生提供，作为商户的唯一标识
-			parameters.put("product_name", "微信公众号支付测试"); //产品名称，商户根据自己的需求填写
+			parameters.put("product_name", storePayInfo.getStoreName()+"-支付"); //产品名称，商户根据自己的需求填写
 			parameters.put("order_ip", "114.215.223.220"); //发起交易的服务器地址
-			parameters.put("remark", "微信主扫测试"); //附件内容
+			parameters.put("remark", storePayInfo.getStoreName()+"-支付"); //附件内容
 			parameters.put("order_period", "5");   //必填
 			parameters.put("notify_url", "http://wwt.bj37du.com/api/pay/payNotifyWeChat");//必填，请填写通知地址
 			parameters.put("field1", payBean.getOpenId()); //可不填
@@ -102,6 +81,91 @@ public class MinshengService {
 			map.put("return_code","FAIL");
 		}
 		return map;
+	}
+
+	public Map<String,String> payAli(PayBean payBean){
+		Map map = new HashMap();
+		try{
+			String storeNo = payBean.getStoreNo();
+			if(StringUtils.isEmpty(storeNo)){
+				map.put("return_code","FAIL");
+				return map;
+			}
+			//获定单号
+			String orderNo = StoreUtils.getOrderNO(storeNo);
+			StorePayInfo storePayInfo = prePay(payBean, orderNo);
+			//调用接口
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("buyer_id", payBean.getBuyerId()); // 支付费用单位：元，支付一分钱
+			parameters.put("order_price", payBean.getOrderPrice()); // 支付费用单位：元，支付一分钱
+			parameters.put("paykey", storePayInfo.getField1());// 此字符串由民生提供，作为商户的唯一标识
+			parameters.put("order_date", new SimpleDateFormat("yyyyMMdd").format(new Date()));
+			parameters.put("order_time", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+			parameters.put("store_id", storeNo); // 附件内容
+			parameters.put("operator_id", "oper001"); //
+			parameters.put("order_ip", "114.215.223.220"); // 发起交易的服务器地址
+
+			parameters.put("order_no", orderNo); //// 入驻商户号+yyyyMMddHHmmss
+			parameters.put("product_name", storePayInfo.getStoreName()+"-支付"); // 产品名称，商户根据自己的需求填写
+			parameters.put("remark", storePayInfo.getStoreName()+"-支付"); // 附件内容
+
+			parameters.put("order_period", "5"); // 必填 ，分钟
+
+			String sign = getSign(parameters, storePayInfo.getField2());//// paySec
+			//// 此字符串由民生提供，用作商户投递信息加密用，请妥善保管，请只放在服务器端
+			parameters.put("sign", sign);
+			String postUrl = MtConfig.getProperty("ms_URL","http://115.159.235.109:8208") + "/qthd-pay-web-gateway/scanPay/createAliFixPayEx";
+			String result = HttpClient.sendPost(postUrl, parameters);
+			map = JSON.parseObject(result, Map.class);
+			logger.info("#MinshengService.payAli# result map={}", map);
+
+		}catch (Exception e){
+			logger.error("#MinshengService.payAli e={}#",e.getMessage(),e);
+			map.put("return_code","FAIL");
+		}
+		return map;
+	}
+
+
+	private StorePayInfo prePay(PayBean payBean,String orderNo){
+		String storeNo = payBean.getStoreNo();
+		//查询商家
+		StoreBean storeBean = bmStoreDao.getStoreByNo(storeNo);
+		if(storeBean == null){
+			return null;
+		}
+		//查询商家绑定组织
+		Long orgId = bmStoreBindOrgDao.getOrgIdByStoreNO(storeNo);
+		//查询人员信息
+		UserBean userBean = null;
+		if(payBean.getPayMethod() == 1){
+			userBean =bmUserDao.getUserByOpenId(payBean.getOpenId(),payBean.getPayMethod());
+		}else if(payBean.getPayMethod() == 2){
+			userBean =bmUserDao.getUserByOpenId(payBean.getBuyerId(),payBean.getPayMethod());
+		}
+		//查询商家支付方式
+		StorePayInfo storePayInfo = bmStorePayInfoDao.getStorePayInfoByNO(storeNo);
+		storePayInfo.setStoreName(storeBean.getName());
+
+		//保存定单
+		OrderBean orderBean = new OrderBean();
+		orderBean.setOrderId(orderNo);
+		orderBean.setActualChargeAmount(payBean.getOrderPrice());
+		orderBean.setPlanChargeAmount(payBean.getOrderPrice());
+		orderBean.setStatus(0);
+		orderBean.setDiscountType(0);
+		orderBean.setDiscountId(0);
+
+		orderBean.setPayType(storePayInfo.getPayType());
+		orderBean.setPayMethod(String.valueOf(payBean.getPayMethod()));
+		orderBean.setStoreNo(storeNo);
+		orderBean.setParentStoreNo(storeBean.getParentNo());
+		orderBean.setOrgId(orgId);
+		orderBean.setUserId(userBean.getId());
+		orderBean.setUtime(DateUtil.unixTime());
+		orderBean.setCtime(DateUtil.unixTime());
+		int num = bmOrderDao.insertOrder(orderBean);
+		return storePayInfo;
 	}
 
     /**
@@ -128,39 +192,14 @@ public class MinshengService {
 	}
 
 
-	public  Map<String,String> payAli(String buyer_id){
-		String payKey = "85a6c4e20bf54505bea8e75bc870d587";//此字符串由民生提供，作为商户的唯一标识
-		String  paySec = "60f811a8b472495fa6c656c507f44cdc";
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("buyer_id", buyer_id); // 支付费用单位：元，支付一分钱
-		parameters.put("order_price", "0.01"); // 支付费用单位：元，支付一分钱
-		parameters.put("paykey", payKey);// 此字符串由民生提供，作为商户的唯一标识
-		parameters.put("order_date", new SimpleDateFormat("yyyyMMdd").format(new Date()));
-		parameters.put("order_time", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-		parameters.put("store_id", "一号店"); // 附件内容
-		parameters.put("operator_id", "oper001"); //
-		parameters.put("order_ip", "114.215.223.220"); // 发起交易的服务器地址
-
-		parameters.put("order_no", "cmbc139" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())); //// 入驻商户号+yyyyMMddHHmmss
-		parameters.put("product_name", "ali二维码支付测试"); // 产品名称，商户根据自己的需求填写
-		parameters.put("remark", "ali二维码 alpha zhang"); // 附件内容
-
-		parameters.put("order_period", "5"); // 必填 ，分钟
-
-
-		String sign = getSign(parameters, paySec);//// paySec
-		//// 此字符串由民生提供，用作商户投递信息加密用，请妥善保管，请只放在服务器端
-		parameters.put("sign", sign);
-
-		String postUrl = MtConfig.getProperty("ms_URL","http://115.159.235.109:8208") + "/qthd-pay-web-gateway/scanPay/createAliFixPayEx";
-		String result = HttpClient.sendPost(postUrl, parameters);
-		Map<String,String> map = JSON.parseObject(result, Map.class);
-		logger.info("#MinshengService.payWeChat# result={}", result);
-		return map;
-	}
+//	public  Map<String,String> payAli(String buyer_id){
+//		String payKey = "85a6c4e20bf54505bea8e75bc870d587";//此字符串由民生提供，作为商户的唯一标识
+//		String  paySec = "60f811a8b472495fa6c656c507f44cdc";
+//
+//		return map;
+//	}
 
 
 	public static void main(String[] args) {
-		new MinshengService().payAli("2088002710568883");
 	}
 }

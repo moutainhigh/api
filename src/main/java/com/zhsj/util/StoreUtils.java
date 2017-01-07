@@ -18,14 +18,15 @@ public class StoreUtils {
     public static String getOrderNO(String StoreNO){
         CRC32 crc32 = new CRC32();
         crc32.update(StoreNO.getBytes());
-        long time = DateUtil.unixTime();
+        String date = DateUtil.getCurrentTime();
         Random rnd = new Random();
         int num = rnd.nextInt(1000);
-        String rd = String.format("%08x%03x%09x",time ,num,crc32.getValue());
+        String rd = String.format("%14s%03xSN%09x",date ,num,crc32.getValue());
         return rd;
     }
 
     public static void main(String[] args){
         System.out.println(getStoreNO());
+        System.out.println(getOrderNO("587058c02e2"));
     }
 }

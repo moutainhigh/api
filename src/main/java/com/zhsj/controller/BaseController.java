@@ -71,17 +71,6 @@ public class BaseController {
     }
 
 
-    @RequestMapping(value = "/getBusinessLine", method = RequestMethod.GET)
-    @ResponseBody
-    public Object getBusinessLine(Model model) {
-        try {
-            userService.insertOpenId("33324");
-            return CommonResult.build(0, "success", userService.getUserByOpenId("33324"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CommonResult.build(1, "后台异常");
-        }
-    }
 
 
 
