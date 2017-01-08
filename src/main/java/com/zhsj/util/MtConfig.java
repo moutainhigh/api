@@ -9,6 +9,7 @@ import java.util.Properties;
  */
 public class MtConfig {
 
+
     private static Properties properties;
     static {
         properties = new Properties();

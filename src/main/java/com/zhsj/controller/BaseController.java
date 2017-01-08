@@ -1,10 +1,7 @@
 package com.zhsj.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.zhsj.service.AbcService;
 import com.zhsj.service.UserService;
-import com.zhsj.util.CommonResult;
-import com.zhsj.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
 
 @Controller
 public class BaseController {
@@ -35,7 +29,7 @@ public class BaseController {
 
     @RequestMapping(value = "/")
     public String riderTrack(Model model, HttpServletRequest request) {
-            return "index2";
+            return "index";
     }
 
     private String get_access_token_url="https://api.weixin.qq.com/sns/oauth2/access_token?" +

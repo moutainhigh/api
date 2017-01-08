@@ -1,4 +1,4 @@
-package com.zhsj.util;
+package com.zhsj.util.test;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;

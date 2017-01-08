@@ -1,4 +1,4 @@
-package com.zhsj.util;
+package com.zhsj.util.test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,11 +16,11 @@ public class Merchant
 		 * 
 		 * 使用前请先修改StaticConfig中的证书路径配置
 		 */
-		StaticConfig.REQ_URL = "https://115.28.58.174:6789/merSettled.do";
+//		StaticConfig.REQ_URL = "https://115.28.58.174:6789/merSettled.do";
 		//商户入驻
-		mersettled();
+//		mersettled();
 		//商户信息修改
-//		updateMerchantByPaykey();
+		updateMerchantByPaykey();
 	}
 	
 	public static void mersettled() {

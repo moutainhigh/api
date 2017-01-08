@@ -1,4 +1,6 @@
-package com.zhsj.util;
+package com.zhsj.util.test;
+
+import com.zhsj.util.DateUtil;
 
 import java.util.Random;
 import java.util.zip.CRC32;

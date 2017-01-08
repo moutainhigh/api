@@ -14,6 +14,7 @@ public class StorePayInfo {
     private String field2;
     private String field3;
     private String field4;
+    private String remark;
     private int ctime;
     private int utime;
 
@@ -111,5 +112,13 @@ public class StorePayInfo {
 
     public void setUtime(int utime) {
         this.utime = utime;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }
