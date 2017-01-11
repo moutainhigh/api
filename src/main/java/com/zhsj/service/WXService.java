@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -73,7 +74,7 @@ public class WXService {
 
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws UnsupportedEncodingException {
         String appId = "wx8651744246a92699";
         String secret = "7d33f606a68a8473a4919e8ff772447e";
         new WXService().getToken(appId, secret);

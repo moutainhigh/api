@@ -2,6 +2,7 @@ package com.zhsj.util.test;
 
 import com.alibaba.fastjson.JSON;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,10 +15,23 @@ public class Test {
 //
 //        Map<String,String> map = JSON.parseObject(str, Map.class);
 //        System.out.println(map.get("openid"));
-        String str = "586886032dc?buyer_id=2088002710568883";
-        String[] strs = str.split("\\?buyer_id=");
-        System.out.println(strs[0]);
-        System.out.println(strs[1]);
+//        String str = "586886032dc?buyer_id=2088002710568883";
+//        String[] strs = str.split("\\?buyer_id=");
+//        System.out.println(strs[0]);
+//        System.out.println(strs[1]);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("dd","dddddd");
+        map.put("dd1", 1111);
+
+
+        Map<String, Object> hot_args=new HashMap<String, Object>();
+        hot_args.putAll(map);
+        hot_args.put("dd", "pv");
+        hot_args.put("dd1", 22222);
+
+        System.out.println(map);
+        System.out.println(hot_args);
 
     }
 }
