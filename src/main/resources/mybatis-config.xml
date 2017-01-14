@@ -17,9 +17,10 @@
     </settings>
 
     <typeAliases>
-        <typeAlias type="com.zhsj.bean.UserBean" alias="userBean"/>
-        <typeAlias type="com.zhsj.bean.StorePayInfo" alias="storePayInfo"/>
-        <typeAlias type="com.zhsj.bean.StoreBean" alias="storeBean"/>
-        <typeAlias type="com.zhsj.bean.UserBindStoreBean" alias="userBindStoreBean"/>
+        <typeAlias type="com.zhsj.api.bean.UserBean" alias="userBean"/>
+        <typeAlias type="com.zhsj.api.bean.StorePayInfo" alias="storePayInfo"/>
+        <typeAlias type="com.zhsj.api.bean.StoreBean" alias="storeBean"/>
+        <typeAlias type="com.zhsj.api.bean.UserBindStoreBean" alias="userBindStoreBean"/>
+        <typeAlias type="com.zhsj.api.bean.OrderBean" alias="orderBean"/>
     </typeAliases>
 </configuration>

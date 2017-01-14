@@ -21,7 +21,7 @@
 	</bean>
 
 	<context:annotation-config/>
-	<context:component-scan base-package="com.zhsj" />
+	<context:component-scan base-package="com.zhsj.api" />
 	<import resource="dataSource.xml"/>
 
 	<!--<bean class="com.navinfo.util.SpringContextUtil" lazy-init="false" />

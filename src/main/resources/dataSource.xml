@@ -87,7 +87,7 @@
     </bean>
 
 
-    <bean id="multipleDataSource" class="com.zhsj.util.db.MultipleDataSource">
+    <bean id="multipleDataSource" class="com.zhsj.api.util.db.MultipleDataSource">
         <property name="targetDataSources">
             <map key-type="java.lang.String"> <!-- 数据源配置 -->
                 <entry key="dbManage" value-ref="dataSourceManage"/>
@@ -106,7 +106,7 @@
 
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.zhsj.dao" />
+        <property name="basePackage" value="com.zhsj.api.dao" />
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
     </bean>
 
@@ -139,10 +139,10 @@
     </tx:advice>
 
 
-    <bean id="multiDataSourceAspect" class="com.zhsj.util.db.MultipleDataSourceAspect"/>
+    <bean id="multiDataSourceAspect" class="com.zhsj.api.util.db.MultipleDataSourceAspect"/>
     <aop:config>
         <aop:aspect ref="multiDataSourceAspect">
-            <aop:around method="doAround" pointcut="execution(public * com.zhsj.dao.*.*(..))"/>
+            <aop:around method="doAround" pointcut="execution(public * com.zhsj.api.dao.*.*(..))"/>
         </aop:aspect>
     </aop:config>
 

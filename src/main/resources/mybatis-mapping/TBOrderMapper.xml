@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zhsj.dao.BmOrderDao">
+<mapper namespace="com.zhsj.api.dao.TbOrderDao">
     <sql id="SELECT_FIELDS">
         id,order_id,plan_charge_amount,actual_charge_amount,status,discount_type,
         discount_id,pay_type,pay_method,store_no,parent_store_no,org_id,user_id,ctime,utime
@@ -8,9 +8,9 @@
 
     <insert id="insertOrder" >
         INSERT INTO tb_order
-       (order_id,plan_charge_amount,actual_charge_amount,status,discount_type,discount_id,pay_type,pay_method,store_no,parent_store_no,org_id,user_id,ctime,utime)
+       (order_id,plan_charge_amount,actual_charge_amount,status,discount_type,discount_id,pay_type,pay_method,store_no,parent_store_no,org_id,user_id,ctime,utime,org_ids)
         VALUES (#{bean.orderId},#{bean.planChargeAmount},#{bean.actualChargeAmount},#{bean.status},#{bean.discountType},
-        #{bean.discountId},#{bean.payType},#{bean.payMethod},#{bean.storeNo},#{bean.parentStoreNo},#{bean.orgId},#{bean.userId},#{bean.ctime},#{bean.utime})
+        #{bean.discountId},#{bean.payType},#{bean.payMethod},#{bean.storeNo},#{bean.parentStoreNo},#{bean.orgId},#{bean.userId},#{bean.ctime},#{bean.utime},#{bean.orgIds})
     </insert>
 
 
@@ -19,5 +19,34 @@
         SET status = #{status},utime=unix_timestamp(now())
         where order_id = #{orderId}
     </update>
+
+    <update id="updateOrderByOrderIdIde">
+        UPDATE tb_order
+        SET status = #{status},utime=unix_timestamp(now())
+        where order_id = #{orderId} and status = #{preStatus}
+    </update>
+
+    <select id="getByOrderId" resultType="orderBean">
+        SELECT <include refid="SELECT_FIELDS"/>
+        FROM tb_order
+        WHERE order_id = #{orderId}
+    </select>
+
+    <select id="getMSAliListByCtime" resultType="orderBean">
+        SELECT <include refid="SELECT_FIELDS"/>
+        FROM tb_order
+        WHERE pay_type= 2 and pay_method = '2' and status = 0
+        <if test=" id > 0">
+            id > #{id}
+        </if>
+        <if test=" ctime > 0">
+            ctime > #{ctime}
+        </if>
+        order by id
+        limit #{pageSize}
+    </select>
+
+
+
 
 </mapper>
