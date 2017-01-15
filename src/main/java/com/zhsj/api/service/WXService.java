@@ -175,12 +175,12 @@ public class WXService {
 //        new WXService().getToken(appId, secret);
 //        String token = WXService.TOKEN_MAP.get(appId).get("token");
 //        System.out.println( WXService.TOKEN_MAP.get(appId));
-//        new WXService().getUserInfo("oFvcxwfZrQxlisYN4yIPbxmOT8KM");
-        OrderBean bean = new OrderBean();
-        bean.setOrderId("20170114195124247SN0ba482a1d");
-        bean.setActualChargeAmount(0.1);
-        bean.setPlanChargeAmount(0.2);
-        new WXService().sendSuccess(bean);
+        new WXService().getUserInfo("oFvcxwZfj20QNzdpagGb1uDbhQUk");
+//        OrderBean bean = new OrderBean();
+//        bean.setOrderId("20170114195124247SN0ba482a1d");
+//        bean.setActualChargeAmount(0.1);
+//        bean.setPlanChargeAmount(0.2);
+//        new WXService().sendSuccess(bean);
 //        String json = "{\n" +
 //                "    \"touser\": \"oFvcxwfZrQxlisYN4yIPbxmOT8KM\",\n" +
 //                "    \"template_id\": \"EzalgCDul_41sIFZ3jjw7B4UXuLAAZ5_0MJAlQzLG3o\",\n" +

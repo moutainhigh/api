@@ -48,67 +48,89 @@ public class SSLUtil {
      * @throws IOException
      */
     public static String getSSL(String url) throws KeyStoreException, NoSuchAlgorithmException, URISyntaxException, IOException {
-        CloseableHttpClient httpClient = createSSLClientDefault();
-        HttpGet get = new HttpGet();
-        get.setURI(new URI(url));
-        CloseableHttpResponse response = httpClient.execute(get);
-        String result = null;
+        URL urll = new URL(url);
+        HttpsURLConnection connection = (HttpsURLConnection) urll.openConnection();
+        connection.setDoOutput(true); // true for POST, false for GET
+        connection.setDoInput(true);
+        connection.setRequestMethod("GET");
+        connection.setUseCaches(false);
+        connection.setConnectTimeout(180000);// 连接超时时间
+        connection.setReadTimeout(180000);
+        OutputStream outputStream = null;
+        StringBuilder respData = new StringBuilder();
         try {
-            HttpEntity entity = response.getEntity();
-            result = EntityUtils.toString(entity);
+            connection.connect();
+
+            // //提交数据完成后，收取数据
+            if (connection.getResponseCode() == 200) {
+                // 读取post之后的返回值
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String line = null;
+                while ((line = in.readLine()) != null) {
+                    respData.append(line + "\r\n");
+                }
+                in.close();
+            } else {
+                LOG.error("#SSLUtil.httpsPost# post ResponseCode={},ResponseMessage={}" ,connection.getResponseCode(),connection.getResponseMessage());
+            }
         } catch (Exception e) {
-            LOG.error("#SSLUtil.getSSL# failed# url:({})", url, e);
+            e.printStackTrace();
+            throw e;
         } finally {
-            response.close();
+            try {
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+                connection.disconnect(); // 断开连接
+            } catch (Exception e) {
+                throw e;
+            }
         }
-        return result;
+        return respData.toString();
     }
 
     public static String postSSL(String url,String json) throws KeyStoreException, NoSuchAlgorithmException, URISyntaxException, IOException {
-        String result = null;
-        CloseableHttpResponse response = null;
+        URL urll = new URL(url);
+        HttpsURLConnection connection = (HttpsURLConnection) urll.openConnection();
+        connection.setDoOutput(true); // true for POST, false for GET
+        connection.setDoInput(true);
+        connection.setRequestMethod("POST");
+        connection.setUseCaches(false);
+        connection.setConnectTimeout(180000);// 连接超时时间
+        connection.setReadTimeout(180000);
+        OutputStream outputStream = null;
+        StringBuilder respData = new StringBuilder();
         try {
-            CloseableHttpClient httpClient = createSSLClientDefault();
-            HttpPost httpPost = new HttpPost(url);
-            httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
-            StringEntity se = new StringEntity(json);
-            se.setContentType("text/json");
-            httpPost.setEntity(se);
-            response = httpClient.execute(httpPost);
-            HttpEntity entity = response.getEntity();
-            result = EntityUtils.toString(entity, "UTF-8");
+            outputStream = connection.getOutputStream();
+            outputStream.write(json.getBytes("utf-8"));
+            outputStream.flush();
 
-        } catch (Exception e) {
-            LOG.error("#SSLUtil.postSSL# failed# url:({}),json:({})", url,json, e);
-        } finally {
-            response.close();
-        }
-        return result;
-    }
-
-    /**
-     * 创建SSL HTTP客户端
-     *
-     * @return
-     */
-    public static CloseableHttpClient createSSLClientDefault() throws KeyStoreException, NoSuchAlgorithmException {
-        try {
-            SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
-                // 信任所有
-                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                    return true;
+            // //提交数据完成后，收取数据
+            if (connection.getResponseCode() == 200) {
+                // 读取post之后的返回值
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String line = null;
+                while ((line = in.readLine()) != null) {
+                    respData.append(line + "\r\n");
                 }
-            }).build();
-            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext);
-            return HttpClients.custom().setSSLSocketFactory(sslsf).build();
-        } catch (KeyManagementException e) {
-            LOG.error("KeyManagementException error.", e);
-        } catch (NoSuchAlgorithmException e) {
-            LOG.error("NoSuchAlgorithmException error.", e);
-        } catch (KeyStoreException e) {
-            LOG.error("KeyStoreException error.", e);
+                in.close();
+            } else {
+                LOG.error("#SSLUtil.httpsPost# post ResponseCode={},ResponseMessage={}" ,connection.getResponseCode(),connection.getResponseMessage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            try {
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+                connection.disconnect(); // 断开连接
+            } catch (Exception e) {
+                throw e;
+            }
         }
-        return HttpClients.createDefault();
+        return respData.toString();
     }
 
     /**
