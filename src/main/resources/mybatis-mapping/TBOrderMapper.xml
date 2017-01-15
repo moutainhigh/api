@@ -37,10 +37,10 @@
         FROM tb_order
         WHERE pay_type= 2 and pay_method = '2' and status = 0
         <if test=" id > 0">
-            id > #{id}
+            and id > #{id}
         </if>
         <if test=" ctime > 0">
-            ctime > #{ctime}
+            and ctime > #{ctime}
         </if>
         order by id
         limit #{pageSize}

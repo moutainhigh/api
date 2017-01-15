@@ -78,7 +78,7 @@ public class PaymentController {
     public ModelAndView getUserOpenId(@RequestParam("code") String code,@RequestParam("state") String state) throws Exception {
         logger.info("#PaymentController.getUserOpenId# code={},state={}",code,state);
         ModelAndView modelAndView = new ModelAndView();
-        String openId = wxService.getOpenId(code);
+        String openId = "ddd";//wxService.getOpenId(code);
         if(StringUtils.isEmpty(openId)){
             modelAndView.setViewName("error");
             return modelAndView;
@@ -157,10 +157,11 @@ public class PaymentController {
         logger.info("#PaymentController.payNotifyWeChat# result_code={},order_no={},field1={}",result_code,order_no,field1);
         if("SUCCESS".equals(result_code)){
             orderService.updateOrderByOrderId(1,order_no);
+            wxService.sendSuccess(order_no);
         }else {
             orderService.updateOrderByOrderId(2,order_no);
         }
-
+        wxService.getUserInfo(field1);
 
     	Map<String,Object> map = request.getParameterMap();
     	for(String name: map.keySet()){

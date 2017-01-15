@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by lcg on 17/1/14.
  */
-public class OrderSuccessAsync implements Runnable {
+public class GetWeixinUserAsync implements Runnable {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrderSuccessAsync.class);
+    private static final Logger logger = LoggerFactory.getLogger(GetWeixinUserAsync.class);
 
     private OrderBean orderBean;
 
-    public OrderSuccessAsync(OrderBean orderBean){
+    public GetWeixinUserAsync(OrderBean orderBean){
         this.orderBean = orderBean;
     }
 

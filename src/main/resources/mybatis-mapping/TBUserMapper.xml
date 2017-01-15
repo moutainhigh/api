@@ -15,6 +15,13 @@
         insert into tb_user (open_id,type) VALUE (#{userBean.openId},#{userBean.type})
     </insert>
 
+    <update id="updateUserInfoByOpenId">
+        update tb_user
+        set nick_name = #{bean.nickname},head_img=#{bean.headimgurl},sex=#{bean.sex},city=#{bean.city},province=#{bean.province},
+        country = #{bean.country}
+        where open_id = #{bean.openid}
+    </update>
+
 
 
 </mapper>

@@ -312,7 +312,9 @@ public class MinshengService {
 		if(orderBean == null){
 			return null;
 		}
-		ayncTaskUtil.commitAyncTask(new OrderSuccessAsync(orderBean));
+		if(orderBean.getPayMethod().contains("2")){
+			ayncTaskUtil.commitAyncTask(new OrderSuccessAsync(orderBean));
+		}
 		return orderBean;
 	}
 
@@ -372,6 +374,8 @@ public class MinshengService {
 //		System.out.println(jj);
 //		NOTPAY
 //				FAIL SUCCESS  "WAITING_PAYMENT
-		new MinshengService().queryOrder("201701141602121fdSN0ba482a1d");
+//		new MinshengService().queryOrder("201701141602121fdSN0ba482a1d");
+		new AyncTaskUtil().commitAyncTask(new OrderSuccessAsync(null));
 	}
+
 }

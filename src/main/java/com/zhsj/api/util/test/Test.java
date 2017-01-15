@@ -20,11 +20,7 @@ public class Test {
 //        System.out.println(strs[0]);
 //        System.out.println(strs[1]);
 
-        Map<String, Object> map = new HashMap<>();
-
-        for (String key:map.keySet()){
-            System.out.print("==");
-        }
+        System.out.println("2".contains("2"));
 
     }
 }

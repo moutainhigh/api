@@ -18,9 +18,9 @@
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
       <script type="text/javascript">
           $(document).ready(function(){
-              if(${order.payMethod} == 1){
+              if(1 == ${order.payMethod} ){
                   $("#payMethod").text("微信支付");
-              }else if(${order.payMethod} == 2){
+              }else if( 2== ${order.payMethod}){
                   $("#payMethod").text("支付宝支付");
               }
               var newDate = new Date();
@@ -34,7 +34,7 @@
      <div class="container">
          <div class="pay">
                 <div class="pay-flag">
-                   <p><img src="pay.png" width=50></p>
+                   <p><img src="../resource/img/pay.png" width=50></p>
                    <p>支付成功</p>
                    <p>
                       <span>￥</span><span>${order.actualChargeAmount}</span><del><span>￥</span>${order.planChargeAmount}</del></p>

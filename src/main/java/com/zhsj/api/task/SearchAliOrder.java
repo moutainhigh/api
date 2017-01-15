@@ -44,6 +44,7 @@ public class SearchAliOrder implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         logger.info("#SearchOrder#============");
+        refresh();
         refreshExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -81,6 +82,7 @@ public class SearchAliOrder implements InitializingBean {
                         wxService.sendSuccess(orderBean);
                     }
                 }
+                id = orderBean.getId();
             }
         }catch (Exception e){
             logger.error("#SearchAliOrder.refresh# e={}",e.getMessage(),e);
