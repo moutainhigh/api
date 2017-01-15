@@ -5,6 +5,8 @@ import com.zhsj.api.bean.PayBean;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.service.*;
+import com.zhsj.api.task.async.OrderSuccessAsync;
+import com.zhsj.api.util.AyncTaskUtil;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.WebUtils;
 import com.zhsj.api.util.MtConfig;
@@ -41,6 +43,8 @@ public class PaymentController {
     private OrderService orderService;
     @Autowired
     private StoreService storeService;
+    @Autowired
+    private AyncTaskUtil ayncTaskUtil;
 
 
 
@@ -78,7 +82,7 @@ public class PaymentController {
     public ModelAndView getUserOpenId(@RequestParam("code") String code,@RequestParam("state") String state) throws Exception {
         logger.info("#PaymentController.getUserOpenId# code={},state={}",code,state);
         ModelAndView modelAndView = new ModelAndView();
-        String openId = "ddd";//wxService.getOpenId(code);
+        String openId = wxService.getOpenId(code);
         if(StringUtils.isEmpty(openId)){
             modelAndView.setViewName("error");
             return modelAndView;

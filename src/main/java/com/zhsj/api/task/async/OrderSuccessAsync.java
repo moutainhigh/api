@@ -26,7 +26,7 @@ public class OrderSuccessAsync implements Runnable {
             OrderService orderService = (OrderService) SpringBeanUtil.getBean("orderService");
             int num = orderService.updateOrderByOrderIdAndStatus(1,orderBean.getOrderId(),0);
             if(num > 0){
-                WXService wxService = (WXService)SpringBeanUtil.getBean("wxService");
+                WXService wxService = (WXService)SpringBeanUtil.getBean("WXService");
                 wxService.sendSuccess(orderBean);
             }
         }catch (Exception e){
