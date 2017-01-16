@@ -68,8 +68,9 @@ public class SearchAliOrder implements InitializingBean {
             if(id <=0 ){
                 ctime = DateUtil.unixTime() - 60*5;
             }
-            List<OrderBean> list = orderService.getMSAliListByCtime(id,new Long(ctime).intValue(),500);
+            List<OrderBean> list = orderService.getMSAliListByCtime(id,new Long(ctime).intValue(),100);
             for(OrderBean orderBean:list){
+            	logger.info("#refresh# orderNo={}",orderBean.getOrderId());
                 String result = minshengService.queryOrder(orderBean.getOrderId());
                 if(StringUtils.isEmpty(result)){
                     continue;

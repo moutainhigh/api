@@ -28,7 +28,7 @@ public class WXService {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(WXService.class);
 
     //key=appId value[key-value],key secret, key token key expires
-    public final static Map<String,Map<String,String>> TOKEN_MAP = Collections.synchronizedMap(new HashMap<String, Map<String, String>>());
+    public static Map<String,Map<String,String>> TOKEN_MAP = Collections.synchronizedMap(new HashMap<String, Map<String, String>>());
 
     @Autowired
     private TbUserDao bmUserDao;
@@ -56,6 +56,7 @@ public class WXService {
     }
 
     public Map<String,String> getToken(String appId,String secret){
+    	logger.info("#WXService.getToken# appi={}.secrt={}#",appId,secret);
         Map<String,String> resultMap = null;
         try {
             String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+
@@ -67,7 +68,7 @@ public class WXService {
                 resultMap.put("token",(String)map.get("access_token"));
                 long time = DateUtil.unixTime();
                 int expiresTime = (Integer)map.get("expires_in");
-                time = time + expiresTime - 60*30;
+                time = time + expiresTime - 60*20;
                 resultMap.put("expires",time+"");
                 resultMap.put("secret",secret);
             }
@@ -78,6 +79,7 @@ public class WXService {
     }
 
     public String getTokenByAppId(String appId,String secrte){
+    	logger.info("#WXService.getTokenByAppId# appi={}.secrt={}#",appId,secrte);
         try {
             Map<String,String> map = WXService.TOKEN_MAP.get(appId);
             if(map == null){
@@ -90,14 +92,17 @@ public class WXService {
                 map = getToken(appId, secrte);
             }
             map = WXService.TOKEN_MAP.get(appId);
-            return map.get("token");
-        }catch (Exception e){
+            String token = map.get("token");
+            logger.info("#WXService.getTokenByAppId# result appi={}.secrt={} token={}",appId,secrte,token);
+            return token;
+          }catch (Exception e){
             logger.error("#WXService.getTokenByAppId# appId={},secrte={}",appId,secrte,e);
         }
         return "";
     }
 
     public void getUserInfo(String openId){
+    	logger.info("#WXService.getUserInfo# openId={}",openId);
         try{
             String appId = MtConfig.getProperty("weChat_appId","wx8651744246a92699");
             String secret = MtConfig.getProperty("weChat_secret", "7d33f606a68a8473a4919e8ff772447e");
@@ -111,6 +116,7 @@ public class WXService {
             String result = SSLUtil.getSSL(stringBuilder.toString());
             WeixinUserBean weixinUserBean = JSON.parseObject(result, WeixinUserBean.class);
             bmUserDao.updateUserInfoByOpenId(weixinUserBean);
+            logger.info("#WXService.getUserInfo# result openId={},userBean={}",openId,weixinUserBean);
         }catch (Exception e){
             logger.error("#WXService.getUserInfo# openId={}",openId,e);
         }
@@ -169,12 +175,14 @@ public class WXService {
         }
     }
 
-    public static void main(String[] args) throws UnsupportedEncodingException {
+    public static void main(String[] args) throws Exception {
         String appId = "wx8651744246a92699";
         String secret = "7d33f606a68a8473a4919e8ff772447e";
-//        new WXService().getToken(appId, secret);
+        new WXService().getToken(appId, secret);
 //        String token = WXService.TOKEN_MAP.get(appId).get("token");
 //        System.out.println( WXService.TOKEN_MAP.get(appId));
+        new WXService().getUserInfo("oFvcxwZfj20QNzdpagGb1uDbhQUk");
+        Thread.sleep(1000*60*2);
         new WXService().getUserInfo("oFvcxwZfj20QNzdpagGb1uDbhQUk");
 //        OrderBean bean = new OrderBean();
 //        bean.setOrderId("20170114195124247SN0ba482a1d");

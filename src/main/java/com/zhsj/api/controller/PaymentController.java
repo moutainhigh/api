@@ -71,7 +71,6 @@ public class PaymentController {
         }else {
             //其它
             modelAndView.setViewName("error");
-            modelAndView.setViewName("pay/zfb");
         }
         return modelAndView;
     }
