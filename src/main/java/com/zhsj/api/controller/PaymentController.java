@@ -159,8 +159,11 @@ public class PaymentController {
         String field1 = request.getParameter("field1");
         logger.info("#PaymentController.payNotifyWeChat# result_code={},order_no={},field1={}",result_code,order_no,field1);
         if("SUCCESS".equals(result_code)){
-            orderService.updateOrderByOrderId(1,order_no);
-            wxService.sendSuccess(order_no);
+           int num = orderService.updateOrderByOrderIdAndStatus(1,order_no,0);
+           if(num <= 0){
+        	  return;
+           }
+           wxService.sendSuccess(order_no);
         }else {
             orderService.updateOrderByOrderId(2,order_no);
         }
@@ -181,7 +184,6 @@ public class PaymentController {
 //            order_no=====20170107141624252SN0ba482a1d
 
         }
-
     }
 
     @RequestMapping(value = "/payNotifyAli", method = {RequestMethod.GET,RequestMethod.POST})

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.util.Map;
 
 @Controller
 public class BaseController {
@@ -42,7 +43,7 @@ public class BaseController {
 
 
 
-    //微信可以访问到
+    //微信可以访问到 网页授权域名
     @RequestMapping(value = "/accWeixin", method = RequestMethod.GET)
     @ResponseBody
     public void accWeixin(HttpServletRequest request, HttpServletResponse response) {
@@ -66,7 +67,22 @@ public class BaseController {
 
 
 
-
+    @RequestMapping(value = "/accWeChatEvent", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object accWeChatEvent(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            logger.info("=====================");
+            Map<String,Object> map = request.getParameterMap();
+            for(String key:map.keySet()){
+            	logger.info("accWeChatEvent:"+key+"==="+request.getParameter(key));
+            }
+            String echostr = request.getParameter("echostr");
+            return echostr;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 
 
 

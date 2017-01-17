@@ -75,28 +75,11 @@ public class ShopController {
         }
     }
     
-    @RequestMapping(value = "/scanCode", method = RequestMethod.GET)
+    @RequestMapping(value = "/qrcode", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView scanCode(@RequestParam("no") String no,HttpServletRequest request) throws Exception {
-        logger.info("#ShopController.scanCode# no={}",no);
-        ModelAndView modelAndView = new ModelAndView();
-        Map<String, List<String>> headers = WebUtils.getHeaders(request);
-        List<String> userAgentList = headers.get("user-agent");
-        //得不到类型，返回错误
-        if(userAgentList == null || userAgentList.size() == 0){
-            modelAndView.setViewName("error");
-        }
-        modelAndView.addObject("no", no);
-        String userAgent = userAgentList.get(0);
-        if(userAgent.indexOf("MicroMessenger") >= 0){
-            //微信
-            modelAndView.addObject("appid", MtConfig.getProperty("weChat_appId","wx8651744246a92699"));
-            modelAndView.setViewName("pay/wx");
-        }else {
-            //其它
-            modelAndView.setViewName("error");
-        }
-        return modelAndView;
+    public Object qrcode(@RequestParam("no") String no,HttpServletRequest request) throws Exception {
+        logger.info("#ShopController.qrcode# no={}",no);
+        return null;
     }
 
     //获取微信openId

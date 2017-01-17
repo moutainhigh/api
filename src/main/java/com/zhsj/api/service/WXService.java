@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.WeixinUserBean;
 import com.zhsj.api.dao.TbUserDao;
+import com.zhsj.api.task.WeChatToken;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.SSLUtil;
@@ -26,9 +27,6 @@ import java.util.Map;
 @Service
 public class WXService {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(WXService.class);
-
-    //key=appId value[key-value],key secret, key token key expires
-    public static Map<String,Map<String,String>> TOKEN_MAP = Collections.synchronizedMap(new HashMap<String, Map<String, String>>());
 
     @Autowired
     private TbUserDao bmUserDao;
@@ -55,58 +53,29 @@ public class WXService {
         return openId;
     }
 
-    public Map<String,String> getToken(String appId,String secret){
+    public String getToken(String appId,String secret){
     	logger.info("#WXService.getToken# appi={}.secrt={}#",appId,secret);
-        Map<String,String> resultMap = null;
         try {
             String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+
                          appId+"&secret="+secret;
             String tokenJson = SSLUtil.getSSL(url);
-            Map<String,Object> map = JSON.parseObject(tokenJson, Map.class);
+            Map<String,String> map = JSON.parseObject(tokenJson, Map.class);
+            logger.info("#WXService.getToken# result={}",map);
             if(map.get("access_token") != null){
-                resultMap = new HashMap();
-                resultMap.put("token",(String)map.get("access_token"));
-                long time = DateUtil.unixTime();
-                int expiresTime = (Integer)map.get("expires_in");
-                time = time + expiresTime - 60*20;
-                resultMap.put("expires",time+"");
-                resultMap.put("secret",secret);
+                return map.get("access_token");
             }
         }catch (Exception e){
             logger.error("AbcService e={}",e.getMessage(),e);
         }
-        return resultMap;
-    }
-
-    public String getTokenByAppId(String appId,String secrte){
-    	logger.info("#WXService.getTokenByAppId# appi={}.secrt={}#",appId,secrte);
-        try {
-            Map<String,String> map = WXService.TOKEN_MAP.get(appId);
-            if(map == null){
-                map = getToken(appId, secrte);
-                WXService.TOKEN_MAP.put(appId,map);
-            }
-            long time = Long.parseLong(map.get("expires"));
-            long curTime = DateUtil.unixTime();
-            if(curTime > time){
-                map = getToken(appId, secrte);
-            }
-            map = WXService.TOKEN_MAP.get(appId);
-            String token = map.get("token");
-            logger.info("#WXService.getTokenByAppId# result appi={}.secrt={} token={}",appId,secrte,token);
-            return token;
-          }catch (Exception e){
-            logger.error("#WXService.getTokenByAppId# appId={},secrte={}",appId,secrte,e);
-        }
         return "";
     }
+
 
     public void getUserInfo(String openId){
     	logger.info("#WXService.getUserInfo# openId={}",openId);
         try{
             String appId = MtConfig.getProperty("weChat_appId","wx8651744246a92699");
-            String secret = MtConfig.getProperty("weChat_secret", "7d33f606a68a8473a4919e8ff772447e");
-            String token = getTokenByAppId(appId, secret);
+            String token = WeChatToken.TOKEN_MAP.get(appId);
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("https://api.weixin.qq.com/cgi-bin/user/info?access_token=")
                     .append(token)
@@ -134,56 +103,77 @@ public class WXService {
 
     public void sendSuccess(OrderBean orderBean){
         logger.info("#WXService.sendSuccess# storeNo={},orderId={}",orderBean.getStoreNo(),orderBean.getOrderId());
-        String appId = MtConfig.getProperty("weChat_appId","wx8651744246a92699");
-        String secret = MtConfig.getProperty("weChat_secret", "7d33f606a68a8473a4919e8ff772447e");
-        String token = getTokenByAppId(appId, secret);
-        String json = "{\n" +
-                "    \"touser\": \"oFvcxwfZrQxlisYN4yIPbxmOT8KM\",\n" +
-                "    \"template_id\": \"8saP99-JcHJMl8D-RD54OJLPaz9OtNGlSi8tbz8Xrvo\",\n" +
-                "    \"url\": \"\",\n" +
-                "    \"topcolor\": \"#FF0000\",\n" +
-                "    \"data\": {\n" +
-                "        \"first\": {\n" +
-                "            \"value\": \"订单支付成功\",\n" +
-                "            \"color\": \"#173177\"\n" +
-                "        },\n" +
-                "        \"keyword1\": {\n" +
-                "            \"value\": \" "+ orderBean.getOrderId() + "\",\n" +
-                "            \"color\": \"#173177\"\n" +
-                "        },\n" +
-                "        \"keyword2\": {\n" +
-                "            \"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\",\n" +
-                "            \"color\": \"#173177\"\n" +
-                "        },\n" +
-                "        \"remark\": {\n" +
-                "            \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\",\n" +
-                "            \"color\": \"#173177\"\n" +
-                "        }\n" +
-                "    }\n" +
-                "}";
-        String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+token;
-        try {
-            SSLUtil.postSSL(url, json);
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        try{
+        	String appId = MtConfig.getProperty("weChat_appId","wx8651744246a92699");
+            String token = WeChatToken.TOKEN_MAP.get(appId);
+            String json = "{\n" +
+                    "    \"touser\": \"oFvcxwfZrQxlisYN4yIPbxmOT8KM\",\n" +
+                    "    \"template_id\": \"8saP99-JcHJMl8D-RD54OJLPaz9OtNGlSi8tbz8Xrvo\",\n" +
+                    "    \"url\": \"\",\n" +
+                    "    \"topcolor\": \"#FF0000\",\n" +
+                    "    \"data\": {\n" +
+                    "        \"first\": {\n" +
+                    "            \"value\": \"订单支付成功\",\n" +
+                    "            \"color\": \"#173177\"\n" +
+                    "        },\n" +
+                    "        \"keyword1\": {\n" +
+                    "            \"value\": \" "+ orderBean.getOrderId() + "\",\n" +
+                    "            \"color\": \"#173177\"\n" +
+                    "        },\n" +
+                    "        \"keyword2\": {\n" +
+                    "            \"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\",\n" +
+                    "            \"color\": \"#173177\"\n" +
+                    "        },\n" +
+                    "        \"remark\": {\n" +
+                    "            \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\",\n" +
+                    "            \"color\": \"#173177\"\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}";
+            String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+token;
+            String result = SSLUtil.postSSL(url, json);
+            logger.info("#WXService.sendSuccess# result orderId={},result={}",orderBean.getOrderId(),result);
+        }catch(Exception e){
+        	logger.error("#WXService.sendSuccess# orderBean.orderId",orderBean.getOrderId());
         }
+        
+    }
+    
+    public void qrcode(String no){
+    	String appId = "wx8651744246a92699";
+        String secret = "7d33f606a68a8473a4919e8ff772447e";
+    	String token = new WXService().getToken(appId, secret);
+    	
+    	String url = " https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token="+token;
+    	String json = "{\"action_name\": \"QR_LIMIT_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": "+no+"}}}";
+    	
+    	try {
+			System.out.println(SSLUtil.postSSL(url, json));
+		} catch (KeyStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     public static void main(String[] args) throws Exception {
-        String appId = "wx8651744246a92699";
-        String secret = "7d33f606a68a8473a4919e8ff772447e";
-        new WXService().getToken(appId, secret);
+//        String appId = "wx8651744246a92699";
+//        String secret = "7d33f606a68a8473a4919e8ff772447e";
+//      new WXService().getToken(appId, secret);
+    	new WXService().qrcode("ddd");
 //        String token = WXService.TOKEN_MAP.get(appId).get("token");
 //        System.out.println( WXService.TOKEN_MAP.get(appId));
-        new WXService().getUserInfo("oFvcxwZfj20QNzdpagGb1uDbhQUk");
-        Thread.sleep(1000*60*2);
-        new WXService().getUserInfo("oFvcxwZfj20QNzdpagGb1uDbhQUk");
+//        new WXService().getUserInfo("oFvcxwZfj20QNzdpagGb1uDbhQUk");
+//        Thread.sleep(1000*60*2);
+//        new WXService().getUserInfo("oFvcxwZfj20QNzdpagGb1uDbhQUk");
 //        OrderBean bean = new OrderBean();
 //        bean.setOrderId("20170114195124247SN0ba482a1d");
 //        bean.setActualChargeAmount(0.1);
