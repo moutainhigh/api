@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 @DynamicDataSource(DS.DB_MANAGE)
 public interface TBAccountDao {
 
-    int updateOpenId(String account,String password,String openId);
+    int updateOpenId(@Param("account")String account,@Param("password")String password,@Param("openId")String openId);
 
-    int countByOpenId(String openId);
+    int countByOpenId(@Param("openId")String openId);
 
 
 
