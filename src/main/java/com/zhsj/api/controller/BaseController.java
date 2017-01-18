@@ -1,12 +1,8 @@
 package com.zhsj.api.controller;
 
-import com.zhsj.api.service.AbcService;
-import com.zhsj.api.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,28 +15,6 @@ import java.util.Map;
 @Controller
 public class BaseController {
     Logger logger = LoggerFactory.getLogger(BaseController.class);
-
-    @Autowired
-    private AbcService service;
-    @Autowired
-    private UserService userService;
-
-
-
-
-    @RequestMapping(value = "/")
-    public String riderTrack(Model model, HttpServletRequest request) {
-            return "index";
-    }
-
-    private String get_access_token_url="https://api.weixin.qq.com/sns/oauth2/access_token?" +
-            "appid=APPID" +
-            "&secret=SECRET&" +
-            "code=CODE&grant_type=authorization_code";
-    private String get_userinfo="https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
-
-
-
 
 
     //微信可以访问到 网页授权域名
@@ -64,8 +38,6 @@ public class BaseController {
             e.printStackTrace();
         }
     }
-
-
 
     @RequestMapping(value = "/accWeChatEvent", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody

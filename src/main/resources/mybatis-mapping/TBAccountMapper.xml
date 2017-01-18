@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBAccountDao">
+
+    <select id="countByOpenId" resultType="int">
+        select IFNULL(count(id),0) from tb_account
+         where openId=#{openId} and status=1 and valid = 1
+    </select>
+
+    <update id="updateOpenId">
+        update tb_account
+         set openId = #{openId}
+         where account=#{account} AND password=#{password} and status=1 and valid = 1
+    </update>
+
+
+
+</mapper>
