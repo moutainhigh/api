@@ -34,8 +34,6 @@ public class WeChatToken implements InitializingBean {
     public static Map<String,String> TOKEN_MAP = Collections.synchronizedMap(new HashMap<String,String>());
     // 轮询
     private ScheduledExecutorService refreshExecutorService = Executors.newScheduledThreadPool(1);
-    // 轮询间隔
-    private long refreshPeriod = 60*60; // seconds
 
     private boolean loker = false;
 
@@ -55,7 +53,7 @@ public class WeChatToken implements InitializingBean {
                     logger.error("pull failed!", e);
                 }
             }
-        }, 60, refreshPeriod, TimeUnit.SECONDS);
+        }, 10, 3600, TimeUnit.SECONDS);
     }
 
     public void refresh(){

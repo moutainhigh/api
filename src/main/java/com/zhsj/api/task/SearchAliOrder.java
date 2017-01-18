@@ -58,6 +58,7 @@ public class SearchAliOrder implements InitializingBean {
     }
 
     public void refresh(){
+        logger.info("#SearchOrder#============");
         try {
             if(loker){
                 return;
