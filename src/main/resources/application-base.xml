@@ -11,8 +11,8 @@
 		  http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
 		 http://www.springframework.org/schema/aop
 		 http://www.springframework.org/schema/aop/spring-aop.xsd">
-
 	<bean class="com.zhsj.api.util.SpringBeanUtil"/>
+
 
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">

@@ -3,14 +3,19 @@ package com.zhsj.api.service;
 import com.alibaba.fastjson.JSON;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.WeixinUserBean;
+import com.zhsj.api.dao.TBAccountDao;
+import com.zhsj.api.dao.TBStoreAccountBindRoleDao;
+import com.zhsj.api.dao.TBStoreBindAccountDao;
 import com.zhsj.api.dao.TbUserDao;
 import com.zhsj.api.task.WeChatToken;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.SSLUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -19,6 +24,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +38,14 @@ public class WXService {
     private TbUserDao bmUserDao;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private TBStoreBindAccountDao tbStoreBindAccountDao;
+    @Autowired
+    private TBStoreAccountBindRoleDao tbStoreAccountBindRoleDao;
+    @Autowired
+    private TBAccountDao tbAccountDao;
 
     public String getOpenId(String code){
         String openId = "";
@@ -104,35 +118,53 @@ public class WXService {
     public void sendSuccess(OrderBean orderBean){
         logger.info("#WXService.sendSuccess# storeNo={},orderId={}",orderBean.getStoreNo(),orderBean.getOrderId());
         try{
-        	String appId = MtConfig.getProperty("weChat_appId","wx8651744246a92699");
+            List<Long> accountIdList = tbStoreBindAccountDao.getAccountIdByStoreNo(orderBean.getStoreNo());
+            if(CollectionUtils.isEmpty(accountIdList)){
+                return;
+            }
+            String roleId = MtConfig.getProperty("RECEIVE_SUCCESS_MESSAGE_ROLE", "");
+            accountIdList = tbStoreAccountBindRoleDao.filterAccountIdByRole(Long.parseLong(roleId),accountIdList);
+            if(CollectionUtils.isEmpty(accountIdList)){
+                return;
+            }
+            List<String> openIdList = tbAccountDao.getOpenIdByAccountId(accountIdList);
+            if(CollectionUtils.isEmpty(openIdList)){
+                return;
+            }
+            String appId = MtConfig.getProperty("weChat_appId", "wx8651744246a92699");
             String token = WeChatToken.TOKEN_MAP.get(appId);
-            String json = "{\n" +
-                    "    \"touser\": \"oFvcxwfZrQxlisYN4yIPbxmOT8KM\",\n" +
-                    "    \"template_id\": \"8saP99-JcHJMl8D-RD54OJLPaz9OtNGlSi8tbz8Xrvo\",\n" +
-                    "    \"url\": \"\",\n" +
-                    "    \"topcolor\": \"#FF0000\",\n" +
-                    "    \"data\": {\n" +
-                    "        \"first\": {\n" +
-                    "            \"value\": \"订单支付成功\",\n" +
-                    "            \"color\": \"#173177\"\n" +
-                    "        },\n" +
-                    "        \"keyword1\": {\n" +
-                    "            \"value\": \" "+ orderBean.getOrderId() + "\",\n" +
-                    "            \"color\": \"#173177\"\n" +
-                    "        },\n" +
-                    "        \"keyword2\": {\n" +
-                    "            \"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\",\n" +
-                    "            \"color\": \"#173177\"\n" +
-                    "        },\n" +
-                    "        \"remark\": {\n" +
-                    "            \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\",\n" +
-                    "            \"color\": \"#173177\"\n" +
-                    "        }\n" +
-                    "    }\n" +
-                    "}";
             String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+token;
-            String result = SSLUtil.postSSL(url, json);
-            logger.info("#WXService.sendSuccess# result orderId={},result={}",orderBean.getOrderId(),result);
+            for(String openId:openIdList){
+                if(StringUtils.isEmpty(openId)){
+                    continue;
+                }
+                String json = "{\n" +
+                        "    \"touser\": \""+openId+"\",\n" +
+                        "    \"template_id\": \"8saP99-JcHJMl8D-RD54OJLPaz9OtNGlSi8tbz8Xrvo\",\n" +
+                        "    \"url\": \"\",\n" +
+                        "    \"topcolor\": \"#FF0000\",\n" +
+                        "    \"data\": {\n" +
+                        "        \"first\": {\n" +
+                        "            \"value\": \"订单支付成功\",\n" +
+                        "            \"color\": \"#173177\"\n" +
+                        "        },\n" +
+                        "        \"keyword1\": {\n" +
+                        "            \"value\": \" "+ orderBean.getOrderId() + "\",\n" +
+                        "            \"color\": \"#173177\"\n" +
+                        "        },\n" +
+                        "        \"keyword2\": {\n" +
+                        "            \"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\",\n" +
+                        "            \"color\": \"#173177\"\n" +
+                        "        },\n" +
+                        "        \"remark\": {\n" +
+                        "            \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\",\n" +
+                        "            \"color\": \"#173177\"\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "}";
+                String result = SSLUtil.postSSL(url, json);
+                logger.info("#WXService.sendSuccess# result orderId={},result={}",orderBean.getOrderId(),result);
+            }
         }catch(Exception e){
         	logger.error("#WXService.sendSuccess# orderBean.orderId",orderBean.getOrderId());
         }

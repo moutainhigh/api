@@ -9,10 +9,32 @@
 
     <update id="updateOpenId">
         update tb_account
-         set openId = #{openId}
+         set open_id = #{openId}
          where account=#{account} AND password=#{password} and status=1 and valid = 1
     </update>
 
+    <select id="getOpenIdByAccountId" resultType="string">
+        SELECT open_id
+        FROM tb_account
+        WHERE status=1 and valid = 1
+        <choose>
+            <when test="accountIdList != null and accountIdList.size() > 0">
+                AND id IN
+                <foreach collection="accountIdList" item="accountId"
+                         open="(" separator="," close=")" >
+                    #{accountId}
+                </foreach>
+            </when>
+            <otherwise>
+                AND 1 = 0
+            </otherwise>
+        </choose>
+    </select>
 
+    <select id="getByOpenId" resultType="accountBean">
+      SELECT id,account,passoword,open_id,name
+      FROM tb_account
+      WHERE status=1 and valid = 1 and open_id = #{openId}
+    </select>
 
 </mapper>

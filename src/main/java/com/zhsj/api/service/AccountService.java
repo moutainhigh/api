@@ -1,5 +1,6 @@
 package com.zhsj.api.service;
 
+import com.zhsj.api.bean.AccountBean;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.dao.TBAccountDao;
 import com.zhsj.api.dao.TbOrderDao;
@@ -28,6 +29,10 @@ public class AccountService {
     public int updateOpenId(String account,String password,String openId){
         String pw = Md5.encrypt(password);
         return tbAccountDao.updateOpenId(account, pw, openId);
+    }
+
+    public AccountBean getByOpenId(String openId){
+        return tbAccountDao.getByOpenId(openId);
     }
 }
 
