@@ -82,28 +82,6 @@ public class ShopController {
         return null;
     }
 
-    //获取微信openId
-    @RequestMapping(value = "/getUserOpenId", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView saveStoreAccount(@RequestParam("code") String code,@RequestParam("state") String state) throws Exception {
-        logger.info("#PaymentController.getUserOpenId# code={},state={}",code,state);
-        ModelAndView modelAndView = new ModelAndView();
-        String openId = wxService.getOpenId(code);
-        if(StringUtils.isEmpty(openId)){
-            modelAndView.setViewName("error");
-            return modelAndView;
-        }
-//        StoreBean storeBean = storeService.getStoreByNO(state);
-//        UserBean userBean = userService.saveStoreUser(openId, 1, state);
-//        modelAndView.setViewName("pay/weChatPay");
-//        modelAndView.addObject("openId", openId);
-//        modelAndView.addObject("payMethod",1);
-//        modelAndView.addObject("store",storeBean);
-        return modelAndView;
-    }
-
-
-
 
 
 

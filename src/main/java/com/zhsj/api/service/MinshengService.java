@@ -220,7 +220,12 @@ public class MinshengService {
 			json.put("wxRate",Double.parseDouble(wx_rate));
 			json.put("settlementType",settlementType);
 
+			//插入商家
+			//插入商家绑定组织
+			//插入商家用户
 			bmStorePayInfoDao.insertPayInfo(msStoreBean.getStoreNo(),2,"1,2",paykey,paysec,"","",json.toJSONString(),1);
+
+
 		}catch (Exception e){
 			logger.error("#MinshengService.openAccount# e={}",e.getMessage(),e);
 		}
