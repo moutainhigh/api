@@ -171,9 +171,11 @@ public class MinshengService {
 		orderBean.setParentStoreNo(storeBean.getParentNo());
 		orderBean.setOrgId(orgId);
 		orderBean.setUserId(userBean.getId());
+
 		orderBean.setUtime(DateUtil.unixTime());
 		orderBean.setCtime(DateUtil.unixTime());
 		orderBean.setOrgIds(storeBean.getOrgIds());
+		orderBean.setSaleId(storeBean.getSaleId());
 		int num = bmOrderDao.insertOrder(orderBean);
 		return storePayInfo;
 	}

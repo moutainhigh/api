@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TbStoreNoDao">
+
+    <update id="updateStatusByStoreNo">
+        UPDATE tb_store_no
+        set status = 1,utime = unix_timestamp(now()),sale_id = #{saleId}
+        where store_no = #{storeNO} and status = 0
+    </update>
+
+    <update id="updateStatusByStoreNoAndSaleId">
+        UPDATE tb_store_no
+        set status = 2,utime = unix_timestamp(now())
+        where store_no = #{storeNO} and status = 1 and sale_id = #{saleId}
+    </update>
+
+
+
+</mapper>

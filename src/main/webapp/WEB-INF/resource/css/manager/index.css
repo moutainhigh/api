@@ -1,0 +1,101 @@
+@charset "utf-8";
+
+ul li{
+    list-style: none;
+}
+li{
+    float: left;
+}
+.f1{
+    background-color: #fc324a;
+    color:#fff;
+    font-size: 20px
+}
+.f1 .flow,.f1 .withdraw{
+    width:50%;
+    text-align: center;
+    padding:34px 0 20px;
+    float:left;
+}
+.flow p:first-child,.withdraw p:first-child{
+    margin-bottom: 10px;
+}
+.flow p img,.withdraw p img{
+    width:50px;
+    height:50px;
+}
+.f2,.f3,.f4{
+    background-color: #fff;
+    color:#666;
+    margin-bottom:10px;
+    font-size: .9em;
+}
+.common-mg{
+    margin:0 20px;
+}
+.f2 .member,.f3 .today,.f4 .store{
+    padding:10px 0;
+    border-bottom: 1px solid #CCC;
+    font-size: .9em;
+}
+.f2 .marketing{
+    padding: 15px 0;
+    font-size: .75em;
+}
+.f3 .data{
+    padding: 15px 0;
+    font-size: .75em;
+}
+.f4 .manager{
+    padding: 20px 0 15px;
+    font-size: .8em;
+}
+.f2 .marketing ul li,.f3 .data ul li,.footer ul li{
+    text-align: center;
+    width:33.3%;
+}
+.f3 .data ul li{
+    border-right:1px solid #CCC;
+}
+.f2 .marketing ul li p:first-child,
+.f4 .manager ul li p:first-child{
+    margin-bottom:10px;
+    color: #fc324a;
+}
+.f3 .data ul li p:first-child{
+    margin-bottom:13px;
+    color: #fc324a;
+}
+.f3 .data ul li:last-child{
+    border-right:none;
+}
+.f2 .marketing ul li img,.f4 .manager ul li img{
+    width:40px;
+    height:40px;
+}
+.footer ul li:first-child{
+    color:#fc324a;
+}
+.footer ul li:first-child img{
+    width:30px;
+}
+.footer ul li:nth-child(2) img{
+    width:21px;
+}
+.footer ul li:last-child img{
+    width:22px;
+}
+.f4 .manager ul li{
+    text-align: center;
+    width:50%;
+}
+.f4{
+    margin-bottom: 80px;
+}
+.footer{
+    font-size:.6em;
+    color:#000
+}
+.footer ul{
+    padding:10px 0;
+}

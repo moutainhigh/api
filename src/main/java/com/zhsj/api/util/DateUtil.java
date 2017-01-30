@@ -2,6 +2,7 @@ package com.zhsj.api.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtil
@@ -70,6 +71,14 @@ public class DateUtil
 
 	public static long unixTime() {
 		return (long)(System.currentTimeMillis() / 1000L);
+	}
+
+	public static int getTodayStartTime() {
+		Calendar time = Calendar.getInstance();
+		time.set(Calendar.HOUR_OF_DAY, 0);
+		time.set(Calendar.MINUTE, 0);
+		time.set(Calendar.SECOND, 0);
+		return (int)(time.getTimeInMillis()/1000L);
 	}
 
 	public static void main(String[] args)

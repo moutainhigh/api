@@ -9,6 +9,11 @@
     </select>
 
 
-
+    <insert id="insert">
+        insert INTO tb_store_bind_org
+        (store_no,org_id,org_ids,valid,utime,ctime)
+        VALUES
+        (#{storeNo},#{orgId},#{orgIds},1,unix_timestamp(now()),unix_timestamp(now()))
+    </insert>
 
 </mapper>

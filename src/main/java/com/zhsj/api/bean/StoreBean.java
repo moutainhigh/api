@@ -20,6 +20,7 @@ public class StoreBean {
     private int utime;
     private int ctime;
     private String orgIds;
+    private long saleId;
 
     public long getId() {
         return id;
@@ -147,5 +148,13 @@ public class StoreBean {
 
     public void setOrgIds(String orgIds) {
         this.orgIds = orgIds;
+    }
+
+    public long getSaleId() {
+        return saleId;
+    }
+
+    public void setSaleId(long saleId) {
+        this.saleId = saleId;
     }
 }

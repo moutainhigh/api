@@ -1,6 +1,6 @@
 package com.zhsj.api.util.test;
 
-import com.zhsj.api.service.AbcService;
+import com.zhsj.api.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class WXUtil {
     @Autowired
-    private AbcService service;
+    private BaseService service;
 
     private String accessToken;
 

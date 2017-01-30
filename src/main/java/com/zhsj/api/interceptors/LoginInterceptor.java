@@ -3,6 +3,8 @@ package com.zhsj.api.interceptors;
 import com.zhsj.api.bean.AccountBean;
 import com.zhsj.api.service.AccountService;
 import com.zhsj.api.util.login.LoginUserUtil;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,8 +29,19 @@ public class LoginInterceptor extends AbstractInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
         String auth = request.getParameter("auth");
-        AccountBean accountBean = accountService.getByOpenId(auth);
+        if(StringUtils.isEmpty(auth)){
+            return false;
+        }
+        AccountBean accountBean = null;
+        String type = auth.substring(0, 2);
+        if("11".equals(type)){
+            //为openID
+//            if()
+            String openId = auth.substring(2);
+            accountBean = accountService.getByOpenId(openId);
+        }
         if (accountBean == null){
             return false;
         }

@@ -1,0 +1,120 @@
+@charset "utf-8";
+
+.container{
+    color:#666;
+}
+.f1 .pd{
+   padding:5px 0;
+}
+.common-mg{
+    margin:0 20px;
+}
+.f1 .common-pd{
+    margin:10px 0;
+}
+.f2 .common-pd,
+.f3 .common-pd{
+    margin: 15px 0;
+}
+.f1,.f3{
+    background-color: #FFF;
+}
+.f1 .tran-month{
+    background: url(../image/app/gengduo.png) no-repeat right center;
+    background-size: 3% auto;
+    font-size: .9em;
+}
+.f1 .select-month{
+    float: right;
+}
+.f1 .m,.f1 .fh,.color-read{
+    color:#fc324a;
+    opacity: .8;
+}
+.f2,.f3{
+    font-size:.8em;
+}
+.sum{
+    margin:0 10px;
+}
+
+.f3 .date-day{
+    float:left;
+    margin-left: 20px;
+}
+.f3 .number-money{
+    float: right;
+    margin-right:20px;
+}
+.f3 .number-money span{
+    margin-left:5px;
+}
+.ui-border-bottom{
+    border-bottom: 1px solid #CCC;
+}
+.f3 .date-day span{
+    margin-right:10px;
+}
+ul ,li{
+    list-style: none;
+}
+.f3 ul li{
+    position: relative;
+}
+.info{
+    float:right;
+    padding-top: 10px;
+    text-align: right;
+}
+em:before{
+    content: "￥";
+}
+.item{
+    display: block;
+    padding: 15px 0;
+    border-bottom: 1px solid #d6d6d6;
+}
+.item img{
+    float:left;
+    width:50px;
+    height:50px;
+}
+.cont{
+    margin-left: 60px;
+}
+.item p{
+    font-size: 16px;
+    padding-bottom: 8px;
+    color: #000;
+    max-height: 45px;
+    overflow: hidden;
+    line-height: 1.2;
+}
+.item p:last-child{
+    color:#BBB;
+    font-size:14px;
+}
+.info em{
+    display: block;
+    font-size: 20px;
+    line-height: 24px;
+    white-space: nowrap;
+    font-style: normal;
+    color:#333;
+}
+.cont .desc span{
+    margin-right:5px;
+}
+.cont .desc span:nth-child(2){
+    padding:1px 2px;
+    color:#fc324a;
+    border-radius: 5%;
+    border:1px solid #fc324a;
+    font-size:12px;
+    opacity: .8;
+}
+.cont .desc span del{
+    color:#fc324a;
+    font-size:14px;
+    opacity: .8;
+}

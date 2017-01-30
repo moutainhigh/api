@@ -1,0 +1,85 @@
+@charset "utf-8";
+
+img{
+    width:60px;
+}
+.f1{
+    background-color: #fc324a;
+    font-size:.7em;
+    color:#FFF
+}
+.common-mg{
+    margin:0 20px;
+}
+.common-pd{
+    padding: 20px 0;
+}
+ul{
+    list-style: none;
+}
+ul li{
+    float: left;
+    text-align: center;
+}
+ul li p{
+    padding-bottom:10px;
+}
+ul li:first-child{
+    width:19%;
+}
+ul li:not(:first-child){
+    background: url(../../../img/zhihujiantou.png)  left top/50% no-repeat ;
+    width:27%;
+    text-align:right;
+    opacity: .5;
+}
+
+.f2{
+    background-color: #FFF;
+    color:#6C6C6C;
+}
+.p-group{
+    margin:0 20px;
+    font-size: .8em;
+}
+.p-group p{
+    padding:15px 0;
+    border-bottom: 1px solid #EEE;
+    display: -webkit-flex;
+}
+.p-group p:last-child{
+    border-bottom: 0;
+}
+input[type=text]{
+    line-height: 2;
+    width:100%;
+
+}
+.span-label{
+    width:4rem;
+}
+.span-result{
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    margin-left: 8px;
+}
+.f3{
+    margin-top: 20px;
+    background-color: #fc324a;
+    text-align: center;
+    color:#FFF;
+}
+.next{
+    padding:15px 0;
+    font-weight: 100;
+}
+
+input::-webkit-input-placeholder { /* WebKit browsers*/
+    　　color:#BBB;font-size:14px;
+}
+input:-moz-placeholder {  /* Mozilla Firefox 4 to 18*/
+    　　color:#BBB;font-size:14px;
+}
+input::-moz-placeholder {  /* Mozilla Firefox 19+*/
+    　　color:#999;font-size:14px;
+}

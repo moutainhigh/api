@@ -1,0 +1,65 @@
+@charset "utf-8";
+
+img{
+    width:60px;
+}
+.f1{
+    background-color: #fc324a;
+    font-size:.7em;
+    color:#FFF
+}
+.common-mg{
+    margin:0 20px;
+}
+.common-pd{
+    padding: 20px 0;
+}
+ul{
+    list-style: none;
+}
+ul li{
+    float: left;
+    text-align: center;
+}
+ul li p{
+    padding-bottom:10px;
+}
+ul li:first-child{
+    width:19%;
+}
+ul li:not(:first-child){
+    width:27%;
+    text-align:right;
+}
+ul li:nth-child(2),
+ul li:nth-child(3),
+ul li:last-child{
+    background: url(../../../img/changjiantou.png)  left top/50% no-repeat ;
+}
+.f2{
+    background-color: #FFF;
+}
+.success{
+    margin:0 20px;
+}
+.success div{
+    float: left;
+    padding: 15px 0;
+
+}
+.success div:first-child{
+    margin-right:20px;
+}
+.success div:last-child p:first-child{
+    color:#14d212;
+    margin-bottom:10px;
+    font-size:.9em;
+    letter-spacing: 2px;
+    font-weight: 100;
+}
+.success div:last-child p:last-child{
+    font-size:.7em;
+    opacity: .7;
+    letter-spacing: 2px;
+    color: #666;
+}

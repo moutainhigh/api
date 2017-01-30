@@ -23,5 +23,8 @@
         <typeAlias type="com.zhsj.api.bean.UserBindStoreBean" alias="userBindStoreBean"/>
         <typeAlias type="com.zhsj.api.bean.OrderBean" alias="orderBean"/>
         <typeAlias type="com.zhsj.api.bean.AccountBean" alias="accountBean"/>
+        <typeAlias type="com.zhsj.api.bean.OrgBean" alias="orgBean"/>
+        <typeAlias type="com.zhsj.api.bean.StoreAccountBean" alias="storeAccountBean"/>
+        <typeAlias type="com.zhsj.api.bean.CityCodeBean" alias="cityCodeBean"/>
     </typeAliases>
 </configuration>

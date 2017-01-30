@@ -25,5 +25,4 @@ public interface TBAccountDao {
     AccountBean getByOpenId(@Param("openId") String openId);
 
 
-
 }

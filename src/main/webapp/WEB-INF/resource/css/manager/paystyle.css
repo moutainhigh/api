@@ -1,0 +1,126 @@
+@charset "utf-8";
+
+img{
+    width:50px;
+    height:50px;
+    border-radius: 10px;
+}
+.common-mg{
+    margin:0 20px;
+}
+.f1,.f2,.f3,.f4,.f5{
+    background-color: #FFF;
+    margin-bottom:10px;
+    color:#666;
+    font-size: .9em;
+    font-weight: 100;
+}
+.f1 .pay-style,
+.f2 .tran-date,
+.f2 .tran-input,
+.f3 .tran-status,
+.f5 .payee{
+    padding:12px 0;
+    border-bottom:1px solid #CCC;
+}
+.f1 .pay-select,
+.f4 .store {
+    padding:10px 0;
+}
+.f5 .manager-pop{
+    padding: 20px 0;
+}
+.f1 .pay-select ul,
+.f3 .tran-status-select ul,
+.f5 .manager-pop ul{
+    list-style: none;
+}
+.f1 .pay-select ul li{
+    float: left;
+    width: 50%;
+    position: relative;
+}
+.f1 .pay-select ul li input{
+    position: absolute;
+    top: 20px;
+    left: 60px;
+}
+.f2 .tran-input .jt{
+    height:10px;
+    margin:0 10px;
+}
+.f3 .tran-status-select ul{
+    padding:10px 0;
+}
+.f3 .tran-status-select .pd{
+    padding:10px 0;
+}
+.f3 .tran-status-select ul li,
+.f5 .manager-pop ul li{
+    float: left;
+    width: 33.3%;
+    font-size: .7em;
+}
+.f3 .tran-status-select ul li:first-child,
+.f5 .manager-pop ul li:first-child{
+    text-align: left;
+}
+.f3 .tran-status-select ul li:nth-child(2),
+.f5 .manager-pop ul li:nth-child(2){
+    text-align: center;
+}
+.f3 .tran-status-select ul li:last-child,
+.f5 .manager-pop ul li:last-child{
+    text-align: right;
+}
+
+.f3 .tran-status-select ul li span{
+    padding:5px 10px;
+    border:1px solid #CCC;
+}
+.f5 .manager-pop ul li span{
+    padding:5px 25px;
+    border:1px solid #CCC;
+}
+.f3 .tran-status-select ul li:last-child span {
+    padding:5px 16px;
+    border:1px solid #fc324a;
+    color:#fc324a;
+}
+.f5 .manager-pop ul li:first-child span{
+    padding:5px 25px;
+    border:1px solid #fc324a;
+    color:#fc324a;
+}
+.f4 .store input{
+    border: 1px solid #CCC;
+    line-height: 2;
+    width: 200px;
+}
+input[type=date]{
+    border: 1px solid #CCC;
+    line-height: 2;
+}
+.footer{
+    font-size:.8em;
+    color:#000
+}
+.footer ul{
+    list-style: none;
+}
+.footer ul li {
+    float: left;
+    width:50%;
+    cursor: pointer;
+}
+.footer ul li:last-child{
+    background-color: #fc324a;
+    color:#FFF;
+}
+.footer ul li span{
+    display: block;
+    padding: 10px 0;
+}
+.footer ul li:first-child{
+    color:#fc324a;
+}

@@ -166,7 +166,7 @@ public class WXService {
                 logger.info("#WXService.sendSuccess# result orderId={},result={}",orderBean.getOrderId(),result);
             }
         }catch(Exception e){
-        	logger.error("#WXService.sendSuccess# orderBean.orderId",orderBean.getOrderId());
+        	logger.error("#WXService.sendSuccess# orderBean.orderId", orderBean.getOrderId());
         }
         
     }
@@ -196,11 +196,78 @@ public class WXService {
 		}
     }
 
+    public void createMenu(String json){
+        try {
+            String appId = MtConfig.getProperty("weChat_appId", "wx8651744246a92699");
+//            String token = WeChatToken.TOKEN_MAP.get(appId);
+            String token = "M91DEhZrCW9mISaAJOebH94BSEFMSO1sqD6h2n6sCk3s8VuBnQCq6tWeN577UYZO2oDf6-lrx9tSfZCvl31W4KRnfjF8Ojag48rNIaIyB2OsmPai5ev9-rH3RhGr32wKRSZgAFADEL";//;
+            String uri = " https://api.weixin.qq.com/cgi-bin/menu/create?access_token="+token;
+            String result = SSLUtil.postSSL(uri, json);
+            logger.info("#WXService.createMenu# result json={},result={}", json, result);
+        }catch (Exception e){
+            logger.error("#WXService.createMenu# json={}", json, e);
+        }
+    }
+
+    public String getMenu(){
+        String result = "";
+        try {
+            String appId = MtConfig.getProperty("weChat_appId", "wx8651744246a92699");
+//            String token = WeChatToken.TOKEN_MAP.get(appId);
+            String token = "M91DEhZrCW9mISaAJOebH94BSEFMSO1sqD6h2n6sCk3s8VuBnQCq6tWeN577UYZO2oDf6-lrx9tSfZCvl31W4KRnfjF8Ojag48rNIaIyB2OsmPai5ev9-rH3RhGr32wKRSZgAFADEL";//;
+            String uri = "https://api.weixin.qq.com/cgi-bin/menu/get?access_token="+token;
+            result = SSLUtil.getSSL(uri);
+            logger.info("#WXService.createMenu# result result={}",result);
+        }catch (Exception e){
+            logger.error("#WXService.createMenu# e={}",e.getMessage(),e);
+        }
+        return result;
+    }
+
+    public String delMenu(){
+        String result = "";
+        try {
+            String appId = MtConfig.getProperty("weChat_appId", "wx8651744246a92699");
+//            String token = WeChatToken.TOKEN_MAP.get(appId);
+            String token = "M91DEhZrCW9mISaAJOebH94BSEFMSO1sqD6h2n6sCk3s8VuBnQCq6tWeN577UYZO2oDf6-lrx9tSfZCvl31W4KRnfjF8Ojag48rNIaIyB2OsmPai5ev9-rH3RhGr32wKRSZgAFADEL";//;
+            String uri = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token="+token;
+            result = SSLUtil.getSSL(uri);
+            logger.info("#WXService.createMenu# result result={}",result);
+        }catch (Exception e){
+            logger.error("#WXService.createMenu# e={}",e.getMessage(),e);
+        }
+        return result;
+    }
+
     public static void main(String[] args) throws Exception {
+        String json = "{\n" +
+                "     \"button\":[\n" +
+                "      {\n" +
+                "           \"name\":\"菜单\",\n" +
+                "           \"sub_button\":[\n" +
+                "           {\t\n" +
+                "               \"type\":\"view\",\n" +
+                "               \"name\":\"搜索1\",\n" +
+                "               \"url\":\"http://www.soso.com/\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "               \"type\":\"view\",\n" +
+                "               \"name\":\"视频1\",\n" +
+                "               \"url\":\"http://v.qq.com/\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "               \"type\":\"click\",\n" +
+                "               \"name\":\"赞一下我们\",\n" +
+                "               \"key\":\"V1001_GOOD\"\n" +
+                "            }]\n" +
+                "       }]\n" +
+                " }";
+//        new WXService().createMenu(json);
+        new WXService().delMenu();
 //        String appId = "wx8651744246a92699";
 //        String secret = "7d33f606a68a8473a4919e8ff772447e";
 //      new WXService().getToken(appId, secret);
-    	new WXService().qrcode("ddd");
+//    	new WXService().qrcode("ddd");
 //        String token = WXService.TOKEN_MAP.get(appId).get("token");
 //        System.out.println( WXService.TOKEN_MAP.get(appId));
 //        new WXService().getUserInfo("oFvcxwZfj20QNzdpagGb1uDbhQUk");

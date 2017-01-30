@@ -1,0 +1,117 @@
+@charset "utf-8";
+
+.header{
+    width:80px;
+    height:80px;
+}
+
+/*i:before{
+    background:url(../image/cat.png);
+    content: " ";
+    display: block;
+    width: 30px;
+    height: 30px;
+}*/
+.container{
+    background-color: #EEE;
+}
+.f1{
+    background-color: #fc324a;
+    text-align: center;
+    color:#FFF;
+}
+.f1 .store-header{
+    padding:15px 0 10px;
+}
+.f1 .store-header p:first-child{
+    margin-bottom: 8px;
+}
+.f1 .store-header p:nth-child(2),
+.f1 .store-header p:last-child{
+    margin-bottom: 5px;
+    font-weight: 100;
+    font-size: .85em;
+}
+.f2{
+    background-color: #FFF;
+}
+.f2 .list-group{
+    margin-bottom: 10px;
+    font-size:.8em;
+    color:#666;
+}
+.list-group p{
+    padding:15px 0;
+}
+.list-group p:first-child{
+    border-bottom: 1px solid #EEE;
+}
+.span-label{
+    float:left;
+    margin-left: 30px;
+}
+/**
+
+**/
+.common-jt{
+      background:url(../image/app/gengduo.png) no-repeat right center;
+}
+.yu-e{
+    background: url(../image/app/yu-e.png)  no-repeat left center/7%;
+}
+.qy{
+    background: url(../image/app/qieyue.png) no-repeat left center/7%;
+}
+.set{
+    background: url(../image/app/shezhi.png) no-repeat left center/7%;
+}
+.about{
+    background: url(../image/app/guyu.png) no-repeat left center/7%;
+}
+.kfMan{
+    background: url(../image/app/wodekefujingli.png) no-repeat left center/7%;
+}
+.kfHot{
+    background: url(../image/app/kefurexian.png) no-repeat left center/7%;
+}
+.common-mg{
+    margin: 0 20px;
+}
+
+.span-result{
+    float: right;
+}
+.span-result span{
+    margin-right: 20px;
+}
+.span-phone{
+    float: right;
+    color:#BBB;
+}
+.footer ul li:last-child{
+    color:#fc324a;
+}
+.footer ul li:first-child img{
+    width:30px;
+}
+.footer ul li:nth-child(2) img{
+    width:21px;
+}
+.footer ul li:last-child img{
+    width:22px;
+}
+.footer ul li{
+    list-style: none;
+    text-align: center;
+    width:33.3%;
+}
+li{
+    float: left;
+}
+.footer{
+    font-size:.6em;
+    color:#000
+}
+.footer ul{
+    padding:10px 0;
+}

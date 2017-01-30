@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBStoreAccountDao">
+
+    <select id="getByAccount" resultType="storeAccountBean">
+        SELECT id,account,password,open_id,name
+        FROM tb_store_account
+        WHERE status=1 and valid = 1 and account = #{account}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="bean.id">
+        INSERT INTO tb_store_account
+        (account,password,mobile,status,valid,utime,ctime)
+        VALUES
+        (#{bean.account},#{bean.password},#{bean.mobile},1,1,unix_timestamp(now()),unix_timestamp(now()))
+    </insert>
+
+
+
+</mapper>

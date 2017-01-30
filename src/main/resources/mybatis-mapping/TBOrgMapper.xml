@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBOrgDao">
+    <sql id="SELECT_FIELDS">
+        id,parent_id,org_ids,name,level_type,contact_phone,email,city_id,is_allow
+    </sql>
+
+    <select id="getById" resultType="orgBean">
+        SELECT <include refid="SELECT_FIELDS"/>
+        FROM tb_org
+        where id = #{id}
+    </select>
+
+
+
+</mapper>

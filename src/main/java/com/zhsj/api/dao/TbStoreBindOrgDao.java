@@ -12,6 +12,6 @@ public interface TbStoreBindOrgDao {
 
     Long getOrgIdByStoreNO(@Param("storeNo") String storeNo);
 
-
+    int insert(@Param("storeNo")String storeNo,@Param("orgId")long orgId,@Param("orgIds")String orgIds);
 
 }

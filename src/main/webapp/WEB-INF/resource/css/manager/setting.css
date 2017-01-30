@@ -1,0 +1,36 @@
+@charset "utf-8";
+
+.container{
+    background-color: #EEE;
+    color:#666;
+}
+.f{
+    background-color: #FFF;
+}
+.p-group{
+    margin:0 20px;
+    font-size: .8em;
+}
+.p-group p{
+    padding:15px 0;
+    border-bottom: 1px solid #EEE;
+}
+.p-group p:last-child{
+    border-bottom: 0;
+}
+.common-bg{
+    background: url(../image/app/gengduo.png) no-repeat right center/3%;
+}
+.tran-sound{
+    background: url(../image/app/open.png) no-repeat right center/10%;
+}
+.f1{
+    margin-top: 30px;
+    background-color: #fc324a;
+    text-align: center;
+    color:#FFF;
+}
+.logout{
+    padding:10px 0;
+    font-weight: 100;
+}

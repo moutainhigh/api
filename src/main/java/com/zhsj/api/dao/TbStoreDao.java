@@ -13,6 +13,8 @@ public interface TbStoreDao {
 
     StoreBean getStoreByNo(@Param("storeNo") String storeNo);
 
+    int insert(@Param("bean") StoreBean bean);
 
+    int updateAddress(@Param("address") String address,@Param("cityCode")int cityCode,@Param("storeNo")String storeNo);
 
 }

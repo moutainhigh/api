@@ -1,0 +1,56 @@
+@charset "utf-8";
+
+.f1 span{
+    padding:15px 0;
+    margin:0 20px;
+    display: block;
+    font-size: .85em;
+}
+.f2,.f3{
+    background: #FFF;
+}
+.f2{
+    color:#666;
+}
+.pay{
+    margin:0 20px;
+    border-bottom:1px solid #EEE;
+}
+.pay:last-child{
+    border:none;
+}
+.pay .aliwx
+{
+    position: relative;
+    padding:10px 0 5px;
+}
+.agreement .content{
+    padding:15px 0;
+    background: url(../image/app/gengduo.png) no-repeat right center/3%;
+}
+img{
+    width:50px;
+    height:50px;
+    border-radius: 10px;
+}
+.aliwx span:nth-child(2){
+    position: absolute;
+    left:66px;
+    top:23px;
+    font-size:.85em;
+}
+.aliwx span:last-child{
+    position: absolute;
+    right:0;
+    top:23px;
+    font-size:.8em;
+    color:#fc324a;
+}
+.f3{
+    margin-top:10px;
+}
+.f3 .agreement{
+    margin:0 20px;
+    font-size: .85em;
+    color:#fc324a;
+}

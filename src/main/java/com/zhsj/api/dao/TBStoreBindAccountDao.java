@@ -14,6 +14,7 @@ public interface TBStoreBindAccountDao {
 
     List<Long> getAccountIdByStoreNo(@Param("storeNo")String storeNo);
 
+    int insert(@Param("storeNO")String storeNO,@Param("storeAccountId")long storeAccountId);
 
 
 }

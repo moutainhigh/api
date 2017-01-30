@@ -3,14 +3,14 @@
 <mapper namespace="com.zhsj.api.dao.TbOrderDao">
     <sql id="SELECT_FIELDS">
         id,order_id,plan_charge_amount,actual_charge_amount,status,discount_type,
-        discount_id,pay_type,pay_method,store_no,parent_store_no,org_id,user_id,ctime,utime
+        discount_id,pay_type,pay_method,store_no,parent_store_no,org_id,user_id,ctime,utime,org_ids,sale_id
     </sql>
 
     <insert id="insertOrder" >
         INSERT INTO tb_order
-       (order_id,plan_charge_amount,actual_charge_amount,status,discount_type,discount_id,pay_type,pay_method,store_no,parent_store_no,org_id,user_id,ctime,utime,org_ids)
+       (order_id,plan_charge_amount,actual_charge_amount,status,discount_type,discount_id,pay_type,pay_method,store_no,parent_store_no,org_id,user_id,ctime,utime,org_ids,sale_id)
         VALUES (#{bean.orderId},#{bean.planChargeAmount},#{bean.actualChargeAmount},#{bean.status},#{bean.discountType},
-        #{bean.discountId},#{bean.payType},#{bean.payMethod},#{bean.storeNo},#{bean.parentStoreNo},#{bean.orgId},#{bean.userId},#{bean.ctime},#{bean.utime},#{bean.orgIds})
+        #{bean.discountId},#{bean.payType},#{bean.payMethod},#{bean.storeNo},#{bean.parentStoreNo},#{bean.orgId},#{bean.userId},#{bean.ctime},#{bean.utime},#{bean.orgIds},#{saleId})
     </insert>
 
 
@@ -47,6 +47,12 @@
     </select>
 
 
+    <select id="countDealBySaleId" resultType="com.zhsj.api.bean.result.CountDealBean">
+        SELECT COUNT(1) 'count',sum(actual_charge_amount) 'sum'
+        FROM tb_order
+        WHERE sale_id = #{saleId} and status = 1
+        and ctime BETWEEN #{startTime} AND #{endTime}
+    </select>
 
 
 </mapper>

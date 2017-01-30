@@ -1,0 +1,61 @@
+@charset "utf-8";
+
+body{
+    background-color: #FFF;
+}
+.container{
+    background-color: #FFF;
+}
+.f1{
+    background-color: #fc324a;
+    color:#FFF;
+    font-size:.9em;
+}
+.common-pd{
+    padding:30px 0;
+}
+.f1 .today,
+.f1 .number{
+    width:50%;
+    text-align: center;
+}
+.f1 .today{
+    float:left;
+}
+.f1 .number{
+    float:right;
+}
+.f1 p{
+    margin-bottom:15px;
+}
+.f1 .today{
+    border-right:1px solid #fc9a9a;
+}
+ul{
+    list-style: none;
+}
+ul li{
+    float: left;
+    width:50%;
+    text-align: center;
+    padding:15px 0;
+}
+img{
+    width:50px;
+    height:50px;
+    border-radius: 10px;
+}
+.watch{
+    margin:0 30px;
+    font-size:.8em;
+    color:#333;
+}
+ul li:nth-child(2n+1){
+    border-right: 1px solid #CCC;
+}
+ul li:first-child,ul li:nth-child(2){
+    border-bottom: 1px solid #CCC;
+}
+ul li p:first-child{
+    margin-bottom:20px;
+}

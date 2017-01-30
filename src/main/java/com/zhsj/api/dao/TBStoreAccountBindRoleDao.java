@@ -14,4 +14,7 @@ public interface TBStoreAccountBindRoleDao {
 
     List<Long> filterAccountIdByRole(@Param("roleId") long roleId,@Param("accountIdList")List<Long> accountIdList);
 
+    int insert(@Param("accountId") long accountId,@Param("role_id")long role_id);
+
+
 }

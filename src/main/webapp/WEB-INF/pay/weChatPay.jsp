@@ -12,7 +12,7 @@ pageEncoding="UTF-8"%>
 	<meta name="apple-touch-fullscreen" content="no">
 	<meta content="black" name="apple-mobile-web-app-status-bar-style">
 	<meta content="telephone=no" name="format-detection">
-    <link rel="stylesheet" type="text/css" href="../resource/css/common.css">
+    <link rel="stylesheet" type="text/css" href="../resource/css/pay/common.css">
     <script type="text/javascript" src="../resource/js/adapter.js"></script>
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
   </head>

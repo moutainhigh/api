@@ -3,7 +3,7 @@
 <mapper namespace="com.zhsj.api.dao.TbStoreDao">
     <sql id="SELECT_FIELDS">
         id,parent_no,store_no,name,city_code,address,phone,shop_logo,intro,status,
-        latitude,longitude,valid,utime,ctime,org_ids
+        latitude,longitude,valid,utime,ctime,org_ids,sale_id
     </sql>
 
     <select id="getStoreByNo" resultType="storeBean" >
@@ -13,7 +13,17 @@
         and status = 1 and valid = 1
     </select>
 
+    <insert id="insert">
+        INSERT INTO tb_store
+        (parent_no,store_no,org_ids,name,phone,status,valid,utime,ctime,sale_id)
+        VALUES
+        (#{bean.parentNo},#{bean.storeNo},#{bean.orgIds},#{bean.name},#{bean.phone},1,1,unix_timestamp(now()),unix_timestamp(now()),#{bean.saleId})
+    </insert>
 
-
+    <update id="updateAddress">
+        UPDATE tb_store
+        SET city_code=#{cityCode} , address=#{address}
+        WHERE store_no = #{storeNo}
+    </update>
 
 </mapper>

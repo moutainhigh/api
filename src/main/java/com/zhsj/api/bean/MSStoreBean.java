@@ -23,6 +23,7 @@ public class MSStoreBean {
     private String settlement_type;   //商户结算类型D0:实时清算,T1:隔天清算 若不传，默认D0清算
     private String user_pid; //支付宝ISV的pid
     private String mer_short_name;//商户简称
+    private int step;
 
     public String getStoreNo() {
         return storeNo;
@@ -174,5 +175,13 @@ public class MSStoreBean {
 
     public void setMer_short_name(String mer_short_name) {
         this.mer_short_name = mer_short_name;
+    }
+
+    public int getStep() {
+        return step;
+    }
+
+    public void setStep(int step) {
+        this.step = step;
     }
 }
