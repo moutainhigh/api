@@ -227,6 +227,13 @@
             alert("请正确填写");
             return;
         }
+        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if(reg.test(_idCard) === false)
+        {
+            alert("身份证输入不合法");
+            return  false;
+        }
+
         var jsonData = {"rate":_rate,"settlementType":_selectRate,"cityCode":_city,"address":_address,"businessType":_businessType,"name":_name,"idCard":_idCard,"auth":auth,"storeNo":storeNo};
         $.post("./settlement",jsonData,function(obj){
             if(obj.code == 0){

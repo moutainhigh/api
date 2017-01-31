@@ -126,6 +126,11 @@
             alert("请正确填写");
             return;
         }
+        re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+        if(!re.test(mer_email)){
+            alert("邮箱填写错误");
+            return;
+        }
         var jsonData = {"saName":sa_name,"saNum":sa_num,"saBankName":sa_bank_name,"merEmail":mer_email,"auth":auth,"storeNo":storeNo};
         $.post("./auditStatus",jsonData,function(obj){
             if(obj.code == 0){

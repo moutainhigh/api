@@ -52,6 +52,8 @@ public class ManagerService {
     TBStoreExtendDao tbStoreExtendDao;
     @Autowired
     TbOrderDao tbOrder;
+    @Autowired
+    MinshengService minshengService;
 
     public Map<String,String> loginByOpenId(String code){
         logger.info("#ManagerService.loginByOpenId# code={}",code);
@@ -197,7 +199,9 @@ public class ManagerService {
             tbStoreExtendDao.updateByStoreNo(storeNo, 1, json);
             long saleId = LoginUserUtil.getLoginUser().getId();
             tbStoreNoDao.updateStatusByStoreNoAndSaleId(saleId, storeNo);
-            return "SUCCESS";
+
+            String result = "SUCCESS"; //minshengService.openAccount(msStoreBean);
+            return result;
         }catch (Exception e){
             logger.error("#ManagerService.auditStatus# error saName={},saNum={},saBankName={},merEmail={},auth={},storeNO={}",
                     saName,saNum,saBankName,merEmail,auth,storeNo,e);

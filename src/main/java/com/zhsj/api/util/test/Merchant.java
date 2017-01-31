@@ -30,7 +30,7 @@ public class Merchant
         reqData.put("legal_person_id", "14232219840929001X"); //法定代表人身份证号
         reqData.put("mer_email", "289220440@qq.com");//商户联系邮箱
         reqData.put("filed1", "18601345718"); //入驻商户的客服电话
-        reqData.put("agent_no", "95272016121410000062");//此字符串由民生提供
+        reqData.put("agent_no", "95272016121410000062aaaaaa");//此字符串由民生提供
         reqData.put("wx_business_type", "277"); //商户营业类别
         reqData.put("ali_business_type", "2016062900190196"); //支付宝口碑类目
         reqData.put("mer_name", "万物通科技(北京)有限公司"); //商户全称

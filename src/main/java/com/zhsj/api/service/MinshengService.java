@@ -9,6 +9,8 @@ import com.zhsj.api.util.*;
 
 import com.zhsj.api.util.minsheng.CertUtil;
 import com.zhsj.api.util.minsheng.MapUtil;
+import com.zhsj.api.util.test.HttpsClientUtil;
+import com.zhsj.api.util.test.Merchant;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,12 +206,12 @@ public class MinshengService {
 	}
 
 	//民生开户
-	public boolean openAccount(MSStoreBean msStoreBean){
-		boolean result = false;
+	public String openAccount(MSStoreBean msStoreBean){
+		String result = "SUCCESS";
 		try{
 			Map<String,String> resultMap = this.mersettled(msStoreBean);
 			if(!"SUCCESS".equals(resultMap.get("result_code"))){
-				return false;
+				return resultMap.get("error_msg");
 			}
 			String paykey = resultMap.get("paykey");
 			String paysec = resultMap.get("paysec");
@@ -226,10 +228,9 @@ public class MinshengService {
 			//插入商家绑定组织
 			//插入商家用户
 			bmStorePayInfoDao.insertPayInfo(msStoreBean.getStoreNo(),2,"1,2",paykey,paysec,"","",json.toJSONString(),1);
-
-
 		}catch (Exception e){
 			logger.error("#MinshengService.openAccount# e={}",e.getMessage(),e);
+			result = "系统出错";
 		}
 		return result;
 	}
@@ -295,7 +296,9 @@ public class MinshengService {
 			String stringData = MapUtil.getRequestParamString(reqData);
 //
 			String reqBase64 = new String(CertUtil.base64Encode(stringData.getBytes("UTF-8")));
-			String rspBase64 = SSLUtil.httpsPost(url, reqBase64);
+//			String rspBase64 = SSLUtil.httpsPost(url, reqBase64);
+			Merchant.updateMerchantByPaykey();
+			String rspBase64 = HttpsClientUtil.httpsPost(url,reqBase64);
 			String rspData = new String(CertUtil.base64Decode(rspBase64.getBytes("UTF-8")));
 			Map<String,String> resultMap = MapUtil.convertResultStringToMap(rspData);
 			if("SUCCESS".equals(resultMap.get("result_code"))){

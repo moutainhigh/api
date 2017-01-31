@@ -38,17 +38,6 @@ public class ShopController {
     private WXService wxService;
 
 
-    @RequestMapping(value = "/mersettled", method = RequestMethod.GET)
-    @ResponseBody
-    public Object mersettled(MSStoreBean msStoreBean,HttpServletRequest request, HttpServletResponse response) throws Exception {
-        boolean result = minshengService.openAccount(msStoreBean);
-        if(result){
-            return CommonResult.build(0, "success");
-        }else {
-            return CommonResult.build(1, "success");
-        }
-    }
-
     @RequestMapping(value = "/updateMerchantByPaykey", method = RequestMethod.GET)
     @ResponseBody
     public Object updateMerchantByPaykey(@RequestParam("storeNo") String storeNo,
