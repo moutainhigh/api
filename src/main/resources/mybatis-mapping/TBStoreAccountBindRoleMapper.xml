@@ -28,5 +28,11 @@
         (#{accountId},#{role_id},1,unix_timestamp(now()),unix_timestamp(now()))
     </insert>
 
+    <update id="updateByAccountIdAndRoleId">
+        UPDATE tb_store_account_bind_role
+        set valid = 0,utime=unix_timestamp(now())
+        where role_id = #{roleId} and account_id=#{accountId}
+    </update>
+
 
 </mapper>

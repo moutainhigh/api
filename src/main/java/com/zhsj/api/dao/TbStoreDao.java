@@ -7,6 +7,8 @@ import com.zhsj.api.bean.StoreBean;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @DynamicDataSource(DS.DB_MANAGE)
 public interface TbStoreDao {
@@ -16,5 +18,7 @@ public interface TbStoreDao {
     int insert(@Param("bean") StoreBean bean);
 
     int updateAddress(@Param("address") String address,@Param("cityCode")int cityCode,@Param("storeNo")String storeNo);
+
+    List<StoreBean> getListByParentNo(@Param("parentNo") String parentNo);
 
 }

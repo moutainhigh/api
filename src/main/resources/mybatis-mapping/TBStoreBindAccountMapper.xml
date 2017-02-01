@@ -6,7 +6,7 @@
         select store_account_id
         from tb_store_bind_account
         WHERE store_no = #{storeNo}
-         and status = 1
+         and status = 1  limit 100;
     </select>
 
     <insert id="insert">
@@ -15,5 +15,12 @@
         VALUES
         (#{storeNO},#{storeAccountId},1,unix_timestamp(now()),unix_timestamp(now()))
     </insert>
+
+    <select id="getStoreNoByAccountId" resultType="java.lang.String" >
+        select store_no
+        from tb_store_bind_account
+        WHERE store_account_id = #{storeAccountId}
+        and status = 1
+    </select>
 
 </mapper>

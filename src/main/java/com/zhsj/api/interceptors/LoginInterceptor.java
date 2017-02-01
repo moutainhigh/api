@@ -1,7 +1,10 @@
 package com.zhsj.api.interceptors;
 
 import com.zhsj.api.bean.AccountBean;
+import com.zhsj.api.bean.LoginUser;
+import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.service.AccountService;
+import com.zhsj.api.service.ShopService;
 import com.zhsj.api.util.login.LoginUserUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +27,8 @@ public class LoginInterceptor extends AbstractInterceptor {
 
     @Autowired
     private AccountService accountService;
+    @Autowired
+    ShopService shopService;
 
 
 
@@ -34,18 +39,39 @@ public class LoginInterceptor extends AbstractInterceptor {
         if(StringUtils.isEmpty(auth)){
             return false;
         }
-        AccountBean accountBean = null;
         String type = auth.substring(0, 2);
         if("11".equals(type)){
-            //为openID
-//            if()
+            //为openID、管理员
             String openId = auth.substring(2);
-            accountBean = accountService.getByOpenId(openId);
+            AccountBean accountBean = accountService.getByOpenId(openId);
+            if (accountBean == null){
+                return false;
+            }
+            LoginUser loginUser = new LoginUser();
+            loginUser.setPassword(accountBean.getPassword());
+            loginUser.setId(accountBean.getId());
+            loginUser.setAccount(accountBean.getAccount());
+            loginUser.setName(accountBean.getName());
+            loginUser.setOpenId(accountBean.getOpenId());
+            loginUser.setType(1);
+            LoginUserUtil.setBmLoginUser(loginUser);
         }
-        if (accountBean == null){
-            return false;
+        if("21".equals(type)){
+            //为openID,商家
+            String openId = auth.substring(2);
+            StoreAccountBean storeAccountBean = shopService.getStoreAccountByOpenId(openId);
+            if (storeAccountBean == null){
+                return false;
+            }
+            LoginUser loginUser = new LoginUser();
+            loginUser.setPassword(storeAccountBean.getPassword());
+            loginUser.setId(storeAccountBean.getId());
+            loginUser.setAccount(storeAccountBean.getAccount());
+            loginUser.setName(storeAccountBean.getName());
+            loginUser.setOpenId(storeAccountBean.getOpenId());
+            loginUser.setType(2);
+            LoginUserUtil.setBmLoginUser(loginUser);
         }
-        LoginUserUtil.setBmLoginUser(accountBean);
         return true;
     }
 

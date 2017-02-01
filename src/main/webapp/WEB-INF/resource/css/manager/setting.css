@@ -19,10 +19,10 @@
     border-bottom: 0;
 }
 .common-bg{
-    background: url(../image/app/gengduo.png) no-repeat right center/3%;
+    background: url(../../img/app/gengduo.png) no-repeat right center/3%;
 }
 .tran-sound{
-    background: url(../image/app/open.png) no-repeat right center/10%;
+    background: url(../../img/app/open.png) no-repeat right center/10%;
 }
 .f1{
     margin-top: 30px;

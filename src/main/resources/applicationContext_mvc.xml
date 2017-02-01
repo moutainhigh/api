@@ -21,6 +21,7 @@
     <mvc:resources mapping="/resource/css/manager/*.css" location="/WEB-INF/resource/css/manager/" />
     <mvc:resources mapping="/resource/css/manager/admin/*.css" location="/WEB-INF/resource/css/manager/admin/" />
     <mvc:resources mapping="/resource/img/*.*" location="/WEB-INF/resource/img/" />
+    <mvc:resources mapping="/resource/img/app/*.*" location="/WEB-INF/resource/img/app/" />
 
 
     <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
@@ -74,6 +75,10 @@
             <mvc:exclude-mapping path="/manager/login" />
             <mvc:exclude-mapping path="/manager/bindWeChat" />
             <mvc:exclude-mapping path="/manager/test"/>
+            <mvc:exclude-mapping path="/shop/index" />
+            <mvc:exclude-mapping path="/shop/login" />
+            <mvc:exclude-mapping path="/shop/bindWeChat" />
+            <mvc:exclude-mapping path="/shop/test"/>
             <bean class="com.zhsj.api.interceptors.LoginInterceptor" />
         </mvc:interceptor>
     </mvc:interceptors>

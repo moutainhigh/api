@@ -1,16 +1,15 @@
 package com.zhsj.api.bean;
 
 /**
- * Created by lcg on 17/1/24.
+ * Created by lcg on 17/2/1.
  */
-public class StoreAccountBean {
+public class LoginUser {
     private long id;
     private String account;
     private String password;
     private String openId;
     private String name;
-    private String mobile;
-    private String headImg;
+    private int type; //1 管理员 2商家
 
     public long getId() {
         return id;
@@ -52,19 +51,11 @@ public class StoreAccountBean {
         this.name = name;
     }
 
-    public String getMobile() {
-        return mobile;
+    public int getType() {
+        return type;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public String getHeadImg() {
-        return headImg;
-    }
-
-    public void setHeadImg(String headImg) {
-        this.headImg = headImg;
+    public void setType(int type) {
+        this.type = type;
     }
 }

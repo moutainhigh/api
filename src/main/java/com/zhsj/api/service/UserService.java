@@ -4,6 +4,7 @@ import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.UserBindStoreBean;
 import com.zhsj.api.dao.TbUserBindStoreDao;
 import com.zhsj.api.dao.TbUserDao;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class UserService {
         logger.info("num={},id={}",num,userBean.getId());
     }
 
-    public UserBean saveStoreUser(String openId,int type,String storeNo){
+    public UserBean saveStoreUser(String openId,int type,String storeNo,String parentNo){
         UserBean userBean = bmUserDao.getUserByOpenId(openId,type);
         if (userBean == null){
             userBean = new UserBean();
@@ -44,7 +45,12 @@ public class UserService {
         //查询人员与商家绑定关系
         UserBindStoreBean userBindStoreBean = bmUserBindStoreDao.getByStoreAndUser(userBean.getId(), storeNo);
         if(userBindStoreBean == null){
-            bmUserBindStoreDao.save(userBean.getId(),type,storeNo);
+            if(StringUtils.isEmpty(parentNo) || "0".equals(parentNo)){
+                parentNo = storeNo;
+            }
+            bmUserBindStoreDao.save(userBean.getId(),type,storeNo,parentNo);
+        }else {
+            bmUserBindStoreDao.updateTimeById(userBindStoreBean.getId());
         }
         return userBean;
     }

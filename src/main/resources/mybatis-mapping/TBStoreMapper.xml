@@ -26,4 +26,10 @@
         WHERE store_no = #{storeNo}
     </update>
 
+    <select id="getListByParentNo" resultType="storeBean">
+        select <include refid="SELECT_FIELDS"/>
+        FROM tb_store
+        WHERE parent_no = #{parentNo}
+        and status = 1 and valid = 1
+    </select>
 </mapper>

@@ -87,7 +87,7 @@ public class PaymentController {
             return modelAndView;
         }
         StoreBean storeBean = storeService.getStoreByNO(state);
-        UserBean userBean = userService.saveStoreUser(openId, 1, state);
+        UserBean userBean = userService.saveStoreUser(openId, 1, state,storeBean.getParentNo());
         modelAndView.setViewName("pay/weChatPay");
         modelAndView.addObject("openId", openId);
         modelAndView.addObject("payMethod",1);
@@ -106,7 +106,7 @@ public class PaymentController {
         modelAndView.setViewName("pay/aliPay");
         modelAndView.addObject("buyerId", args[1]);
         modelAndView.addObject("payMethod", 2);
-        UserBean userBean = userService.saveStoreUser(args[1], 2, args[0]);
+        UserBean userBean = userService.saveStoreUser(args[1], 2, args[0],storeBean.getParentNo());
         modelAndView.addObject("store",storeBean);
         logger.info("#PaymentController.getBuyerId# result storeNo={},buyerId={},userId={}", args[0], args[1], userBean.getId());
         return modelAndView;

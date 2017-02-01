@@ -13,6 +13,16 @@ public interface TbUserBindStoreDao {
 
     UserBindStoreBean getByStoreAndUser(@Param("userId") long userId,@Param("storeNo") String storeNO);
 
-    int save(@Param("userId")long userId,@Param("userType") int userType,@Param("storeNO")String storeNO);
+    int save(@Param("userId")long userId,@Param("userType") int userType,
+             @Param("storeNO")String storeNO,@Param("parentNo")String parentNO);
 
+    int updateTimeById(@Param("id")long id);
+
+    int countByStoreNo(@Param("storeNo")String storeNo,
+                       @Param("startTime")int startTime,
+                       @Param("endTime")int endTime);
+
+    int countByParentNo(@Param("parentNO")String parentNO,
+                        @Param("startTime")int startTime,
+                        @Param("endTime")int endTime);
 }

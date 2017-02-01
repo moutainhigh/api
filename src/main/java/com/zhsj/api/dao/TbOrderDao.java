@@ -34,4 +34,13 @@ public interface TbOrderDao {
                                     @Param("startTime")int startTime,
                                     @Param("endTime")int endTime);
 
+    CountDealBean countDealByStoreNo(@Param("storeNo")String storeNo,
+                                    @Param("startTime")int startTime,
+                                    @Param("endTime")int endTime);
+
+    CountDealBean countDealByParentNo(@Param("parentNO")String parentNO,
+                                     @Param("startTime")int startTime,
+                                     @Param("endTime")int endTime);
+
+
 }

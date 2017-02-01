@@ -10,10 +10,29 @@
 
     <insert id="save">
         INSERT INTO tb_user_bind_store
-        (user_id,user_type,store_no,ctime)
+        (user_id,user_type,store_no,ctime,utime,parent_no)
         VALUES
-        (#{userId},#{userType},#{storeNO},unix_timestamp(now()))
+        (#{userId},#{userType},#{storeNO},unix_timestamp(now()),unix_timestamp(now()),#{parentNo})
     </insert>
 
+    <update id="updateTimeById">
+        UPDATE tb_user_bind_store
+        SELECT utime = unix_timestamp(now())
+        WHERE id=#{id}
+    </update>
+
+    <select id="countByStoreNo" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM tb_user_bind_store
+        WHERE store_no = #{storeNo}
+        and utime BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+    <select id="countByParentNo" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM tb_user_bind_store
+        WHERE parent_no = #{parentNO}
+        and utime BETWEEN #{startTime} AND #{endTime}
+    </select>
 
 </mapper>

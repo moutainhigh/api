@@ -82,7 +82,7 @@ img{
     padding:5px 25px;
     border:1px solid #CCC;
 }
-.f3 .tran-status-select ul li:last-child span {
+.f3_select {
     padding:5px 16px;
     border:1px solid #fc324a;
     color:#fc324a;

@@ -54,5 +54,20 @@
         and ctime BETWEEN #{startTime} AND #{endTime}
     </select>
 
+    <select id="countDealByStoreNo" resultType="com.zhsj.api.bean.result.CountDealBean">
+        SELECT COUNT(1) 'count',sum(actual_charge_amount) 'sum'
+        FROM tb_order
+        WHERE store_no = #{storeNo} and status = 1
+        and ctime BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+    <select id="countDealByParentNo" resultType="com.zhsj.api.bean.result.CountDealBean">
+        SELECT COUNT(1) 'count',sum(actual_charge_amount) 'sum'
+        FROM tb_order
+        WHERE parent_store_no = #{parentNO} and status = 1
+        and ctime BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+
 
 </mapper>

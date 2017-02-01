@@ -54,25 +54,25 @@
 
 **/
 .common-jt{
-      background:url(../image/app/gengduo.png) no-repeat right center;
+      background:url(../../img/app/gengduo.png) no-repeat right center;
 }
 .yu-e{
-    background: url(../image/app/yu-e.png)  no-repeat left center/7%;
+    background: url(../../img/app/yu-e.png)  no-repeat left center/7%;
 }
 .qy{
-    background: url(../image/app/qieyue.png) no-repeat left center/7%;
+    background: url(../../img/app/qieyue.png) no-repeat left center/7%;
 }
 .set{
-    background: url(../image/app/shezhi.png) no-repeat left center/7%;
+    background: url(../../img/app/shezhi.png) no-repeat left center/7%;
 }
 .about{
-    background: url(../image/app/guyu.png) no-repeat left center/7%;
+    background: url(../../img/app/guyu.png) no-repeat left center/7%;
 }
 .kfMan{
-    background: url(../image/app/wodekefujingli.png) no-repeat left center/7%;
+    background: url(../../img/app/wodekefujingli.png) no-repeat left center/7%;
 }
 .kfHot{
-    background: url(../image/app/kefurexian.png) no-repeat left center/7%;
+    background: url(../../img/app/kefurexian.png) no-repeat left center/7%;
 }
 .common-mg{
     margin: 0 20px;

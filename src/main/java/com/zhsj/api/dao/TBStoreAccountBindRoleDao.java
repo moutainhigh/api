@@ -16,5 +16,7 @@ public interface TBStoreAccountBindRoleDao {
 
     int insert(@Param("accountId") long accountId,@Param("role_id")long role_id);
 
+    int updateByAccountIdAndRoleId(@Param("roleId")long roleId,@Param("accountId") long accountId);
+
 
 }

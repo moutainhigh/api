@@ -170,7 +170,11 @@ public class MinshengService {
 		orderBean.setPayType(storePayInfo.getPayType());
 		orderBean.setPayMethod(String.valueOf(payBean.getPayMethod()));
 		orderBean.setStoreNo(storeNo);
-		orderBean.setParentStoreNo(storeBean.getParentNo());
+		if(StringUtils.isEmpty(storeBean.getParentNo()) || "0".equals(storeBean.getParentNo())){
+			orderBean.setParentStoreNo(storeBean.getStoreNo());
+		}else {
+			orderBean.setParentStoreNo(storeBean.getParentNo());
+		}
 		orderBean.setOrgId(orgId);
 		orderBean.setUserId(userBean.getId());
 

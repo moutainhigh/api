@@ -6,6 +6,7 @@ package com.zhsj.api.bean.result;
 public class CountDealBean {
     private int count;
     private double sum;
+    private int countPersion;
 
     public int getCount() {
         return count;
@@ -21,5 +22,13 @@ public class CountDealBean {
 
     public void setSum(double sum) {
         this.sum = sum;
+    }
+
+    public int getCountPersion() {
+        return countPersion;
+    }
+
+    public void setCountPersion(int countPersion) {
+        this.countPersion = countPersion;
     }
 }
