@@ -224,8 +224,8 @@ public class MinshengService {
 			String settlementType =resultMap.get("settlement_type");
 
 			JSONObject json = new JSONObject();
-			json.put("aliRate",Double.parseDouble(ali_rate));
-			json.put("wxRate",Double.parseDouble(wx_rate));
+			json.put("aliRate",ali_rate);
+			json.put("wxRate",wx_rate);
 			json.put("settlementType",settlementType);
 
 			//插入商家
@@ -307,8 +307,8 @@ public class MinshengService {
 			Map<String,String> resultMap = MapUtil.convertResultStringToMap(rspData);
 			if("SUCCESS".equals(resultMap.get("result_code"))){
 				JSONObject json = new JSONObject();
-				json.put("aliRate",Double.parseDouble(aliRate));
-				json.put("wxRate",Double.parseDouble(wxRate));
+				json.put("aliRate",aliRate);
+				json.put("wxRate",wxRate);
 				json.put("settlementType",settlementType);
 				bmStorePayInfoDao.updateByNo(json.toJSONString(),storeNo);
 				return true;

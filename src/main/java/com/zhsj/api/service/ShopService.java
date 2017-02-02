@@ -128,9 +128,9 @@ public class ShopService {
             if(storePayInfo == null || StringUtils.isEmpty(storePayInfo.getRemark())){
                 return rateBean;
             }
-            Map<String,Object> map = JSONObject.parseObject(storePayInfo.getRemark(), Map.class);
-            rateBean.setAlRate(String.valueOf((Double) map.get("aliRate")) + "%");
-            rateBean.setWxRate(String.valueOf((Double) map.get("wxRate")) + "%");
+            Map<String,String> map = JSONObject.parseObject(storePayInfo.getRemark(), Map.class);
+            rateBean.setAlRate(map.get("aliRate") + "%");
+            rateBean.setWxRate(map.get("wxRate") + "%");
         }catch (Exception e){
             logger.error("#ShopService.getStoreChild# e={}",e.getMessage(),e);
         }

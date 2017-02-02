@@ -174,5 +174,6 @@ pageEncoding="UTF-8"%>
         }
         jStr += " }";
         location.href = "./toTransactionDetails?auth="+auth+"&param="+jStr;
+//        $.("./toTransactionDetails",{"param":jStr,"auth":auth});
     }
 </script>
