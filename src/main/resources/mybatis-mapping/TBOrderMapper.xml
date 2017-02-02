@@ -68,6 +68,55 @@
         and ctime BETWEEN #{startTime} AND #{endTime}
     </select>
 
+    <select id="getByParam" resultType="orderBean">
+        SELECT <include refid="SELECT_FIELDS"/>
+        FROM tb_order
+        where 1=1
+        <if test="storeNo != '' ">
+            AND store_no = #{storeNo}
+        </if>
+        <if test="parentNo != '' ">
+            AND parent_store_no = #{parentNo}
+        </if>
+        and ctime BETWEEN #{startTime} and #{endTime}
+        <if test="payMethod != 0 ">
+            AND pay_method = #{payMethod}
+        </if>
+        <choose>
+            <when test="status != null and status.size() > 0">
+                AND status IN
+                <foreach collection="status" item="st"
+                         open="(" separator="," close=")" >
+                    #{st}
+                </foreach>
+            </when>
+        </choose>
+        limit #{startNo},#{pageSize}
+    </select>
 
+    <select id="countByParam" resultType="com.zhsj.api.bean.result.CountDealBean">
+        SELECT count(1) "count",sum(actual_charge_amount) "sum"
+        FROM tb_order
+        where 1=1
+        <if test="storeNo != '' ">
+            AND store_no = #{storeNo}
+        </if>
+        <if test="parentNo != '' ">
+            AND parent_store_no = #{parentNo}
+        </if>
+        and ctime BETWEEN #{startTime} and #{endTime}
+        <if test="payMethod != 0 ">
+            AND pay_method = #{payMethod}
+        </if>
+        <choose>
+            <when test="status != null and status.size() > 0">
+                AND status IN
+                <foreach collection="status" item="st"
+                         open="(" separator="," close=")" >
+                    #{st}
+                </foreach>
+            </when>
+        </choose>
+    </select>
 
 </mapper>

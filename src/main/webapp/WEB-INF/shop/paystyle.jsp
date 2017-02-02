@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
 <html>
@@ -78,8 +79,11 @@ pageEncoding="UTF-8"%>
               <div class="common-mg store">
                 <span>门店</span>
                 <span>
-                    <select>
+                    <select id="_selectStoreNo">
                         <option value="-1">--选择门店--</option>
+                        <c:forEach items="${storeList}" var="store">
+                            <option value="${store.storeNo}">${store.name}</option>
+                        </c:forEach>
                     </select>
                 </span>
               </div>
@@ -122,18 +126,11 @@ pageEncoding="UTF-8"%>
 </html>
 <script>
     var auth = "${auth}";
-    var storeList = ${storeList};
-
     $(function(){
         load();
     })
 
     function load(){
-        if(storeList && storeList.length > 0){
-
-        }else{
-            $(".f4").css('display','none');
-        }
         $(".f3 .tran-status-select ul li span").on("touchend",function(){
             $(this).toggleClass("f3_select");
         });
@@ -141,7 +138,7 @@ pageEncoding="UTF-8"%>
             $(".f3 .tran-status-select ul li span").removeClass("f3_select");
             $("#startTime").val("");
             $("#endTime").val("");
-            $('input:radio[name="radion"]').attr('checked',false);
+            $('input:radio[name="radion"]:checked').prop("checked",false);
 
         });
         $("#_submit").on("touchend",function(){
@@ -163,9 +160,19 @@ pageEncoding="UTF-8"%>
         if(statusObj && statusObj.length > 0){
             status="";
             for(var i=0;i<statusObj.length;i++){
-                status +=$(statusObj[i]).attr("id")+",";
+                status +=$(statusObj[i]).attr("id").substr(1,1)+",";
+            }
+            if(status != ""){
+                status = status.substr(0,status.length-1);
             }
         }
-        alert(chkRadio+"|"+startTime+"|"+endTime+"|"+status);
+        var _selectStoreNo = $("#_selectStoreNo").val();
+        var data = {"payType":chkRadio,"startTime":startTime,"endTime":endTime,"status":status,"storeNo":_selectStoreNo};
+        var jStr = "{ ";
+        for(var item in data){
+            jStr += "'"+item+"':'"+data[item]+"',";
+        }
+        jStr += " }";
+        location.href = "./toTransactionDetails?auth="+auth+"&param="+jStr;
     }
 </script>

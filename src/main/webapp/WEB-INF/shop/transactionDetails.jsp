@@ -16,7 +16,6 @@ pageEncoding="UTF-8"%>
     </style>
 </head>
 <body>
-<input value="${auth}" id="auth" name="auth" type="hidden">
    <div class="container">
        <section class="f1" id="_searchParam">
            <div class="common-mg pd">
@@ -42,8 +41,8 @@ pageEncoding="UTF-8"%>
                            <span>共<span class="color-read">6</span>笔</span><span class="color-read">￥6.00</span>
                       </div>
               </div>
-           <ul>
-               <li class="ui-border-bottom">
+           <ul id="_context">
+              <!-- <li class="ui-border-bottom">
                   <div class="common-mg">
                       <span class="info">
                           <em>1.00</em>
@@ -74,7 +73,7 @@ pageEncoding="UTF-8"%>
                           </div>
                       </span>
                    </div>
-               </li>
+               </li>-->
 
 
            </ul>
@@ -89,7 +88,8 @@ pageEncoding="UTF-8"%>
 </body>
 </html>
 <script>
-    var auth = $("#auth").val();
+    var auth = "${auth}";
+    var param = "${_param}";
     $(function(){
         load();
     })
@@ -98,6 +98,63 @@ pageEncoding="UTF-8"%>
         $("#_searchParam").on("touchend",function(){
             location.href = "./toPaystyle?auth="+auth;
         });
+        $.post("./transactionDetails",{"auth":auth,"param":param,"pageNo":1,"pageSize":10},function(obj){
+            if(obj.code == 0){
+                var html = "";
+                for(var i=0;i<obj.data.length;i++){
+                    html+="<li class=\"ui-border-bottom\">";
+                    html+="<div class=\"common-mg\">";
+                    html+="<span class=\"info\">";
+                    html+="<em>"+obj.data[i].actualChargeAmount+"</em>";
+                    html+="</span>";
+                    html+="<span class=\"item\" >";
+                    if(obj.data[i].payMethod == 1){
+                        html+="<img src=\"../resource/img/app/weixinzhifu.png\">";
+                    }else{
+                        html+="<img src=\"../resource/img/app/zhifubao.png\">";
+                    }
+                    html+="<div class=\"cont\">";
+                    html+="<p class=\"desc\">";
+                    html+="<span>收款码收款</span>";
+                    if(obj.data[i].planChargeAmount - obj.data[i].actualChargeAmount > 0){
+                        html+="<span>立减</span>";
+                        html+="<span><del>￥"+(obj.data[i].planChargeAmount - obj.data[i].actualChargeAmount)+"</del></span>";
+                    }
+                    html+="</p>";
+                    html+="<p class=\"time\">"+new Date(obj.data[i].ctime*1000).Format("yyyy-MM-dd")+"</p>";
+                    html+="</div>";
+                    html+="</span>";
+                    html+="</div>";
+                    html+="</li>";
+                }
+                $("#_context").html(html);
+            }
+        });
+
 
     }
+
+    // 对Date的扩展，将 Date 转化为指定格式的String
+    // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+    // 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+    // 例子：
+    // (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
+    // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18
+    Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+            "y+": this.getYear(),
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "h+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
 </script>

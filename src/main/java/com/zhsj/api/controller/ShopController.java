@@ -209,12 +209,20 @@ public class ShopController {
 
     @RequestMapping(value = "/toTransactionDetails", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView toTransactionDetails(String auth) throws Exception {
-        logger.info("#ShopController.toTransactionDetails# auth={}");
+    public ModelAndView toTransactionDetails(String param,String auth) throws Exception {
+        logger.info("#ShopController.toTransactionDetails# auth={},param={}",auth,param);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./shop/transactionDetails");
         modelAndView.addObject("auth", auth);
+        modelAndView.addObject("_param", param);
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/transactionDetails", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object transactionDetails(String param,String auth,int pageNo,int pageSize) throws Exception {
+        logger.info("#ShopController.transactionDetails# auth={},param={},pageNo={},pageSize={}", auth, param,pageNo,pageSize);
+        return CommonResult.build(0, "success",shopService.transactionDetails(param,pageNo,pageSize));
     }
 
     @RequestMapping(value = "/transactionOrder", method = RequestMethod.GET)
