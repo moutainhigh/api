@@ -21,4 +21,7 @@ public interface TbStoreDao {
 
     List<StoreBean> getListByParentNo(@Param("parentNo") String parentNo);
 
+    int updateStatus(@Param("status") int status,@Param("storeNo")String storeNo);
+
+
 }

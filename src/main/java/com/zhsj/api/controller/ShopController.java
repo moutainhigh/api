@@ -207,22 +207,28 @@ public class ShopController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/toTransactionDetails", method = RequestMethod.GET)
+    @RequestMapping(value = "/toTransactionDetails", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public ModelAndView toTransactionDetails(String param,String auth) throws Exception {
-        logger.info("#ShopController.toTransactionDetails# auth={},param={}",auth,param);
+    //        var data = {"payType":chkRadio,"startTime":startTime,"endTime":endTime,"status":status,"storeNo":_selectStoreNo};
+
+    public ModelAndView toTransactionDetails(String payMethod,String startTime,String endTime,String status,String storeNo,String auth) throws Exception {
+        logger.info("#ShopController.toTransactionDetails# auth={},payMethod={}, startTime={},endTime={},status={},storeNo={}",auth,payMethod,startTime,endTime,status,storeNo);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./shop/transactionDetails");
         modelAndView.addObject("auth", auth);
-        modelAndView.addObject("_param", param);
+        modelAndView.addObject("payMethod", payMethod);
+        modelAndView.addObject("startTime", startTime);
+        modelAndView.addObject("endTime", endTime);
+        modelAndView.addObject("status", status);
+        modelAndView.addObject("storeNo", storeNo);
         return modelAndView;
     }
 
     @RequestMapping(value = "/transactionDetails", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public Object transactionDetails(String param,String auth,int pageNo,int pageSize) throws Exception {
-        logger.info("#ShopController.transactionDetails# auth={},param={},pageNo={},pageSize={}", auth, param,pageNo,pageSize);
-        return CommonResult.build(0, "success",shopService.transactionDetails(param,pageNo,pageSize));
+    public Object transactionDetails(String payMethod,String startTime,String endTime,String status,String storeNo,String auth,int pageNo,int pageSize) throws Exception {
+        logger.info("#ShopController.transactionDetails# payMethod={}, startTime={},endTime={},status={},storeNo={},auth={},pageNo={},pageSize={}",payMethod,startTime,endTime,status,storeNo,auth,pageNo,pageSize);
+        return CommonResult.build(0, "success",shopService.transactionDetails(payMethod,startTime,endTime,status,storeNo,pageNo,pageSize));
     }
 
     @RequestMapping(value = "/transactionOrder", method = RequestMethod.GET)

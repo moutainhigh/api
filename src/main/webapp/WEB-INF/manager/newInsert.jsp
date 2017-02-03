@@ -113,12 +113,23 @@
             alert("不能有空值");
             return;
         }
+        var realLength = 0, len = storeName.length, charCode = -1;
+        for (var i = 0; i < len; i++) {
+            charCode = storeName.charCodeAt(i);
+            if (charCode >= 0 && charCode <= 128) realLength += 1;
+            else realLength += 2;
+        }
+        if(realLength<8){
+            alert("商家名称不能少于8个字符");
+            return false;
+        }
 
         var myreg = /^(1+\d{10})$/;
         if(!myreg.test(storePhone)) {
             alert('请输入有效的手机号码！');
             return false;
         }
+
         var jsonData = {"storeName":storeName,"storePhone":storePhone,"storeAccount":storeAccount,"storeNo":storeNo,"auth":auth};
         $.post("./realnameauth",jsonData,function(obj){
             if(obj.code == 0){

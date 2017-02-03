@@ -89,7 +89,12 @@ pageEncoding="UTF-8"%>
 </html>
 <script>
     var auth = "${auth}";
-    var param = "${_param}";
+    var payMethod = "${payMethod}";
+    var startTime = "${startTime}";
+    var endTime = "${endTime}";
+    var status = "${status}";
+    var storeNo = "${storeNo}";
+
     $(function(){
         load();
     })
@@ -98,7 +103,8 @@ pageEncoding="UTF-8"%>
         $("#_searchParam").on("touchend",function(){
             location.href = "./toPaystyle?auth="+auth;
         });
-        $.post("./transactionDetails",{"auth":auth,"param":param,"pageNo":1,"pageSize":10},function(obj){
+        var json = {"auth":auth,"pageNo":1,"pageSize":10,"payMethod":payMethod,"startTime":startTime,"endTime":endTime,"status":status,"storeNo":storeNo};
+        $.post("./transactionDetails",json,function(obj){
             if(obj.code == 0){
                 var html = "";
                 for(var i=0;i<obj.data.length;i++){

@@ -126,6 +126,7 @@ pageEncoding="UTF-8"%>
 </html>
 <script>
     var auth = "${auth}";
+
     $(function(){
         load();
     })
@@ -167,13 +168,23 @@ pageEncoding="UTF-8"%>
             }
         }
         var _selectStoreNo = $("#_selectStoreNo").val();
-        var data = {"payType":chkRadio,"startTime":startTime,"endTime":endTime,"status":status,"storeNo":_selectStoreNo};
-        var jStr = "{ ";
-        for(var item in data){
-            jStr += "'"+item+"':'"+data[item]+"',";
-        }
-        jStr += " }";
-        location.href = "./toTransactionDetails?auth="+auth+"&param="+jStr;
-//        $.("./toTransactionDetails",{"param":jStr,"auth":auth});
+        var data = {"payMethod":chkRadio,"startTime":startTime,"endTime":endTime,"status":status,"storeNo":_selectStoreNo,"auth":auth};
+//        location.href = "./toTransactionDetails?auth="+auth+"&param="+jStr;
+        $.StandardPost('./toTransactionDetails',data);
     }
+
+    $.extend({
+        StandardPost:function(url,args){
+            var form = $("<form method='post'></form>"),
+                    input;
+            form.attr({"action":url});
+            $.each(args,function(key,value){
+                input = $("<input type='hidden'>");
+                input.attr({"name":key});
+                input.val(value);
+                form.append(input);
+            });
+            form.submit();
+        }
+    });
 </script>

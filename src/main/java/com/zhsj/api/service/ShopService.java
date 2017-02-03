@@ -209,8 +209,8 @@ public class ShopService {
 
     }
 
-    public List<OrderBean> transactionDetails(String param,int pageNo,int pageSize){
-        logger.info("#ShopService.transactionDetails# param={},pageNo={},pageSize={}",param,pageNo,pageSize);
+    public List<OrderBean> transactionDetails(String payMethod,String startTime,String endTime,String status,String storeNo,int pageNo,int pageSize){
+        logger.info("#ShopService.transactionDetails# payMethod={}, startTime={},endTime={},status={},storeNo={},pageNo={},pageSize={}",payMethod,startTime,endTime,status,storeNo,pageNo,pageSize);
         List<OrderBean> orderBeanList = new ArrayList<>();
         try{
             StoreBean storeBean = LoginUserUtil.getStore();
@@ -218,33 +218,29 @@ public class ShopService {
                 return orderBeanList;
             }
             //        var data = {"payType":chkRadio,"startTime":startTime,"endTime":endTime,"status":status,"storeNo":_selectStoreNo};
-            int payType = 0;
-            int startTime = DateUtil.getTodayStartTime();
-            int endTime = startTime+ 86400;
+            int payMethodValue = StringUtils.isEmpty(payMethod)?0:Integer.parseInt(payMethod);
+            int startTimeValue = DateUtil.getTodayStartTime();
+            int endTimeValue = startTimeValue+ 86400;
+            startTimeValue = StringUtils.isEmpty(startTime)?startTimeValue:new Long(DateUtil.formatStringUnixTime(startTime, "yyyy-MM-dd")).intValue();
+            endTimeValue = StringUtils.isEmpty(endTime)?endTimeValue:new Long(DateUtil.formatStringUnixTime(endTime, "yyyy-MM-dd")).intValue();
             List<Integer> statusList = new ArrayList<>();
-            String storeNo = "";
-            String parentStoreNo="";
-            if(!StringUtils.isEmpty(param)){
-                Map<String ,String> map = JSONObject.parseObject(param, Map.class);
-                payType = Integer.parseInt(map.get("payType"));
-                startTime = StringUtils.isEmpty(map.get("startTime"))?startTime:new Long(DateUtil.formatStringUnixTime(map.get("startTime"), "yyyy-MM-dd")).intValue();
-                endTime = StringUtils.isEmpty( map.get("endTime"))?endTime:new Long(DateUtil.formatStringUnixTime(map.get("endTime"), "yyyy-MM-dd")).intValue();
-                String ts = map.get("status");
-                if(!StringUtils.isEmpty(map.get("status")) && !"-1".equals(map.get("status"))){
-                    String[] st = map.get("status").split(",");
-                    for(int i=0;i<st.length;i++){
-                        statusList.add(Integer.parseInt(st[i]));
-                    }
+            if(!StringUtils.isEmpty(status) && !"-1".equals(status)){
+                String[] st = status.split(",");
+                for(int i=0;i<st.length;i++){
+                    statusList.add(Integer.parseInt(st[i]));
                 }
-                storeNo = "-1".equals(map.get("storeNo"))?storeNo:map.get("storeNo");
             }
+            String storeNoValue = "";
+            String parentStoreNo="";
+            storeNoValue = "-1".equals(storeNo)?storeNoValue:storeNo;
+
             if(storeNo.equals(storeBean.getStoreNo())){
                 parentStoreNo = storeBean.getStoreNo();
-                storeNo = "";
+                storeNoValue = "";
             }
-            orderBeanList = orderDao.getByParam(storeNo, parentStoreNo, startTime, endTime, statusList, payType, (pageNo - 1) * pageSize, pageSize);
+            orderBeanList = orderDao.getByParam(storeNoValue, parentStoreNo, startTimeValue, endTimeValue, statusList, payMethodValue, (pageNo - 1) * pageSize, pageSize);
         }catch (Exception e){
-            logger.error("#ShopService.transactionDetails# param={},pageNO={},pageSize={}",param,pageNo,pageSize,e);
+            logger.error("#ShopService.transactionDetails# payMethod={}, startTime={},endTime={},status={},storeNo={},pageNo={},pageSize={}",payMethod,startTime,endTime,status,storeNo,pageNo,pageSize,e);
         }
         return orderBeanList;
     }

@@ -15,7 +15,7 @@
         INSERT INTO tb_store_pay_info
         (store_no,pay_type,pay_method,field1,field2,field3,field4,remark,status,valid,utime,ctime)
         VALUES
-        (#{storeNo},#{payType},#{payMethod},#{field1},#{field2},#{field3},#{field4},#{remark},#{status},unix_timestamp(now()),unix_timestamp(now()))
+        (#{storeNo},#{payType},#{payMethod},#{field1},#{field2},#{field3},#{field4},#{remark},#{status},1,unix_timestamp(now()),unix_timestamp(now()))
     </insert>
 
     <update id="updateByNo">

@@ -194,13 +194,17 @@ public class ManagerService {
             msStoreBean.setAgent_no(MtConfig.getProperty("agent_no", "95272016121410000062"));
             msStoreBean.setSa_bank_type("00");
             msStoreBean.setUser_pid("");
+            msStoreBean.setStoreNo(storeNo);
             String json = JSONObject.toJSON(msStoreBean).toString();
             //更新扩展
             tbStoreExtendDao.updateByStoreNo(storeNo, 1, json);
             long saleId = LoginUserUtil.getLoginUser().getId();
             tbStoreNoDao.updateStatusByStoreNoAndSaleId(saleId, storeNo);
 
-            String result = "SUCCESS"; //minshengService.openAccount(msStoreBean);
+            String result = minshengService.openAccount(msStoreBean);
+            if("SUCCESS".equals(result)){
+                tbStoreDao.updateStatus(1,storeNo);
+            }
             return result;
         }catch (Exception e){
             logger.error("#ManagerService.auditStatus# error saName={},saNum={},saBankName={},merEmail={},auth={},storeNO={}",

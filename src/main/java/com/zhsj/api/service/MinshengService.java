@@ -9,8 +9,6 @@ import com.zhsj.api.util.*;
 
 import com.zhsj.api.util.minsheng.CertUtil;
 import com.zhsj.api.util.minsheng.MapUtil;
-import com.zhsj.api.util.test.HttpsClientUtil;
-import com.zhsj.api.util.test.Merchant;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -260,7 +258,7 @@ public class MinshengService {
 			reqData.put("sa_bank_name", msStoreBean.getSa_bank_name());   //结算账户银行
 			reqData.put("sa_bank_type", msStoreBean.getSa_bank_type());   //结算账户类型(对公=01)(对私=00)
 			reqData.put("settlement_type", msStoreBean.getSettlement_type());   //商户结算类型D0:实时清算,T1:隔天清算 若不传，默认D0清算
-			reqData.put("user_pid", msStoreBean.getUser_pid());//支付宝ISV的pid
+//			reqData.put("user_pid", msStoreBean.getUser_pid());//支付宝ISV的pid
 			reqData.put("mer_short_name", msStoreBean.getMer_short_name());//商户简称
 
 			String CERT_PATH_P12 = MtConfig.getProperty("CERT_PATH_P12","");
@@ -300,9 +298,7 @@ public class MinshengService {
 			String stringData = MapUtil.getRequestParamString(reqData);
 //
 			String reqBase64 = new String(CertUtil.base64Encode(stringData.getBytes("UTF-8")));
-//			String rspBase64 = SSLUtil.httpsPost(url, reqBase64);
-			Merchant.updateMerchantByPaykey();
-			String rspBase64 = HttpsClientUtil.httpsPost(url,reqBase64);
+			String rspBase64 = SSLUtil.httpsPost(url, reqBase64);
 			String rspData = new String(CertUtil.base64Decode(rspBase64.getBytes("UTF-8")));
 			Map<String,String> resultMap = MapUtil.convertResultStringToMap(rspData);
 			if("SUCCESS".equals(resultMap.get("result_code"))){

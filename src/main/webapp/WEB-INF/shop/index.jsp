@@ -161,7 +161,7 @@ pageEncoding="UTF-8"%>
     function load(){
         //流水
         $(".flow").on("touchend",function(){
-            location.href = "./toTransactionDetails?auth="+auth+"&param=";
+            location.href = "./toTransactionDetails?auth="+auth+"&storeNo=-1";
         });
         //提现
         $(".withdraw").on("touchend",function(){
