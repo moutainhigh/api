@@ -21,13 +21,13 @@ pageEncoding="UTF-8"%>
         <section class="f1">
              <div class="store-header">
                  <p>
-                     <img src="../resource/img/app/header.png" class="header">
+                     <img id="_storeImg"  onerror="this.src='../resource/img/app/header.png'" class="header">
                  </p>
-                 <p>
-                     门店名称
+                 <p id="_storeName">
+
                  </p>
-                 <p>
-                     188****2623
+                 <p id="_userAccount">
+
                  </p>
              </div>
         </section>
@@ -145,5 +145,16 @@ pageEncoding="UTF-8"%>
         $("#_index").on("touchend",function(){
             location.href = "./toIndex?auth="+auth;
         });
+        initStore();
+    }
+
+    function initStore(){
+        $.post("./getStoreInfo",{"auth":auth},function(obj){
+            if(obj.code == 0){
+                $("#_storeImg").attr("img",obj.data.store.shopLogo);
+                $("#_storeName").text(obj.data.store.name);
+                $("#_userAccount").text(obj.data.loginUser.account);
+            }
+        })
     }
 </script>

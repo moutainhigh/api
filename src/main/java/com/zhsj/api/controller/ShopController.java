@@ -2,6 +2,7 @@ package com.zhsj.api.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.service.MinshengService;
 import com.zhsj.api.service.WXService;
 
+import com.zhsj.api.util.login.LoginUserUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -227,7 +229,7 @@ public class ShopController {
     @RequestMapping(value = "/transactionDetails", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public Object transactionDetails(String payMethod,String startTime,String endTime,String status,String storeNo,String auth,int pageNo,int pageSize) throws Exception {
-        logger.info("#ShopController.transactionDetails# payMethod={}, startTime={},endTime={},status={},storeNo={},auth={},pageNo={},pageSize={}",payMethod,startTime,endTime,status,storeNo,auth,pageNo,pageSize);
+        logger.info("#ShopController.transactionDetails# payMethod={}, startTime={},endTime={},status={},storeNo={},auth={},pageNo={},pageSize={}", payMethod, startTime, endTime, status, storeNo, auth, pageNo, pageSize);
         return CommonResult.build(0, "success",shopService.transactionDetails(payMethod,startTime,endTime,status,storeNo,pageNo,pageSize));
     }
 
@@ -280,9 +282,19 @@ public class ShopController {
     @RequestMapping(value = "/delRoleById" , method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public Object delRoleById(String auth,long accountId) {
-        logger.info("#ShopController.delRoleById# auth={},accountId={}",auth,accountId);
+        logger.info("#ShopController.delRoleById# auth={},accountId={}", auth, accountId);
         shopService.updateAccountBindRoleById(accountId);
         return CommonResult.build(0, "success");
+    }
+
+    @RequestMapping(value = "/getStoreInfo" , method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object getStoreInfo(String auth) {
+        logger.info("#ShopController.delRoleById# auth={}", auth);
+        Map<String,Object> map = new HashMap<>();
+        map.put("store", LoginUserUtil.getStore());
+        map.put("loginUser", LoginUserUtil.getLoginUser());
+        return CommonResult.build(0, "success",map);
     }
 
 
