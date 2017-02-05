@@ -67,7 +67,11 @@ pageEncoding="UTF-8"%>
         $(".f1").on("touchend", function () {
             $.post("./logout",{"auth":auth},function(obj){
                 if(obj.code == 0){
-                    window.close();
+                    if (typeof WeixinJSBridge == "undefined"){
+                        window.close();
+                    }else{
+                       WeixinJSBridge.call('closeWindow');
+                    }
                 }
             });
         });

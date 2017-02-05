@@ -126,7 +126,7 @@ pageEncoding="UTF-8"%>
                 var html = "";
                 var beanObj = pageObj.list;
                 for(var i=0;i<beanObj.length;i++){
-                    html+="<li class=\"ui-border-bottom\" ontouchend=\"_detail("+beanObj[i].id+")\">";
+                    html+="<li class=\"ui-border-bottom\" onclick=\"_detail("+beanObj[i].id+")\">";
                     html+="<div class=\"common-mg\">";
                     html+="<span class=\"info\">";
                     html+="<em>"+beanObj[i].actualChargeAmount+"</em>";
