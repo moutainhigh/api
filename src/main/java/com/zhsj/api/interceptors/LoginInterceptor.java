@@ -52,6 +52,7 @@ public class LoginInterceptor extends AbstractInterceptor {
             loginUser.setId(accountBean.getId());
             loginUser.setAccount(accountBean.getAccount());
             loginUser.setName(accountBean.getName());
+            loginUser.setHeadImg(accountBean.getHeadImg());
             loginUser.setOpenId(accountBean.getOpenId());
             loginUser.setType(1);
             LoginUserUtil.setBmLoginUser(loginUser);
@@ -69,6 +70,7 @@ public class LoginInterceptor extends AbstractInterceptor {
             loginUser.setAccount(storeAccountBean.getAccount());
             loginUser.setName(storeAccountBean.getName());
             loginUser.setOpenId(storeAccountBean.getOpenId());
+            loginUser.setHeadImg(storeAccountBean.getHeadImg());
             loginUser.setType(2);
             LoginUserUtil.setBmLoginUser(loginUser);
         }

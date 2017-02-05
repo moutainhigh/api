@@ -1,12 +1,12 @@
 package com.zhsj.api.service;
 
 import com.alibaba.fastjson.JSON;
+import com.sun.org.apache.xpath.internal.operations.*;
 import com.zhsj.api.bean.OrderBean;
+import com.zhsj.api.bean.StoreBean;
+import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.WeixinUserBean;
-import com.zhsj.api.dao.TBAccountDao;
-import com.zhsj.api.dao.TBStoreAccountBindRoleDao;
-import com.zhsj.api.dao.TBStoreBindAccountDao;
-import com.zhsj.api.dao.TbUserDao;
+import com.zhsj.api.dao.*;
 import com.zhsj.api.task.WeChatToken;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.MtConfig;
@@ -19,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.String;
 import java.net.URISyntaxException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -46,6 +47,8 @@ public class WXService {
     private TBStoreAccountBindRoleDao tbStoreAccountBindRoleDao;
     @Autowired
     private TBAccountDao tbAccountDao;
+    @Autowired
+    private TbStoreDao tbStoreDao;
 
     public String getOpenId(String code){
         String openId = "";
@@ -107,6 +110,28 @@ public class WXService {
 
     }
 
+    public WeixinUserBean getWeixinUser(String openId){
+        logger.info("#WXService.getUserInfo# openId={}",openId);
+        WeixinUserBean weixinUserBean = null;
+        try{
+            String appId = MtConfig.getProperty("weChat_appId", "wx8651744246a92699");
+            String token = WeChatToken.TOKEN_MAP.get(appId);
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("https://api.weixin.qq.com/cgi-bin/user/info?access_token=")
+                    .append(token)
+                    .append("&openid=")
+                    .append(openId)
+                    .append("&lang=zh_CN");
+            String result = SSLUtil.getSSL(stringBuilder.toString());
+            weixinUserBean = JSON.parseObject(result, WeixinUserBean.class);
+            logger.info("#WXService.getUserInfo# result openId={},userBean={}",openId,weixinUserBean);
+        }catch (Exception e){
+            logger.error("#WXService.getUserInfo# openId={}",openId,e);
+        }
+        return weixinUserBean;
+
+    }
+
     public void sendSuccess(String orderNo){
         logger.info("#WXService.sendSuccess# orderNo={}",orderNo);
         OrderBean orderBean = orderService.getByOrderId(orderNo);
@@ -117,6 +142,46 @@ public class WXService {
 
     public void sendSuccess(OrderBean orderBean){
         logger.info("#WXService.sendSuccess# storeNo={},orderId={}",orderBean.getStoreNo(),orderBean.getOrderId());
+        sendMessageStore(orderBean);
+        sendMessageUser(orderBean);
+        
+    }
+
+    public void sendMessageUser(OrderBean orderBean){
+        logger.info("#WXService.sendMessageUser# storeNo={},orderId={}",orderBean.getStoreNo(),orderBean.getOrderId());
+        try {
+            if(!"1".equals(orderBean.getPayMethod())){
+                logger.info("#WXService.sendMessageUser# storeNo={},orderId={} msg={}",orderBean.getStoreNo(),orderBean.getOrderId(),"不是微信支付");
+            }
+            StoreBean storeBean = tbStoreDao.getStoreByNo(orderBean.getStoreNo());
+            UserBean userBean = bmUserDao.getUserById(orderBean.getUserId());
+            if(StringUtils.isEmpty(userBean.getOpenId())){
+                logger.info("#WXService.sendMessageUser# storeNo={},orderId={} msg={}",orderBean.getStoreNo(),orderBean.getOrderId(),"微信openId出错");
+            }
+            String appId = MtConfig.getProperty("weChat_appId", "wx8651744246a92699");
+            String token = WeChatToken.TOKEN_MAP.get(appId);
+            String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+token;
+
+            String stroeMessage = MtConfig.getProperty("USER_MESSAGE", "");
+            stroeMessage = stroeMessage.replace("_openId",userBean.getOpenId());
+            stroeMessage = stroeMessage.replace("_url","");
+            stroeMessage = stroeMessage.replace("_first", " \"value\": \"您已支付成功订单\"");
+            stroeMessage = stroeMessage.replace("_keyword1","\"value\": \" "+ orderBean.getOrderId() + "\"");
+            stroeMessage = stroeMessage.replace("_keyword2","\"value\": \"支付成功\"");
+            stroeMessage = stroeMessage.replace("_keyword3","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\"");
+            stroeMessage = stroeMessage.replace("_keyword4","\"value\": \""+storeBean.getName()+"\"");
+            stroeMessage = stroeMessage.replace("_remark", " \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\"");
+            stroeMessage = stroeMessage.replace("_keyword5", " \"value\": \"金额： "+orderBean.getActualChargeAmount()+"\"");
+            String result = SSLUtil.postSSL(url, stroeMessage);
+            logger.info("#WXService.sendSuccess# result orderId={},result={}",orderBean.getOrderId(),result);
+
+        }catch (Exception e){
+            logger.error("#WXService.sendMessageUser# storeNo={},orderId={}",orderBean.getStoreNo(),orderBean.getOrderId(),e);
+        }
+    }
+
+    public void sendMessageStore(OrderBean orderBean){
+        logger.info("#WXService.sendMessageStore# storeNo={},orderId={}",orderBean.getStoreNo(),orderBean.getOrderId());
         try{
             List<Long> accountIdList = tbStoreBindAccountDao.getAccountIdByStoreNo(orderBean.getStoreNo());
             if(CollectionUtils.isEmpty(accountIdList)){
@@ -134,41 +199,24 @@ public class WXService {
             String appId = MtConfig.getProperty("weChat_appId", "wx8651744246a92699");
             String token = WeChatToken.TOKEN_MAP.get(appId);
             String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+token;
+            String stroeMessage = MtConfig.getProperty("STORE_MESSAGE", "");
+
             for(String openId:openIdList){
                 if(StringUtils.isEmpty(openId)){
                     continue;
                 }
-                String json = "{\n" +
-                        "    \"touser\": \""+openId+"\",\n" +
-                        "    \"template_id\": \"8saP99-JcHJMl8D-RD54OJLPaz9OtNGlSi8tbz8Xrvo\",\n" +
-                        "    \"url\": \"\",\n" +
-                        "    \"topcolor\": \"#FF0000\",\n" +
-                        "    \"data\": {\n" +
-                        "        \"first\": {\n" +
-                        "            \"value\": \"订单支付成功\",\n" +
-                        "            \"color\": \"#173177\"\n" +
-                        "        },\n" +
-                        "        \"keyword1\": {\n" +
-                        "            \"value\": \" "+ orderBean.getOrderId() + "\",\n" +
-                        "            \"color\": \"#173177\"\n" +
-                        "        },\n" +
-                        "        \"keyword2\": {\n" +
-                        "            \"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\",\n" +
-                        "            \"color\": \"#173177\"\n" +
-                        "        },\n" +
-                        "        \"remark\": {\n" +
-                        "            \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\",\n" +
-                        "            \"color\": \"#173177\"\n" +
-                        "        }\n" +
-                        "    }\n" +
-                        "}";
-                String result = SSLUtil.postSSL(url, json);
+                stroeMessage = stroeMessage.replace("_openId",openId);
+                stroeMessage = stroeMessage.replace("_url","");
+                stroeMessage = stroeMessage.replace("_first", " \"value\": \"订单支付成功\",");
+                stroeMessage = stroeMessage.replace("_keyword1","\"value\": \" "+ orderBean.getOrderId() + "\"");
+                stroeMessage = stroeMessage.replace("_keyword2","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\",\n");
+                stroeMessage = stroeMessage.replace("_remark", " \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\",");
+                String result = SSLUtil.postSSL(url, stroeMessage);
                 logger.info("#WXService.sendSuccess# result orderId={},result={}",orderBean.getOrderId(),result);
             }
         }catch(Exception e){
-        	logger.error("#WXService.sendSuccess# orderBean.orderId", orderBean.getOrderId());
+            logger.error("#WXService.sendSuccess# orderBean.orderId", orderBean.getOrderId());
         }
-        
     }
     
     public void qrcode(String no){
@@ -239,94 +287,41 @@ public class WXService {
         return result;
     }
 
+    public void testMessage(String openId,OrderBean orderBean,String token) throws IOException, NoSuchAlgorithmException, KeyStoreException, URISyntaxException {
+        String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+token;
+
+//        String stroeMessage = MtConfig.getProperty("STORE_MESSAGE", "");
+//            stroeMessage = stroeMessage.replace("_openId",openId);
+//            stroeMessage = stroeMessage.replace("_url","");
+//            stroeMessage = stroeMessage.replace("_first", " \"value\": \"订单支付成功\"");
+//            stroeMessage = stroeMessage.replace("_keyword1","\"value\": \" "+ orderBean.getOrderId() + "\"");
+//            stroeMessage = stroeMessage.replace("_keyword2","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\"");
+//            stroeMessage = stroeMessage.replace("_remark", " \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\"");
+
+        String stroeMessage = MtConfig.getProperty("USER_MESSAGE", "");
+            stroeMessage = stroeMessage.replace("_openId",openId);
+            stroeMessage = stroeMessage.replace("_url","");
+            stroeMessage = stroeMessage.replace("_first", " \"value\": \"您已支付成功订单\"");
+            stroeMessage = stroeMessage.replace("_keyword1","\"value\": \" "+ orderBean.getOrderId() + "\"");
+            stroeMessage = stroeMessage.replace("_keyword2","\"value\": \"支付成功\"");
+            stroeMessage = stroeMessage.replace("_keyword3","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\"");
+        stroeMessage = stroeMessage.replace("_keyword4","\"value\": \"街觅\"");
+        stroeMessage = stroeMessage.replace("_keyword5", " \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\"");
+                stroeMessage = stroeMessage.replace("_remark", " \"value\": \"kkkkk\"");
+
+
+        String result = SSLUtil.postSSL(url, stroeMessage);
+            logger.info(stroeMessage);
+            logger.info("#WXService.sendSuccess# result orderId={},result={}",orderBean.getOrderId(),result);
+    }
+
     public static void main(String[] args) throws Exception {
-        String json = "{\n" +
-                "     \"button\":[\n" +
-                "      {\n" +
-                "           \"name\":\"菜单\",\n" +
-                "           \"sub_button\":[\n" +
-                "           {\t\n" +
-                "               \"type\":\"view\",\n" +
-                "               \"name\":\"搜索1\",\n" +
-                "               \"url\":\"http://www.soso.com/\"\n" +
-                "            },\n" +
-                "            {\n" +
-                "               \"type\":\"view\",\n" +
-                "               \"name\":\"视频1\",\n" +
-                "               \"url\":\"http://v.qq.com/\"\n" +
-                "            },\n" +
-                "            {\n" +
-                "               \"type\":\"click\",\n" +
-                "               \"name\":\"赞一下我们\",\n" +
-                "               \"key\":\"V1001_GOOD\"\n" +
-                "            }]\n" +
-                "       }]\n" +
-                " }";
-//        new WXService().createMenu(json);
-        new WXService().delMenu();
-//        String appId = "wx8651744246a92699";
-//        String secret = "7d33f606a68a8473a4919e8ff772447e";
-//      new WXService().getToken(appId, secret);
-//    	new WXService().qrcode("ddd");
-//        String token = WXService.TOKEN_MAP.get(appId).get("token");
-//        System.out.println( WXService.TOKEN_MAP.get(appId));
-//        new WXService().getUserInfo("oFvcxwZfj20QNzdpagGb1uDbhQUk");
-//        Thread.sleep(1000*60*2);
-//        new WXService().getUserInfo("oFvcxwZfj20QNzdpagGb1uDbhQUk");
-//        OrderBean bean = new OrderBean();
-//        bean.setOrderId("20170114195124247SN0ba482a1d");
-//        bean.setActualChargeAmount(0.1);
-//        bean.setPlanChargeAmount(0.2);
-//        new WXService().sendSuccess(bean);
-//        String json = "{\n" +
-//                "    \"touser\": \"oFvcxwfZrQxlisYN4yIPbxmOT8KM\",\n" +
-//                "    \"template_id\": \"EzalgCDul_41sIFZ3jjw7B4UXuLAAZ5_0MJAlQzLG3o\",\n" +
-//                "    \"url\": \"http://weixin.qq.com/download\",\n" +
-//                "    \"topcolor\": \"#FF0000\",\n" +
-//                "    \"data\": {\n" +
-//                "        \"first\": {\n" +
-//                "            \"value\": \"您已支付成功订单\",\n" +
-//                "            \"color\": \"#173177\"\n" +
-//                "        },\n" +
-//                "        \"keyword1\": {\n" +
-//                "            \"value\": \"街觅 10010\",\n" +
-//                "            \"color\": \"#173177\"\n" +
-//                "        },\n" +
-//                "        \"keyword2\": {\n" +
-//                "            \"value\": \"支付成功\",\n" +
-//                "            \"color\": \"#173177\"\n" +
-//                "        },\n" +
-//                "        \"keyword3\": {\n" +
-//                "            \"value\": \"消费\",\n" +
-//                "            \"color\": \"#173177\"\n" +
-//                "        },\n" +
-//                "        \"keyword4\": {\n" +
-//                "            \"value\": \"人民币260.00元\",\n" +
-//                "            \"color\": \"#173177\"\n" +
-//                "        },\n" +
-//                "        \"keyword5\": {\n" +
-//                "            \"value\": \"06月07日19时24分\",\n" +
-//                "            \"color\": \"#173177\"\n" +
-//                "        },\n" +
-//                "        \"remark\": {\n" +
-//                "            \"value\": \"6504.09\",\n" +
-//                "            \"color\": \"#173177\"\n" +
-//                "        }\n" +
-//                "    }\n" +
-//                "}";
-//        String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+token;
-//        try {
-//            System.out.println(SSLUtil.postSSL(url, json));
-//        } catch (KeyStoreException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        } catch (URISyntaxException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        ;
+       String token = "ip1gsu4JQTaST3TBX94GCBhKK-X5IPR5h9jwPtBWkSeJO8UMvfhTv37JYzNFHReqLyAxK_fJYTfe1bWdWzmi9mlIS9hBpuNnL1m0KjgdYwstVvJ3ok1EZGO9a0JNm-81TIOiAAAETZ";
+        OrderBean orderBean = new OrderBean();
+        orderBean.setOrderId("33333");
+        orderBean.setPlanChargeAmount(10.2);
+        orderBean.setActualChargeAmount(9.2);
+        new WXService().testMessage("oFvcxwfZrQxlisYN4yIPbxmOT8KM",orderBean,token);
     }
 
 }

@@ -21,7 +21,11 @@ public interface TBStoreAccountDao {
 
     StoreAccountBean getByOpenId(@Param("openId") String openId);
 
-    int updateOpenId(@Param("account")String account,@Param("password")String password,@Param("openId")String openId);
+    int updateOpenId(@Param("account")String account,
+                     @Param("password")String password,
+                     @Param("openId")String openId,
+                     @Param("name")String name,
+                     @Param("headImg")String headImg);
 
     List<StoreAccountBean> getListByIds(@Param("ids")List<Long> ids);
 

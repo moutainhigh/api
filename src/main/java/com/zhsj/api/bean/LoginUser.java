@@ -10,6 +10,7 @@ public class LoginUser {
     private String openId;
     private String name;
     private int type; //1 管理员 2商家
+    private String headImg;
 
     public long getId() {
         return id;
@@ -57,5 +58,13 @@ public class LoginUser {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getHeadImg() {
+        return headImg;
+    }
+
+    public void setHeadImg(String headImg) {
+        this.headImg = headImg;
     }
 }

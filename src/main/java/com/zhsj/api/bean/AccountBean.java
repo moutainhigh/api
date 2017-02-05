@@ -9,6 +9,7 @@ public class AccountBean {
     private String password;
     private String openId;
     private String name;
+    private String headImg;
 
     public long getId() {
         return id;
@@ -48,5 +49,13 @@ public class AccountBean {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getHeadImg() {
+        return headImg;
+    }
+
+    public void setHeadImg(String headImg) {
+        this.headImg = headImg;
     }
 }

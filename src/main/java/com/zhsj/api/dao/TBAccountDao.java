@@ -16,7 +16,11 @@ import java.util.List;
 @DynamicDataSource(DS.DB_MANAGE)
 public interface TBAccountDao {
 
-    int updateOpenId(@Param("account")String account,@Param("password")String password,@Param("openId")String openId);
+    int updateOpenId(@Param("account")String account,
+                     @Param("password")String password,
+                     @Param("openId")String openId,
+                     @Param("name")String name,
+                     @Param("headImg")String headImg);
 
     int countByOpenId(@Param("openId")String openId);
 

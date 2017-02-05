@@ -3,7 +3,7 @@
 <mapper namespace="com.zhsj.api.dao.TBStoreAccountDao">
 
     <select id="getByAccount" resultType="storeAccountBean">
-        SELECT id,account,password,open_id,name
+        SELECT id,account,password,open_id,name,head_img
         FROM tb_store_account
         WHERE status=1 and valid = 1 and account = #{account}
     </select>
@@ -24,6 +24,12 @@
     <update id="updateOpenId">
         update tb_store_account
         set open_id = #{openId}
+        <if test="name !=null and name != ''">
+            ,name = #{name}
+        </if>
+        <if test="headImg !=null and headImg != ''">
+            ,head_img = #{headImg}
+        </if>
         where account=#{account} AND password=#{password} and status=1 and valid = 1
     </update>
 

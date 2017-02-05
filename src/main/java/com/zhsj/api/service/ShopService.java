@@ -48,7 +48,7 @@ public class ShopService {
     public Map<String,String> loginByOpenId(String code){
         logger.info("#ShopService.loginByOpenId# code={}",code);
         Map<String,String> resultMap = new HashMap<>();
-        resultMap.put(ResultStatus.RESULT_KEY,ResultStatus.RESULT_ERROR);
+        resultMap.put(ResultStatus.RESULT_KEY, ResultStatus.RESULT_ERROR);
         try {
             String openId = wxService.getOpenId(code);
             if(StringUtils.isEmpty(openId)){
@@ -70,7 +70,23 @@ public class ShopService {
     }
 
     public int updateOpenId(String account, String password,String openId){
-        return tbStoreAccountDao.updateOpenId(account, password, openId);
+        logger.info("#ShopService.updateOpenId# account={},password={},openId={}",account,password,openId);
+        try{
+            LoginUser loginUser = LoginUserUtil.getLoginUser();
+            String name = loginUser.getName();
+            String headImg = loginUser.getHeadImg();
+            if(!StringUtils.isEmpty(openId) && (StringUtils.isEmpty(name) || StringUtils.isEmpty(headImg))){
+                WeixinUserBean weixinUserBean = wxService.getWeixinUser(openId);
+                if(weixinUserBean != null){
+                    name = StringUtils.isEmpty(name)?weixinUserBean.getNickname():name;
+                    headImg = StringUtils.isEmpty(headImg)?weixinUserBean.getHeadimgurl():headImg;
+                }
+            }
+            return tbStoreAccountDao.updateOpenId(account,password,openId,name,headImg);
+        }catch (Exception e){
+            logger.error("#ShopService.updateOpenId# account={},password={},openId={}",account,password,openId,e);
+        }
+        return 0;
     }
 
     public StoreAccountBean getStoreAccountByOpenId(String openId){
