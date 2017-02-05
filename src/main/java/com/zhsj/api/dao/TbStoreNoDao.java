@@ -15,6 +15,6 @@ public interface TbStoreNoDao {
 
     int updateStatusByStoreNoAndSaleId(@Param("saleId")long saleId,@Param("storeNO")String storeNO);
 
-
+    Integer getStatusByStoreNo(@Param("stroeNo") String storeNo);
 
 }

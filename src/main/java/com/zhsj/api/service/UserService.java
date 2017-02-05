@@ -26,6 +26,10 @@ public class UserService {
         return  bmUserDao.getUserByOpenId(openId,type);
     }
 
+    public UserBean getUserId(long id){
+        return  bmUserDao.getUserById(id);
+    }
+
     public void insertOpenId(String openId,int type){
         UserBean userBean = new UserBean();
         userBean.setOpenId(openId);
@@ -33,6 +37,8 @@ public class UserService {
         Long num = bmUserDao.insertOpenId(userBean);
         logger.info("num={},id={}",num,userBean.getId());
     }
+
+
 
     public UserBean saveStoreUser(String openId,int type,String storeNo,String parentNo){
         UserBean userBean = bmUserDao.getUserByOpenId(openId,type);

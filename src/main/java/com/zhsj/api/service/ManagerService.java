@@ -198,11 +198,18 @@ public class ManagerService {
             String json = JSONObject.toJSON(msStoreBean).toString();
             //更新扩展
             tbStoreExtendDao.updateByStoreNo(storeNo, 1, json);
-            long saleId = LoginUserUtil.getLoginUser().getId();
-            tbStoreNoDao.updateStatusByStoreNoAndSaleId(saleId, storeNo);
-
+            //如果已经提交，不再提交
+            Integer status = tbStoreNoDao.getStatusByStoreNo(storeNo);
+            if(status == null){
+                return "商家编号不存在";
+            }
+            if(status == 2){
+                return "SUCCESS";
+            }
             String result = minshengService.openAccount(msStoreBean);
             if("SUCCESS".equals(result)){
+                long saleId = LoginUserUtil.getLoginUser().getId();
+                tbStoreNoDao.updateStatusByStoreNoAndSaleId(saleId, storeNo);
                 tbStoreDao.updateStatus(1,storeNo);
             }
             return result;

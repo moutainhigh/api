@@ -11,6 +11,12 @@
         WHERE open_id = #{openId} and type = #{type}
     </select>
 
+    <select id="getUserById" resultType="userBean" >
+        select <include refid="SELECT_FIELDS"/>
+        FROM tb_user
+        WHERE id = #{id}
+    </select>
+
     <insert id="insertOpenId" keyProperty="userBean.id" useGeneratedKeys="true">
         insert into tb_user (open_id,type) VALUE (#{userBean.openId},#{userBean.type})
     </insert>

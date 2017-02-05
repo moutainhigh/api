@@ -118,11 +118,11 @@ pageEncoding="UTF-8"%>
     function load() {
         //签约
         $("#signInfo").on("touchend", function () {
-            location.href = "./signInfo?auth="+auth;
+            window.open("./signInfo?auth="+auth);
         });
         //设置
         $("#setting").on("touchend", function () {
-            location.href = "./setting?auth="+auth;
+            window.open("./setting?auth="+auth);
         });
         //关于
         $("#about").on("touchend", function () {

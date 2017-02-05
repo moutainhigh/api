@@ -14,6 +14,10 @@
         where store_no = #{storeNO} and status = 1 and sale_id = #{saleId}
     </update>
 
-
+    <select id="getStatusByStoreNo" resultType="java.lang.Integer">
+        SELECT status
+        FROM tb_store_no
+        WHERE store_no = #{stroeNo}
+    </select>
 
 </mapper>

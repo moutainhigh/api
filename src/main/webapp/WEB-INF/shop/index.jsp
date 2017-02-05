@@ -161,11 +161,11 @@ pageEncoding="UTF-8"%>
     function load(){
         //流水
         $(".flow").on("touchend",function(){
-            location.href = "./toTransactionDetails?auth="+auth+"&storeNo=-1";
+            window.open("./toTransactionDetails?auth="+auth+"&storeNo=-1");
         });
         //提现
         $(".withdraw").on("touchend",function(){
-            location.href = "https://www.mszxyh.com/wapserver/outer/index.html?Page=relogin&ChannelId=mszx02279";
+            window.open("https://www.mszxyh.com/wapserver/outer/index.html?Page=relogin&ChannelId=mszx02279");
         });
 
         //店铺

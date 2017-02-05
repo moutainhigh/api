@@ -26,6 +26,8 @@ public interface TbOrderDao {
 
     OrderBean getByOrderId(@Param("orderId")String orderId);
 
+    OrderBean getById(@Param("id")long id);
+
     List<OrderBean> getMSAliListByCtime(@Param("id") long id,
                                         @Param("ctime") int ctime,
                                         @Param("pageSize") int pageSize);

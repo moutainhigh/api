@@ -90,10 +90,10 @@ pageEncoding="UTF-8"%>
 
     function load(){
         $("#newInsert").on("touchend",function(){
-            location.href = "./newInsert?auth="+auth;
+            window.open("./newInsert?auth="+auth) ;
         });
         $("#opendAcount").on("touchend",function(){
-            location.href = "https://www.mszxyh.com/wapserver/outer/index.html?Page=login&ChannelId=mszx02279";
+            window.open("https://www.mszxyh.com/wapserver/outer/index.html?Page=login&ChannelId=mszx02279");
         });
 
         $("#searchStore").on("touchend",function(){

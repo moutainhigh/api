@@ -3,6 +3,7 @@ package com.zhsj.api.service;
 import com.alibaba.fastjson.JSONObject;
 import com.zhsj.api.bean.*;
 import com.zhsj.api.bean.result.CountDealBean;
+import com.zhsj.api.bean.result.OrderPage;
 import com.zhsj.api.bean.result.RateBean;
 import com.zhsj.api.constants.ResultStatus;
 import com.zhsj.api.dao.*;
@@ -168,54 +169,16 @@ public class ShopService {
         tbStoreAccountBindRoleDao.updateByAccountIdAndRoleId(Long.parseLong(roleId),accountId);
     }
 
-    public CountDealBean countTransactionDetails(String param){
-        logger.info("#ShopService.countTransactionDetails# param={}", param);
-        CountDealBean countDealBean = new CountDealBean();
+
+    public OrderPage searchOrderPageByParam(String payMethod,String startTime,String endTime,String status,String storeNo,int pageNo,int pageSize ){
+        logger.info("#ShopService.searchOrderPageByParam# payMethod={}, startTime={},endTime={},status={},storeNo={},pageNo={},pageSize={}",payMethod,startTime,endTime,status,storeNo,pageNo,pageSize);
+        OrderPage orderPage = new OrderPage();
+        orderPage.setPageNum(pageNo);
+        orderPage.setPageSize(pageSize);
         try{
             StoreBean storeBean = LoginUserUtil.getStore();
             if (storeBean == null){
-                return countDealBean;
-            }
-            //        var data = {"payType":chkRadio,"startTime":startTime,"endTime":endTime,"status":status,"storeNo":_selectStoreNo};
-            int payType = 0;
-            int startTime = DateUtil.getTodayStartTime();
-            int endTime = startTime+ 86400;
-            List<Integer> statusList = new ArrayList<>();
-            String storeNo = "";
-            String parentStoreNo="";
-            if(!StringUtils.isEmpty(param)){
-                Map<String ,String> map = JSONObject.parseObject(param, Map.class);
-                payType = Integer.parseInt(map.get("payType"));
-                startTime = StringUtils.isEmpty(map.get("startTime"))?startTime:Integer.parseInt(map.get("startTime"));
-                endTime = StringUtils.isEmpty( map.get("endTime"))?endTime:Integer.parseInt( map.get("endTime"));
-                String ts = map.get("status");
-                if(!StringUtils.isEmpty(map.get("status"))){
-                    String[] st = map.get("status").split(",");
-                    for(int i=0;i<st.length;i++){
-                        statusList.add(Integer.parseInt(st[i]));
-                    }
-                }
-                storeNo = "-1".equals(map.get("storeNo"))?storeNo:map.get("storeNo");
-            }
-            if(storeNo.equals(storeBean.getStoreNo())){
-                parentStoreNo = storeBean.getStoreNo();
-                storeNo = "";
-            }
-            countDealBean = orderDao.countByParam(storeNo,parentStoreNo,startTime,endTime,statusList,payType);
-        }catch (Exception e){
-            logger.error("#ShopService.transactionDetails# param={}",param,e);
-        }
-        return countDealBean;
-
-    }
-
-    public List<OrderBean> transactionDetails(String payMethod,String startTime,String endTime,String status,String storeNo,int pageNo,int pageSize){
-        logger.info("#ShopService.transactionDetails# payMethod={}, startTime={},endTime={},status={},storeNo={},pageNo={},pageSize={}",payMethod,startTime,endTime,status,storeNo,pageNo,pageSize);
-        List<OrderBean> orderBeanList = new ArrayList<>();
-        try{
-            StoreBean storeBean = LoginUserUtil.getStore();
-            if (storeBean == null){
-                return orderBeanList;
+                return orderPage;
             }
             //        var data = {"payType":chkRadio,"startTime":startTime,"endTime":endTime,"status":status,"storeNo":_selectStoreNo};
             int payMethodValue = StringUtils.isEmpty(payMethod)?0:Integer.parseInt(payMethod);
@@ -238,11 +201,33 @@ public class ShopService {
                 parentStoreNo = storeBean.getStoreNo();
                 storeNoValue = "";
             }
-            orderBeanList = orderDao.getByParam(storeNoValue, parentStoreNo, startTimeValue, endTimeValue, statusList, payMethodValue, (pageNo - 1) * pageSize, pageSize);
+
+            CountDealBean countDealBean = orderDao.countByParam(storeNoValue,parentStoreNo,startTimeValue,endTimeValue,statusList,payMethodValue);
+            if(countDealBean.getCount() <= 0){
+                return orderPage;
+            }
+            orderPage.setTotal(countDealBean.getCount());
+            orderPage.setTotalPrice(countDealBean.getSum());
+            List<OrderBean> orderBeanList = orderDao.getByParam(storeNoValue, parentStoreNo, startTimeValue, endTimeValue, statusList, payMethodValue, (pageNo - 1) * pageSize, pageSize);
+            orderPage.setList(orderBeanList);
         }catch (Exception e){
-            logger.error("#ShopService.transactionDetails# payMethod={}, startTime={},endTime={},status={},storeNo={},pageNo={},pageSize={}",payMethod,startTime,endTime,status,storeNo,pageNo,pageSize,e);
+            logger.error("#ShopService.searchOrderPageByParam# payMethod={}, startTime={},endTime={},status={},storeNo={},pageNo={},pageSize={}",payMethod,startTime,endTime,status,storeNo,pageNo,pageSize,e);
         }
-        return orderBeanList;
+        return orderPage;
+    }
+
+    public OrderBean getOrderDetail(long id){
+        logger.info("#ShopService.getOrderDetail# id={}",id);
+        OrderBean orderBean = orderDao.getById(id);
+        if(orderBean == null){
+            return orderBean;
+        }
+        StoreBean storeBean = LoginUserUtil.getStore();
+        if (storeBean == null){
+           storeBean = tbStoreDao.getStoreByNo(orderBean.getStoreNo());
+        }
+        orderBean.setStoreName(storeBean.getName());
+        return orderBean;
     }
 
 }

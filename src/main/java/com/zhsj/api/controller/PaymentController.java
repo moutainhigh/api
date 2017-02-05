@@ -70,7 +70,9 @@ public class PaymentController {
             modelAndView.setViewName("pay/zfb");
         }else {
             //其它
-            modelAndView.setViewName("error");
+            modelAndView.addObject("appid", MtConfig.getProperty("weChat_appId","wx8651744246a92699"));
+            modelAndView.setViewName("pay/wx");
+//            modelAndView.setViewName("error");
         }
         return modelAndView;
     }

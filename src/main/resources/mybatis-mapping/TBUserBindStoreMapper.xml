@@ -17,7 +17,7 @@
 
     <update id="updateTimeById">
         UPDATE tb_user_bind_store
-        SELECT utime = unix_timestamp(now())
+        SET utime = unix_timestamp(now())
         WHERE id=#{id}
     </update>
 

@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.constants.ResultStatus;
 import com.zhsj.api.service.ShopService;
+import com.zhsj.api.service.UserService;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.WebUtils;
@@ -44,6 +46,8 @@ public class ShopController {
     private WXService wxService;
     @Autowired
     private ShopService shopService;
+    @Autowired
+    private UserService userService;
 
 
     @RequestMapping(value = "/updateMerchantByPaykey", method = RequestMethod.GET)
@@ -230,15 +234,22 @@ public class ShopController {
     @ResponseBody
     public Object transactionDetails(String payMethod,String startTime,String endTime,String status,String storeNo,String auth,int pageNo,int pageSize) throws Exception {
         logger.info("#ShopController.transactionDetails# payMethod={}, startTime={},endTime={},status={},storeNo={},auth={},pageNo={},pageSize={}", payMethod, startTime, endTime, status, storeNo, auth, pageNo, pageSize);
-        return CommonResult.build(0, "success",shopService.transactionDetails(payMethod,startTime,endTime,status,storeNo,pageNo,pageSize));
+        return CommonResult.build(0, "success",shopService.searchOrderPageByParam(payMethod, startTime, endTime, status, storeNo, pageNo, pageSize));
     }
 
     @RequestMapping(value = "/transactionOrder", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView transactionOrder() throws Exception {
-        logger.info("#ShopController.transactionOrder# no={}");
+    public ModelAndView transactionOrder(String auth,long id) throws Exception {
+        logger.info("#ShopController.transactionOrder# auth={},id={}",auth,id);
         ModelAndView modelAndView = new ModelAndView();
+        OrderBean orderBean = shopService.getOrderDetail(id);
+        if(orderBean == null){
+            modelAndView.setViewName("error");
+            return modelAndView;
+        }
         modelAndView.setViewName("./shop/transactionOrder");
+        modelAndView.addObject("order", orderBean);
+        modelAndView.addObject("auth",auth);
         return modelAndView;
     }
 
@@ -296,6 +307,24 @@ public class ShopController {
         map.put("loginUser", LoginUserUtil.getLoginUser());
         return CommonResult.build(0, "success",map);
     }
+
+    @RequestMapping(value = "/logout" , method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object logout(String auth) {
+        logger.info("#ShopController.logout# auth={}", auth);
+        Map<String,Object> map = new HashMap<>();
+        map.put("store", LoginUserUtil.getStore());
+        map.put("loginUser", LoginUserUtil.getLoginUser());
+        return CommonResult.build(0, "success",map);
+    }
+
+    @RequestMapping(value = "/searchUserInfo" , method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object searchUserInfo(String auth,long userId) {
+        logger.info("#ShopController.searchUserInfo# auth={},userId", auth, userId);
+        return CommonResult.build(0, "success",userService.getUserId(userId));
+    }
+
 
 
 

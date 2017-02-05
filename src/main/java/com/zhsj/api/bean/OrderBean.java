@@ -14,6 +14,7 @@ public class OrderBean {
     private int payType;
     private String payMethod;
     private String storeNo;
+    private String storeName;
     private String parentStoreNo;
     private long orgId;
     private long userId;
@@ -156,5 +157,13 @@ public class OrderBean {
 
     public void setSaleId(long saleId) {
         this.saleId = saleId;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
     }
 }

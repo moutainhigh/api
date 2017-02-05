@@ -28,52 +28,52 @@ pageEncoding="UTF-8"%>
        <section class="f2">
            <div class="common-mg">
               <div class="common-pd">
-                 <span>累计交易:</span><span class="color-read sum">0</span>元
+                 <span>累计交易:</span><span class="color-read sum" id="totalPrice">0</span>元
               </div>
            </div>
        </section>
        <section class="f3">
-              <div class="clearfix ui-border-bottom">
-                      <div class="date-day common-pd">
-                          <span>2016-07-15</span><span>周五</span>
-                      </div>
-                      <div class="number-money common-pd">
-                           <span>共<span class="color-read">6</span>笔</span><span class="color-read">￥6.00</span>
-                      </div>
-              </div>
-           <ul id="_context">
-              <!-- <li class="ui-border-bottom">
-                  <div class="common-mg">
-                      <span class="info">
-                          <em>1.00</em>
-                      </span>
-                      <span class="item" >
-                          <img src="../resource/img/app/weixinzhifu.png">
-                          <div class="cont">
-                              <p class="desc"><span>收款码收款</span></p>
-                              <p class="time">21:02:56</p>
-                          </div>
-                      </span>
-                  </div>
-               </li>
-               <li class="ui-border-bottom">
-                   <div class="common-mg">
-                      <span class="info">
-                          <em>1.00</em>
-                      </span>
-                       <span class="item" >
-                          <img src="../resource/img/app/zhifubao.png">
-                          <div class="cont">
-                              <p class="desc">
-                                  <span>收款码收款</span>
-                                  <span>立减</span>
-                                  <span><del>￥2.00</del></span>
-                              </p>
-                              <p class="time">21:02:56</p>
-                          </div>
-                      </span>
+           <!--<div class="clearfix ui-border-bottom">
+                   <div class="date-day common-pd">
+                       <span>2016-07-15</span><span>周五</span>
                    </div>
-               </li>-->
+                   <div class="number-money common-pd">
+                        <span>共<span class="color-read">6</span>笔</span><span class="color-read">￥6.00</span>
+                   </div>
+           </div> -->
+        <ul id="_context">
+           <!-- <li class="ui-border-bottom">
+               <div class="common-mg">
+                   <span class="info">
+                       <em>1.00</em>
+                   </span>
+                   <span class="item" >
+                       <img src="../resource/img/app/weixinzhifu.png">
+                       <div class="cont">
+                           <p class="desc"><span>收款码收款</span></p>
+                           <p class="time">21:02:56</p>
+                       </div>
+                   </span>
+               </div>
+            </li>
+            <li class="ui-border-bottom">
+                <div class="common-mg">
+                   <span class="info">
+                       <em>1.00</em>
+                   </span>
+                    <span class="item" >
+                       <img src="../resource/img/app/zhifubao.png">
+                       <div class="cont">
+                           <p class="desc">
+                               <span>收款码收款</span>
+                               <span>立减</span>
+                               <span><del>￥2.00</del></span>
+                           </p>
+                           <p class="time">21:02:56</p>
+                       </div>
+                   </span>
+                </div>
+            </li>-->
 
 
            </ul>
@@ -94,6 +94,9 @@ pageEncoding="UTF-8"%>
     var endTime = "${endTime}";
     var status = "${status}";
     var storeNo = "${storeNo}";
+    var pageNo = 1;
+    var lokered = false;
+    var totalPageNo = 0;
 
     $(function(){
         load();
@@ -103,41 +106,59 @@ pageEncoding="UTF-8"%>
         $("#_searchParam").on("touchend",function(){
             location.href = "./toPaystyle?auth="+auth;
         });
-        var json = {"auth":auth,"pageNo":1,"pageSize":10,"payMethod":payMethod,"startTime":startTime,"endTime":endTime,"status":status,"storeNo":storeNo};
+        search(pageNo);
+    }
+
+    function search(pageNo){
+        var json = {"auth":auth,"pageNo":pageNo,"pageSize":10,"payMethod":payMethod,"startTime":startTime,"endTime":endTime,"status":status,"storeNo":storeNo};
         $.post("./transactionDetails",json,function(obj){
             if(obj.code == 0){
+                var pageObj = obj.data;
+
+                if(pageObj.total <=0){
+                    return;
+                }
+                if(pageNo == 1){
+                    $("#totalPrice").text(pageObj.totalPrice);
+                    totalPageNo = pageObj.total / 10 +1;
+                }
+
                 var html = "";
-                for(var i=0;i<obj.data.length;i++){
-                    html+="<li class=\"ui-border-bottom\">";
+                var beanObj = pageObj.list;
+                for(var i=0;i<beanObj.length;i++){
+                    html+="<li class=\"ui-border-bottom\" ontouchend=\"_detail("+beanObj[i].id+")\">";
                     html+="<div class=\"common-mg\">";
                     html+="<span class=\"info\">";
-                    html+="<em>"+obj.data[i].actualChargeAmount+"</em>";
+                    html+="<em>"+beanObj[i].actualChargeAmount+"</em>";
                     html+="</span>";
                     html+="<span class=\"item\" >";
-                    if(obj.data[i].payMethod == 1){
+                    if(beanObj[i].payMethod == 1){
                         html+="<img src=\"../resource/img/app/weixinzhifu.png\">";
                     }else{
                         html+="<img src=\"../resource/img/app/zhifubao.png\">";
                     }
                     html+="<div class=\"cont\">";
                     html+="<p class=\"desc\">";
-                    html+="<span>收款码收款</span>";
-                    if(obj.data[i].planChargeAmount - obj.data[i].actualChargeAmount > 0){
+                    html+="<span>收款码收款"+beanObj[i].id+"</span>";
+                    if(beanObj[i].planChargeAmount - beanObj[i].actualChargeAmount > 0){
                         html+="<span>立减</span>";
-                        html+="<span><del>￥"+(obj.data[i].planChargeAmount - obj.data[i].actualChargeAmount)+"</del></span>";
+                        html+="<span><del>￥"+(beanObj[i].planChargeAmount - beanObj[i].actualChargeAmount)+"</del></span>";
                     }
                     html+="</p>";
-                    html+="<p class=\"time\">"+new Date(obj.data[i].ctime*1000).Format("yyyy-MM-dd")+"</p>";
+                    html+="<p class=\"time\">"+new Date(beanObj[i].ctime*1000).Format("yyyy-MM-dd")+"</p>";
                     html+="</div>";
                     html+="</span>";
                     html+="</div>";
                     html+="</li>";
                 }
-                $("#_context").html(html);
+                $("#_context").append(html);
+                lokered = false;
             }
         });
+    }
 
-
+    function _detail(_id){
+        window.open("./transactionOrder?auth="+auth+"&id="+_id);
     }
 
     // 对Date的扩展，将 Date 转化为指定格式的String
@@ -163,4 +184,16 @@ pageEncoding="UTF-8"%>
         return fmt;
     }
 
+    window.onscroll = pageQuery;
+    function pageQuery(){
+        if(pageNo <= 1000){
+            if(document.body.scrollTop >= document.body.scrollHeight - window.innerHeight-30){
+                if(lokered){
+                    return;
+                }
+                lokered = true;
+                search(++pageNo);
+            }
+        }
+    }
 </script>
