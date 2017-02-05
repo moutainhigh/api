@@ -101,8 +101,8 @@ public class ShopService {
             int startTime = DateUtil.getTodayStartTime();
             int endTime = startTime + 86400;
             if(StringUtils.isEmpty(storeBean.getParentNo()) || "0".equals(storeBean.getParentNo())){
-                countDealBean = orderDao.countDealByParentNo(storeBean.getParentNo(),startTime,endTime);
-                countDealBean.setCountPersion(tbUserBindStoreDao.countByParentNo(storeBean.getParentNo(),startTime, endTime));
+                countDealBean = orderDao.countDealByParentNo(storeBean.getStoreNo(),startTime,endTime);
+                countDealBean.setCountPersion(tbUserBindStoreDao.countByParentNo(storeBean.getStoreNo(),startTime, endTime));
             } else {
                 countDealBean = orderDao.countDealByStoreNo(storeBean.getStoreNo(),startTime,endTime);
                 countDealBean.setCountPersion(tbUserBindStoreDao.countByStoreNo(storeBean.getStoreNo(),startTime,endTime));
