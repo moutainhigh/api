@@ -35,7 +35,7 @@ pageEncoding="UTF-8"%>
                 </p>
                 <p class="clearfix">
                     <span class="span-label">减免</span>
-                    <span class="span-result">￥${order.planChargeAmount - order.actualChargeAmount}</span>
+                    <span class="span-result" id="discountPrice"></span>
                 </p>
             </div>
         </section>
@@ -100,11 +100,13 @@ pageEncoding="UTF-8"%>
     })
 
     function load(){
+        var price = "￥"+parseFloat(${order.planChargeAmount} - ${order.actualChargeAmount}).toFixed(2);
         var time = ${order.ctime*1000};
         var status = ${order.status};
         var payMethod = ${order.payMethod}==1?"微信支付":"支付宝支付";
         $("#_ctime").text(new Date(time).Format("yyyy-MM-dd hh:mm:ss"));
         $("#payMethod").text(payMethod);
+        $("#discountPrice").text(price);
         if(status == 1){
             $("#payStatus").text("支付成功");
         }else if(status == 2){

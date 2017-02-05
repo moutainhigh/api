@@ -142,7 +142,7 @@ pageEncoding="UTF-8"%>
                     html+="<span>收款码收款"+beanObj[i].id+"</span>";
                     if(beanObj[i].planChargeAmount - beanObj[i].actualChargeAmount > 0){
                         html+="<span>立减</span>";
-                        html+="<span><del>￥"+(beanObj[i].planChargeAmount - beanObj[i].actualChargeAmount)+"</del></span>";
+                        html+="<span><del>￥"+parseFloat(beanObj[i].planChargeAmount - beanObj[i].actualChargeAmount).toFixed(2)+"</del></span>";
                     }
                     html+="</p>";
                     html+="<p class=\"time\">"+new Date(beanObj[i].ctime*1000).Format("yyyy-MM-dd")+"</p>";
