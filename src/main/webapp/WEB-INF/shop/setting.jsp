@@ -67,8 +67,7 @@ pageEncoding="UTF-8"%>
         $(".f1").on("touchend", function () {
             $.post("./logout",{"auth":auth},function(obj){
                 if(obj.code == 0){
-                    alert(obj.msg);
-//                    window.close();
+                    window.close();
                 }
             });
         });
