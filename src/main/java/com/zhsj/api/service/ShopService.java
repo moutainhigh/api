@@ -209,7 +209,7 @@ public class ShopService {
                     statusList.add(Integer.parseInt(st[i]));
                 }
             }
-            String storeNoValue = "";
+            String storeNoValue = storeBean.getStoreNo();
             String parentStoreNo="";
             storeNoValue = "-1".equals(storeNo)?storeNoValue:storeNo;
 
