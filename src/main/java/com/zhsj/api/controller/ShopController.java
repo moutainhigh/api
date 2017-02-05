@@ -6,16 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.zhsj.api.bean.OrderBean;
+import com.zhsj.api.bean.*;
 import com.zhsj.api.constants.ResultStatus;
 import com.zhsj.api.service.ShopService;
 import com.zhsj.api.service.UserService;
 import com.zhsj.api.util.CommonResult;
+import com.zhsj.api.util.Md5;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.WebUtils;
-import com.zhsj.api.bean.MSStoreBean;
-import com.zhsj.api.bean.StoreBean;
-import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.service.MinshengService;
 import com.zhsj.api.service.WXService;
 
@@ -143,7 +141,8 @@ public class ShopController {
     @ResponseBody
     public Object bindWeChat(String account,String password,String openId) {
         logger.info("#ShopController.bindWeChat# account={},password={},openId={}", account, password, openId);
-        int num = shopService.updateOpenId(account, password, openId);
+        String pw = Md5.encrypt(password);
+        int num = shopService.updateOpenId(account, pw, openId);
         if(num > 0){
             return CommonResult.build(0, "",openId);
         }else {
@@ -160,6 +159,13 @@ public class ShopController {
         modelAndView.setViewName("./shop/passwordReset");
         modelAndView.addObject("auth",auth);
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/passwordReset", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object passwordReset(String auth,String password,String newPassword) throws Exception {
+        logger.info("#PaymentController.passwordReset# auth={},password={},newPassword={}",auth,password,newPassword);
+        return shopService.passwordReset(password,newPassword);
     }
 
     @RequestMapping(value = "/toPaystyle", method = RequestMethod.GET)
@@ -312,10 +318,9 @@ public class ShopController {
     @ResponseBody
     public Object logout(String auth) {
         logger.info("#ShopController.logout# auth={}", auth);
-        Map<String,Object> map = new HashMap<>();
-        map.put("store", LoginUserUtil.getStore());
-        map.put("loginUser", LoginUserUtil.getLoginUser());
-        return CommonResult.build(0, "success",map);
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        shopService.updateOpenId(loginUser.getAccount(), loginUser.getPassword(), "");
+        return CommonResult.build(0, "success");
     }
 
     @RequestMapping(value = "/searchUserInfo" , method = {RequestMethod.GET,RequestMethod.POST})

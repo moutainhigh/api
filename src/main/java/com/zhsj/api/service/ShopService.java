@@ -7,6 +7,7 @@ import com.zhsj.api.bean.result.OrderPage;
 import com.zhsj.api.bean.result.RateBean;
 import com.zhsj.api.constants.ResultStatus;
 import com.zhsj.api.dao.*;
+import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.Md5;
 import com.zhsj.api.util.MtConfig;
@@ -69,8 +70,7 @@ public class ShopService {
     }
 
     public int updateOpenId(String account, String password,String openId){
-        String pw = Md5.encrypt(password);
-        return tbStoreAccountDao.updateOpenId(account, pw, openId);
+        return tbStoreAccountDao.updateOpenId(account, password, openId);
     }
 
     public StoreAccountBean getStoreAccountByOpenId(String openId){
@@ -228,6 +228,33 @@ public class ShopService {
         }
         orderBean.setStoreName(storeBean.getName());
         return orderBean;
+    }
+
+    public CommonResult passwordReset(String password,String newPassword){
+        logger.info("#ShopService.passwordReset# password={},newPassword={}",password,newPassword);
+        CommonResult result = CommonResult.build(1,"系统错误");
+        try{
+            LoginUser loginUser = LoginUserUtil.getLoginUser();
+            if(loginUser == null){
+                return CommonResult.build(1,"系统错误");
+            }
+            String pd = Md5.encrypt(password);
+            if(!pd.equals(loginUser.getPassword())){
+                return CommonResult.build(1,"旧密码不正确");
+            }
+            String npd = Md5.encrypt(newPassword);
+
+            int num =tbStoreAccountDao.updatePassword(loginUser.getAccount(),pd,npd);
+            if(num > 0){
+                return CommonResult.build(0,"");
+            }else {
+                return CommonResult.build(1,"修改失败");
+            }
+
+        }catch (Exception e){
+            logger.error("#ShopService.passwordReset# password={},newPassword={}",password,newPassword,e);
+        }
+        return result;
     }
 
 }

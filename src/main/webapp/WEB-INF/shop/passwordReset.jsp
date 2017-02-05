@@ -11,6 +11,7 @@ pageEncoding="UTF-8"%>
     <meta content="telephone=no" name="format-detection">
     <link href="../resource/css/manager/common.css" type="text/css" rel="stylesheet">
     <link href="../resource/css/manager/passwordReset.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <style>
 
 
@@ -22,12 +23,12 @@ pageEncoding="UTF-8"%>
         <div class="p-group">
             <p >
                 <span class="span-label">旧密码</span>
-                <span class="span-result"><input type="text" placeholder="请输入就密码"></span>
+                <span class="span-result"><input type="password" id="password" placeholder="请输入就密码"></span>
                 <span class="forget">忘记密码?</span>
             </p>
             <p >
                 <span class="span-label">新密码</span>
-                <span class="span-result"><input type="text" placeholder="请输入新密码"></span>
+                <span class="span-result"><input type="password" id="newPassword" placeholder="请输入新密码"></span>
             </p>
         </div>
 
@@ -40,3 +41,36 @@ pageEncoding="UTF-8"%>
 </div>
 </body>
 </html>
+<script>
+    var auth = "${auth}";
+    $(function(){
+        load();
+    })
+    function load(){
+        $(".f1").on("touchend",function(){
+            _submit();
+        });
+    }
+
+    function _submit(){
+        var pw = $.trim($("#password").val());
+        var npw = $.trim($("#newPassword").val());
+        if(pw == "" || npw ==""){
+            alert("不能为空");
+            return;
+        }
+
+        if(pw == npw){
+            alert("新旧密码不能一样");
+            return;
+        }
+        $.post("./passwordReset",{"auth":auth,"password":pw,"newPassword":npw},function(obj){
+            if(obj.code == 0){
+                alert("修改成功");
+            }else{
+                alert(obj.msg);
+            }
+        });
+
+    }
+</script>

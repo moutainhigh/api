@@ -27,6 +27,13 @@
         where account=#{account} AND password=#{password} and status=1 and valid = 1
     </update>
 
+    <update id="updatePassword">
+        update tb_store_account
+        set password = #{newPwd}
+        where account=#{account} AND password=#{pwd} and status=1 and valid = 1
+    </update>
+
+
     <select id="getListByIds" resultType="storeAccountBean">
         SELECT id,account,password,open_id,name,head_img
         FROM tb_store_account

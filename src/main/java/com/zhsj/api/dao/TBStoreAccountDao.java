@@ -25,4 +25,9 @@ public interface TBStoreAccountDao {
 
     List<StoreAccountBean> getListByIds(@Param("ids")List<Long> ids);
 
+    int updatePassword(@Param("account")String account,
+                       @Param("pwd")String pwd,
+                       @Param("newPwd")String newPwd);
+
+
 }
