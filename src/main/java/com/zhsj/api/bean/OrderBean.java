@@ -10,7 +10,7 @@ public class OrderBean {
     private double actualChargeAmount;
     private int status;
     private int discountType;
-    private int discountId;
+    private long discountId;
     private int payType;
     private String payMethod;
     private String storeNo;
@@ -79,11 +79,11 @@ public class OrderBean {
         this.discountType = discountType;
     }
 
-    public int getDiscountId() {
+    public long getDiscountId() {
         return discountId;
     }
 
-    public void setDiscountId(int discountId) {
+    public void setDiscountId(long discountId) {
         this.discountId = discountId;
     }
 

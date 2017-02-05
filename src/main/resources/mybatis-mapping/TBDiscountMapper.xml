@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBDiscountDao">
+    <sql id="TABLE">
+        tb_discount
+    </sql>
+    <sql id="SELECT_FIELD">
+        id,name,content,start_time,end_time,type
+    </sql>
+
+    <select id="getById" resultType="discountBean">
+        SELECT <include refid="SELECT_FIELD"/>
+        FROM <include refid="TABLE"/>
+        WHERE id=#{id}
+    </select>
+
+
+</mapper>

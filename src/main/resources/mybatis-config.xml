@@ -26,5 +26,7 @@
         <typeAlias type="com.zhsj.api.bean.OrgBean" alias="orgBean"/>
         <typeAlias type="com.zhsj.api.bean.StoreAccountBean" alias="storeAccountBean"/>
         <typeAlias type="com.zhsj.api.bean.CityCodeBean" alias="cityCodeBean"/>
+        <typeAlias type="com.zhsj.api.bean.DiscountBean" alias="discountBean"/>
+        <typeAlias type="com.zhsj.api.bean.DiscountRuleBean" alias="discountRuleBean"/>
     </typeAliases>
 </configuration>

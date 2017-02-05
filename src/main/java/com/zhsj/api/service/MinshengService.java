@@ -3,10 +3,10 @@ package com.zhsj.api.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zhsj.api.bean.*;
+import com.zhsj.api.bean.result.RateBean;
 import com.zhsj.api.constants.OrderStatus;
 import com.zhsj.api.dao.*;
 import com.zhsj.api.util.*;
-
 import com.zhsj.api.util.minsheng.CertUtil;
 import com.zhsj.api.util.minsheng.MapUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -14,13 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.zhsj.api.task.async.OrderSuccessAsync;
-
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by lcg on 16/12/5.
@@ -43,6 +38,12 @@ public class MinshengService {
 	private OrderService orderService;
 	@Autowired
 	private AyncTaskUtil ayncTaskUtil;
+	@Autowired
+	private TBStoreBindDiscountDao tbStoreBindDiscountDao;
+	@Autowired
+	private TBDiscountDao tbDiscountDao;
+	@Autowired
+	private TBDiscountRuleDao tbDiscountRuleDao;
 
     /*此二字段由民生提供给各个商户*/
 //	static String  payKey = "85a6c4e20bf54505bea8e75bc870d587";//此字符串由民生提供，作为商户的唯一标识
@@ -58,10 +59,11 @@ public class MinshengService {
 			}
 			//获定单号
 			String orderNo = StoreUtils.getOrderNO(storeNo);
+			payBean = this.calDiscount(payBean);
 			StorePayInfo storePayInfo = prePay(payBean,orderNo);
 			//调用接口
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("order_price", String.valueOf(payBean.getOrderPrice())); //支付费用单位：元，支付一分钱
+			parameters.put("order_price", String.valueOf(payBean.getOrderPrice()-payBean.getDiscountPrice())); //支付费用单位：元，支付一分钱
 			parameters.put("pay_way_code", "WXF2F");//当面付标识
 			parameters.put("order_no", orderNo); ////入驻商户号+yyyyMMddHHmmss
 			parameters.put("order_date", new SimpleDateFormat("yyyyMMdd").format(new Date()));
@@ -101,11 +103,12 @@ public class MinshengService {
 			}
 			//获定单号
 			String orderNo = StoreUtils.getOrderNO(storeNo);
+			payBean = this.calDiscount(payBean);
 			StorePayInfo storePayInfo = prePay(payBean, orderNo);
 			//调用接口
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("buyer_id", payBean.getBuyerId()); // 支付费用单位：元，支付一分钱
-			parameters.put("order_price", payBean.getOrderPrice()); // 支付费用单位：元，支付一分钱
+			parameters.put("order_price", payBean.getOrderPrice()-payBean.getDiscountPrice()); // 支付费用单位：元，支付一分钱
 			parameters.put("paykey", storePayInfo.getField1());// 此字符串由民生提供，作为商户的唯一标识
 			parameters.put("order_date", new SimpleDateFormat("yyyyMMdd").format(new Date()));
 			parameters.put("order_time", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
@@ -135,6 +138,47 @@ public class MinshengService {
 		return map;
 	}
 
+	private PayBean calDiscount(PayBean payBean){
+		List<Long> discountIdList = tbStoreBindDiscountDao.getDiscountIdByStoreNo(payBean.getStoreNo());
+		if(discountIdList == null || discountIdList.isEmpty()){
+			return payBean;
+		}
+		DiscountBean discountBean = tbDiscountDao.getById(discountIdList.get(0));
+		List<DiscountRuleBean> ruleBeans = tbDiscountRuleDao.getByDisId(discountBean.getId());
+		if(ruleBeans == null || ruleBeans.isEmpty()){
+			return payBean;
+		}
+		DiscountRuleBean discountRuleBean = null;
+		for(DiscountRuleBean bean :ruleBeans){
+			if(payBean.getOrderPrice() > bean.getExpendAmount()){
+				if(discountRuleBean ==null || discountRuleBean.getExpendAmount() < bean.getExpendAmount()){
+					discountRuleBean = bean;
+				}
+			}
+		}
+		if(discountRuleBean == null){
+			return payBean;
+		}
+		double discountPrice = 0.0f;
+		if(discountBean.getType() == 2){
+			int min = (int)discountRuleBean.getDiscount1()*100;
+			int max = (int)discountRuleBean.getDiscount2()*100;
+			Random random = new Random();
+			int s = random.nextInt(max)%(max-min+1) + min;
+			discountPrice = s/100.0;
+		}else if(discountBean.getType() == 3){
+			discountPrice = payBean.getOrderPrice() * (1.0-discountRuleBean.getDiscount1());
+			discountPrice = Math.round((discountPrice-0.005)*100)/100.0; //四舍五入
+		}else if(discountBean.getType() == 1){
+			discountPrice = discountRuleBean.getDiscount1();
+		}
+
+
+		payBean.setDiscountId(discountBean.getId());
+		payBean.setDiscountType(discountBean.getType());
+		payBean.setDiscountPrice(discountPrice);
+		return payBean;
+	}
 
 	private StorePayInfo prePay(PayBean payBean,String orderNo){
 		String storeNo = payBean.getStoreNo();
@@ -159,8 +203,8 @@ public class MinshengService {
 		//保存定单
 		OrderBean orderBean = new OrderBean();
 		orderBean.setOrderId(orderNo);
-		orderBean.setActualChargeAmount(payBean.getOrderPrice());
-		orderBean.setPlanChargeAmount(payBean.getOrderPrice() - payBean.getDiscountPrice());
+		orderBean.setActualChargeAmount(payBean.getOrderPrice()-payBean.getDiscountPrice());
+		orderBean.setPlanChargeAmount(payBean.getOrderPrice());
 		orderBean.setStatus(0);
 		orderBean.setDiscountType(0);
 		orderBean.setDiscountId(0);
@@ -180,6 +224,8 @@ public class MinshengService {
 		orderBean.setCtime(DateUtil.unixTime());
 		orderBean.setOrgIds(storeBean.getOrgIds());
 		orderBean.setSaleId(storeBean.getSaleId());
+		orderBean.setDiscountType(payBean.getDiscountType());
+		orderBean.setDiscountId(payBean.getDiscountId());
 		int num = bmOrderDao.insertOrder(orderBean);
 		return storePayInfo;
 	}
@@ -385,7 +431,15 @@ public class MinshengService {
 //		NOTPAY
 //				FAIL SUCCESS  "WAITING_PAYMENT
 //		new MinshengService().queryOrder("201701141602121fdSN0ba482a1d");
-		new AyncTaskUtil().commitAyncTask(new OrderSuccessAsync(null));
+//		new AyncTaskUtil().commitAyncTask(new OrderSuccessAsync(null));
+		for(int i =0;i<100;i++){
+			int min = (int)2.0*100;
+			int max = (int)3.4*100;
+			Random random = new Random();
+			int s = random.nextInt(max)%(max-min+1) + min;
+			System.out.println(s/100.0);
+		}
+
 	}
 
 }
