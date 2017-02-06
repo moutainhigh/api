@@ -12,6 +12,7 @@
     <link href="../resource/css/manager/common.css" type="text/css" rel="stylesheet">
     <link href="../resource/css/manager/admin/realnameauth.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
     <style>
 
     </style>

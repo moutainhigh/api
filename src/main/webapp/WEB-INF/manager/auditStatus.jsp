@@ -11,6 +11,7 @@
     <meta content="telephone=no" name="format-detection">
     <link href="../resource/css/manager/common.css" type="text/css" rel="stylesheet">
     <link href="../resource/css/manager/admin/auditStatus.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
     <style>
 
     </style>

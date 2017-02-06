@@ -6,6 +6,7 @@ import com.zhsj.api.bean.result.CountDealBean;
 import com.zhsj.api.bean.result.OrderPage;
 import com.zhsj.api.bean.result.RateBean;
 import com.zhsj.api.constants.ResultStatus;
+import com.zhsj.api.constants.StroeRole;
 import com.zhsj.api.dao.*;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.DateUtil;
@@ -88,7 +89,7 @@ public class ShopService {
         }
         return 0;
     }
-
+    
     public StoreAccountBean getStoreAccountByOpenId(String openId){
         return tbStoreAccountDao.getByOpenId(openId);
     }
@@ -156,33 +157,40 @@ public class ShopService {
 
 
     //获取收银员
-    public List<StoreAccountBean> getStoreAccount(){
+    public Map<String,List<StoreAccountBean>> getStoreAccount(){
         logger.info("#ShopService.getStoreAccount#");
-        List<StoreAccountBean> list = new ArrayList<>();
+        Map<String,List<StoreAccountBean>> map = new HashMap<>();
         try{
             StoreBean storeBean = LoginUserUtil.getStore();
             if (storeBean == null){
-                return list;
+                return map;
             }
             List<Long> accountList = tbStoreBindAccountDao.getAccountIdByStoreNo(storeBean.getStoreNo());
             if(CollectionUtils.isEmpty(accountList)){
-                return list;
+                return map;
             }
             String roleId = MtConfig.getProperty("RECEIVE_SUCCESS_MESSAGE_ROLE", "");
             List<Long> accountIds = tbStoreAccountBindRoleDao.filterAccountIdByRole(Long.parseLong(roleId), accountList);
-            if(CollectionUtils.isEmpty(accountIds)){
-                return list;
+            if(!CollectionUtils.isEmpty(accountIds)){
+                map.put(StroeRole.CASHIER_ROLE,tbStoreAccountDao.getListByIds(accountIds));
             }
-            list = tbStoreAccountDao.getListByIds(accountIds);
+            
+            roleId = MtConfig.getProperty("STORE_MANAGER_ROLE", "");
+            accountIds = tbStoreAccountBindRoleDao.filterAccountIdByRole(Long.parseLong(roleId), accountList);
+            if(!CollectionUtils.isEmpty(accountIds)){
+                map.put(StroeRole.MANAGER_ROLE,tbStoreAccountDao.getListByIds(accountIds));
+            }
+            
         }catch (Exception e){
             logger.error("#ShopService.getStoreAccount# e={}",e.getMessage(),e);
         }
-        return list;
+        return map;
     }
 
     public void updateAccountBindRoleById(long accountId){
         String roleId = MtConfig.getProperty("RECEIVE_SUCCESS_MESSAGE_ROLE", "");
         tbStoreAccountBindRoleDao.updateByAccountIdAndRoleId(Long.parseLong(roleId),accountId);
+        tbStoreAccountDao.delById(accountId);
     }
 
 

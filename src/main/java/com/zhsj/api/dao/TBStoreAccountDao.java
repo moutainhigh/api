@@ -26,6 +26,8 @@ public interface TBStoreAccountDao {
                      @Param("openId")String openId,
                      @Param("name")String name,
                      @Param("headImg")String headImg);
+    
+    int delById( @Param("id")long id);
 
     List<StoreAccountBean> getListByIds(@Param("ids")List<Long> ids);
 

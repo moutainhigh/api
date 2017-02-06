@@ -266,7 +266,7 @@ public class ShopController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./shop/wxPushMessage");
         modelAndView.addObject("auth", auth);
-        modelAndView.addObject("storeAccountList", shopService.getStoreAccount());
+        modelAndView.addObject("accounts", shopService.getStoreAccount());
         return modelAndView;
     }
 

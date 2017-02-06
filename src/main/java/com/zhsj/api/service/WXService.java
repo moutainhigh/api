@@ -23,6 +23,7 @@ import java.lang.String;
 import java.net.URISyntaxException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -188,11 +189,20 @@ public class WXService {
                 return;
             }
             String roleId = MtConfig.getProperty("RECEIVE_SUCCESS_MESSAGE_ROLE", "");
-            accountIdList = tbStoreAccountBindRoleDao.filterAccountIdByRole(Long.parseLong(roleId),accountIdList);
-            if(CollectionUtils.isEmpty(accountIdList)){
-                return;
+            List<Long> idList = new ArrayList<>();
+            List<Long> saleIdList = tbStoreAccountBindRoleDao.filterAccountIdByRole(Long.parseLong(roleId),accountIdList);
+            if(!CollectionUtils.isEmpty(saleIdList)){
+            	idList.addAll(saleIdList);
             }
-            List<String> openIdList = tbAccountDao.getOpenIdByAccountId(accountIdList);
+            roleId = MtConfig.getProperty("STORE_MANAGER_ROLE", "");
+            List<Long> managerIdList = tbStoreAccountBindRoleDao.filterAccountIdByRole(Long.parseLong(roleId), accountIdList);
+            if(!CollectionUtils.isEmpty(managerIdList)){
+            	idList.addAll(managerIdList);
+            }
+            if(CollectionUtils.isEmpty(idList)){
+            	return;
+            }
+            List<String> openIdList = tbAccountDao.getOpenIdByAccountId(idList);
             if(CollectionUtils.isEmpty(openIdList)){
                 return;
             }

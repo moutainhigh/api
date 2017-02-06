@@ -38,6 +38,12 @@
         set password = #{newPwd}
         where account=#{account} AND password=#{pwd} and status=1 and valid = 1
     </update>
+    
+    <update id="delById">
+        update tb_store_account
+        set valid = 0
+        where id=#{id} 
+    </update>
 
 
     <select id="getListByIds" resultType="storeAccountBean">

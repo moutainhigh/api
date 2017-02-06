@@ -13,6 +13,7 @@ pageEncoding="UTF-8"%>
     <link href="../resource/css/manager/common.css" type="text/css" rel="stylesheet">
     <link href="../resource/css/manager/wxpushmsg.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
     <style>
 
     </style>
@@ -20,7 +21,20 @@ pageEncoding="UTF-8"%>
 <body>
     <div class="container">
         <section class="f">
-            <c:forEach items="${storeAccountList}" var="account">
+            <c:forEach items="${accounts.manager}" var="account">
+                <div class="sales">
+                    <div class="sales-man">
+                    <span>
+                        <img src="${account.headImg}" onerror="this.src='../resource/img/cat.png'">
+                    </span>
+                        <span>${account.name}</span>
+                    <span>
+                        <div class="jcbing" >店长</div>
+                    </span>
+                    </div>
+                </div>
+            </c:forEach>
+            <c:forEach items="${accounts.cashier}" var="account">
                 <div class="sales">
                     <div class="sales-man">
                     <span>
