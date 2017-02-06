@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="../resource/css/pay/pay.css">
     <script type="text/javascript" src="../resource/js/adapter.js"></script>
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
       <script type="text/javascript">
           $(document).ready(function(){
               if(1 == ${order.payMethod} ){
