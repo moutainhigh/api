@@ -217,10 +217,10 @@ public class WXService {
                 }
                 stroeMessage = stroeMessage.replace("_openId",openId);
                 stroeMessage = stroeMessage.replace("_url","");
-                stroeMessage = stroeMessage.replace("_first", " \"value\": \"订单支付成功\",");
+                stroeMessage = stroeMessage.replace("_first", " \"value\": \"订单支付成功\"");
                 stroeMessage = stroeMessage.replace("_keyword1","\"value\": \" "+ orderBean.getOrderId() + "\"");
-                stroeMessage = stroeMessage.replace("_keyword2","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\",\n");
-                stroeMessage = stroeMessage.replace("_remark", " \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\",");
+                stroeMessage = stroeMessage.replace("_keyword2","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\"");
+                stroeMessage = stroeMessage.replace("_remark", " \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\"");
                 String result = SSLUtil.postSSL(url, stroeMessage);
                 logger.info("#WXService.sendSuccess# result orderId={},result={}",orderBean.getOrderId(),result);
             }
