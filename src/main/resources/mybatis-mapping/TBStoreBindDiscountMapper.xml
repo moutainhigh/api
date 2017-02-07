@@ -33,6 +33,47 @@
         WHERE store_no = #{storeNo} AND discount_id = #{discountId}
     </update>
 
+    <select id="getDiscountPage" resultType="java.lang.Long">
+        SELECT discount_id FROM <include refid="TABLE"/>
+        WHERE valid = 1
+        <if test=" storeNo!=null and storeNo!='' ">
+            AND store_no = #{storeNo}
+        </if>
+        <if test=" parentStoreNo!=null and parentStoreNo!='' ">
+            AND parent_store_no = #{parentStoreNo}
+        </if>
+        <if test="status == 0">
+            AND end_time &lt;= unix_timestamp(now())
+        </if>
+        <if test="status == 1">
+            AND start_time &lt;= unix_timestamp(now()) and end_time >= unix_timestamp(now())
+        </if>
+        <if test="status == 2">
+            AND start_time >= unix_timestamp(now())
+        </if>
+        ORDER BY id DESC
+        limit #{startNo},#{pageSize}
 
+    </select>
+
+    <select id="countDiscountPage" resultType="java.lang.Long">
+        SELECT count(1) FROM <include refid="TABLE"/>
+        WHERE valid = 1
+        <if test=" storeNo!=null and storeNo!='' ">
+            AND store_no = #{storeNo}
+        </if>
+        <if test=" parentStoreNo!=null and parentStoreNo!='' ">
+            AND parent_store_no = #{parentStoreNo}
+        </if>
+        <if test="status == 0">
+            AND end_time &lt;= unix_timestamp(now())
+        </if>
+        <if test="status == 1">
+            AND start_time &lt;= unix_timestamp(now()) and end_time >= unix_timestamp(now())
+        </if>
+        <if test="status == 2">
+            AND start_time >= unix_timestamp(now())
+        </if>
+    </select>
 
 </mapper>

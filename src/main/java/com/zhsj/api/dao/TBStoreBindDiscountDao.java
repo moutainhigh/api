@@ -22,6 +22,16 @@ public interface TBStoreBindDiscountDao {
 
     List<Long> getDiscountIdByStoreNo(@Param("storeNo")String storeNo);
 
+    List<Long> getDiscountPage(@Param("storeNo")String store,
+                               @Param("parentStoreNo")String parentStoreNo,
+                               @Param("status")int status,
+                               @Param("startNo")int startNo,
+                               @Param("pageSize")int pageSize);
+
+    long countDiscountPage (@Param("storeNo")String store,
+                            @Param("parentStoreNo")String parentStoreNo,
+                            @Param("status")int status);
+
     int updateByStoreNoAndDisId(@Param("storeNo")String storeNo,
                      @Param("discountId")long discountId,
                      @Param("startTime")int startTime,
