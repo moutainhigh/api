@@ -13,6 +13,7 @@
     <link href="../resource/css/manager/admin/settlement.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
+    <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
     <style>
 
     </style>
@@ -124,12 +125,12 @@
         var sa_bank_name = $.trim($("#sa_bank_name").text());
         var mer_email = $.trim($("#mer_email").val());
         if(sa_name=="" || sa_num==""||sa_bank_name==""||mer_email==""){
-            alert("请正确填写");
+            jalert("请正确填写");
             return;
         }
         re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
         if(!re.test(mer_email)){
-            alert("邮箱填写错误");
+            jalert("邮箱填写错误");
             return;
         }
         var jsonData = {"saName":sa_name,"saNum":sa_num,"saBankName":sa_bank_name,"merEmail":mer_email,"auth":auth,"storeNo":storeNo};
@@ -137,7 +138,7 @@
             if(obj.code == 0){
                 location.href = obj.data.url+"?auth="+obj.data.auth+"&storeNo="+obj.data.storeNo;
             }else{
-                alert(obj.msg);
+                jalert(obj.msg);
             }
         });
     }

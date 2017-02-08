@@ -13,6 +13,8 @@ pageEncoding="UTF-8"%>
     <link href="../resource/css/manager/admin/index.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
+    <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
+
     <style>
 
     </style>
@@ -98,10 +100,10 @@ pageEncoding="UTF-8"%>
         });
 
         $("#searchStore").on("touchend",function(){
-           alert("暂未开通");
+            jalert("暂未开通");
         });
         $("#searchDeal").on("touchend",function(){
-            alert("暂未开通");
+            jalert("暂未开通");
         });
 
         var auth = $("#auth").val();

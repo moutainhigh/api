@@ -12,10 +12,11 @@ pageEncoding="UTF-8"%>
 	<meta name="apple-touch-fullscreen" content="no">
 	<meta content="black" name="apple-mobile-web-app-status-bar-style">
 	<meta content="telephone=no" name="format-detection">
-    <link rel="stylesheet" type="text/css" href="../resource/css/pay/common.css">
+    <link rel="stylesheet" type="text/css" href="../resource/css/pay/common.css"/>
     <script type="text/javascript" src="../resource/js/adapter.js"></script>
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
-	  <script src="https://as.alipayobjects.com/g/component/antbridge/1.1.1/antbridge.min.js"></script>
+	<script src="https://as.alipayobjects.com/g/component/antbridge/1.1.1/antbridge.min.js"></script>
+	<script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
 
   </head>
   
@@ -143,7 +144,7 @@ pageEncoding="UTF-8"%>
 			  _tradeNO = result.data.trade_no
 			  orderId = result.data.orderId;
 		  }else{
-			  alert("支付失败");
+			  jalert("支付失败");
 			  return;
 		  }
 		  AlipayJSBridgeReady();

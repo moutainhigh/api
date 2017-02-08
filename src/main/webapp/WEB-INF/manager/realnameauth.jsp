@@ -13,6 +13,7 @@
     <link href="../resource/css/manager/admin/realnameauth.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
+    <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
     <style>
 
     </style>
@@ -211,9 +212,9 @@
                 $("#"+_id).append(options);
 
             }else{
-                    alert("出错了");
-                }
-            })
+                jalert("出错了");
+            }
+        })
     }
 
     function _submit(){
@@ -225,13 +226,13 @@
         var _name = $.trim($("#_name").val());
         var _idCard = $.trim($("#_idCard").val());
         if(_rate=="" || _selectRate==""||_city==""||_address==""||_businessType==""||_name==""||_idCard==""){
-            alert("请正确填写");
+            jalert("请正确填写");
             return;
         }
         var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
         if(reg.test(_idCard) === false)
         {
-            alert("身份证输入不合法");
+            jalert("身份证输入不合法");
             return  false;
         }
 
@@ -240,7 +241,7 @@
             if(obj.code == 0){
                 location.href = obj.data.url+"?auth="+obj.data.auth+"&storeNo="+obj.data.storeNo;
             }else{
-                alert(obj.msg);
+                jalert(obj.msg);
             }
         });
     }

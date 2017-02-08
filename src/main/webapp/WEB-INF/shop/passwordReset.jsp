@@ -13,6 +13,7 @@ pageEncoding="UTF-8"%>
     <link href="../resource/css/manager/passwordReset.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
+    <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
     <style>
 
 
@@ -57,19 +58,19 @@ pageEncoding="UTF-8"%>
         var pw = $.trim($("#password").val());
         var npw = $.trim($("#newPassword").val());
         if(pw == "" || npw ==""){
-            alert("不能为空");
+            jalert("不能为空");
             return;
         }
 
         if(pw == npw){
-            alert("新旧密码不能一样");
+            jalert("新旧密码不能一样");
             return;
         }
         $.post("./passwordReset",{"auth":auth,"password":pw,"newPassword":npw},function(obj){
             if(obj.code == 0){
-                alert("修改成功");
+                jalert("修改成功");
             }else{
-                alert(obj.msg);
+                jalert(obj.msg);
             }
         });
 

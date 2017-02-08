@@ -13,7 +13,7 @@
     <link href="../resource/css/manager/admin/newInsert.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
-
+    <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
     <style>
 
     </style>
@@ -111,7 +111,7 @@
         var storeNo = $.trim($("#storeNo").val());
 
         if(storeName == "" || storePhone=="" || storeAccount == "" || storeNo==""){
-            alert("不能有空值");
+            jalert("不能有空值");
             return;
         }
         var realLength = 0, len = storeName.length, charCode = -1;
@@ -121,13 +121,13 @@
             else realLength += 2;
         }
         if(realLength<8){
-            alert("商家名称不能少于8个字符");
+            jalert("商家名称不能少于8个字符");
             return false;
         }
 
         var myreg = /^(1+\d{10})$/;
         if(!myreg.test(storePhone)) {
-            alert('请输入有效的手机号码！');
+            jalert('请输入有效的手机号码！');
             return false;
         }
 
@@ -136,7 +136,7 @@
             if(obj.code == 0){
                 location.href = obj.data.url+"?auth="+obj.data.auth+"&storeNo="+obj.data.storeNo;
             }else{
-                alert(obj.msg);
+                jalert(obj.msg);
             }
         });
     }

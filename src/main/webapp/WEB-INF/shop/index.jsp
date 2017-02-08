@@ -13,6 +13,8 @@ pageEncoding="UTF-8"%>
     <link href="../resource/css/manager/index.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
+    <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
+
 </head>
 <body>
 <input value="${auth}" id="auth" name="auth" type="hidden">
@@ -175,7 +177,7 @@ pageEncoding="UTF-8"%>
 
         //我的会员
         $("#_myMember").on("touchend",function(){
-            alert("我的会员");
+            jalert("我的会员");
         });
         //经营
         $("#_index").on("touchend",function(){

@@ -13,6 +13,7 @@ pageEncoding="UTF-8"%>
     <link href="../resource/css/manager/store.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
+    <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
     <style type="text/css">
 
     </style>
@@ -127,11 +128,11 @@ pageEncoding="UTF-8"%>
         });
         //关于
         $("#about").on("touchend", function () {
-            alert("关于");
+            jalert("关于");
         });
         //我的客服经理
         $("#mySale").on("touchend", function () {
-            alert("我的客服经理");
+            jalert("我的客服经理");
         });
         //店铺
         $("#_storeLink").on("touchend",function(){
@@ -140,7 +141,7 @@ pageEncoding="UTF-8"%>
 
         //我的会员
         $("#_myMember").on("touchend",function(){
-            alert("我的会员");
+            jalert("我的会员");
         });
         //经营
         $("#_index").on("touchend",function(){
