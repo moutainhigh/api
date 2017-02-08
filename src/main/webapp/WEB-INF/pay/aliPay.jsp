@@ -144,7 +144,7 @@ pageEncoding="UTF-8"%>
 			  _tradeNO = result.data.trade_no
 			  orderId = result.data.orderId;
 		  }else{
-			  jalert("支付失败");
+			  jalert.show("支付失败");
 			  return;
 		  }
 		  AlipayJSBridgeReady();

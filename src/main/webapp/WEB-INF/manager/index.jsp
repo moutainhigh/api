@@ -100,10 +100,10 @@ pageEncoding="UTF-8"%>
         });
 
         $("#searchStore").on("touchend",function(){
-            jalert("暂未开通");
+            jalert.show("暂未开通");
         });
         $("#searchDeal").on("touchend",function(){
-            jalert("暂未开通");
+            jalert.show("暂未开通");
         });
 
         var auth = $("#auth").val();

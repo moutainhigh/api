@@ -58,7 +58,7 @@ pageEncoding="UTF-8"%>
         var pw = $.trim($("#password").val());
         var npw = $.trim($("#newPassword").val());
         if(pw == "" || npw ==""){
-            jalert("不能为空");
+            jalert.show("不能为空");
             return;
         }
 
@@ -68,9 +68,9 @@ pageEncoding="UTF-8"%>
         }
         $.post("./passwordReset",{"auth":auth,"password":pw,"newPassword":npw},function(obj){
             if(obj.code == 0){
-                jalert("修改成功");
+                jalert.show("修改成功");
             }else{
-                jalert(obj.msg);
+                jalert.show(obj.msg);
             }
         });
 

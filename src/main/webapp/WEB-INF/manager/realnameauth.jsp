@@ -212,7 +212,7 @@
                 $("#"+_id).append(options);
 
             }else{
-                jalert("出错了");
+                jalert.show("出错了");
             }
         })
     }
@@ -226,13 +226,13 @@
         var _name = $.trim($("#_name").val());
         var _idCard = $.trim($("#_idCard").val());
         if(_rate=="" || _selectRate==""||_city==""||_address==""||_businessType==""||_name==""||_idCard==""){
-            jalert("请正确填写");
+            jalert.show("请正确填写");
             return;
         }
         var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
         if(reg.test(_idCard) === false)
         {
-            jalert("身份证输入不合法");
+            jalert.show("身份证输入不合法");
             return  false;
         }
 
@@ -241,7 +241,7 @@
             if(obj.code == 0){
                 location.href = obj.data.url+"?auth="+obj.data.auth+"&storeNo="+obj.data.storeNo;
             }else{
-                jalert(obj.msg);
+                jalert.show(obj.msg);
             }
         });
     }

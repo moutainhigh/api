@@ -111,7 +111,7 @@
         var storeNo = $.trim($("#storeNo").val());
 
         if(storeName == "" || storePhone=="" || storeAccount == "" || storeNo==""){
-            jalert("不能有空值");
+            jalert.show("不能有空值");
             return;
         }
         var realLength = 0, len = storeName.length, charCode = -1;
@@ -121,13 +121,13 @@
             else realLength += 2;
         }
         if(realLength<8){
-            jalert("商家名称不能少于8个字符");
+            jalert.show("商家名称不能少于8个字符");
             return false;
         }
 
         var myreg = /^(1+\d{10})$/;
         if(!myreg.test(storePhone)) {
-            jalert('请输入有效的手机号码！');
+            jalert.show('请输入有效的手机号码！');
             return false;
         }
 
@@ -136,7 +136,7 @@
             if(obj.code == 0){
                 location.href = obj.data.url+"?auth="+obj.data.auth+"&storeNo="+obj.data.storeNo;
             }else{
-                jalert(obj.msg);
+                jalert.show(obj.msg);
             }
         });
     }

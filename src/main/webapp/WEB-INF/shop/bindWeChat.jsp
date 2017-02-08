@@ -126,7 +126,7 @@
             if(data.code == 0){
                 location.href = "./index";
             }else{
-                jalert(data.msg);
+                jalert.show(data.msg);
             }
         });
     }

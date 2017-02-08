@@ -177,7 +177,7 @@ pageEncoding="UTF-8"%>
 
         //我的会员
         $("#_myMember").on("touchend",function(){
-            jalert("我的会员");
+            jalert.show("我的会员");
         });
         //经营
         $("#_index").on("touchend",function(){

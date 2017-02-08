@@ -128,11 +128,11 @@ pageEncoding="UTF-8"%>
         });
         //关于
         $("#about").on("touchend", function () {
-            jalert("关于");
+            jalert.show("关于");
         });
         //我的客服经理
         $("#mySale").on("touchend", function () {
-            jalert("我的客服经理");
+            jalert.show("我的客服经理");
         });
         //店铺
         $("#_storeLink").on("touchend",function(){
@@ -141,7 +141,7 @@ pageEncoding="UTF-8"%>
 
         //我的会员
         $("#_myMember").on("touchend",function(){
-            jalert("我的会员");
+            jalert.show("我的会员");
         });
         //经营
         $("#_index").on("touchend",function(){
