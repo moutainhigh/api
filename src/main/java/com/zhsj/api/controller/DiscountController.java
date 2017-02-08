@@ -1,5 +1,7 @@
 package com.zhsj.api.controller;
 
+import com.zhsj.api.bean.DiscountBean;
+import com.zhsj.api.bean.DiscountRuleBean;
 import com.zhsj.api.service.DiscountService;
 import com.zhsj.api.util.CommonResult;
 import org.slf4j.Logger;
@@ -35,14 +37,48 @@ public class DiscountController {
     @RequestMapping(value = "/getDiscountPage", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public Object getDiscountPage(String auth,int status,int pageNo,int pageSize) {
-        logger.info("#DiscountController.getDiscountPage# auth={},status={},pageNO={},pageSize={}",auth,status,pageNo,pageSize);
+        logger.info("#DiscountController.getDiscountPage# auth={},status={},pageNO={},pageSize={}", auth, status, pageNo, pageSize);
         return  CommonResult.build(0, "", discountService.getDiscountPage(auth, status, pageNo, pageSize));
     }
+
+    @RequestMapping(value = "/reduceSetting", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView reduceSetting(String auth) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("./discount/reduceSetting");
+        modelAndView.addObject("auth", auth);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/toSelectStore", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView toSelectStore(String auth) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("./discount/selectStore");
+        modelAndView.addObject("auth", auth);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/selectStore", method = RequestMethod.GET)
+    @ResponseBody
+    public Object selectShop(String auth) {
+        return CommonResult.build(1, "false");
+    }
+
+    @RequestMapping(value = "/addDiscount", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView addDiscount(String auth,DiscountBean discountBean,DiscountRuleBean discountRuleBean) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("./discount/reduceSetting");
+        modelAndView.addObject("auth", auth);
+        return modelAndView;
+    }
+
 
     //微信可以访问到 网页授权域名
     @RequestMapping(value = "/activityDetail", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView activityDetail(HttpServletRequest request, HttpServletResponse response) {
+    public ModelAndView activityDetail(String auth,int discountId) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./discount/activityDetail");
         return modelAndView;
@@ -58,14 +94,6 @@ public class DiscountController {
         return modelAndView;
     }
     
-    @RequestMapping(value = "/selectStore", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView selectShop(HttpServletRequest request, HttpServletResponse response) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("./discount/selectStore");
-        return modelAndView;
-    }
-    
     @RequestMapping(value = "/updateSetting", method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView updateActivity(HttpServletRequest request, HttpServletResponse response) {
@@ -74,13 +102,7 @@ public class DiscountController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/reduceSetting", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView reduceSetting(HttpServletRequest request, HttpServletResponse response) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("./discount/reduceSetting");
-        return modelAndView;
-    }
+
     
 
 }

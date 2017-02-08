@@ -24,7 +24,7 @@ pageEncoding="UTF-8"%>
             border-bottom: 1px solid #EEE;
         }
         .all-store{
-            background: url(../../image/app/gengduo.png) no-repeat right center/12%;
+            background: url(../resource/img/app/gengduo.png) no-repeat right center/12%;
         }
         .all-store p {
             margin-right:20px;
@@ -156,7 +156,7 @@ pageEncoding="UTF-8"%>
             content: '';
             width:20px !important;
             height:20px !important;
-            background: url(../../image/other/chexiao.png) no-repeat center;
+            background: url(../resource/img/app/chexiao.png) no-repeat center;
             background-size:100% auto;
             display: block;
             position: absolute;
@@ -169,6 +169,14 @@ pageEncoding="UTF-8"%>
 <body>
     <div class="container">
           <section class="f1">
+              <div class="wraper">
+                  <div class="inside clearfix">
+                      <span>活动名称</span>
+                        <span >
+                            <p>dd</p>
+                        </span>
+                  </div>
+              </div>
                  <div class="wraper">
                     <div class="inside clearfix">
                         <span>适用门店</span>
@@ -197,29 +205,21 @@ pageEncoding="UTF-8"%>
                   <div class="wraper">
                         <p class="lj">
                             <input type="checkbox" class="radio no">
-                            <span class="fm">满</span>
-                            <input type="text">
-                            <span>元，立减</span>
-                            <input type="text">
+                            <span class="fm">满 XXX</span>
+                            <span>元，立减 XXX</span>
                             <span>元</span>
                         </p>
                         <p class="sj">
                               <input type="checkbox" class="radio no">
-                              <span class="fm">满</span>
-                              <input type="text">
-                              <span>元，随机减</span>
-                              <input type="text">
-                              <span>至</span>
-                              <input type="text">
+                              <span class="fm">满 XXX </span>
+                              <span> 元，随机减 XXX 至 XXX</span>
                               <span>元</span>
                         </p>
                         <p class="zk">
                               <input type="checkbox" class="radio no">
-                              <span class="fm">满</span>
-                              <input type="text">
+                              <span class="fm">满 XXX</span>
                               <span>元，</span>
-                              <input type="text">
-                              <span>折</span>
+                              <span>XX 折</span>
                         </p>
                   </div>
           </section>
@@ -255,7 +255,11 @@ pageEncoding="UTF-8"%>
 </body>
 </html>
 <script>
+    var auth="${auth}";
   $(function(){
+      $(".all-store").on("click",function(){
+          location.href="./selectStore?auth="+auth;
+      });
       //点击选中
       $(".radio").on("click",function(){
           if($(this).attr("class").indexOf("sel") != -1){//如果选中。需要再次点击 。(用于重新选择)

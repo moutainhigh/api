@@ -44,7 +44,7 @@ pageEncoding="UTF-8"%>
                  </div>
                  <div class="marketing">
                      <ul class="clearfix">
-                         <li>
+                         <li id="discount1">
                              <p>
                                 <img src="../resource/img/app/lijianmaidan.png">
                              </p>
@@ -52,7 +52,7 @@ pageEncoding="UTF-8"%>
                                 <span>立减买单</span>
                              </p>
                          </li>
-                         <li>
+                         <li id="discount2">
                              <p>
                                  <img src="../resource/img/app/huiyuanjidian.png">
                              </p>
@@ -60,7 +60,7 @@ pageEncoding="UTF-8"%>
                              <span>会员集点</span>
                              </p>
                          </li>
-                         <li>
+                         <li id="discount3">
                              <p>
                                  <img src="../resource/img/app/zhulihongabao.png">
                              </p>
@@ -80,15 +80,15 @@ pageEncoding="UTF-8"%>
                  <div class="data">
                      <ul class="clearfix">
                          <li>
-                             <p id="_sum">0.03</p>
+                             <p id="_sum">0.00</p>
                              <p>今日交易 (元)</p>
                          </li>
                          <li>
-                             <p id="_count">3</p>
+                             <p id="_count">0</p>
                              <p>交易笔数 (笔)</p>
                          </li>
                          <li>
-                             <p id="_countPersion">1</p>
+                             <p id="_countPersion">0</p>
                              <p>光临客人 (人)</p>
                          </li>
                      </ul>
@@ -102,7 +102,7 @@ pageEncoding="UTF-8"%>
                  </div>
                  <div class="manager">
                      <ul class="clearfix">
-                         <li>
+                         <li id="storeManager">
                              <p>
                                  <img src="../resource/img/app/guanlimendian.png">
                              </p>
@@ -110,7 +110,7 @@ pageEncoding="UTF-8"%>
                                  <span>管理门店</span>
                              </p>
                          </li>
-                         <li>
+                         <li id="memberManager">
                              <p>
                                  <img src="../resource/img/app/guanlidianyuan.png">
                              </p>
@@ -182,6 +182,26 @@ pageEncoding="UTF-8"%>
         //经营
         $("#_index").on("touchend",function(){
             location.href = "./toIndex?auth="+auth;
+        });
+        //优惠立减
+        $("#discount1").on("touchend",function(){
+           location.href = "../discount/discountActivity?auth="+auth;
+        });
+        //会员集点
+        $("#discount2").on("touchend",function(){
+            jalert.show("暂末开通");
+        });
+        //助力红包
+        $("#discount3").on("touchend",function(){
+            jalert.show("暂末开通");
+        });
+        //管理门店
+        $("#storeManager").on("touchend",function(){
+            jalert.show("暂末开通");
+        });
+        //管理店员
+        $("#memberManager").on("touchend",function(){
+            jalert.show("暂末开通");
         });
 
         $.post("./countDeal",{"auth":auth},function(obj){

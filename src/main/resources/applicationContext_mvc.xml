@@ -71,6 +71,7 @@
         <mvc:interceptor>
             <mvc:mapping path="/manager/**" />
             <mvc:mapping path="/shop/**" />
+            <mvc:mapping path="/discount/**" />
             <mvc:exclude-mapping path="/manager/index" />
             <mvc:exclude-mapping path="/manager/login" />
             <mvc:exclude-mapping path="/manager/bindWeChat" />
