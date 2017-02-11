@@ -22,6 +22,9 @@
     <mvc:resources mapping="/resource/css/manager/admin/*.css" location="/WEB-INF/resource/css/manager/admin/" />
     <mvc:resources mapping="/resource/img/*.*" location="/WEB-INF/resource/img/" />
     <mvc:resources mapping="/resource/img/app/*.*" location="/WEB-INF/resource/img/app/" />
+    <mvc:resources mapping="/resource/mobiscroll/css/*" location="/WEB-INF/resource/mobiscroll/css/"/>
+    <mvc:resources mapping="/resource/mobiscroll/js/*" location="/WEB-INF/resource/mobiscroll/js/"/>
+
 
 
     <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->

@@ -10,26 +10,14 @@
     margin:0 20px;
 }
 .f1 .common-pd{
-    margin:10px 0;
+    padding:10px 0;
 }
 .f2 .common-pd,
 .f3 .common-pd{
-    margin: 15px 0;
+    padding: 15px 0;
 }
 .f1,.f3{
     background-color: #FFF;
-}
-.f1 .tran-month{
-    background: url(../../img/app/gengduo.png) no-repeat right center;
-    background-size: 3% auto;
-    font-size: .9em;
-}
-.f1 .select-month{
-    float: right;
-}
-.f1 .m,.f1 .fh,.color-read{
-    color:#fc324a;
-    opacity: .8;
 }
 .f2,.f3{
     font-size:.8em;
@@ -52,6 +40,12 @@
 .ui-border-bottom{
     border-bottom: 1px solid #CCC;
 }
+.f3 ul li .common-mg{
+    border-bottom: 1px solid #EEE;
+}
+.f3 ul li:last-child .common-mg{
+    border:none;
+}
 .f3 .date-day span{
     margin-right:10px;
 }
@@ -71,8 +65,8 @@ em:before{
 }
 .item{
     display: block;
-    padding: 15px 0;
-    border-bottom: 1px solid #d6d6d6;
+    padding: .5em 0;
+    /*border-bottom: 1px solid #d6d6d6;*/
 }
 .item img{
     float:left;
@@ -80,28 +74,44 @@ em:before{
     height:50px;
 }
 .cont{
-    margin-left: 60px;
+    margin-left: 4em;
 }
 .item p{
-    font-size: 16px;
+    font-size: 1em;
     padding-bottom: 8px;
-    color: #000;
     max-height: 45px;
     overflow: hidden;
     line-height: 1.2;
 }
+.normalpay{
+    color: #333;
+}
+.refund{
+    color:#999;
+}
+.refund p:last-child{
+    color:#999 !important;
+}
 .item p:last-child{
-    color:#BBB;
+    color:#333;
     font-size:14px;
 }
 .info em{
     display: block;
-    font-size: 20px;
+    font-size: 1em;
     line-height: 24px;
     white-space: nowrap;
     font-style: normal;
     color:#333;
 }
+.info .small-lj{
+    display: inline;
+    font-size: .9em;
+}
+.refund em{
+    color:#999 !important;
+}
+
 .cont .desc span{
     margin-right:5px;
 }

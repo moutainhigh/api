@@ -208,14 +208,14 @@ public class ShopService {
             int payMethodValue = StringUtils.isEmpty(payMethod)?0:Integer.parseInt(payMethod);
             int startTimeValue = DateUtil.getTodayStartTime();
             int endTimeValue = startTimeValue+ 86400;
-            startTimeValue = StringUtils.isEmpty(startTime)?startTimeValue:new Long(DateUtil.formatStringUnixTime(startTime, "yyyy-MM-dd")).intValue();
-            endTimeValue = StringUtils.isEmpty(endTime)?endTimeValue:new Long(DateUtil.formatStringUnixTime(endTime, "yyyy-MM-dd")).intValue();
+            startTimeValue = StringUtils.isEmpty(startTime)?startTimeValue:new Long(DateUtil.formatStringUnixTime(startTime, "yyyy/MM/dd")).intValue();
+            endTimeValue = StringUtils.isEmpty(endTime)?endTimeValue:new Long(DateUtil.formatStringUnixTime(endTime, "yyyy/MM/dd")).intValue();
             List<Integer> statusList = new ArrayList<>();
-            if(!StringUtils.isEmpty(status) && !"-1".equals(status)){
-                String[] st = status.split(",");
-                for(int i=0;i<st.length;i++){
-                    statusList.add(Integer.parseInt(st[i]));
-                }
+            if(!StringUtils.isEmpty(status) && !"0".equals(status)){
+                statusList.add(Integer.parseInt(status));
+            }else {
+                statusList.add(1);
+                statusList.add(3);
             }
             String storeNoValue = storeBean.getStoreNo();
             String parentStoreNo="";

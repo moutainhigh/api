@@ -168,16 +168,16 @@ public class ShopController {
         return shopService.passwordReset(password,newPassword);
     }
 
-    @RequestMapping(value = "/toPaystyle", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView toPaystyle(String auth) throws Exception {
-        logger.info("#ShopController.toPaystyle# auth={}");
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("auth",auth);
-        modelAndView.addObject("storeList", shopService.getStoreChild());
-        modelAndView.setViewName("./shop/paystyle");
-        return modelAndView;
-    }
+//    @RequestMapping(value = "/toPaystyle", method = RequestMethod.GET)
+//    @ResponseBody
+//    public ModelAndView toPaystyle(String auth) throws Exception {
+//        logger.info("#ShopController.toPaystyle# auth={}");
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.addObject("auth",auth);
+//        modelAndView.addObject("storeList", shopService.getStoreChild());
+//        modelAndView.setViewName("./shop/paystyle");
+//        return modelAndView;
+//    }
 
     @RequestMapping(value = "/toPrintSetting", method = RequestMethod.GET)
     @ResponseBody
@@ -221,8 +221,6 @@ public class ShopController {
 
     @RequestMapping(value = "/toTransactionDetails", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    //        var data = {"payType":chkRadio,"startTime":startTime,"endTime":endTime,"status":status,"storeNo":_selectStoreNo};
-
     public ModelAndView toTransactionDetails(String payMethod,String startTime,String endTime,String status,String storeNo,String auth) throws Exception {
         logger.info("#ShopController.toTransactionDetails# auth={},payMethod={}, startTime={},endTime={},status={},storeNo={}",auth,payMethod,startTime,endTime,status,storeNo);
         ModelAndView modelAndView = new ModelAndView();
@@ -233,6 +231,7 @@ public class ShopController {
         modelAndView.addObject("endTime", endTime);
         modelAndView.addObject("status", status);
         modelAndView.addObject("storeNo", storeNo);
+        modelAndView.addObject("storeList", shopService.getStoreChild());
         return modelAndView;
     }
 
