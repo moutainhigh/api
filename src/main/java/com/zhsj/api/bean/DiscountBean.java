@@ -7,6 +7,7 @@ public class DiscountBean {
     private long id;
     private String name;
     private String content;
+    private String storeNo;
     private int startTime;
     private int endTime;
     private int type;
@@ -57,5 +58,13 @@ public class DiscountBean {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getStoreNo() {
+        return storeNo;
+    }
+
+    public void setStoreNo(String storeNo) {
+        this.storeNo = storeNo;
     }
 }

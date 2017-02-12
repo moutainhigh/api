@@ -16,4 +16,6 @@ public interface TBDiscountDao {
     DiscountBean getById(@Param("id")long id);
 
     List<DiscountBean> getByIds(@Param("ids")List ids);
+
+    int insert(@Param("bean")DiscountBean bean);
 }

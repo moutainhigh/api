@@ -1,6 +1,7 @@
 package com.zhsj.api.dao;
 
 
+import com.zhsj.api.bean.DiscountBean;
 import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.WeixinUserBean;
 import com.zhsj.api.util.db.DS;
@@ -14,12 +15,6 @@ import java.util.List;
 @DynamicDataSource(DS.DB_MANAGE)
 public interface TBStoreBindDiscountDao {
 
-    int insert(@Param("storeNo")String storeNo,
-               @Param("discountId")long discountId,
-               @Param("startTime")int startTime,
-               @Param("endTime")int endTime,
-               @Param("parentStoreNo")String parentStoreNo);
-
     List<Long> getDiscountIdByStoreNo(@Param("storeNo")String storeNo);
 
     List<Long> getDiscountPage(@Param("storeNo")String store,
@@ -32,11 +27,22 @@ public interface TBStoreBindDiscountDao {
                             @Param("parentStoreNo")String parentStoreNo,
                             @Param("status")int status);
 
+    List<DiscountBean> getByParam(@Param("storeNoList")List<String> storeNos,
+                                @Param("startTime")int startTime,
+                                @Param("endTime")int endTime);
+
+
     int updateByStoreNoAndDisId(@Param("storeNo")String storeNo,
                      @Param("discountId")long discountId,
                      @Param("startTime")int startTime,
                      @Param("endTime")int endTime,
                      @Param("valid") int valid);
+
+    int insert(@Param("storeNos")List<String> storeNos,
+               @Param("discountId")long discountId,
+               @Param("startTime")int startTime,
+               @Param("endTime")int endTime,
+               @Param("parentStoreNo")String parentStoreNo);
 
 
 }

@@ -14,5 +14,11 @@
         WHERE discount_id=#{disId}
     </select>
 
+    <insert id="insert">
+        INSERT INTO <include refid="TABLE"/>
+        (discount_id,expend_amount,discount1,discount2,ctime)
+        VALUES
+        (#{bean.discountId},#{bean.expendAmount},#{bean.discount1},#{bean.discount2},unix_timestamp(now()))
+    </insert>
 
 </mapper>

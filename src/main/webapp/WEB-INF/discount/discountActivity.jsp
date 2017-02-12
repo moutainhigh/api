@@ -173,7 +173,7 @@ pageEncoding="UTF-8"%>
                             <div class="item-row">
                                 <div class="row clearfix">
                                     <span>发布时间</span>
-                                    <span class="date">2016-12-20 12:00 - 2016-12-30 12:23</span>
+                                    <span class="date">2016/12/20 - 2016/12/30</span>
                                 </div>
                             </div>
                             <div class="item-row">
@@ -465,7 +465,7 @@ pageEncoding="UTF-8"%>
                     _html += "<div class=\"item-row\">";
                     _html += "<div class=\"row clearfix\">";
                     _html += "<span>发布时间</span>";
-                    _html += "<span class=\"date\">2016-12-20 12:00 - 2016-12-30 12:23</span>";
+                    _html += "<span class=\"date\">2016/12/20 - 2016/12/30</span>";
                     _html += "</div>";
                     _html += "</div>";
                     _html += "<div class=\"item-row\">";

@@ -32,5 +32,11 @@
         </choose>
     </select>
 
+    <insert id="insert" useGeneratedKeys="true" keyProperty="bean.id">
+      INSERT INTO <include refid="TABLE"/>
+        (name,start_time,end_time,valid,utime,ctime,type ,status)
+        VALUES
+        (#{bean.name},#{bean.startTime},#{bean.endTime},1,unix_timestamp(now()),unix_timestamp(now()),#{bean.type},1)
+    </insert>
 
 </mapper>

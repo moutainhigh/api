@@ -173,7 +173,7 @@ pageEncoding="UTF-8"%>
                   <div class="inside clearfix">
                       <span>活动名称</span>
                         <span >
-                            <p>dd</p>
+                            <input id="storeName" type="text" placeholder="活动名称">
                         </span>
                   </div>
               </div>
@@ -258,7 +258,7 @@ pageEncoding="UTF-8"%>
     var auth="${auth}";
   $(function(){
       $(".all-store").on("click",function(){
-          location.href="./selectStore?auth="+auth;
+          location.href="./toSelectStore?auth="+auth;
       });
       //点击选中
       $(".radio").on("click",function(){
@@ -311,7 +311,9 @@ pageEncoding="UTF-8"%>
       })
 
       $("#confirm").on("click",function(){
-             alert('确定');
+          var type = selrule.attr('class');
+
+             alert('确定'+type);
       })
   })
 </script>

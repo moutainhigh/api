@@ -3,7 +3,9 @@ package com.zhsj.api.controller;
 import com.zhsj.api.bean.DiscountBean;
 import com.zhsj.api.bean.DiscountRuleBean;
 import com.zhsj.api.service.DiscountService;
+import com.zhsj.api.service.ShopService;
 import com.zhsj.api.util.CommonResult;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class DiscountController {
 
     @Autowired
     private DiscountService discountService;
+    @Autowired
+    private ShopService shopService;
 
     @RequestMapping(value = "/discountActivity", method = RequestMethod.GET)
     @ResponseBody
@@ -55,27 +59,33 @@ public class DiscountController {
     public ModelAndView toSelectStore(String auth) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./discount/selectStore");
+        modelAndView.addObject("shopList",shopService.getStoreChild());
         modelAndView.addObject("auth", auth);
         return modelAndView;
     }
 
     @RequestMapping(value = "/selectStore", method = RequestMethod.GET)
     @ResponseBody
-    public Object selectShop(String auth) {
-        return CommonResult.build(1, "false");
+    public ModelAndView selectShop(String auth,String storeNos) {
+        logger.info("#DiscountController.selectShop# auth={},storeNos={}",auth,storeNos);
+        if(!StringUtils.isEmpty(storeNos) &&  storeNos.length() > 1){
+            storeNos = storeNos.substring(0,storeNos.length()-1);
+        }
+        return new ModelAndView();
+//        modelAndView.setViewName("./discount/selectStore");
+//        modelAndView.addObject("shopList",shopService.getStoreChild());
+//        modelAndView.addObject("auth", auth);
+//        return CommonResult.build(1, "false");
     }
 
     @RequestMapping(value = "/addDiscount", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView addDiscount(String auth,DiscountBean discountBean,DiscountRuleBean discountRuleBean) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("./discount/reduceSetting");
-        modelAndView.addObject("auth", auth);
-        return modelAndView;
+    public CommonResult addDiscount(String auth,DiscountBean discountBean,DiscountRuleBean discountRuleBean,String storeNos) {
+        logger.info("#DiscountController.addDiscount# auth={},discountBean={},discountRuleBean={},storeNOs={}",auth,discountBean,discountRuleBean,storeNos);
+        return  discountService.addDiscount(discountBean,discountRuleBean,storeNos);
     }
 
 
-    //微信可以访问到 网页授权域名
     @RequestMapping(value = "/activityDetail", method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView activityDetail(String auth,int discountId) {
