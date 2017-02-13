@@ -23,7 +23,8 @@ public class Test {
 //        System.out.println(strs[1]);
 //        System.out.println("2,".contains("2"));
         String stre = "3,";
-        System.out.println(stre.substring(0,stre.length()-1));
+        List<Map<String,String>> list = JSON.parseObject("[{\"expendAmount\":\"66\",\"discount1\":\"7\",\"discount2\":\"0\"}]", List.class);
+        System.out.println(list.get(0).get("expendAmount"));
 
     }
 }

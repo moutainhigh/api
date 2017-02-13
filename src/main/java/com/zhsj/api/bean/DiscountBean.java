@@ -1,5 +1,7 @@
 package com.zhsj.api.bean;
 
+import java.util.List;
+
 /**
  * Created by lcg on 17/2/4.
  */
@@ -67,4 +69,6 @@ public class DiscountBean {
     public void setStoreNo(String storeNo) {
         this.storeNo = storeNo;
     }
+
+    
 }

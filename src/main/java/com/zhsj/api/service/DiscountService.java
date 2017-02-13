@@ -1,5 +1,6 @@
 package com.zhsj.api.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zhsj.api.bean.*;
 import com.zhsj.api.bean.result.CountDealBean;
@@ -76,9 +77,16 @@ public class DiscountService {
         return page;
     }
 
-    public CommonResult addDiscount(DiscountBean discountBean,DiscountRuleBean discountRuleBean,String storeNos){
-        logger.info("#DiscountService.addDiscount# discountBean={},discountRuleBean={},storeNos={}", discountBean, discountRuleBean,storeNos);
+    public CommonResult addDiscount(String name,String startTime,String endTime,int type,String rule,String storeNos){
+    	logger.info("#DiscountService.addDiscount# name={},startTime={},endTime{},type={},rule={},storeNOs={}"
+    			,name,startTime,endTime,type,rule,storeNos);
         try{
+        	//2017/02/14 01:05
+           	int start = new Long(DateUtil.formatStringUnixTime(startTime, "yyyy/MM/dd HH:mm")).intValue();
+            int end = new Long(DateUtil.formatStringUnixTime(endTime, "yyyy/MM/dd HH:mm")).intValue();
+            if(start >= end){
+            	return CommonResult.build(1,"开始时间不能大于结束时间");
+            }
             List<String> storeNoList = new ArrayList<>();
             StoreBean storeBean = LoginUserUtil.getStore();
             if(storeBean == null){
@@ -100,9 +108,9 @@ public class DiscountService {
                     storeNoList.add(no);
                 }
             }
-
+            List<Map<String,String>> list = JSON.parseObject(rule,List.class);
             //查开始时间与结束时间
-            List<DiscountBean> discountBeanList = tbStoreBindDiscountDao.getByParam(storeNoList, discountBean.getStartTime(), discountBean.getEndTime());
+            List<DiscountBean> discountBeanList = tbStoreBindDiscountDao.getByParam(storeNoList, start, end);
             if(!CollectionUtils.isEmpty(discountBeanList)){
                 List<Long> ids = new ArrayList<>();
                 Map<Long,DiscountBean> beanMap = new HashMap<>();
@@ -117,18 +125,32 @@ public class DiscountService {
                 return CommonResult.build(1,"优惠时间有冲突",beanList);
             }
             //添加优惠
+            DiscountBean discountBean = new DiscountBean();
+            discountBean.setName(name);
+            discountBean.setType(type);
+            discountBean.setStartTime(start);
+            discountBean.setEndTime(end);
             int num = tbDiscountDao.insert(discountBean);
             if(num <=0){
                 return CommonResult.build(1,"系统错误");
             }
             //添加规则
-            discountRuleBean.setDiscountId(discountBean.getId());
-            tbDiscountRuleDao.insert(discountRuleBean);
+            List<DiscountRuleBean> beanList = new ArrayList<>();
+            for(Map<String,String> map:list){
+            	DiscountRuleBean bean = new DiscountRuleBean();
+            	bean.setDiscountId(discountBean.getId());
+            	bean.setExpendAmount(Double.parseDouble(map.get("expendAmount")));
+            	bean.setDiscount1(Double.parseDouble(map.get("discount1")));
+            	bean.setDiscount2(Double.parseDouble(map.get("discount2")));
+            	beanList.add(bean);
+            }
+            tbDiscountRuleDao.insert(beanList);
             //添加规则优惠与商家绑定信息
             tbStoreBindDiscountDao.insert(storeNoList, discountBean.getId(), discountBean.getStartTime(), discountBean.getEndTime(),parentStoreNo);
             return CommonResult.build(0,"");
         }catch (Exception e){
-            logger.error("#DiscountService.addDiscount# discountBean={},discountRuleBean={},storeNos={}",discountBean,discountRuleBean,storeNos,e);
+            logger.error("#DiscountService.addDiscount# name={},startTime={},endTime{},type={},rule={},storeNOs={}"
+        			,name,startTime,endTime,type,rule,storeNos,e);
         }
         return CommonResult.build(1,"系统错误");
     }

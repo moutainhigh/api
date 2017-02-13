@@ -16,7 +16,7 @@ public interface TBDiscountRuleDao {
 
     List<DiscountRuleBean> getByDisId(@Param("disId") long disId);
 
-    int insert(@Param("bean")DiscountRuleBean bean);
+    int insert(@Param("beans")List<DiscountRuleBean> beans);
 
 
 }

@@ -439,12 +439,12 @@ pageEncoding="UTF-8"%>
             $(".content-detail .tag").hide()
             $($(".content-detail .tag")[i]).show();
             _objLi = $(".tag ul")[i];
-//                $(_objLi).html("");
-            searchDiscount(i,pageNo,this);
+            $(_objLi).html("");
+            searchDiscount(i,pageNo,_objLi);
         });
         _objLi = $(".tag ul")[0];
-//            $(_objLi).html("");
-        searchDiscount(0,pageNo,$(".tap ul li")[0]);
+        $(_objLi).html("");
+        searchDiscount(0,pageNo,$(".tag ul")[0]);
     });
 
     function searchDiscount(tag,pageNo,objLi){
@@ -453,8 +453,8 @@ pageEncoding="UTF-8"%>
         $.post("./getDiscountPage",{"auth":auth,"status":_tag,"pageNo":pageNo,"pageSize":10},function(obj){
             if(obj.code == 0){
                 var _html = "";
-                for(var i=0;i<obj.data.length;i++){
-                    var bean = obj.data[i];
+                for(var i=0;i<obj.data.list.length;i++){
+                    var bean = obj.data.list[i];
                     _html += "<li>";
                     _html += "<div class=\"item-row\">";
                     _html += "<div class=\"row clearfix\">";

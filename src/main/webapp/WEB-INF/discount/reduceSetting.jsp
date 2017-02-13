@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -12,9 +13,18 @@ pageEncoding="UTF-8"%>
     <link href="../resource/css/manager/common.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
+    <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
+    <link rel="stylesheet" href="../resource/mobiscroll/css/mobiscroll.custom-3.0.0-beta2.min.css">
+    <script src="../resource/mobiscroll/js/mobiscroll.custom-3.0.0-beta2.min.js"></script>
+    <script src="../resource/js/reduceSet.js"></script>
     <style>
         .container{
             margin-bottom:44px;
+        }
+        input[type=number]{
+            border: 1px solid #EEE;
+            -webkit-appearance:none;
+            border-radius: 0;
         }
         .f1,.f2{
             background-color: #FFF;
@@ -23,13 +33,89 @@ pageEncoding="UTF-8"%>
         .f2 .wraper:not(:last-child){
             border-bottom: 1px solid #EEE;
         }
-        .all-store{
-            background: url(../resource/img/app/gengduo.png) no-repeat right center/12%;
+        .d-group{
+            margin:0 20px;
+            font-size: .7em;
         }
-        .all-store p {
-            margin-right:20px;
-            color:#333;
+        .d-group .row{
+            padding:10px 0;
+            border-bottom: 1px solid #EEE;
+            display: -webkit-flex;
+            color:#666;
         }
+        .d-group .row:last-child{
+            border-bottom: 0;
+        }
+        .d-result .aname{
+            border: none;
+            line-height: 2.2;
+            width:100%;
+            text-align: center;
+            background: #EEE;
+            font-size: .9em;
+        }
+        :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+            color: #999; opacity:1;
+        }
+
+        ::-moz-placeholder { /* Mozilla Firefox 19+ */
+            color: #999;opacity:1;
+        }
+
+        input:-ms-input-placeholder{
+            color: #999;opacity:1;
+        }
+
+        input::-webkit-input-placeholder{
+            color: #999;opacity:1;
+        }
+        .d-label{
+            width:4em;
+            line-height: 2;
+        }
+        .d-result{
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            margin-left:8px;
+        }
+        .select-store{
+            line-height: 2;
+            text-align: center;
+            background: #EEE;
+            color: #999;
+        }
+        .start-end-time ul{
+            list-style:none;
+            line-height: 2;
+        }
+        .start-end-time ul li{
+            width:50%;
+            text-align: center;
+            position: relative;
+        }
+        .start-end-time ul li:first-child{
+            float:left;
+        }
+        .start-end-time ul li:first-child span input{
+            left:0;
+        }
+        .start-end-time ul li input{
+            width: 90% !important;
+            font-size: .9em;
+            line-height: 2.2;
+            text-align: center;
+            background: #EEE;
+            position: absolute;
+            top: 0;
+            border:0;
+        }
+        .start-end-time ul li:last-child{
+            float:right;
+        }
+        .start-end-time ul li:last-child span input{
+            right:0;
+        }
+
         .inside{
             margin:0 20px;
         }
@@ -37,7 +123,7 @@ pageEncoding="UTF-8"%>
             padding:15px 0;
             display: block;
             color:#666;
-            font-size:.9em;
+            font-size:.8em;
         }
         .f1 .inside span:first-child{
             float: left;
@@ -78,10 +164,10 @@ pageEncoding="UTF-8"%>
         .f2 .wraper p input[type=text]{
             -webkit-appearance:none;
             border-radius: 0;
-            border:1px solid #CCC;
+            border:1px solid #EEE;
         }
         .fm{
-            margin-left:22px;
+            margin-left:32px;
         }
         .f3{
             margin:10px 25px;
@@ -110,14 +196,14 @@ pageEncoding="UTF-8"%>
             display:block;
             background:#FFF;
             position:absolute;
-            top:11px;
+            top:9px;
             left:-67px;
         }
 
         .addRule em:after{
             height:15px;
             width:2px;
-            top:4px;
+            top:3px;
             left:-60px;
         }
         .sel{
@@ -163,36 +249,145 @@ pageEncoding="UTF-8"%>
             top: 20px;
             left: 0;
         }
+        .wwt-select-store-wrapper{
+            display: none;
+        }
+        .wwt-shape{
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            background: rgb(0, 0, 0);
+            z-index: 888;
+            opacity: 0.2;
+        }
+        .wwt-select-store-true{
+            position: absolute;
+            top: 30%;
+            left: 10%;
+            width: 80%;
+            background: #FFF;
+            border-radius: 5px;
+            opacity: 1;
+            z-index: 10000;
+        }
+        .wwt-select-store-header{
+            text-align: center;
+            padding: .5em;
+            border-bottom: 1px solid #EEE;
+            font-size: .8em;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .wwt-storelist{
+            max-height: 7.5em;
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+        .wwt-storelist::-webkit-scrollbar{
+            width:1px;
+            height:5px;
+            background-color:#fc324a;
+        }
+        .wwt-storelist::-webkit-scrollbar-track{
+            -webkit-box-shadow: inset 0 0 6px rgba(252,50,74,.3);
+            border-radius: 10px;
+            background-color: #fc324a;
+        }
+        .wwt-storelist::-webkit-scrollbar-thumb{
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(252,50,74,.3);
+            background-color: #fc324a;
+        }
+        .wwt-store-btn div{
+            text-align: center;
+            font-size: .8em;
+            border-top:1px solid #EEE;
+            padding: .65em;
+        }
+        .wwt-store-btn span{
+            width: 50%;
+            padding: 2px 10px 1px;
+            border-radius: 5px;
+            margin: 1em;
+        }
+        .wwt-store-reset{
+            background: #EEE;
+            color: #999;
+        }
+        .wwt-store-confirm{
+            background: #fc324a;
+            color: #FFF;
+        }
+        .wwt-storelist{
+            font-size:.8em;
+            padding:0 .5em;
+            color: #666;
+        }
+        .wwt-storelist p {
+            padding:.35em 0;
+            border-bottom:1px solid #EEE;
+        }
+
+        .wwt-defaultStore{
+            background: url(../resource/img/app/default.png) no-repeat right;
+            background-size: 8%;
+        }
+        .wwt-selectStore{
+            background: url(../resource/img/app/select.png) no-repeat right;
+            background-size: 8%;
+        }
     </style>
+<script>
+    $(function(){
+       $(".wwt-storelist").scroll(function(){
+           if($(this).scrollTop() > 0){
+               $(".wwt-select-store-header").css("-webkit-box-shadow","0 0 10px #666");
+           }else{
+               $(".wwt-select-store-header").css("-webkit-box-shadow","none");
+           }
+       })
+    })
+</script>
 
 </head>
 <body>
+<input type="hidden" id="auth" value="${auth}">
     <div class="container">
           <section class="f1">
-              <div class="wraper">
-                  <div class="inside clearfix">
-                      <span>活动名称</span>
-                        <span >
-                            <input id="storeName" type="text" placeholder="活动名称">
-                        </span>
+              <div class="d-group">
+                  <div class="row">
+                      <div class="d-label">活动名称</div>
+                      <div class="d-result">
+                          <input type="text" placeholder="请输入活动名称" name="aname" class="aname" id="aname">
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="d-label">适用门店</div>
+                      <div class="d-result select-store">
+                            <span>请选择门店</span>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="d-label">活动时间</div>
+                      <div class="d-result start-end-time">
+                          <ul class="clearfix">
+                              <li>
+                                  <span>
+                                      <input id="startTime" type="text" placeholder="开始时间" name="startTime" readonly>
+                                  </span>
+                              </li>
+                              <li>
+                                  <span>
+                                      <input id="endTime" type="text" placeholder="结束时间" name="endTime" readonly>
+                                  </span>
+                              </li>
+                          </ul>
+                      </div>
                   </div>
               </div>
-                 <div class="wraper">
-                    <div class="inside clearfix">
-                        <span>适用门店</span>
-                        <span class="all-store">
-                            <p>全部门店</p>
-                        </span>
-                    </div>
-                 </div>
-                 <div class="wraper">
-                      <div class="inside clearfix">
-                          <span>活动时间</span>
-                          <span>
-                              <p>2016-12-20 12:00 - 2016-12-30 12:23</p>
-                          </span>
-                      </div>
-                 </div>
           </section>
 
 
@@ -204,22 +399,30 @@ pageEncoding="UTF-8"%>
                   </div>
                   <div class="wraper">
                         <p class="lj">
-                            <input type="checkbox" class="radio no">
-                            <span class="fm">满 XXX</span>
-                            <span>元，立减 XXX</span>
+                            <input type="checkbox" class="radio no" readonly>
+                            <span class="fm">满</span>
+                            <input type="text" readonly>
+                            <span>元，立减</span>
+                            <input type="text" readonly>
                             <span>元</span>
                         </p>
                         <p class="sj">
-                              <input type="checkbox" class="radio no">
-                              <span class="fm">满 XXX </span>
-                              <span> 元，随机减 XXX 至 XXX</span>
+                              <input type="checkbox" class="radio no" readonly>
+                              <span class="fm">满</span>
+                              <input type="text" readonly>
+                              <span>元，随机减</span>
+                              <input type="text" readonly>
+                              <span>至</span>
+                              <input type="text" readonly>
                               <span>元</span>
                         </p>
                         <p class="zk">
-                              <input type="checkbox" class="radio no">
-                              <span class="fm">满 XXX</span>
+                              <input type="checkbox" class="radio no" readonly>
+                              <span class="fm">满</span>
+                              <input type="text" readonly>
                               <span>元，</span>
-                              <span>XX 折</span>
+                              <input type="text" readonly>
+                              <span>折</span>
                         </p>
                   </div>
           </section>
@@ -247,6 +450,30 @@ pageEncoding="UTF-8"%>
 
 
     </div>
+    <div class="wwt-select-store-wrapper">
+        <div class="wwt-shape"></div>
+        <div class="wwt-select-store-true">
+            <div class="wwt-select-store-header">
+                <span>选择门店</span>
+            </div>
+            <div class="wwt-storelist">
+                <p class="wwt-selectStore" data-id="-1" id="_all">
+                    <span>全部门店</span>
+                </p>
+                 <c:forEach items="${shopList}" var="store">
+                      <p class="wwt-defaultStore" data-id="${store.storeNo}">
+		                    <span>${store.name}</span>
+		                </p>
+                  </c:forEach>
+            </div>
+            <div class="wwt-store-btn">
+                <div>
+                    <span class="wwt-store-reset">重置</span>
+                    <span class="wwt-store-confirm">确定</span>
+                </div>
+            </div>
+        </div>
+    </div>
     <footer>
         <section class="f4" id="confirm">
             <div class="confirm">确认</div>
@@ -254,66 +481,3 @@ pageEncoding="UTF-8"%>
     </footer>
 </body>
 </html>
-<script>
-    var auth="${auth}";
-  $(function(){
-      $(".all-store").on("click",function(){
-          location.href="./toSelectStore?auth="+auth;
-      });
-      //点击选中
-      $(".radio").on("click",function(){
-          if($(this).attr("class").indexOf("sel") != -1){//如果选中。需要再次点击 。(用于重新选择)
-              $(".radio").removeClass("default").removeClass("sel").addClass("no");
-              $("#newRules").empty();
-          }else if($(this).attr("class").indexOf("no") != -1){//开始选择。让选中的红色 。其他的至灰
-              $(".radio").removeClass("sel").removeClass("no").addClass("default");
-              $(this).removeClass("default").removeClass("no").addClass("sel");
-          }
-      })
-
-      //添加规则
-      $("#add").on("click",function(){
-            var selrule = $(".sel").parent();
-            var htm = selrule.html();
-            if(htm == undefined){
-                alert('请选择一个优惠规则');
-                return false;
-            }else{
-                var checkbox = $("<input>").attr("type","checkbox").attr("class","delete")
-                checkbox.on("click",function(){
-                    $(this).parent().remove();
-                });
-                var s = "";
-                if(selrule.attr('class') == 'lj') {
-                    s = ' <span class="fm">满</span> '
-                        + '<input type="text"> '
-                        + '<span>元，立减</span> '
-                        + '<input type="text"> '
-                        + '<span>元</span>';
-
-                }else if(selrule.attr('class') == 'sj'){
-                     s = ' <span class="fm">满</span> '
-                        + '<input type="text"> '
-                        + '<span>元，随机减</span> '
-                        + '<input type="text"> '
-                        + '<span>至</span> '
-                        + '<input type="text"> '
-                        + '<span>元</span>';
-                }else if(selrule.attr('class') == 'zk'){
-                       s = ' <span class="fm">满</span> '
-                           + '<input type="text"> '
-                           + '<span>元，</span> '
-                           + '<input type="text"> '
-                           + '<span>折</span>';
-                }
-                $("#newRules").append($("<p>").append(checkbox).append(s));
-            }
-      })
-
-      $("#confirm").on("click",function(){
-          var type = selrule.attr('class');
-
-             alert('确定'+type);
-      })
-  })
-</script>
