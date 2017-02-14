@@ -455,6 +455,8 @@ pageEncoding="UTF-8"%>
                 var _html = "";
                 for(var i=0;i<obj.data.list.length;i++){
                     var bean = obj.data.list[i];
+                    var startTime = new Date(bean.startTime*1000).Format("yyyy/MM/dd hh:mm");
+                    var endTime = new Date(bean.endTime*1000).Format("yyyy/MM/dd hh:mm");
                     _html += "<li>";
                     _html += "<div class=\"item-row\">";
                     _html += "<div class=\"row clearfix\">";
@@ -465,13 +467,21 @@ pageEncoding="UTF-8"%>
                     _html += "<div class=\"item-row\">";
                     _html += "<div class=\"row clearfix\">";
                     _html += "<span>发布时间</span>";
-                    _html += "<span class=\"date\">2016/12/20 - 2016/12/30</span>";
+                    _html += "<span class=\"date\">"+startTime+" - "+endTime+"</span>";
                     _html += "</div>";
                     _html += "</div>";
                     _html += "<div class=\"item-row\">";
                     _html += "<div class=\"row clearfix\">";
-                    _html += "<span class=\"update\">修改活动</span>";
-                    _html += "<span class=\"delete\">删除</span>";
+                    if(_tag == 0){
+                        _html += "<span class=\"update\" onclick='modiDiscount("+bean.id+")'>修改活动</span>";
+                        _html += "<span class=\"delete\" onclick='delDiscount("+bean.id+")'>删除</span>";
+                    }else if(_tag == 1){
+                        _html += "<span class=\"find-data\" onclick='getDiscount("+bean.id+")'>查看数据</span>";
+                        _html += "<span class=\"stop\" onclick='stopDiscount("+bean.id+")'>停止活动</span>";
+                    }else if(_tag == 2){
+                        _html += "<span class=\"find-data\" onclick='getDiscount("+bean.id+")'>查看数据</span>";
+                        _html += "<span class=\"delete\" onclick='delDiscount("+bean.id+")'>删除</span>";
+                    }
                     _html += " </div>";
                     _html += " </div>";
                     _html += " </li>";
@@ -480,6 +490,23 @@ pageEncoding="UTF-8"%>
                 lokered = false;
             }
         });
+    }
+
+    //修改优惠
+    function modiDiscount(id){
+        jalert.show("修改优惠"+id);
+    }
+    //查看数据
+    function getDiscount(id){
+        jalert.show("查看数据"+id);
+    }
+    //停止活动
+    function stopDiscount(id){
+        jalert.show("停止活动"+id);
+    }
+    //停止活动
+    function delDiscount(id){
+        jalert.show("停止活动"+id);
     }
 
     Date.prototype.Format = function (fmt) { //author: meizz
