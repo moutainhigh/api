@@ -401,27 +401,27 @@ pageEncoding="UTF-8"%>
                         <p class="lj">
                             <input type="checkbox" class="radio no" readonly>
                             <span class="fm">满</span>
-                            <input type="text" readonly>
+                            <input type="text" value="XXX" readonly>
                             <span>元，立减</span>
-                            <input type="text" readonly>
+                            <input type="text" value="XX" readonly>
                             <span>元</span>
                         </p>
                         <p class="sj">
                               <input type="checkbox" class="radio no" readonly>
                               <span class="fm">满</span>
-                              <input type="text" readonly>
+                              <input type="text" value="XXX" readonly>
                               <span>元，随机减</span>
-                              <input type="text" readonly>
+                              <input type="text" value="XX" readonly>
                               <span>至</span>
-                              <input type="text" readonly>
+                              <input type="text" value="XX" readonly>
                               <span>元</span>
                         </p>
                         <p class="zk">
                               <input type="checkbox" class="radio no" readonly>
                               <span class="fm">满</span>
-                              <input type="text" readonly>
+                              <input type="text" value="XXX" readonly>
                               <span>元，</span>
-                              <input type="text" readonly>
+                              <input type="text" value="XX" readonly>
                               <span>折</span>
                         </p>
                   </div>
@@ -457,7 +457,7 @@ pageEncoding="UTF-8"%>
                 <span>选择门店</span>
             </div>
             <div class="wwt-storelist">
-                <p class="wwt-selectStore" data-id="-1" id="_all">
+                <p class="wwt-defaultStore" data-id="-1" id="_all">
                     <span>全部门店</span>
                 </p>
                  <c:forEach items="${shopList}" var="store">

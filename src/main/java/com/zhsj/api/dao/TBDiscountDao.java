@@ -18,4 +18,8 @@ public interface TBDiscountDao {
     List<DiscountBean> getByIds(@Param("ids")List ids);
 
     int insert(@Param("bean")DiscountBean bean);
+    
+    int updateValidById(@Param("id")long id);
+    
+    int updateStatusById(@Param("id")long id);
 }

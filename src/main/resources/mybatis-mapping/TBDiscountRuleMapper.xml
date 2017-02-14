@@ -21,7 +21,12 @@
          <foreach collection="beans" item="bean" index="index" separator=",">
          	(#{bean.discountId},#{bean.expendAmount},#{bean.discount1},#{bean.discount2},unix_timestamp(now()))
          </foreach>
-        
     </insert>
+    
+    <delete id="delByDiscountId">
+    	delete from <include refid="TABLE"/>
+    	Where discount_id = #{discountId}
+    </delete>
+    
 
 </mapper>

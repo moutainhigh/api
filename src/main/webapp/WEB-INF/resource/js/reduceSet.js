@@ -63,12 +63,14 @@ $(function(){
                 storeList.push(pspan.attr("data-id"))
             }
         }
-        if(count > 0 && count<len){
-            storeShow.text("部分门店")
+        if(count == len){
+            storeShow.text("全部门店");
         }else if(count == 0){
-            storeShow.text("请选择门店")
+            storeShow.text("请选择门店");
+        }else if(count == len-1 && $("#_all").attr("class").indexOf("wwt-defaultStore") > -1){
+        	storeShow.text("全部门店");
         }else{
-            storeShow.text("全部门店")
+            storeShow.text("部分门店");
         }
         e.stopPropagation();
 //        console.log(storeList);
@@ -84,6 +86,7 @@ $(function(){
     	}else{
     		 if($(this).attr("class").indexOf("wwt-selectStore") > -1){
     	            $(this).removeClass("wwt-selectStore").addClass("wwt-defaultStore");
+    	            $("#_all").removeClass("wwt-selectStore").addClass("wwt-defaultStore");
     	        }else{
     	            $(this).addClass("wwt-selectStore").removeClass("wwt-defaultStore");
     	        }

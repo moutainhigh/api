@@ -96,7 +96,27 @@ public class DiscountController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/modiDiscountRule", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public CommonResult modiDiscountRule(String auth,long discountId,String rule) {
+        logger.info("#DiscountController.modiDiscountRule# auth={},discountId={},rule={}",auth,discountId,rule);
+        return  discountService.modiDiscountRule(discountId, rule);
+    }
 
+    @RequestMapping(value = "/delDiscount", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public CommonResult delDiscount(String auth,long id) {
+        logger.info("#DiscountController.delDiscount# auth={},discountId={}",auth,id);
+        return  discountService.delDiscount(id);
+    }
+    
+    @RequestMapping(value = "/stopDiscount", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public CommonResult stopDiscount(String auth,long id) {
+        logger.info("#DiscountController.stopDiscount# auth={},discountId={}",auth,id);
+        return  discountService.stopDiscount(id);
+    }
+    
     
 
 }

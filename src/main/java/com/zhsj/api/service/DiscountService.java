@@ -155,6 +155,53 @@ public class DiscountService {
         return CommonResult.build(1,"系统错误");
     }
 
+    public CommonResult modiDiscountRule(long discountId,String rule){
+    	logger.info("#DiscountService.modiDiscountRule# discountId={},rule={}",discountId,rule);
+        try{
+            List<Map<String,String>> list = JSON.parseObject(rule,List.class);
+            tbDiscountRuleDao.delByDiscountId(discountId);
+            //添加规则
+            List<DiscountRuleBean> beanList = new ArrayList<>();
+            for(Map<String,String> map:list){
+            	DiscountRuleBean bean = new DiscountRuleBean();
+            	bean.setDiscountId(discountId);
+            	bean.setExpendAmount(Double.parseDouble(map.get("expendAmount")));
+            	bean.setDiscount1(Double.parseDouble(map.get("discount1")));
+            	bean.setDiscount2(Double.parseDouble(map.get("discount2")));
+            	beanList.add(bean);
+            }
+            tbDiscountRuleDao.insert(beanList);
+            return CommonResult.build(0,"");
+        }catch (Exception e){
+            logger.error("#DiscountService.modiDiscountRule# discountId={},rule={}",discountId,rule,e);
+        }
+        return CommonResult.build(1,"系统错误");
+    }
+
+    public CommonResult delDiscount(long discountId){
+    	logger.info("#DiscountService.delDiscount# discountId={}",discountId);
+        try{
+            tbStoreBindDiscountDao.updateValidByDiscountId(discountId);
+            tbDiscountDao.updateValidById(discountId);
+            return CommonResult.build(0,"");
+        }catch (Exception e){
+            logger.error("#DiscountService.delDiscount# discountId={}",discountId,e);
+        }
+        return CommonResult.build(1,"系统错误");
+    }
+    
+    public CommonResult stopDiscount(long discountId){
+    	logger.info("#DiscountService.stopDiscount# discountId={}",discountId);
+        try{
+            tbStoreBindDiscountDao.updateStatusByDiscountId(discountId);
+            tbDiscountDao.updateStatusById(discountId);
+            return CommonResult.build(0,"");
+        }catch (Exception e){
+            logger.error("#DiscountService.stopDiscount# discountId={}",discountId,e);
+        }
+        return CommonResult.build(1,"系统错误");
+    }
+    
     public DiscountBean getDiscountById(long id){
         return tbDiscountDao.getById(id);
     }

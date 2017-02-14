@@ -38,5 +38,18 @@
         VALUES
         (#{bean.name},#{bean.startTime},#{bean.endTime},1,unix_timestamp(now()),unix_timestamp(now()),#{bean.type},1)
     </insert>
+	
+	<update id="updateValidById">
+		update <include refid="TABLE"/>
+		set valid = 0
+		where id = #{id}
+	</update>
+	
+	<update id="updateStatusById">
+		update <include refid="TABLE"/>
+		set status = 2
+		where id = #{id}
+	</update>
+	
 
 </mapper>

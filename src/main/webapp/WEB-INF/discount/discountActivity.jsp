@@ -440,6 +440,7 @@ pageEncoding="UTF-8"%>
             $($(".content-detail .tag")[i]).show();
             _objLi = $(".tag ul")[i];
             $(_objLi).html("");
+            pageNo = 1;
             searchDiscount(i,pageNo,_objLi);
         });
         _objLi = $(".tag ul")[0];
@@ -453,6 +454,9 @@ pageEncoding="UTF-8"%>
         $.post("./getDiscountPage",{"auth":auth,"status":_tag,"pageNo":pageNo,"pageSize":10},function(obj){
             if(obj.code == 0){
                 var _html = "";
+                if(!obj.data.list){
+                	return;
+                }
                 for(var i=0;i<obj.data.list.length;i++){
                     var bean = obj.data.list[i];
                     var startTime = new Date(bean.startTime*1000).Format("yyyy/MM/dd hh:mm");
@@ -495,19 +499,33 @@ pageEncoding="UTF-8"%>
     //修改优惠
     function modiDiscount(id){
         location.href="./updateSetting?auth="+auth+"&discountId="+id;
-        jalert.show("修改优惠"+id);
     }
     //查看数据
     function getDiscount(id){
-        location.href="./activityDetail?auth="+auth+"&discountId="+id;
+    	jalert.show("暂末开通");
+        //location.href="./activityDetail?auth="+auth+"&discountId="+id;
     }
     //停止活动
     function stopDiscount(id){
-        jalert.show("停止活动"+id);
+    	$.post("./stopDiscount",{"auth":auth,"id":id},function(obj){
+    		if(obj.code == 0){
+    			jalert.show("停止成功");
+    			location.href = "../discount/discountActivity?auth="+auth;
+    		}else{
+    			jalert.show("停止失败");
+    		}
+    	});
     }
     //停止活动
     function delDiscount(id){
-        jalert.show("停止活动"+id);
+    	$.post("./delDiscount",{"auth":auth,"id":id},function(obj){
+    		if(obj.code == 0){
+    			jalert.show("删除成功");
+    			location.href = "../discount/discountActivity?auth="+auth;
+    		}else{
+    			jalert.show("删除失败");
+    		}
+    	});
     }
 
     Date.prototype.Format = function (fmt) { //author: meizz

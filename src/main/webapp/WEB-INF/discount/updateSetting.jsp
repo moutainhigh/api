@@ -306,6 +306,17 @@ pageEncoding="UTF-8"%>
             height:10px;
             border-top:1px solid #EEE;
         }
+        .delete{
+            content: '';
+            width:20px !important;
+            height:20px !important;
+            background: url(../resource/img/app/chexiao.png) no-repeat center;
+            background-size:100% auto;
+            display: block;
+            position: absolute;
+            top: 20px;
+            left: 0;
+        }
     </style>
 
 </head>
@@ -331,12 +342,12 @@ pageEncoding="UTF-8"%>
                     <ul class="clearfix">
                         <li>
                                   <span>
-                                      <input id="startTime" type="text" placeholder="开始时间" name="startTime" value="2017/10/10 20:23" readonly>
+                                      <input id="startTime" type="text" placeholder="开始时间" name="startTime" value="" readonly>
                                   </span>
                         </li>
                         <li>
                                   <span>
-                                      <input id="endTime" type="text" placeholder="结束时间" name="endTime" value="2017/10/10 20:23" readonly>
+                                      <input id="endTime" type="text" placeholder="结束时间" name="endTime" value="" readonly>
                                   </span>
                         </li>
                     </ul>
@@ -355,39 +366,38 @@ pageEncoding="UTF-8"%>
         <div class="wraper" id="rules">
         <c:forEach items="${ruleBeans}" var="rule">
             <c:if test="${discount.type == 1}">
-1
+				 <p class="lj">
+	                <input type="checkbox" class="delete" onclick="remove(this)">
+	                <span class="fm">满</span>
+	                <input type="number" value="${rule.expendAmount}">
+	                <span>元，立减</span>
+	                <input type="number" value="${rule.discount1}">
+	                <span>元</span>
+	            </p>
             </c:if>
             <c:if test="${discount.type == 2}">
-2
+				<p class="sj">
+                      <input type="checkbox" class="delete" onclick="remove(this)">
+                      <span class="fm">满</span>
+                      <input type="number" value="${rule.expendAmount}">
+                      <span>元，随机减</span>
+                      <input type="number" value="${rule.discount1}">
+                      <span>至</span>
+                      <input type="number" value="${rule.discount2}">
+                      <span>元</span>
+                </p>
             </c:if>
             <c:if test="${discount.type == 3}">
-3
+				<p class="zk">
+                       <input type="checkbox" class="delete" onclick="remove(this)">
+                       <span class="fm">满</span>
+                       <input type="number" value="${rule.expendAmount}">
+                       <span>元，</span>
+                       <input type="number" value="${rule.discount1}">
+                       <span>折</span>
+                 </p>
             </c:if>
         </c:forEach>
-            <p class="lj">
-                <input type="checkbox" class="radio sel">
-                <span class="fm">满</span>
-                <input type="number" value="5">
-                <span>元，立减</span>
-                <input type="number" value="2">
-                <span>元</span>
-            </p>
-            <p class="lj">
-                <input type="checkbox" class="radio sel">
-                <span class="fm">满</span>
-                <input type="number" value="10">
-                <span>元，立减</span>
-                <input type="number" value="4">
-                <span>元</span>
-            </p>
-            <p class="lj">
-                <input type="checkbox" class="radio sel">
-                <span class="fm">满</span>
-                <input type="number" value="20">
-                <span>元，立减</span>
-                <input type="number" value="5">
-                <span>元</span>
-            </p>
         </div>
     </section>
 
@@ -428,7 +438,13 @@ pageEncoding="UTF-8"%>
 </body>
 </html>
 <script>
+var type = ${discount.type};
+var auth = "${auth}";
     $(function(){
+    	var startTime = ${discount.startTime};
+    	var endTime = ${discount.endTime};
+    	$("#startTime").val(new Date(startTime*1000).Format("yyyy/MM/dd hh:mm"));
+    	$("#endTime").val(new Date(endTime*1000).Format("yyyy/MM/dd hh:mm"));
         //弹出框高亮
         $(".wwt-storelist").scroll(function(){
             if($(this).scrollTop() > 0){
@@ -448,33 +464,37 @@ pageEncoding="UTF-8"%>
 
 
 
-        //点击选中
-        $(".radio").on("click",function(){
-            if($(this).attr("class").indexOf("sel") != -1){
-                $(this).removeClass("sel").addClass("no");
-            }else{
-                $(this).removeClass("no").addClass("sel");
-            }
-        })
-
         //添加规则
         $("#add").on("click",function(){
-                var checkbox = $("<input>").attr("type","checkbox").attr("class","radio sel")
-                checkbox.on("click",function(){
-                    if($(this).attr("class").indexOf("sel") != -1){
-                        $(this).removeClass("sel").addClass("no");
-                    }else{
-                        $(this).removeClass("no").addClass("sel");
-                    }
-                });
-                var s = "";
-                    s = ' <span class="fm">满</span> '
-                        + '<input type="number"> '
-                        + '<span>元，立减</span> '
-                        + '<input type="number"> '
-                        + '<span>元</span>';
+        	 var checkbox = $("<input>").attr("type","checkbox").attr("class","delete")
+             checkbox.on("click",function(){
+                 $(this).parent().remove();
+             });
+             var s = "";
+             if( 1 == type) {
+                 s = ' <span class="fm">满</span> '
+                     + '<input type="number"> '
+                     + '<span>元，立减</span> '
+                     + '<input type="number"> '
+                     + '<span>元</span>';
 
-                $("#rules").append($("<p>").append(checkbox).append(s));
+             }else if(2 == type){
+                 s = ' <span class="fm">满</span> '
+                     + '<input type="number"> '
+                     + '<span>元，随机减</span> '
+                     + '<input type="number"> '
+                     + '<span>至</span> '
+                     + '<input type="number"> '
+                     + '<span>元</span>';
+             }else if(3==type){
+                 s = ' <span class="fm">满</span> '
+                     + '<input type="number"> '
+                     + '<span>元，</span> '
+                     + '<input type="number"> '
+                     + '<span>折</span>';
+             }
+             $("#rules").append($("<p>").append(checkbox).append(s));
+                
         })
 
         $("#update").on("click",function(){
@@ -482,7 +502,7 @@ pageEncoding="UTF-8"%>
             var rulesp = $("#rules").find("p"),
             len = rulesp.length;
             for(var i = 0;i<len;i++){
-                if($(rulesp[i]).find("input[type=checkbox]").attr("class").indexOf("sel") > -1){
+                if($(rulesp[i]).find("input[type=checkbox]").attr("class").indexOf("delete") > -1){
                     var inputs = $(rulesp[i]).find("input[type=number]");
                     //定义规则的对象
                     var reduce = {
@@ -504,8 +524,51 @@ pageEncoding="UTF-8"%>
                 jalert.show("请添加优惠规则");
                 return false;
             }
-            jalert.show('确定修改');
-            console.log(reduceList)
+            var ruleList=[];
+            for(var i=0;i<reduceList.length;i++){
+            	var obj = reduceList[i].rule;
+            	var rule = {};
+            	rule.expendAmount = obj[0];
+            	rule.discount1 = obj[1];
+            	if(type==2){
+            		rule.discount2 = obj[2];
+            	}else{
+            		rule.discount2 = "0";
+            	}
+            	ruleList.push(rule);
+            }
+            var data = {
+                "discountId":${discount.id},//活动名称
+                "auth":auth,
+                "rule":JSON.stringify(ruleList)//规则
+            }
+            $.post("./modiDiscountRule",data,function(obj){
+            	if(obj.code == 0){
+            		location.href = "../discount/discountActivity?auth="+auth;
+            	}else{
+            		jalert.show(obj.msg);
+            	}
+            })
         })
     })
+    
+    function remove(obj){
+    	$(obj).parent().remove();
+    }
+    Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+            "y+": this.getYear(),
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "h+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
 </script>

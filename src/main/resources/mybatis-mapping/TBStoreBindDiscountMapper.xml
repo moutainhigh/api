@@ -53,13 +53,13 @@
             AND parent_store_no = #{parentStoreNo}
         </if>
         <if test="status == 0">
-            AND end_time &lt;= unix_timestamp(now())
+            AND start_time > unix_timestamp(now()) AND status = 1
         </if>
         <if test="status == 1">
-            AND start_time &lt;= unix_timestamp(now()) and end_time >= unix_timestamp(now())
+            AND start_time &lt;= unix_timestamp(now()) and end_time >= unix_timestamp(now()) AND status = 1
         </if>
         <if test="status == 2">
-            AND ( start_time >= unix_timestamp(now()) OR status = 2)
+            AND ( end_time &lt; unix_timestamp(now()) OR status = 2)
         </if>
         ORDER BY id DESC
         limit #{startNo},#{pageSize}
@@ -76,13 +76,13 @@
             AND parent_store_no = #{parentStoreNo}
         </if>
         <if test="status == 0">
-            AND end_time &lt;= unix_timestamp(now())
+            AND start_time > unix_timestamp(now()) AND status = 1
         </if>
         <if test="status == 1">
-            AND start_time &lt;= unix_timestamp(now()) and end_time >= unix_timestamp(now())
+            AND start_time &lt;= unix_timestamp(now()) and end_time >= unix_timestamp(now()) AND status = 1
         </if>
         <if test="status == 2">
-            AND ( start_time >= unix_timestamp(now()) OR status = 2)
+            AND ( end_time &lt; unix_timestamp(now()) OR status = 2)
         </if>
     </select>
 
@@ -110,5 +110,19 @@
         from <include refid="TABLE"/>
         WHERE discount_id = #{discountId} and valid = 1
     </select>
+    
+    <update id="updateValidByDiscountId">
+		update <include refid="TABLE"/>
+		set valid = 0
+		where discount_id = #{discountId}
+	</update>
+	
+	<update id="updateStatusByDiscountId">
+		update <include refid="TABLE"/>
+		set status = 2
+		where discount_id = #{discountId}
+	</update>
+	
+	
 
 </mapper>
