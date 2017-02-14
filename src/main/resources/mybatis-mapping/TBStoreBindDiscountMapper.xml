@@ -105,4 +105,10 @@
         AND valid = 1 and status = 1
     </select>
 
+    <select id="getStoreNoByDiscountId" resultType="java.lang.String">
+        select store_no
+        from <include refid="TABLE"/>
+        WHERE discount_id = #{discountId} and valid = 1
+    </select>
+
 </mapper>

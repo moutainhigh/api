@@ -1,6 +1,7 @@
 package com.zhsj.api.util.test;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,11 @@ public class Test {
         String stre = "3,";
         List<Map<String,String>> list = JSON.parseObject("[{\"expendAmount\":\"66\",\"discount1\":\"7\",\"discount2\":\"0\"}]", List.class);
         System.out.println(list.get(0).get("expendAmount"));
+
+        JSONObject json = new JSONObject();
+        json.put("dispatchStrategy",1);
+        json.put("areaIds", list);
+        System.out.println(json.toJSONString());
 
     }
 }

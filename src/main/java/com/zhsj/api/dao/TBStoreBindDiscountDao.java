@@ -44,5 +44,7 @@ public interface TBStoreBindDiscountDao {
                @Param("endTime")int endTime,
                @Param("parentStoreNo")String parentStoreNo);
 
+    List<String> getStoreNoByDiscountId(@Param("discountId")long discountId);
+
 
 }

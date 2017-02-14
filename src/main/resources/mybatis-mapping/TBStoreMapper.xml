@@ -39,4 +39,23 @@
         WHERE parent_no = #{parentNo}
         and status = 1 and valid = 1
     </select>
+
+    <select id="getListByNos" resultType="storeBean">
+        select <include refid="SELECT_FIELDS"/>
+        FROM tb_store
+        WHERE
+        <choose>
+            <when test="nos != null and nos.size() > 0">
+               store_no IN
+                <foreach collection="nos" item="no"
+                         open="(" separator="," close=")" >
+                    #{no}
+                </foreach>
+            </when>
+            <otherwise>
+                 1 = 0
+            </otherwise>
+        </choose>
+        and status = 1 and valid = 1
+    </select>
 </mapper>

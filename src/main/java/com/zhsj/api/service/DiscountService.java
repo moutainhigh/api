@@ -155,6 +155,22 @@ public class DiscountService {
         return CommonResult.build(1,"系统错误");
     }
 
+    public DiscountBean getDiscountById(long id){
+        return tbDiscountDao.getById(id);
+    }
 
+    public List<DiscountRuleBean> getListByDisId(long id){
+        return tbDiscountRuleDao.getByDisId(id);
+    }
+
+    public List<StoreBean> getStoreListByDisId(long id){
+        logger.info("#DiscountService.getStoreListByDisId# id={}",id);
+        List<String> storeNOList = tbStoreBindDiscountDao.getStoreNoByDiscountId(id);
+        if(CollectionUtils.isEmpty(storeNOList)){
+            return  new ArrayList<>();
+        }
+        List<StoreBean> list = tbStoreDao.getListByNos(storeNOList);
+        return list;
+    }
 
 }

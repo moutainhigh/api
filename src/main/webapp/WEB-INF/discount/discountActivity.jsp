@@ -494,11 +494,12 @@ pageEncoding="UTF-8"%>
 
     //修改优惠
     function modiDiscount(id){
+        location.href="./updateSetting?auth="+auth+"&discountId="+id;
         jalert.show("修改优惠"+id);
     }
     //查看数据
     function getDiscount(id){
-        jalert.show("查看数据"+id);
+        location.href="./activityDetail?auth="+auth+"&discountId="+id;
     }
     //停止活动
     function stopDiscount(id){

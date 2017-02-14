@@ -86,9 +86,13 @@ public class DiscountController {
     
     @RequestMapping(value = "/updateSetting", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView updateActivity(HttpServletRequest request, HttpServletResponse response) {
+    public ModelAndView updateActivity(String auth,long discountId) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./discount/updateSetting");
+        modelAndView.addObject("auth", auth);
+        modelAndView.addObject("discount", discountService.getDiscountById(discountId));
+        modelAndView.addObject("ruleBeans",discountService.getListByDisId(discountId));
+        modelAndView.addObject("storeList",discountService.getStoreListByDisId(discountId));
         return modelAndView;
     }
 
