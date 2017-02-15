@@ -34,6 +34,8 @@ public interface TBStoreAccountDao {
     int updatePassword(@Param("account")String account,
                        @Param("pwd")String pwd,
                        @Param("newPwd")String newPwd);
+    
+    List<String> getOpenIdByAccountId(@Param("accountIdList") List<Long> accountIdList);
 
 
 }

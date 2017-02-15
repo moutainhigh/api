@@ -61,9 +61,13 @@ public class MinshengService {
 			String orderNo = StoreUtils.getOrderNO(storeNo);
 			payBean = this.calDiscount(payBean);
 			StorePayInfo storePayInfo = prePay(payBean,orderNo);
+			double orderPrice = payBean.getOrderPrice()-payBean.getDiscountPrice();
+			if(orderPrice <= 0){
+				orderPrice = 0.01;
+			}
 			//调用接口
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("order_price", String.valueOf(payBean.getOrderPrice()-payBean.getDiscountPrice())); //支付费用单位：元，支付一分钱
+			parameters.put("order_price", String.valueOf(orderPrice)); //支付费用单位：元，支付一分钱
 			parameters.put("pay_way_code", "WXF2F");//当面付标识
 			parameters.put("order_no", orderNo); ////入驻商户号+yyyyMMddHHmmss
 			parameters.put("order_date", new SimpleDateFormat("yyyyMMdd").format(new Date()));
@@ -106,9 +110,13 @@ public class MinshengService {
 			payBean = this.calDiscount(payBean);
 			StorePayInfo storePayInfo = prePay(payBean, orderNo);
 			//调用接口
+			double orderPrice = payBean.getOrderPrice()-payBean.getDiscountPrice();
+			if(orderPrice <= 0){
+				orderPrice = 0.01;
+			}
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("buyer_id", payBean.getBuyerId()); // 支付费用单位：元，支付一分钱
-			parameters.put("order_price", payBean.getOrderPrice()-payBean.getDiscountPrice()); // 支付费用单位：元，支付一分钱
+			parameters.put("order_price", orderPrice); // 支付费用单位：元，支付一分钱
 			parameters.put("paykey", storePayInfo.getField1());// 此字符串由民生提供，作为商户的唯一标识
 			parameters.put("order_date", new SimpleDateFormat("yyyyMMdd").format(new Date()));
 			parameters.put("order_time", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
@@ -150,7 +158,7 @@ public class MinshengService {
 		}
 		DiscountRuleBean discountRuleBean = null;
 		for(DiscountRuleBean bean :ruleBeans){
-			if(payBean.getOrderPrice() > bean.getExpendAmount()){
+			if(payBean.getOrderPrice() >= bean.getExpendAmount()){
 				if(discountRuleBean ==null || discountRuleBean.getExpendAmount() < bean.getExpendAmount()){
 					discountRuleBean = bean;
 				}
@@ -167,7 +175,7 @@ public class MinshengService {
 			int s = random.nextInt(max)%(max-min+1) + min;
 			discountPrice = s/100.0;
 		}else if(discountBean.getType() == 3){
-			discountPrice = payBean.getOrderPrice() * (1.0-discountRuleBean.getDiscount1());
+			discountPrice = payBean.getOrderPrice() * (1.0-discountRuleBean.getDiscount1()/10.0);
 			discountPrice = Math.round((discountPrice-0.005)*100)/100.0; //四舍五入
 		}else if(discountBean.getType() == 1){
 			discountPrice = discountRuleBean.getDiscount1();

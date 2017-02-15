@@ -327,7 +327,6 @@ pageEncoding="UTF-8"%>
                     }
                 }
                 payMethod = paySelect;
-                console.log('支付类型'+ payMethod);
                 //支付类型-e
                 //交易时间-s
                 if($("#startDate").attr("class").indexOf('inputSelect') > -1  || $("#endDate").attr("class").indexOf('inputSelect') > -1){//优先开始时间判断
@@ -378,7 +377,6 @@ pageEncoding="UTF-8"%>
                         startTime = dayTime.Format("yyyy/MM/dd");
                     }
                 }
-                console.log('交易时间'+ trueDate+"=="+startTime+"==="+endTime);
                 //交易时间-e
                 //交易状态-s
                 var status = $("#status").find("li"),selectStatus = 0;//默认0全部
@@ -391,20 +389,12 @@ pageEncoding="UTF-8"%>
                 selectStatus = selectStatus==2?3:selectStatus;
                 orderStatus = selectStatus;
                 //1：已收款2：已退款
-                console.log("交易状态"+orderStatus);
                 //交易状态-e
                 //所属门店-s
                 storeNo = $("#store").attr("data-val");
-                console.log(storeNo);
                 $("#_context").html("");
                 $("#totalPrice").text(0);
                 search(1);
-                //
-                /*$.post("",{
-                 'payType':paySelect
-                 },function(){
-
-                 })*/
             })
 
             //开始时间和结束时间

@@ -159,7 +159,12 @@ pageEncoding="UTF-8"%>
 		  AlipayJSBridge.call("tradePay", {tradeNO:_tradeNO}, function (result) {
 			  var _data = {"data":result};
 			  $.post("./payNotifyAli",_data);
-			  location.href = "./paySuccess?orderId="+orderId;
+			  if(result.resultCode == 9000){
+				  location.href = "./paySuccess?orderId="+orderId;
+			  }else{
+				  jalert.show("支付失败");
+			  }
+			  
 //
 //                alert(JSON.stringify(result));
 		  });}, false);

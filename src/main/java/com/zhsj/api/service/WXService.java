@@ -153,11 +153,13 @@ public class WXService {
         try {
             if(!"1".equals(orderBean.getPayMethod())){
                 logger.info("#WXService.sendMessageUser# storeNo={},orderId={} msg={}",orderBean.getStoreNo(),orderBean.getOrderId(),"不是微信支付");
+                return;
             }
             StoreBean storeBean = tbStoreDao.getStoreByNo(orderBean.getStoreNo());
             UserBean userBean = bmUserDao.getUserById(orderBean.getUserId());
             if(StringUtils.isEmpty(userBean.getOpenId())){
                 logger.info("#WXService.sendMessageUser# storeNo={},orderId={} msg={}",orderBean.getStoreNo(),orderBean.getOrderId(),"微信openId出错");
+                return;
             }
             String appId = MtConfig.getProperty("weChat_appId", "wx8651744246a92699");
             String token = WeChatToken.TOKEN_MAP.get(appId);
