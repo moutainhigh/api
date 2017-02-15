@@ -15,6 +15,7 @@ import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.Md5;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.login.LoginUserUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,6 +106,9 @@ public class DiscountService {
             }else {
                 String[] nos = storeNos.split(",");
                 for(String no:nos){
+                	if("-1".equals(no) || StringUtils.isEmpty(no)){
+                		continue;
+                	}
                     storeNoList.add(no);
                 }
             }
