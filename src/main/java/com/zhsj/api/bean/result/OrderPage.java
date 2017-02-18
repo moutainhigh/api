@@ -13,6 +13,7 @@ public class OrderPage {
     private int pageSize; // optional
     private List<OrderBean> list; // optional
     private double totalPrice;
+    private double discountPrice;
 
     public int getTotal() {
         return total;
@@ -52,5 +53,13 @@ public class OrderPage {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public double getDiscountPrice() {
+        return discountPrice;
+    }
+
+    public void setDiscountPrice(double discountPrice) {
+        this.discountPrice = discountPrice;
     }
 }

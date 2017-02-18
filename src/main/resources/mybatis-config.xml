@@ -28,5 +28,6 @@
         <typeAlias type="com.zhsj.api.bean.CityCodeBean" alias="cityCodeBean"/>
         <typeAlias type="com.zhsj.api.bean.DiscountBean" alias="discountBean"/>
         <typeAlias type="com.zhsj.api.bean.DiscountRuleBean" alias="discountRuleBean"/>
+        <typeAlias type="com.zhsj.api.bean.result.CountDiscount" alias="countDiscount"/>
     </typeAliases>
 </configuration>

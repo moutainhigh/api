@@ -502,8 +502,8 @@ pageEncoding="UTF-8"%>
     }
     //查看数据
     function getDiscount(id){
-    	jalert.show("暂末开通");
-        //location.href="./activityDetail?auth="+auth+"&discountId="+id;
+//    	jalert.show("暂末开通");
+        location.href="./activityDetail?auth="+auth+"&discountId="+id;
     }
     //停止活动
     function stopDiscount(id){

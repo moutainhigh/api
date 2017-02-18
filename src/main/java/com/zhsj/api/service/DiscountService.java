@@ -3,10 +3,7 @@ package com.zhsj.api.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zhsj.api.bean.*;
-import com.zhsj.api.bean.result.CountDealBean;
-import com.zhsj.api.bean.result.DiscountPage;
-import com.zhsj.api.bean.result.OrderPage;
-import com.zhsj.api.bean.result.RateBean;
+import com.zhsj.api.bean.result.*;
 import com.zhsj.api.constants.ResultStatus;
 import com.zhsj.api.constants.StroeRole;
 import com.zhsj.api.dao.*;
@@ -43,6 +40,8 @@ public class DiscountService {
     TbStoreDao tbStoreDao;
     @Autowired
     TBDiscountRuleDao tbDiscountRuleDao;
+    @Autowired
+    TbOrderDao tbOrderDao;
 
     public DiscountPage getDiscountPage(String auth,int status,int pageNo,int pageSize){
         logger.info("#DiscountService.getDiscountPage# auth={},status={},pageNo={},pageSize={}",auth,status,pageNo,pageSize);
@@ -222,6 +221,41 @@ public class DiscountService {
         }
         List<StoreBean> list = tbStoreDao.getListByNos(storeNOList);
         return list;
+    }
+
+    public CountDiscount countDiscount(long discountId){
+        logger.info("#DiscountService.countDiscount# discountId={}",discountId);
+        CountDiscount countDiscount = tbOrderDao.countDiscount(discountId);
+        Integer num = tbOrderDao.countDiscountUser(discountId);
+        if(countDiscount == null){
+            countDiscount = new CountDiscount();
+        }
+        if(num != null){
+            countDiscount.setCountUser(num);
+        }
+        return countDiscount;
+    }
+
+    public OrderPage getDiscountOrder(long discountId,String time,int pageNo,int pageSize){
+        logger.info("#DiscountService.getDiscountOrder# discountId={},time={},pageNo={},pageSize={}", discountId, time, pageNo, pageSize);
+        OrderPage orderPage = new OrderPage();
+        try {
+            int startTime = new Long(DateUtil.formatStringUnixTime(time, "yyyy.MM.dd")).intValue();
+            int endTime = startTime+ 86400;
+            CountDiscount countDiscount = tbOrderDao.countDiscountOrder(discountId, startTime, endTime);
+            if(countDiscount != null){
+                orderPage.setTotal(countDiscount.getTotal());
+                orderPage.setPageNum(pageNo);
+                orderPage.setPageSize(pageSize);
+                orderPage.setTotalPrice(countDiscount.getActualChargeAmount());
+                orderPage.setDiscountPrice(countDiscount.getPlanChargeAmount()-countDiscount.getActualChargeAmount());
+            }
+            List<OrderBean> orderBeanList = tbOrderDao.getDiscountOrder(discountId, startTime, endTime, (pageNo - 1) * pageSize, pageSize);
+            orderPage.setList(orderBeanList);
+        }catch (Exception e){
+            logger.error("#DiscountService.getDiscountOrder# discountId={},time={},pageNo={},pageSize={}",discountId,time,pageNo,pageSize,e);
+        }
+        return orderPage;
     }
 
 }

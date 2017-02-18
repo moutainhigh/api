@@ -126,4 +126,33 @@
         </choose>
     </select>
 
+    <select id="countDiscount" resultType="countDiscount">
+        select sum(plan_charge_amount) plan_charge_amount ,sum(actual_charge_amount) actual_charge_amount
+        from tb_order
+        where discount_id = #{discountId} and status = 1
+    </select>
+
+    <select id="countDiscountUser" resultType="java.lang.Integer">
+        select count(1) from (select DISTINCT(user_id)
+        from tb_order
+        where discount_id = #{discountId} and `status` = 1) a
+    </select>
+
+    <select id="countDiscountOrder" resultType="countDiscount">
+         select sum(plan_charge_amount) plan_charge_amount ,sum(actual_charge_amount) actual_charge_amount,
+         count(1) total
+        from tb_order
+        where discount_id = #{discountId} and status = 1
+        AND ctime BETWEEN #{startTime} and #{endTime}
+    </select>
+
+    <select id="getDiscountOrder" resultType="orderBean">
+        SELECT <include refid="SELECT_FIELDS"/>
+        FROM tb_order
+        where discount_id = #{discountId} and status = 1
+        AND ctime BETWEEN #{startTime} and #{endTime}
+        limit #{startNo},#{pageSize}
+    </select>
+
+
 </mapper>

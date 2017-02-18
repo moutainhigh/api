@@ -692,6 +692,7 @@ pageEncoding="UTF-8"%>
         return fmt;
     }
 
+    window.onscroll = pageQuery;
     function pageQuery(){
         if(pageNo <= 1000){
             if(document.body.scrollTop >= document.body.scrollHeight - window.innerHeight-30){

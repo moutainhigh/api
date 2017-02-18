@@ -53,7 +53,7 @@ public class DiscountController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./discount/reduceSetting");
         modelAndView.addObject("auth", auth);
-        modelAndView.addObject("shopList",shopService.getStoreChild());
+        modelAndView.addObject("shopList", shopService.getStoreChild());
         return modelAndView;
     }
 
@@ -61,7 +61,7 @@ public class DiscountController {
     @RequestMapping(value = "/addDiscount", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public CommonResult addDiscount(String auth,String name,String startTime,String endTime,int type,String rule,String storeNos) {
-        logger.info("#DiscountController.addDiscount# auth={},name={},startTime={},endTime{},type={},rule={},storeNOs={}",auth,name,startTime,endTime,type,rule,storeNos);
+        logger.info("#DiscountController.addDiscount# auth={},name={},startTime={},endTime{},type={},rule={},storeNOs={}", auth, name, startTime, endTime, type, rule, storeNos);
         return  discountService.addDiscount(name, startTime, endTime, type, rule, storeNos);
     }
 
@@ -71,11 +71,21 @@ public class DiscountController {
     public ModelAndView activityDetail(String auth,int discountId) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./discount/activityDetail");
+        modelAndView.addObject("auth",auth);
+        modelAndView.addObject("countDiscount",discountService.countDiscount(discountId));
+        modelAndView.addObject("discount", discountService.getDiscountById(discountId));
         return modelAndView;
     }
-    
 
-    
+    @RequestMapping(value = "/orderPage", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object orderPage(String time,long discountId,String auth,int pageNo,int pageSize) throws Exception {
+        logger.info("#DiscountController.orderPage# time={},discountId={},auth={},pageNo={},pageSize={}", time,discountId, auth, pageNo, pageSize);
+        return CommonResult.build(0, "success",discountService.getDiscountOrder(discountId, time, pageNo, pageSize));
+    }
+
+
+
     @RequestMapping(value = "/menbershop", method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView minusFunctionSetting(HttpServletRequest request, HttpServletResponse response) {

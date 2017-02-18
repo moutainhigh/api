@@ -2,6 +2,7 @@ package com.zhsj.api.dao;
 
 
 import com.zhsj.api.bean.result.CountDealBean;
+import com.zhsj.api.bean.result.CountDiscount;
 import com.zhsj.api.util.db.DynamicDataSource;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.util.db.DS;
@@ -61,5 +62,18 @@ public interface TbOrderDao {
                                @Param("startNo") int startNo,
                                @Param("pageSize")int pageSize);
 
+    CountDiscount countDiscount(@Param("discountId")long discountId);
+
+    Integer countDiscountUser(@Param("discountId")long discountId);
+
+    List<OrderBean> getDiscountOrder(@Param("discountId")long discountId,
+                     @Param("startTime")int startTime,
+                     @Param("endTime")int endTime,
+                     @Param("startNo") int startNo,
+                     @Param("pageSize")int pageSize);
+
+    CountDiscount countDiscountOrder(@Param("discountId")long discountId,
+                                     @Param("startTime")int startTime,
+                                     @Param("endTime")int endTime);
 
 }

@@ -37,6 +37,7 @@ public class ApiExceptionHandler {
 //			AccessProcesser.preInitArgs(request);
 //		}
 //    	sendFailResponse(response, SysErrorCode.SYSTEM_ERROR);
+        logger.error("e={}", ex.getMessage(),ex);
     }
     
     private void sendFailResponse(HttpServletResponse response) {
