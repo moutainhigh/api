@@ -43,14 +43,14 @@ public class ManagerController {
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView index(HttpServletRequest request) {
+    public ModelAndView index(String appId,HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
         try {
             modelAndView.setViewName("./manager/wx");
             String method = URLDecoder.decode("manager/login", "utf-8");
             modelAndView.addObject("method", method);
-            modelAndView.addObject("state", "./manager/index"); //获取成功后跳转的地址
-            modelAndView.addObject("appid", MtConfig.getProperty("weChat_appId", "wx8651744246a92699"));
+            modelAndView.addObject("state", appId); //获取成功后跳转的地址
+            modelAndView.addObject("appid", appId);
         }catch (Exception e){
             logger.error("",e.getMessage(),e);
             modelAndView.setViewName("error");
@@ -66,14 +66,15 @@ public class ManagerController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("error");
         try {
-            Map<String,String> result = managerService.loginByOpenId(code);
+            Map<String,String> result = managerService.loginByOpenId(code,state);
             if(ResultStatus.RESULT_ERROR.equals(result.get(ResultStatus.RESULT_KEY))){
                 modelAndView.setViewName("error");
             }else if(ResultStatus.NO_REGISTER.equals(result.get(ResultStatus.RESULT_KEY))) {
                 modelAndView.setViewName("./manager/bindWeChat");
-                modelAndView.addObject("openId",result.get(ResultStatus.RESULT_VALUE));
+                modelAndView.addObject("openId", result.get(ResultStatus.RESULT_VALUE));
+                modelAndView.addObject("appId",state);
             }else {
-                modelAndView.setViewName(state);
+                modelAndView.setViewName("./manager/index");
                 String openId = result.get(ResultStatus.RESULT_VALUE);
                 modelAndView.addObject("auth", "11"+openId);
             }
@@ -97,11 +98,11 @@ public class ManagerController {
 
     @RequestMapping(value = "/bindWeChat" , method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public Object bindWeChat(String account,String password,String openId) {
-        logger.info("#ManagerController.bindWeChat# account={},password={},openId={}", account, password, openId);
-        int num = accountService.updateOpenId(account, password, openId);
+    public Object bindWeChat(String account,String password,String openId,String appId) {
+        logger.info("#ManagerController.bindWeChat# account={},password={},openId={},appId={}", account, password, openId,appId);
+        int num = accountService.updateOpenId(account, password, openId,appId);
         if(num > 0){
-            return CommonResult.build(0, "",openId);
+            return CommonResult.build(0, "",appId);
         }else {
             return CommonResult.build(1, "false");
         }

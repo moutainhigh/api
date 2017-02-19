@@ -32,14 +32,14 @@ public class AccountService {
         return tbAccountDao.countByOpenId(openId);
     }
 
-    public int updateOpenId(String account,String password,String openId){
-        logger.info("#AccountService.updateOpenId# account={},password={},openId={}",account,password,openId);
+    public int updateOpenId(String account,String password,String openId,String appId){
+        logger.info("#AccountService.updateOpenId# account={},password={},openId={},appId={}",account,password,openId,appId);
         try{
-            LoginUser loginUser = LoginUserUtil.getLoginUser();
-            String name = loginUser.getName();
-            String headImg = loginUser.getHeadImg();
+            AccountBean accountBean = tbAccountDao.getByAccount(account);
+            String name = accountBean.getName();
+            String headImg = accountBean.getHeadImg();
             if(!StringUtils.isEmpty(openId) && (StringUtils.isEmpty(name) || StringUtils.isEmpty(headImg))){
-                WeixinUserBean weixinUserBean = wxService.getWeixinUser(openId);
+                WeixinUserBean weixinUserBean = wxService.getWeixinUser(openId,appId);
                 if(weixinUserBean != null){
                     name = StringUtils.isEmpty(name)?weixinUserBean.getNickname():name;
                     headImg = StringUtils.isEmpty(headImg)?weixinUserBean.getHeadimgurl():headImg;
@@ -48,7 +48,7 @@ public class AccountService {
             String pw = Md5.encrypt(password);
             return tbAccountDao.updateOpenId(account, pw, openId,name,headImg);
         }catch (Exception e){
-            logger.error("#AccountService.updateOpenId# account={},password={},openId={}",account,password,openId,e);
+            logger.error("#AccountService.updateOpenId# account={},password={},openId={},appId={}",account,password,openId,appId,e);
         }
         return 0;
     }

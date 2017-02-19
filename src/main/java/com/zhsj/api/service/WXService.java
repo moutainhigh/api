@@ -47,18 +47,18 @@ public class WXService {
     @Autowired
     private TBStoreAccountBindRoleDao tbStoreAccountBindRoleDao;
     @Autowired
-    private TBAccountDao tbAccountDao;
+    private TBStoreAccountDao tbStoreAccountDao;
     @Autowired
     private TbStoreDao tbStoreDao;
 
-    public String getOpenId(String code){
+    public String getOpenId(String code,String appId){
         String openId = "";
         try {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("https://api.weixin.qq.com/sns/oauth2/access_token?appid=")
-                         .append(MtConfig.getProperty("weChat_appId","wx8651744246a92699"))
+                         .append(appId)
                          .append("&secret=")
-                         .append(MtConfig.getProperty("weChat_secret","7d33f606a68a8473a4919e8ff772447e"))
+                         .append(MtConfig.getProperty(appId,""))
                          .append("&code=")
                          .append(code)
                          .append("&grant_type=authorization_code");
@@ -66,13 +66,13 @@ public class WXService {
             Map<String,String> map = JSON.parseObject(result, Map.class);
             openId = map.get("openid");
         }catch (Exception e){
-            logger.error("#WXService.getUserByCode# code={},storeNo={},openId={},e={}",code,openId,e);
+            logger.error("#WXService.getUserByCode# code={},appId={},e={}",code,appId,e);
         }
         return openId;
     }
 
     public String getToken(String appId,String secret){
-    	logger.info("#WXService.getToken# appi={}.secrt={}#",appId,secret);
+    	logger.info("#WXService.getToken# appid={}.secrt={}#",appId,secret);
         try {
             String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+
                          appId+"&secret="+secret;
@@ -89,10 +89,9 @@ public class WXService {
     }
 
 
-    public void getUserInfo(String openId){
-    	logger.info("#WXService.getUserInfo# openId={}",openId);
+    public void getUserInfo(String openId,String appId){
+    	logger.info("#WXService.getUserInfo# openId={},appId={}",openId,appId);
         try{
-            String appId = MtConfig.getProperty("weChat_appId","wx8651744246a92699");
             String token = WeChatToken.TOKEN_MAP.get(appId);
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("https://api.weixin.qq.com/cgi-bin/user/info?access_token=")
@@ -105,17 +104,16 @@ public class WXService {
             bmUserDao.updateUserInfoByOpenId(weixinUserBean);
             logger.info("#WXService.getUserInfo# result openId={},userBean={}",openId,weixinUserBean);
         }catch (Exception e){
-            logger.error("#WXService.getUserInfo# openId={}",openId,e);
+            logger.error("#WXService.getUserInfo# openId={},appId={}",openId,appId,e);
         }
 
 
     }
 
-    public WeixinUserBean getWeixinUser(String openId){
-        logger.info("#WXService.getUserInfo# openId={}",openId);
+    public WeixinUserBean getWeixinUser(String openId,String appId){
+        logger.info("#WXService.getUserInfo# openId={},appId={}",openId,appId);
         WeixinUserBean weixinUserBean = null;
         try{
-            String appId = MtConfig.getProperty("weChat_appId", "wx8651744246a92699");
             String token = WeChatToken.TOKEN_MAP.get(appId);
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("https://api.weixin.qq.com/cgi-bin/user/info?access_token=")
@@ -127,7 +125,7 @@ public class WXService {
             weixinUserBean = JSON.parseObject(result, WeixinUserBean.class);
             logger.info("#WXService.getUserInfo# result openId={},userBean={}",openId,weixinUserBean);
         }catch (Exception e){
-            logger.error("#WXService.getUserInfo# openId={}",openId,e);
+            logger.error("#WXService.getUserInfo# openId={},appId={}",openId,appId,e);
         }
         return weixinUserBean;
 
@@ -176,7 +174,7 @@ public class WXService {
             stroeMessage = stroeMessage.replace("_remark", " \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\"");
             stroeMessage = stroeMessage.replace("_keyword5", " \"value\": \"金额： "+orderBean.getActualChargeAmount()+"\"");
             String result = SSLUtil.postSSL(url, stroeMessage);
-            logger.info("#WXService.sendSuccess# result orderId={},result={}",orderBean.getOrderId(),result);
+            logger.info("#WXService.sendMessageUser# result orderId={},result={}",orderBean.getOrderId(),result);
 
         }catch (Exception e){
             logger.error("#WXService.sendMessageUser# storeNo={},orderId={}",orderBean.getStoreNo(),orderBean.getOrderId(),e);
@@ -186,6 +184,11 @@ public class WXService {
     public void sendMessageStore(OrderBean orderBean){
         logger.info("#WXService.sendMessageStore# storeNo={},orderId={}",orderBean.getStoreNo(),orderBean.getOrderId());
         try{
+            StoreBean storeBean = tbStoreDao.getStoreByNo(orderBean.getStoreNo());
+            if(storeBean == null || StringUtils.isEmpty(storeBean.getAppId())){
+                logger.info("#WXService.sendMessageStore# fail appId is null storeNo={}",storeBean.getStoreNo());
+                return;
+            }
             List<Long> accountIdList = tbStoreBindAccountDao.getAccountIdByStoreNo(orderBean.getStoreNo());
             if(CollectionUtils.isEmpty(accountIdList)){
                 return;
@@ -204,11 +207,11 @@ public class WXService {
             if(CollectionUtils.isEmpty(idList)){
             	return;
             }
-            List<String> openIdList = tbAccountDao.getOpenIdByAccountId(idList);
+            List<String> openIdList = tbStoreAccountDao.getOpenIdByAccountId(idList);
             if(CollectionUtils.isEmpty(openIdList)){
                 return;
             }
-            String appId = MtConfig.getProperty("weChat_appId", "wx8651744246a92699");
+            String appId = storeBean.getAppId();
             String token = WeChatToken.TOKEN_MAP.get(appId);
             String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+token;
             String stroeMessage = MtConfig.getProperty("STORE_MESSAGE", "");
@@ -223,11 +226,12 @@ public class WXService {
                 stroeMessage = stroeMessage.replace("_keyword1","\"value\": \" "+ orderBean.getOrderId() + "\"");
                 stroeMessage = stroeMessage.replace("_keyword2","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\"");
                 stroeMessage = stroeMessage.replace("_remark", " \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\"");
+                logger.info("#WXService.sendMessageStore# url={},msg={}",url,stroeMessage);
                 String result = SSLUtil.postSSL(url, stroeMessage);
-                logger.info("#WXService.sendSuccess# result orderId={},result={}",orderBean.getOrderId(),result);
+                logger.info("#WXService.sendMessageStore# result orderId={},result={}",orderBean.getOrderId(),result);
             }
         }catch(Exception e){
-            logger.error("#WXService.sendSuccess# orderBean.orderId", orderBean.getOrderId());
+            logger.error("#WXService.sendMessageStore# orderBean.orderId", orderBean.getOrderId());
         }
     }
     

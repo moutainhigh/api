@@ -3,6 +3,7 @@ package com.zhsj.api.util.test;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +24,10 @@ public class Test {
 //        System.out.println(strs[0]);
 //        System.out.println(strs[1]);
 //        System.out.println("2,".contains("2"));
-        String stre = "3,";
-        List<Map<String,String>> list = JSON.parseObject("[{\"expendAmount\":\"66\",\"discount1\":\"7\",\"discount2\":\"0\"}]", List.class);
-        System.out.println(list.get(0).get("expendAmount"));
-
-        JSONObject json = new JSONObject();
-        json.put("dispatchStrategy",1);
-        json.put("areaIds", list);
-        System.out.println(json.toJSONString());
+        List<Integer> aa = new ArrayList<>();
+        aa.add(1);
+        aa.add(3);
+        System.out.println(aa.contains(Integer.parseInt("2")));
 
     }
 }

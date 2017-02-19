@@ -70,9 +70,9 @@ public class PaymentController {
             modelAndView.setViewName("pay/zfb");
         }else {
             //其它
-            modelAndView.addObject("appid", MtConfig.getProperty("weChat_appId","wx8651744246a92699"));
-            modelAndView.setViewName("pay/wx");
-//            modelAndView.setViewName("error");
+//            modelAndView.addObject("appid", MtConfig.getProperty("weChat_appId","wx8651744246a92699"));
+//            modelAndView.setViewName("pay/wx");
+            modelAndView.setViewName("error");
         }
         return modelAndView;
     }
@@ -83,7 +83,8 @@ public class PaymentController {
     public ModelAndView getUserOpenId(@RequestParam("code") String code,@RequestParam("state") String state) throws Exception {
         logger.info("#PaymentController.getUserOpenId# code={},state={}",code,state);
         ModelAndView modelAndView = new ModelAndView();
-        String openId = wxService.getOpenId(code);
+        String appId = MtConfig.getProperty("weChat_appId","wx8651744246a92699");
+        String openId = wxService.getOpenId(code,appId);
         if(StringUtils.isEmpty(openId)){
             modelAndView.setViewName("error");
             return modelAndView;
@@ -169,7 +170,8 @@ public class PaymentController {
         }else {
             orderService.updateOrderByOrderId(2,order_no);
         }
-        wxService.getUserInfo(field1);
+        String appId = MtConfig.getProperty("weChat_appId","wx8651744246a92699");
+        wxService.getUserInfo(field1,appId);
 
     	Map<String,Object> map = request.getParameterMap();
     	for(String name: map.keySet()){

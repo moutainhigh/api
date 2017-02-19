@@ -18,5 +18,7 @@ public interface TBStoreAccountBindRoleDao {
 
     int updateByAccountIdAndRoleId(@Param("roleId")long roleId,@Param("accountId") long accountId);
 
+    List<Integer> getRoleIdByAccountId(@Param("accountId")long accountId);
+
 
 }

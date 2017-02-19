@@ -43,5 +43,11 @@
       WHERE status=1 and valid = 1 and open_id = #{openId}
     </select>
 
+    <select id="getByAccount" resultType="accountBean">
+        SELECT id,account,password,open_id,name,head_img
+        FROM tb_account
+        WHERE status=1 and valid = 1 and account = #{account}
+    </select>
+
 
 </mapper>

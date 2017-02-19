@@ -21,6 +21,7 @@ public class StoreBean {
     private int ctime;
     private String orgIds;
     private long saleId;
+    private String appId;
 
     public long getId() {
         return id;
@@ -156,5 +157,13 @@ public class StoreBean {
 
     public void setSaleId(long saleId) {
         this.saleId = saleId;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 }

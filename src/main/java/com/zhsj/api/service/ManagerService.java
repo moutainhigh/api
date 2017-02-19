@@ -55,12 +55,12 @@ public class ManagerService {
     @Autowired
     MinshengService minshengService;
 
-    public Map<String,String> loginByOpenId(String code){
-        logger.info("#ManagerService.loginByOpenId# code={}",code);
+    public Map<String,String> loginByOpenId(String code,String appId){
+        logger.info("#ManagerService.loginByOpenId# code={},appId={}",code,appId);
         Map<String,String> resultMap = new HashMap<>();
         resultMap.put(ResultStatus.RESULT_KEY,ResultStatus.RESULT_ERROR);
         try {
-            String openId = wxService.getOpenId(code);
+            String openId = wxService.getOpenId(code,appId);
             if(StringUtils.isEmpty(openId)){
                 resultMap.put(ResultStatus.RESULT_KEY,ResultStatus.RESULT_ERROR);
                 return resultMap;

@@ -62,12 +62,15 @@ public class WeChatToken implements InitializingBean {
                 return;
             }
             loker = true;
-            String appId = MtConfig.getProperty("weChat_appId","wx8651744246a92699");
-            String secret = MtConfig.getProperty("weChat_secret", "7d33f606a68a8473a4919e8ff772447e");
-            String token = wxService.getToken(appId, secret);
-            if(!"".equals(token)){
-            	TOKEN_MAP.put(appId, token);
+            String[] appIds = MtConfig.getProperty("weChat_appIds","wx8651744246a92699").split(",");
+            for (int i =0 ;i<appIds.length;i++){
+                String secret = MtConfig.getProperty(appIds[i],"");
+                String token = wxService.getToken(appIds[i], secret);
+                if(!"".equals(token)){
+                    TOKEN_MAP.put(appIds[i], token);
+                }
             }
+
         }catch (Exception e){
             logger.error("#WeChatToken.refresh# e={}",e.getMessage(),e);
         }finally {

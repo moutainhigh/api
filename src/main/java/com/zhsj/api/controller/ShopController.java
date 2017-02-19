@@ -85,14 +85,14 @@ public class ShopController {
     /////=============================
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView index(HttpServletRequest request) {
+    public ModelAndView index(String appId,HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
         try {
             modelAndView.setViewName("./shop/wx");
             String method = URLDecoder.decode("shop/login", "utf-8");
             modelAndView.addObject("method", method);
-            modelAndView.addObject("state", "./shop/index"); //获取成功后跳转的地址
-            modelAndView.addObject("appid", MtConfig.getProperty("weChat_appId", "wx8651744246a92699"));
+            modelAndView.addObject("state", appId); //获取成功后跳转的地址
+            modelAndView.addObject("appid", appId);
         }catch (Exception e){
             logger.error("",e.getMessage(),e);
             modelAndView.setViewName("error");
@@ -108,14 +108,16 @@ public class ShopController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("error");
         try {
-            Map<String,String> result = shopService.loginByOpenId(code);
+            Map<String,String> result = shopService.loginByOpenId(code,state);
             if(ResultStatus.RESULT_ERROR.equals(result.get(ResultStatus.RESULT_KEY))){
                 modelAndView.setViewName("error");
+
             }else if(ResultStatus.NO_REGISTER.equals(result.get(ResultStatus.RESULT_KEY))) {
                 modelAndView.setViewName("./shop/bindWeChat");
                 modelAndView.addObject("openId",result.get(ResultStatus.RESULT_VALUE));
+                modelAndView.addObject("appId", state);
             }else {
-                modelAndView.setViewName(state);
+                modelAndView.setViewName("./shop/index");
                 String openId = result.get(ResultStatus.RESULT_VALUE);
                 modelAndView.addObject("auth", "21"+openId);
             }
@@ -139,12 +141,12 @@ public class ShopController {
 
     @RequestMapping(value = "/bindWeChat" , method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public Object bindWeChat(String account,String password,String openId) {
-        logger.info("#ShopController.bindWeChat# account={},password={},openId={}", account, password, openId);
+    public Object bindWeChat(String account,String password,String openId,String appId) {
+        logger.info("#ShopController.bindWeChat# account={},password={},openId={},appId={}", account, password, openId,appId);
         String pw = Md5.encrypt(password);
-        int num = shopService.updateOpenId(account, pw, openId);
+        int num = shopService.updateOpenId(account, pw, openId,appId);
         if(num > 0){
-            return CommonResult.build(0, "",openId);
+            return CommonResult.build(0, "",appId);
         }else {
             return CommonResult.build(1, "false");
         }
@@ -318,7 +320,7 @@ public class ShopController {
     public Object logout(String auth) {
         logger.info("#ShopController.logout# auth={}", auth);
         LoginUser loginUser = LoginUserUtil.getLoginUser();
-        shopService.updateOpenId(loginUser.getAccount(), loginUser.getPassword(), "");
+        shopService.updateOpenId(loginUser.getAccount(), loginUser.getPassword(), "","");
         return CommonResult.build(0, "success");
     }
 

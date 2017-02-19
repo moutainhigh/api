@@ -46,12 +46,12 @@ public class ShopService {
     @Autowired
     TBStoreAccountBindRoleDao tbStoreAccountBindRoleDao;
 
-    public Map<String,String> loginByOpenId(String code){
-        logger.info("#ShopService.loginByOpenId# code={}",code);
+    public Map<String,String> loginByOpenId(String code,String appId){
+        logger.info("#ShopService.loginByOpenId# code={},appId={}",code,appId);
         Map<String,String> resultMap = new HashMap<>();
         resultMap.put(ResultStatus.RESULT_KEY, ResultStatus.RESULT_ERROR);
         try {
-            String openId = wxService.getOpenId(code);
+            String openId = wxService.getOpenId(code,appId);
             if(StringUtils.isEmpty(openId)){
                 resultMap.put(ResultStatus.RESULT_KEY,ResultStatus.RESULT_ERROR);
                 return resultMap;
@@ -70,22 +70,31 @@ public class ShopService {
         return resultMap;
     }
 
-    public int updateOpenId(String account, String password,String openId){
-        logger.info("#ShopService.updateOpenId# account={},password={},openId={}",account,password,openId);
+    public int updateOpenId(String account, String password,String openId,String appId){
+        logger.info("#ShopService.updateOpenId# account={},password={},openId={},appId={}",account,password,openId,appId);
         try{
-            LoginUser loginUser = LoginUserUtil.getLoginUser();
-            String name = loginUser.getName();
-            String headImg = loginUser.getHeadImg();
+            StoreAccountBean accountBean = tbStoreAccountDao.getByAccount(account);
+            String name = accountBean.getName();
+            String headImg = accountBean.getHeadImg();
             if(!StringUtils.isEmpty(openId) && (StringUtils.isEmpty(name) || StringUtils.isEmpty(headImg))){
-                WeixinUserBean weixinUserBean = wxService.getWeixinUser(openId);
+                WeixinUserBean weixinUserBean = wxService.getWeixinUser(openId,appId);
                 if(weixinUserBean != null){
                     name = StringUtils.isEmpty(name)?weixinUserBean.getNickname():name;
                     headImg = StringUtils.isEmpty(headImg)?weixinUserBean.getHeadimgurl():headImg;
                 }
             }
+            if(StringUtils.isNotEmpty(appId)){
+                List<Integer> roleIds = tbStoreAccountBindRoleDao.getRoleIdByAccountId(accountBean.getId());
+                String manager_role = MtConfig.getProperty("STORE_MANAGER_ROLE", "");
+
+                if(!CollectionUtils.isEmpty(roleIds) && roleIds.contains(Integer.parseInt(manager_role))){
+                    String storeNo = tbStoreBindAccountDao.getStoreNoByAccountId(accountBean.getId());
+                    tbStoreDao.updateAppId(appId,storeNo);
+                }
+            }
             return tbStoreAccountDao.updateOpenId(account,password,openId,name,headImg);
         }catch (Exception e){
-            logger.error("#ShopService.updateOpenId# account={},password={},openId={}",account,password,openId,e);
+            logger.error("#ShopService.updateOpenId# account={},password={},openId={},appId={}",account,password,openId,appId,e);
         }
         return 0;
     }

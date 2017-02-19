@@ -34,5 +34,10 @@
         where role_id = #{roleId} and account_id=#{accountId}
     </update>
 
+    <select id="getRoleIdByAccountId" resultType="java.lang.Integer">
+        SELECT role_id
+        FROM tb_store_account_bind_role
+        WHERE account_id=#{accountId}
+    </select>
 
 </mapper>

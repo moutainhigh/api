@@ -77,6 +77,7 @@
 </head>
 <body>
 <input type="hidden" name="openId" id="openId" value="${openId}">
+<input type="hidden" name="openId" id="appId" value="${appId}">
 <div class="container">
     <section class="f1">
         <div class="logo">
@@ -122,9 +123,10 @@
         var account = $("#account").val();
         var password = $("#password").val();
         var openId = $("#openId").val();
-        $.post("./bindWeChat",{"account":account,"password":password,"openId":openId},function(data){
+        var appId = $("#appId").val();
+        $.post("./bindWeChat",{"account":account,"password":password,"openId":openId,"appId":appId},function(data){
             if(data.code == 0){
-                location.href = "./index";
+                location.href = "./index?appId="+data.data;
             }else{
                 jalert.show(data.msg);
             }
