@@ -151,7 +151,20 @@ public class MinshengService {
 		if(discountIdList == null || discountIdList.isEmpty()){
 			return payBean;
 		}
-		DiscountBean discountBean = tbDiscountDao.getById(discountIdList.get(0));
+//		DiscountBean discountBean = tbDiscountDao.getById(discountIdList.get(0));
+		List<DiscountBean> disList = tbDiscountDao.getByIds(discountIdList);
+		if(disList == null || disList.isEmpty()){
+			return payBean;
+		}
+		DiscountBean discountBean = disList.get(0);
+		//查是不是有第公司活动
+		for(DiscountBean bean :disList){
+			if(bean.getaType() == 1){
+				discountBean = bean;
+				break;
+			}
+		}
+		
 		List<DiscountRuleBean> ruleBeans = tbDiscountRuleDao.getByDisId(discountBean.getId());
 		if(ruleBeans == null || ruleBeans.isEmpty()){
 			return payBean;
