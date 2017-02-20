@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <html>
   <head>
     <title>向商家支付</title>
@@ -13,7 +12,6 @@ pageEncoding="UTF-8"%>
 	<meta content="black" name="apple-mobile-web-app-status-bar-style">
 	<meta content="telephone=no" name="format-detection">
     <link rel="stylesheet" type="text/css" href="../resource/css/pay/common.css"/>
-    <script type="text/javascript" src="../resource/js/adapter.js"></script>
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
 	<script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
@@ -95,7 +93,7 @@ pageEncoding="UTF-8"%>
 		  }else if(v === "cls"){//清除
 			  $("#paymoney").val("");
 		  }else{
-			    if(Number($("#paymoney").val()+v.toString()) > 10000){
+			    if(Number($("#paymoney").val()+v.toString()) >= 10000){
 			    	return false;
 			    }
 				var arr=paymoney.split(".");
@@ -115,8 +113,10 @@ pageEncoding="UTF-8"%>
 		  }
 		  if(($("#paymoney").val()).length > 0){//
 	    	  $("#pay").addClass("wechat-pay");
+	    	  $("#paymoney").addClass("wechat-input-gl");
 	      }else{
 	    	  $("#pay").removeClass("wechat-pay");
+	    	  $("#paymoney").removeClass("wechat-input-gl");
 	      }
 	  });
   });

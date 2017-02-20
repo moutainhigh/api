@@ -13,7 +13,6 @@ pageEncoding="UTF-8"%>
 	<meta content="black" name="apple-mobile-web-app-status-bar-style">
 	<meta content="telephone=no" name="format-detection">
     <link rel="stylesheet" type="text/css" href="../resource/css/pay/common.css"/>
-    <script type="text/javascript" src="../resource/js/adapter.js"></script>
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
 	<script src="https://as.alipayobjects.com/g/component/antbridge/1.1.1/antbridge.min.js"></script>
 	<script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
@@ -95,7 +94,7 @@ pageEncoding="UTF-8"%>
 		  }else if(v === "cls"){//清除
 			  $("#paymoney").val("");
 		  }else{
-			    if(Number($("#paymoney").val()+v.toString()) > 10000){
+			    if(Number($("#paymoney").val()+v.toString()) >= 10000){
 			    	return false;
 			    }
 				var arr=paymoney.split(".");
@@ -115,8 +114,10 @@ pageEncoding="UTF-8"%>
 		  }
 		  if(($("#paymoney").val()).length > 0){//
 	    	  $("#pay").addClass("ali-pay");
+	    	  $("#paymoney").addClass("ali-input-gl");
 	      }else{
 	    	  $("#pay").removeClass("ali-pay");
+	    	  $("#paymoney").removeClass("ali-input-gl");
 	      }
 	  });
   });

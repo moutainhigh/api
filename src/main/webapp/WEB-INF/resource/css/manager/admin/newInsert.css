@@ -71,7 +71,6 @@ input[type=text]{
 }
 .next{
     padding:15px 0;
-    font-weight: 100;
 }
 
 input::-webkit-input-placeholder { /* WebKit browsers*/

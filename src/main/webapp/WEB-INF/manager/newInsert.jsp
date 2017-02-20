@@ -80,7 +80,7 @@
                      <span class="span-result"><input type="text" id="storeAccount" placeholder="建议使用手机号"></span>
                  </p>
                  <p >
-                     <span class="span-label">编&ensp;&ensp;&ensp;&ensp;号</span>
+                     <span class="span-label">编&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号</span>
                      <span class="span-result"><input type="text" id="storeNo" placeholder="输入编号"></span>
                  </p>
              </div>

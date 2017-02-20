@@ -5,13 +5,9 @@
        .pay-flag{
           padding-top:10px;
           padding-bottom:10px;
-          width:200px;
           margin:0 auto;
           text-align:center;
-       }
-       .pay-flag p:nth-child(2){
-          color:#14d212;
-          font-weight:300;
+          font-size: .95em;
        }
        del{
            margin-left:5px;
@@ -19,23 +15,22 @@
        }
        .pay-detail{
           margin-top:10px;
-          padding:10px 20px;
-          font-size:.8rem;
+          padding:0 20px;
+          font-size:.75em;
        }
        .pay-detail p{
-          border-bottom:1px solid #ccc;
-          padding-top:10px;
-          padding-bottom:5px;
+          border-bottom:1px solid #EEE;
+          padding-top:12px;
+          padding-bottom:12px;
        }
        .pay-detail p:last-child{
           border-bottom:0;
-          padding-bottom:0;
        }
        .pay-detail p span{
          display:block
        }
        .span-label{
-         color:#ccc;
+         color:#666;
          float:left
        }
        .span-result{

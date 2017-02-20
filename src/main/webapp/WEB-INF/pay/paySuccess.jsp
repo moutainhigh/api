@@ -14,15 +14,18 @@
 	<meta content="telephone=no" name="format-detection">
     <link rel="stylesheet" type="text/css" href="../resource/css/pay/common.css">
     <link rel="stylesheet" type="text/css" href="../resource/css/pay/pay.css">
-    <script type="text/javascript" src="../resource/js/adapter.js"></script>
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
       <script type="text/javascript">
           $(document).ready(function(){
               if(1 == ${order.payMethod} ){
                   $("#payMethod").text("微信支付");
+                  $("#shoplogo").prop("src","../resource/img/pay.png");
+                  $("#payColor").css("color","#14d212");
               }else if( 2== ${order.payMethod}){
                   $("#payMethod").text("支付宝支付");
+                  $("#shoplogo").prop("src","../resource/img/alipay.png");
+                  $("#payColor").css("color","#3289ce");
               }
               var newDate = new Date();
 
@@ -35,8 +38,8 @@
      <div class="container">
          <div class="pay">
                 <div class="pay-flag">
-                   <p><img src="../resource/img/pay.png" width=50></p>
-                   <p>支付成功</p>
+                   <p><img src="" width=50 id="shoplogo"></p>
+                   <p id="payColor">支付成功</p>
                    <p>
                       <span>￥</span><span>${order.actualChargeAmount}</span><del><span>￥</span>${order.planChargeAmount}</del></p>
                 </div>
