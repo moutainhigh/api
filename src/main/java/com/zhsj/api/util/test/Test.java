@@ -3,10 +3,7 @@ package com.zhsj.api.util.test;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by lcg on 16/12/29.
@@ -24,10 +21,26 @@ public class Test {
 //        System.out.println(strs[0]);
 //        System.out.println(strs[1]);
 //        System.out.println("2,".contains("2"));
-        List<Integer> aa = new ArrayList<>();
-        aa.add(1);
-        aa.add(3);
-        System.out.println(aa.contains(Integer.parseInt("2")));
+        for(int i=33333;i<34444;i++)
+                System.out.println(i^876987);
+//        int min =1;
+//        int max = Integer.MAX_VALUE;
+//        Set<String> set = new HashSet<>();
+//        int count = 0;
+//        for(int i=0;i<10000;i++){
+//            Random random = new Random();
+//            int a = random.nextInt(max);
+//            int s = a%(max-min+1) + min;
+//            String no = (String.valueOf(s)+"000").substring(0, 4);
+//            if(!set.add(no)){
+//                System.out.println("=="+no);
+//                count ++;
+//            }
+//
+//        }
+//        System.out.println(count);
+//        discountPrice = s/100.0;
+//        String  strRandom = (Math.random().Next(1, int.MaxValue).ToString() + "000").Substring(0, 4);
 
     }
 }
