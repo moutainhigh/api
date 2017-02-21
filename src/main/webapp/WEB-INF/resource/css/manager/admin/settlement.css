@@ -45,7 +45,7 @@ ul li:last-child p:last-child{
     background-color: #FFF;
 }
 .common-br{
-    border-bottom:1px solid #CCC;
+    border-bottom:1px solid #EEE;
 }
 .info{
     position: relative;
@@ -87,7 +87,7 @@ ul li:last-child p:last-child{
 }
 .p-group p{
     padding:15px 0;
-    border-bottom: 1px solid #CCC;
+    border-bottom: 1px solid #EEE;
     display: -webkit-flex;
 }
 .p-group p:last-child{
