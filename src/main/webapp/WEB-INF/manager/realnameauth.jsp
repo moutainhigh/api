@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
+<!DOCTYPE html>         
 <html>
 <head>
     <meta charset="UTF-8">
@@ -92,56 +93,65 @@
                  </div>
              </div>
              <div class="common-br">
-                 <div class="row-label clearfix">
-                     <label>
-                         商户地址
-                         <span>
-                             <select id="_province">
-                                 <option value="0">请选择省份</option>
-                             </select>
-                         </span>
+                 <div class="row-label-store-address">
+                     <label for="_province">
+                                               商户地址
                      </label>
-                     <span class="sh-right">
-                         <select id="_city">
-                             <option value="0">请选择城市</option>
-                         </select>
-                     </span>
+                     <div class="select-pro-city">
+                         <ul class="clearfix">
+                             <li>
+	                             <select id="_province">
+	                                 <option value="0">请选择省份</option>
+	                             </select>
+                             </li>
+                             <li>
+		                         <select id="_city">
+		                             <option value="0">请选择城市</option>
+		                         </select>
+		                     </li>
+                         </ul>
+                     </div>
                  </div>
-                 <div class="row-label clearfix" style="padding-top:0;">
-                     <label>
-                         &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
-                         <span style="color:#999;">
-                             详细地址
-                         </span>
+                 <div class="row-label-address">
+                     <label for="_address">
+                                                      详细地址
                      </label>
-                     <span class="sh-right">
-                         <input id="_address" type="text" style="border:1px solid #CCC;width:100%">
+                     <span >
+                         <input id="_address" type="text" placeholder="请输入详细地址">
                      </span>
                  </div>
              </div>
              <div class="common-br">
-                 <div class="row-label clearfix">
-                     <label>行业类型</label>
-                     <span class="sh-right">
-                         <select>
-                             <option>商户类型</option>
-                             <option>个体工商户</option>
-                         </select>
-                         <select>
-                             <option>行业大类</option>
-                             <option>餐饮/食品</option>
-                             <option>线下零售</option>
-                             <option>其它</option>
-                         </select>
-                         <select id="_businessType">
-                             <option>类目</option>
-                             <option value="292">食品,292</option>
-                             <option value="153">餐饮,153</option>
-                             <option value="209">便利店,209</option>
-                             <option value="210">其他综合零售,210</option>
-                             <option value="158">其他行业,158</option>
-                         </select>
-                     </span>
+                 <div class="row-label-hytype">
+                     <label for="_businessType">行业类型</label>
+                 </div>
+                 <div class="row-label-hytype-select">
+                     <ul class="clearfix">
+                        <li>
+	                         <select>
+	                             <option>商户类型</option>
+	                             <option>个体工商户</option>
+	                         </select>
+                        </li>
+                        <li>
+	                         <select>
+	                             <option>行业大类</option>
+	                             <option>餐饮/食品</option>
+	                             <option>线下零售</option>
+	                             <option>其它</option>
+	                         </select>
+                        </li>
+                        <li>
+	                         <select id="_businessType">
+	                             <option>类目</option>
+	                             <option value="292">食品,292</option>
+	                             <option value="153">餐饮,153</option>
+	                             <option value="209">便利店,209</option>
+	                             <option value="210">其他综合零售,210</option>
+	                             <option value="158">其他行业,158</option>
+	                         </select>
+                         </li>
+                     </ul>
                  </div>
              </div>
 
@@ -156,11 +166,11 @@
              </div>
              <div class="p-group">
                  <p >
-                     <span class="span-label">法人姓名</span>
+                     <label class="span-label" for="_name">法人姓名</label>
                      <span class="span-result"><input type="text" id="_name" placeholder="请输入法人姓名"></span>
                  </p>
                  <p >
-                     <span class="span-label">身份证号</span>
+                     <label class="span-label" for="_idCard">身份证号</label>
                      <span class="span-result"><input type="text" id="_idCard" placeholder="请输入法人身份证号"></span>
                  </p>
              </div>

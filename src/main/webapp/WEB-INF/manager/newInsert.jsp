@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -68,19 +69,19 @@
          <section class="f2">
              <div class="p-group">
                  <p >
-                     <span class="span-label">店名</span>
+                     <label class="span-label" for="storeName">店&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名</label>
                      <span class="span-result"><input id="storeName" type="text" placeholder="店名"></span>
                  </p>
                  <p >
-                     <span class="span-label">商户手机</span>
+                     <label class="span-label" for="storePhone">商户手机</label>
                      <span class="span-result"><input type="text" id="storePhone" placeholder="11位正确手机号"></span>
                  </p>
                  <p >
-                     <span class="span-label">登录账号</span>
+                     <label class="span-label" for="storeAccount">登录账号</label>
                      <span class="span-result"><input type="text" id="storeAccount" placeholder="建议使用手机号"></span>
                  </p>
                  <p >
-                     <span class="span-label">编&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号</span>
+                     <label class="span-label" for="storeNo">编&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号</label>
                      <span class="span-result"><input type="text" id="storeNo" placeholder="输入编号"></span>
                  </p>
              </div>
@@ -93,6 +94,7 @@
 </body>
 </html>
 <script>
+//alert($(document.body).width())
     var auth = $("#auth").val();
     $(function(){
         load();

@@ -25,22 +25,22 @@ ul li p{
     padding-bottom:10px;
 }
 ul li:first-child{
-    width:19%;
+    width:21%;
 }
 ul li:not(:first-child){
     background: url(../../../img/zhihujiantou.png)  left top/50% no-repeat ;
-    width:27%;
+    width:26%;
     text-align:right;
-    opacity: .5;
 }
-
+ul li:not(:first-child) p:last-child{
+	opacity:.5;
+}
 .f2{
     background-color: #FFF;
     color:#6C6C6C;
 }
 .p-group{
     margin:0 20px;
-    font-size: .8em;
 }
 .p-group p{
     padding:15px 0;
@@ -51,17 +51,22 @@ ul li:not(:first-child){
     border-bottom: 0;
 }
 input[type=text]{
-    line-height: 2;
     width:100%;
-
+    font-size:.8em;
+    color:#333;
+    position:absolute;
+    top:0;
+    left:0;
 }
 .span-label{
-    width:4rem;
+    width:4.5em;
+    font-size:.8em;
 }
 .span-result{
     -webkit-box-flex: 1;
     -webkit-flex: 1;
-    margin-left: 8px;
+    margin-left: 10px;
+    position:relative;
 }
 .f3{
     margin-top: 20px;
@@ -70,15 +75,10 @@ input[type=text]{
     color:#FFF;
 }
 .next{
-    padding:15px 0;
+    padding:.5em 0;
 }
 
-input::-webkit-input-placeholder { /* WebKit browsers*/
-    　　color:#BBB;font-size:14px;
-}
-input:-moz-placeholder {  /* Mozilla Firefox 4 to 18*/
-    　　color:#BBB;font-size:14px;
-}
-input::-moz-placeholder {  /* Mozilla Firefox 19+*/
-    　　color:#999;font-size:14px;
+
+input::-webkit-input-placeholder{
+    color: #000;opacity:.2;
 }

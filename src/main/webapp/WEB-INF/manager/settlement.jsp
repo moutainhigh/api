@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
     <meta charset="UTF-8">
     <title>结算</title>
@@ -75,24 +76,24 @@
                 </div>
             </div>
             <div class="p-group">
-                <p >
-                    <span class="span-label">开户名</span>
+                <p>
+                    <label class="span-label" for="sa_name">开户名</label>
                     <span class="span-result"><input type="text" id="sa_name" placeholder=""></span>
                 </p>
-                <p >
-                    <span class="span-label">银行卡号</span>
+                <p>
+                    <label class="span-label" for="sa_num">银行卡号</label>
                     <span class="span-result">
                         <input type="text" id="sa_num" placeholder="已开通快捷支付的银行卡">
                     </span>
                 </p>
-                <p >
-                    <span class="span-label">开户银行</span>
+                <p>
+                    <label class="span-label" for="sa_bank_name">开户银行</label>
                     <span class="span-result" id="sa_bank_name">
-                        中国民生银行
+                                                                   中国民生银行
                     </span>
                 </p>
                 <p >
-                    <span class="span-label">邮箱</span>
+                    <label class="span-label" for="mer_email">邮箱</label>
                     <span class="span-result">
                             <input type="text" id="mer_email" placeholder="电子邮箱">
                     </span>
