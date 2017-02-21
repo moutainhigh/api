@@ -65,6 +65,20 @@ public class DateUtil
 		}
 	}
 
+	
+	public static String getDateFormat(String format)
+	{
+		try
+		{
+			String stringTime = new SimpleDateFormat(format).format(new Date());
+			return stringTime;
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	/**
 	 * 获取当前时间的 yyyyMMddHHmmss 字符串格式
 	 * 

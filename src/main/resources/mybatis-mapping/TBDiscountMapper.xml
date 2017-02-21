@@ -5,7 +5,7 @@
         tb_discount
     </sql>
     <sql id="SELECT_FIELD">
-        id,name,content,start_time,end_time,type
+        id,name,content,start_time,end_time,type,a_type
     </sql>
 
     <select id="getById" resultType="discountBean">

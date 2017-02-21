@@ -118,28 +118,29 @@ public class PaymentController {
 
     @RequestMapping(value = "/payMoney", method =  {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public Object payMoney(PayBean payBean,HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public Object payMoney(PayBean payBean,HttpServletRequest request, HttpServletResponse response) {
         logger.info("#PaymentController.payMoney# payBean={}",payBean);
-        String hostName = InetAddress.getLocalHost().getHostAddress();
-        if(payBean.getPayMethod() == 1){
-            Map<String,String> map = minshengService.payWeChat(payBean,hostName);
-            if(map == null || "FAIL".equals(map.get("return_code"))){
-                return CommonResult.build(1, "false");
-            }else {
-                return CommonResult.build(0, "success",map);
+        try{
+        	String hostName = InetAddress.getLocalHost().getHostAddress();
+            if(payBean.getPayMethod() == 1){
+                Map<String,String> map = minshengService.payWeChat(payBean,hostName);
+                if(map == null || "FAIL".equals(map.get("return_code"))){
+                    return CommonResult.build(1, "false");
+                }else {
+                    return CommonResult.build(0, "success",map);
+                }
+            }else if(payBean.getPayMethod() == 2){
+                Map<String,String> map = minshengService.payAli(payBean,hostName);
+                if(map == null || "FAIL".equals(map.get("return_code"))){
+                    return CommonResult.build(1, "false");
+                }else {
+                    return CommonResult.build(0, "success", map);
+                }
             }
-        }else if(payBean.getPayMethod() == 2){
-            Map<String,String> map = minshengService.payAli(payBean,hostName);
-            if(map == null || "FAIL".equals(map.get("return_code"))){
-                return CommonResult.build(1, "false");
-            }else {
-                return CommonResult.build(0, "success", map);
-            }
-//            modelAndView.setViewName("pay/alicommit");
-//            modelAndView.addObject("data",resultMap.get("trade_no"));
-        }else {
-            return CommonResult.build(1, "false");
+        }catch(Exception e){
+        	logger.error("#PaymentController.payMoney# payBean={}",payBean,e);
         }
+        return CommonResult.build(1, "false");
     }
 
     @RequestMapping(value = "/paySuccess", method =  {RequestMethod.GET,RequestMethod.POST})
