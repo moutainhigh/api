@@ -16,7 +16,7 @@ pageEncoding="UTF-8"%>
     <script src="../resource/mobiscroll/js/mobiscroll.custom-3.0.0-beta2.min.js"></script>
     <script src="../resource/js/Dutil.js"></script>
     <style>
-        .f1{
+                .f1{
             background: #fc324a;
             color:#FFF;
             font-size:1rem;
@@ -61,7 +61,7 @@ pageEncoding="UTF-8"%>
         .f2-tj .date{
             position: absolute;
             top:27%;
-            left:24%;
+            left:30%;
         }
         .f2-tj .date input{
             border:1px solid #EEE;
@@ -72,6 +72,7 @@ pageEncoding="UTF-8"%>
             color:#666;
             -webkit-appearance: none;
             box-shadow: none;
+            width:70%;
         }
         .f2-tj .serach{
             float: right;
@@ -81,6 +82,7 @@ pageEncoding="UTF-8"%>
             border:1px solid #fc324a;
             border-radius: 5px;
             border-color: rgba(252,50,74,.6);
+            box-shadow: 0 0 2px #fc324a;
         }
         .f3 {
             border-bottom:1px solid #EEE;

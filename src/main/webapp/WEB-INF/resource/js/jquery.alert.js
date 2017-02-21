@@ -15,7 +15,11 @@
               'vertical-align': 'middle',
               'z-index':'10000',
               'font-size':'16px',
-              'display':'none'
+              'display':'none',
+              '-webkit-transition':'-webkit-transform 0.5s, opacity 0.5s',
+              'transition':'transform 0.5s, opacity 0.5s',
+              'transform':'scale(0)',
+              '-webkit-transform':'scale(0)'
           }).attr("id","wwt-dialog"),
          bgmc:$("<div>").css({
              'height:':'100%',
@@ -34,7 +38,9 @@
                  left = ($(window).width()-this.bg.width())/2;
              this.bg.css({
                  'top':top,
-                 'left':left
+                 'left':left,
+                 'transform':'scale(1)',
+                 '-webkit-transform':'scale(1)'
              }).fadeIn();
              /*this.bg.fadeIn().animate({
                  'top':top,
@@ -42,7 +48,10 @@
              });*/
              var that = this;
              var time = setTimeout(function(){
-                 that.bg.fadeOut();
+                 that.bg.css({
+                     'transform':'scale(0)',
+                     '-webkit-transform':'scale(0)'
+                 }).fadeOut();
                  /*that.bg.fadeOut().animate({
                      'top':Math.random()*1000,
                      'left':Math.random()*1000
