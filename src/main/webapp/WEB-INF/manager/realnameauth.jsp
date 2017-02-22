@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>实名认证</title>
+    <title>基本资料</title>
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="no">
@@ -75,23 +75,6 @@
                        </span>
                   </div>
               </div>
-              <div class="common-br">
-                   <div class="row-label clearfix">
-                       <label>费率</label>
-                       <span class="sh-right" id="_rate">0.38</span>
-                   </div>
-              </div>
-             <div class="common-br">
-                 <div class="row-label clearfix">
-                     <label>结算时间</label>
-                     <span class="sh-right">
-                          <select id="_selectRate" onchange="_selectRate()">
-                             <option value="T1">T1</option>
-                             <option value="D0">D0</option>
-                          </select>
-                     </span>
-                 </div>
-             </div>
              <div class="common-br">
                  <div class="row-label-store-address">
                      <label for="_province">
@@ -143,7 +126,7 @@
                         </li>
                         <li>
 	                         <select id="_businessType">
-	                             <option>类目</option>
+	                             <option value="-1">类目</option>
 	                             <option value="292">食品,292</option>
 	                             <option value="153">餐饮,153</option>
 	                             <option value="209">便利店,209</option>
@@ -155,25 +138,6 @@
                  </div>
              </div>
 
-         </section>
-         <section class="f3">
-             <div class="common-br">
-                 <div class="info">
-                       <span class="name">
-                          营业执照
-                       </span>
-                 </div>
-             </div>
-             <div class="p-group">
-                 <p >
-                     <label class="span-label" for="_name">法人姓名</label>
-                     <span class="span-result"><input type="text" id="_name" placeholder="请输入法人姓名"></span>
-                 </p>
-                 <p >
-                     <label class="span-label" for="_idCard">身份证号</label>
-                     <span class="span-result"><input type="text" id="_idCard" placeholder="请输入法人身份证号"></span>
-                 </p>
-             </div>
          </section>
          <section class="f4" id="_submit">
              <div class="next">下一步</div>
@@ -202,16 +166,6 @@
         _selectCity("_province","0");
     };
 
-    function _selectRate(){
-        var _selectRate = $("#_selectRate").val();
-        if(_selectRate == "D0"){
-            $("#_rate").text(0.39);
-        }
-        if(_selectRate == "T1"){
-            $("#_rate").text(0.40);
-        }
-    }
-
     function _selectCity(_id,cityCode){
         $.post("../getCityCode",{"cityCode":cityCode},function(data){
             if(data.code == 0){
@@ -228,25 +182,14 @@
     }
 
     function _submit(){
-        var _rate = $.trim($("#_rate").text());
-        var _selectRate = $.trim($("#_selectRate").val());
         var _city = $.trim($("#_city").val());
         var _address = $.trim($("#_address").val());
         var _businessType = $.trim($("#_businessType").val());
-        var _name = $.trim($("#_name").val());
-        var _idCard = $.trim($("#_idCard").val());
-        if(_rate=="" || _selectRate==""||_city==""||_address==""||_businessType==""||_name==""||_idCard==""){
+        if(_city=="0"||_address==""||_businessType=="-1"){
             jalert.show("请正确填写");
             return;
         }
-        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
-        if(reg.test(_idCard) === false)
-        {
-            jalert.show("身份证输入不合法");
-            return  false;
-        }
-
-        var jsonData = {"rate":_rate,"settlementType":_selectRate,"cityCode":_city,"address":_address,"businessType":_businessType,"name":_name,"idCard":_idCard,"auth":auth,"storeNo":storeNo};
+        var jsonData = {"cityCode":_city,"address":_address,"businessType":_businessType,"auth":auth,"storeNo":storeNo};
         $.post("./settlement",jsonData,function(obj){
             if(obj.code == 0){
                 location.href = obj.data.url+"?auth="+obj.data.auth+"&storeNo="+obj.data.storeNo;

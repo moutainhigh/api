@@ -4,15 +4,21 @@
 
     <insert id="insert">
         INSERT INTO tb_store_extend
-        (store_no,type,data,utime,ctime)
+        (store_no,type,data,utime,ctime,step)
         VALUES
-        (#{storeNo},#{type},#{data},unix_timestamp(now()),unix_timestamp(now()))
+        (#{storeNo},#{type},#{data},unix_timestamp(now()),unix_timestamp(now()),1)
     </insert>
 
     <update id="updateByStoreNo">
         UPDATE tb_store_extend
-        SET data = #{data}
+        SET data = #{data},step=#{step}
         WHERE store_no = #{storeNo} and type = #{type}
+    </update>
+    
+    <update id="updateByStoreNoAndStep">
+        UPDATE tb_store_extend
+        SET data = #{data},step=#{step}
+        WHERE store_no = #{storeNo} and type = #{type} and step=#{preStep}
     </update>
 
     <select id="getDataByStoreNo" resultType="java.lang.String">

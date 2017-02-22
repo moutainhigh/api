@@ -13,7 +13,12 @@ public interface TBStoreExtendDao {
 
     int insert(@Param("storeNo")String storeNo,@Param("type") int type,@Param("data")String data);
 
-    int updateByStoreNo(@Param("storeNo")String storeNo,@Param("type") int type,@Param("data")String data);
+    int updateByStoreNo(@Param("storeNo")String storeNo,@Param("type") int type,@Param("data")String data,
+    		@Param("step")int step);
+    
+    int updateByStoreNoAndStep(@Param("storeNo")String storeNo,@Param("type") int type,@Param("data")String data,
+    		@Param("step")int step,@Param("preStep")int preStep);
+    
 
     String getDataByStoreNo(@Param("storeNo")String storeNo,@Param("type") int type);
 }
