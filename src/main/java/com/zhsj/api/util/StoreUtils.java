@@ -16,9 +16,9 @@ public class StoreUtils {
     }
 
     public static synchronized String getOrderNO(String storeNo){
-    	//8位商家编号+YYMMDD+84600+4位  
+    	//8位商家编号+YYMMDD+84600+4位
     	if(StringUtils.isNotEmpty(storeNo)){
-    		storeNo = storeNo.length() <= 7 ? storeNo:storeNo.substring(storeNo.length()-8);
+    		storeNo = storeNo.length() <= 8 ? storeNo:storeNo.substring(storeNo.length()-8);
     	}
     	String date = DateUtil.getDateFormat("yyMMdd");
     	long time = DateUtil.unixTime() - DateUtil.getTodayStartTime();
@@ -32,7 +32,7 @@ public class StoreUtils {
     }
 
     public static void main(String[] args){
-//    	System.out.print(StoreUtils.getOrderNO("dd333333"));
-    	System.out.print(StoreUtils.getStoreNO(345L));
+    	System.out.println(StoreUtils.getOrderNO("1110674308"));
+    	System.out.println(StoreUtils.getStoreNO(345L));
     }
 }
