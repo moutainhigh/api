@@ -17,7 +17,14 @@ pageEncoding="UTF-8"%>
     <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
 
     <style>
-
+         .logout{
+            background:#fc324a;
+            color:#FFF;
+            text-align:center;
+            padding:10px 0 ;
+            font-weight:bold;
+         }
+         
     </style>
 </head>
 <body>
@@ -84,13 +91,23 @@ pageEncoding="UTF-8"%>
               </div>
           </section>
     </div>
+    <footer>
+       <div class="logout" id="logout">
+          <span>退出登录</span>
+       </div>
+    </footer>
 </body>
 </html>
 <script>
     var auth = $("#auth").val();
     $(function(){
         load();
-    })
+        
+        //退出
+        $("#logout").on("click",function(){
+        	jalert.show("退出登录");
+        });
+    });
 
     function load(){
         $("#newInsert").on("touchend",function(){
