@@ -15,8 +15,15 @@
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
     <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
+    <script type="text/javascript" src="../resource/js/jquery.select.js"></script>
     <style>
-
+          .js_time{
+             border:1px solid #EEE;
+             /*box-shadow:0 0 5px #EEE;*/
+          }
+          .js_time span{
+             padding:2px 5px;
+          }
     </style>
 </head>
 <body>
@@ -116,26 +123,20 @@
                        </span>
                  </div>
              </div>
-             <div class="common-br">
+              <div class="common-br common-mg">
                  <div class="row-label clearfix">
-                     <label class="span-label">结算时间</label>
-                     <span class="sh-right">
-                          <select id="_selectRate">
-                             <option value="T1">T1</option>
-                          </select>
-                     </span>
+                     <label>结算时间</label>
+                     <span class="sh-right" id="_selectRate" data-id="T1">T1</span>
                  </div>
              </div>
-              <div class="common-br">
+              <div class="common-br common-mg">
                    <div class="row-label clearfix">
                        <label>费率</label>
-                       <span class="sh-right">
-                       		<select id="_rate">
-                       		<option value="0.6">0.6</option>
-                             <option value="0.4">0.4</option>
-                             <option value="0.5">0.5</option>
-                             <option value="0.7">0.7</option>
-                          </select></span>
+                       <div class="sh-right">
+                          <div class="js_time">
+                               <span id="_rate" data-id="0.6">0.6</span>
+                        </div>
+                     </div>
                    </div>
               </div>
          </section>
@@ -156,6 +157,27 @@
         $("#_submit").on("touchend",function(){
             _submit();
         });
+        
+      //费率
+        $("#_rate").on("click",function(){
+            	jselect.operateObj.defaultsel = $(this).attr("data-id");
+            	jselect.operateObj.curObj = $(this);
+            	jselect.init();
+            	jselect.add({
+    				  msg:'0.4',
+    				  id:'0.4',
+    			  }).add({
+    				  msg:'0.5',
+    				  id:'0.5',
+    			  }).add({
+    				  msg:'0.6',
+    				  id:'0.6',
+    			  }).add({
+    				  msg:'0.7',
+    				  id:'0.7',
+    			  });
+            	jselect.show();
+            });
     };
 
 
@@ -167,8 +189,8 @@
         var sa_bank_name = $.trim($("#sa_bank_name").text());
         var mer_email = $.trim($("#mer_email").val());
         
-        var _rate = $.trim($("#_rate").text());
-        var _selectRate = $.trim($("#_selectRate").val());
+        var _rate = $.trim($("#_rate").attr("data-id"));
+        var _selectRate = $.trim($("#_selectRate").attr("data-id"));
         
         if(sa_name=="" ||_idCard=="" || sa_num=="" || _phone=="" ||sa_bank_name==""||mer_email==""){
             jalert.show("账号信息请填写完整");

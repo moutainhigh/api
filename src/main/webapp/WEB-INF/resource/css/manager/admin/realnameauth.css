@@ -104,7 +104,7 @@ img{
 }
 .row-label-hytype,
 .row-label-hytype-select {
-	padding: 15px 0;
+	padding: 10px 0 5px;
     font-size: .8em;
     margin:0 20px;
 }

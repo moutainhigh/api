@@ -16,15 +16,6 @@
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
     <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
     <script type="text/javascript" src="../resource/js/jquery.select.js"></script>
-    <style>
-          .js_time{
-             border:1px solid #EEE;
-             /*box-shadow:0 0 5px #EEE;*/
-          }
-          .js_time span{
-             padding:2px 5px;
-          }
-    </style>
 </head>
 <body>
 <input value="${auth}" id="auth" name="auth" type="hidden">
@@ -82,25 +73,6 @@
                        </span>
                   </div>
               </div>
-<<<<<<< HEAD
-              <div class="common-br">
-                   <div class="row-label clearfix">
-                       <label>费率</label>
-                       <span class="sh-right" id="_rate">0.38</span>
-                   </div>
-              </div>
-             <div class="common-br">
-                 <div class="row-label clearfix">
-                     <label>结算时间</label>
-                     <div class="sh-right">
-                          <div class="js_time">
-                              <span id="_selectRate" data-id="T0">T0</span>
-                          </div>
-                     </div>
-                 </div>
-             </div>
-=======
->>>>>>> 5461098562c45e86ac0a6273a63062743ddc654e
              <div class="common-br">
                  <div class="row-label-store-address">
                      <label for="_province">
@@ -143,18 +115,7 @@
 	                        <span id="two">请选择</span>
                         </li>
                         <li>
-<<<<<<< HEAD
 	                        <span id="three">请选择</span>
-=======
-	                         <select id="_businessType">
-	                             <option value="-1">类目</option>
-	                             <option value="292">食品,292</option>
-	                             <option value="153">餐饮,153</option>
-	                             <option value="209">便利店,209</option>
-	                             <option value="210">其他综合零售,210</option>
-	                             <option value="158">其他行业,158</option>
-	                         </select>
->>>>>>> 5461098562c45e86ac0a6273a63062743ddc654e
                          </li>
                      </ul>
                  </div>
@@ -227,7 +188,6 @@
         	jselect.show();
         });
     };
-<<<<<<< HEAD
      
     //选择行业类型
     function _selectBusinessType(_id,btpid,fun){
@@ -247,32 +207,9 @@
  		   }
  	   });
     }
-    //费率
-    $("#_selectRate").on("click",function(){//第一选择
-        	jselect.operateObj.defaultsel = $(this).attr("data-id");
-        	jselect.operateObj.curObj = $(this);
-        	jselect.init();
-        	jselect.add({
-				  msg:'T0',
-				  id:'T0',
-				  exec:function(){
-					  $("#_rate").text(0.39);
-				  }
-			  }).add({
-				  msg:'T1',
-				  id:'T1',
-				  exec:function(){
-					  $("#_rate").text(0.40);
-				  }
-			  });
-        	jselect.show();
-        });
 
     function _selectCity(_id,cityCode,fun){
-=======
 
-    function _selectCity(_id,cityCode){
->>>>>>> 5461098562c45e86ac0a6273a63062743ddc654e
         $.post("../getCityCode",{"cityCode":cityCode},function(data){
         	jselect.operateObj.curObj = $("#"+_id);
             if(data.code == 0){
@@ -291,25 +228,15 @@
     }
 
     function _submit(){
-<<<<<<< HEAD
-        var _rate = $.trim($("#_rate").text());
-        var _selectRate = $.trim($("#_selectRate").attr("data-id"));
         var _city = $.trim($("#_city").attr("data-id"));
         var _address = $.trim($("#_address").val());
         var _three = $.trim($("#three").attr("data-id"));
-        var _name = $.trim($("#_name").val());
-        var _idCard = $.trim($("#_idCard").val());
-        if(_rate=="" || _selectRate==""||_city==""||_address==""||_three==""||_name==""||_idCard==""){
-=======
-        var _city = $.trim($("#_city").val());
-        var _address = $.trim($("#_address").val());
-        var _businessType = $.trim($("#_businessType").val());
-        if(_city=="0"||_address==""||_businessType=="-1"){
->>>>>>> 5461098562c45e86ac0a6273a63062743ddc654e
+        if( _city=="" || _address=="" || _three==""){
             jalert.show("请正确填写");
             return;
         }
-        var jsonData = {"cityCode":_city,"address":_address,"businessType":_businessType,"auth":auth,"storeNo":storeNo};
+        
+        var jsonData = {"cityCode":_city,"address":_address,"businessType":_three,"auth":auth,"storeNo":storeNo};
         $.post("./settlement",jsonData,function(obj){
             if(obj.code == 0){
                 location.href = obj.data.url+"?auth="+obj.data.auth+"&storeNo="+obj.data.storeNo;

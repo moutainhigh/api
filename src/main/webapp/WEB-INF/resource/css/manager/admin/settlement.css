@@ -13,32 +13,32 @@ img{
 .common-pd{
     padding: 20px 0;
 }
-ul{
+.f1 ul{
     list-style: none;
 }
-ul li{
+.f1 ul li{
     float: left;
     text-align: center;
 }
-ul li p{
+.f1 ul li p{
     padding-bottom:10px;
 }
-ul li:first-child{
+.f1 ul li:first-child{
     width:21%;
 }
-ul li:not(:first-child){
+.f1 ul li:not(:first-child){
     width:26%;
     text-align:right;
 }
-ul li:nth-child(2),
-ul li:nth-child(3){
+.f1 ul li:nth-child(2),
+.f1 ul li:nth-child(3){
     background: url(../../../img/changjiantou.png)  left top/50% no-repeat ;
 }
 
-ul li:last-child{
+.f1 ul li:last-child{
     background: url(../../../img/zhihujiantou.png)  left top/50% no-repeat ;
 }
-ul li:last-child p:last-child{
+.f1 ul li:last-child p:last-child{
 	opacity: .5;
 }
 .f2{
@@ -127,4 +127,16 @@ select{
 }
 input::-webkit-input-placeholder{
     color: #000;opacity:.2;
+}
+
+
+.row-label{
+    padding:15px 0;
+    font-size: .8em;
+}
+
+.row-label .sh-right{
+    float:right;
+    margin-right:20px;
+    color:#fc324a;
 }
