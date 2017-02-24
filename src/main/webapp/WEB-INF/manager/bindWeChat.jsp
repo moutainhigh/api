@@ -100,7 +100,7 @@
 <input type="hidden" name="openId" id="appId" value="${appId}">
 <div class="tips">
     <div class="tips-inner">
-        <span id="tips">密码错误</span>
+        <span id="tips"></span>
     </div>
 </div>
 <div class="container">

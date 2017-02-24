@@ -72,12 +72,36 @@
             background: #fc324a;
             padding:.5em 4em;
             border-radius: 20px;
+            box-shadow: 0 0 3px #fc324a;
+            font-weight:bold;
+        }
+        .tips{
+          position:fixed;
+          top:0;
+          width:100%;
+          background:#CCC;
+          box-shaow: 0 0 5px #CCC;
+          text-align:center;
+          color:#FFF;
+/*           font-size:.9em; */
+          -webkit-transition: -webkit-transform 0.5s;
+          transition:transform 0.5s;
+          -webkit-transform:translateY(-50px);
+          transform:translateY(-50px);
+        }
+        .tips-inner{
+          padding:8px;
         }
     </style>
 </head>
 <body>
 <input type="hidden" name="openId" id="openId" value="${openId}">
 <input type="hidden" name="appId" id="appId" value="${appId}">
+<div class="tips">
+    <div class="tips-inner">
+        <span id="tips"></span>
+    </div>
+</div>
 <div class="container">
     <section class="f1">
         <div class="logo">
@@ -128,7 +152,19 @@
             if(data.code == 0){
                 location.href = "./index?appId="+data.data;
             }else{
-                jalert.show(data.msg);
+//                 jalert.show(data.msg);
+            	$("#tips").text("账号或密码错误");
+                $(".tips").css({
+                	"-webkit-transform":"translateY(0)",
+                    "transform":"translateY(0)"
+                });
+                var t = setTimeout(function(){
+                	$(".tips").css({
+                    	"-webkit-transform":"translateY(-50px)",
+                        "transform":"translateY(-50px)"
+                    });
+                	clearTimeout(t);
+                },1000);
             }
         });
     }
