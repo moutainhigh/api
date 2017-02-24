@@ -120,10 +120,10 @@ public class ManagerController {
 
     @RequestMapping(value = "/realnameauth" , method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public Object realnameauth(String storeName,String storePhone,String storeAccount,String storeNo,String auth) {
-        logger.info("#ManagerController.realnameauth# storeName={},storePhone={},storeAccount={},storeNo={},auth={}",
-                storeName, storePhone, storeAccount, storeNo, auth);
-        String result = managerService.realnameauth(storeName, storePhone, storeAccount, storeNo, auth);
+    public Object realnameauth(String storeName,String storeAccount,String storeNo,String auth) {
+        logger.info("#ManagerController.realnameauth# storeName={},storeAccount={},storeNo={},auth={}",
+                storeName, storeAccount, storeNo, auth);
+        String result = managerService.realnameauth(storeName, storeAccount, storeNo, auth);
         Map<String,String> map = new HashMap<>();
         map.put("auth", auth);
         map.put("storeNo", storeNo);
@@ -142,10 +142,10 @@ public class ManagerController {
     }
     @RequestMapping(value = "/settlement" , method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public Object settlement( String rate,String settlementType,String cityCode,String address,String businessType,String name,String idCard,String auth,String storeNo){
-        logger.info("#ManagerController.settlement# rate={},settlementType={},cityCode={},address={},businessType={},name={},idCard={},auth={},storeNo={}",
-                rate, settlementType, cityCode, address, businessType, name, idCard, auth, storeNo);
-        String result = managerService.settlement(rate, settlementType, cityCode, address, businessType, name, idCard, auth, storeNo);
+    public Object settlement( String cityCode,String address,String businessType,String auth,String storeNo){
+        logger.info("#ManagerController.settlement# cityCode={},address={},businessType={},auth={},storeNo={}",
+                cityCode, address, businessType, auth, storeNo);
+        String result = managerService.settlement( cityCode, address, businessType, auth, storeNo);
         Map<String,String> map = new HashMap<>();
         map.put("auth", auth);
         map.put("storeNo",storeNo);
@@ -159,10 +159,11 @@ public class ManagerController {
 
     @RequestMapping(value = "/auditStatus" , method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public Object auditStatus(String saName,String saNum,String saBankName,String merEmail,String auth,String storeNo) {
-        logger.info("#ManagerService.auditStatus# saName={},saNum={},saBankName={},merEmail={},auth={},storeNO={}",
-                saName, saNum, saBankName, merEmail, auth, storeNo);
-        String result = managerService.auditStatus(saName, saNum, saBankName, merEmail, auth, storeNo);
+    public Object auditStatus(String saName,String saNum,String saBankName,String merEmail,String auth,
+    		String storeNo,String settlementType,String rate,String idCard,String phone) {
+        logger.info("#ManagerService.auditStatus# saName={},saNum={},saBankName={},merEmail={},auth={},storeNO={},settlementType={},rate={},idCard={},phone={}",
+                saName, saNum, saBankName, merEmail, auth, storeNo,settlementType,rate, idCard, phone);
+        String result = managerService.auditStatus(saName, saNum, saBankName, merEmail, auth, storeNo,settlementType,rate, idCard, phone);
         Map<String,String> map = new HashMap<>();
         map.put("auth", auth);
         map.put("storeNo", storeNo);

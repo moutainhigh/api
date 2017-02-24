@@ -79,22 +79,22 @@ public class ManagerService {
         return resultMap;
     }
 
-    public String realnameauth(String storeName,String storePhone,String storeAccount,String storeNo,String auth){
-        logger.info("#ManagerService.realnameauth# storeName={},storePhone={},storeAccount={},storeNo={},auth={}"
-                , storeName, storePhone, storeAccount, storeNo, auth);
+    public String realnameauth(String storeName,String storeAccount,String storeNo,String auth){
+        logger.info("#ManagerService.realnameauth# storeName={},storeAccount={},storeNo={},auth={}"
+                , storeName, storeAccount, storeNo, auth);
         String result = "";
         try {
             //检查storeNo是否已经使用
             StoreBean storeBean = storeService.getStoreByNO(storeNo);
             if(storeBean !=null){
-                return "商家已经存在";
+                return "商家编号已经使用";
             }
             //检查账号是不已经使用
             StoreAccountBean storeAccountBean = tbStoreAccountDao.getByAccount(storeAccount);
             if(storeAccountBean != null){
                 String data = tbStoreExtendDao.getDataByStoreNo(storeNo,1);
                 if(StringUtils.isEmpty(data)){
-                    return "帐号已经使用";
+                    return "登录帐号已经使用";
                 }
                 MSStoreBean msStoreBean = JSONObject.parseObject(data,MSStoreBean.class);
                 if(msStoreBean.getStep() == 1){
@@ -109,7 +109,7 @@ public class ManagerService {
             long saleId = LoginUserUtil.getLoginUser().getId();
             int num = tbStoreNoDao.updateStatusByStoreNo(saleId,storeNo);
             if(num != 1){
-                return "商家编号已经使用";
+                return "商家编号不存在或是已经使用";
             }
             Long orgId = tbAccountBindOrgDao.getOrgIdByAccountId(saleId);
             OrgBean orgBean = tbOrgDao.getById(orgId);
@@ -117,8 +117,8 @@ public class ManagerService {
             //保存帐号，密码为电话，保存商家，
             storeAccountBean = new StoreAccountBean();
             storeAccountBean.setAccount(storeAccount);
-            storeAccountBean.setPassword(Md5.encrypt(storePhone));
-            storeAccountBean.setMobile(storePhone);
+            storeAccountBean.setPassword(Md5.encrypt(storeAccount));
+            storeAccountBean.setMobile("");
             tbStoreAccountDao.insert(storeAccountBean);
             String roleId = MtConfig.getProperty("STORE_MANAGER_ROLE", "");
             tbStoreAccountBindRoleDao.insert(storeAccountBean.getId(),Long.parseLong(roleId));
@@ -128,7 +128,6 @@ public class ManagerService {
             storeBean.setParentNo("0");
             storeBean.setStoreNo(storeNo);
             storeBean.setOrgIds(orgBean.getOrgIds() + "," + orgBean.getId());
-            storeBean.setPhone(storePhone);
             storeBean.setSaleId(saleId);
             storeBean.setName(storeName);
             tbStoreDao.insert(storeBean);
@@ -136,8 +135,8 @@ public class ManagerService {
             tbStoreBindAccountDao.insert(storeNo, storeAccountBean.getId());
             tbStoreBindOrgDao.insert(storeNo, orgBean.getId(), orgBean.getOrgIds() + "," + orgBean.getId());
             MSStoreBean msStoreBean = new MSStoreBean();
-            msStoreBean.setReg_contact_tel(storePhone);
-            msStoreBean.setFiled1(storePhone);
+//            msStoreBean.setReg_contact_tel(storePhone);
+//            msStoreBean.setFiled1(storePhone);
             msStoreBean.setMer_name(storeName);
             msStoreBean.setMer_short_name(storeName);
             msStoreBean.setStep(1);
@@ -145,15 +144,14 @@ public class ManagerService {
             tbStoreExtendDao.insert(storeNo,1,json);
             return "SUCCESS";
         }catch (Exception e){
-            logger.error("#ManagerService.realnameauth# storeName={},storePhone={},storeAccount={},storeNo={},auth={}"
-                    ,storeName,storePhone,storeAccount,storeNo,auth,e);
+            logger.error("#ManagerService.realnameauth# storeName={},storeAccount={},storeNo={},auth={}"
+                    ,storeName,storeAccount,storeNo,auth,e);
         }
         return "ERROR";
     }
 
-    public String settlement( String rate,String settlementType,String cityCode,String address,String businessType,String name,String idCard,String auth,String storeNo){
-        logger.info("#ManagerService.settlement# rate={},settlementType={},cityCode={},address={},businessType={},name={},idCard={},auth={},storeNo={}",
-                rate,settlementType,cityCode,address,businessType,name,idCard,auth,storeNo);
+    public String settlement(String cityCode,String address,String businessType,String auth,String storeNo){
+        logger.info("#ManagerService.settlement# cityCode={},address={},businessType={},auth={},storeNo={}",cityCode,address,businessType,auth,storeNo);
         try{
             //更新商家地址
             int code = Integer.parseInt(cityCode);
@@ -161,30 +159,37 @@ public class ManagerService {
 
             String data = tbStoreExtendDao.getDataByStoreNo(storeNo,1);
             MSStoreBean msStoreBean = JSONObject.parseObject(data,MSStoreBean.class);
-            msStoreBean.setLegal_person(name);
-            msStoreBean.setLegal_person_id(idCard);
+//            msStoreBean.setLegal_person(name);
+//            msStoreBean.setLegal_person_id(idCard);
             msStoreBean.setWx_business_type(businessType);
             msStoreBean.setAli_business_type("2016062900190196");
-            msStoreBean.setWx_rate(rate);
-            msStoreBean.setAli_rate(rate);
-            msStoreBean.setSettlement_type(settlementType);
+//            msStoreBean.setWx_rate(rate);
+//            msStoreBean.setAli_rate(rate);
+//            msStoreBean.setSettlement_type(settlementType);
             msStoreBean.setStep(2);
             String json = JSONObject.toJSON(msStoreBean).toString();
             //更新扩展
-            tbStoreExtendDao.updateByStoreNo(storeNo,1,json);
+            tbStoreExtendDao.updateByStoreNo(storeNo,1,json,2);
             return "SUCCESS";
         }catch (Exception e){
-            logger.error("#ManagerService.settlement# rate={},settlementType={},cityCode={},address={},businessType={},name={},idCard={},auth={},storeNo={})",
-            rate,settlementType,cityCode,address,businessType,name,idCard,auth,storeNo,e);
+            logger.error("#ManagerService.settlement# cityCode={},address={},businessType={},auth={},storeNo={})",cityCode,address,businessType,auth,storeNo,e);
         }
         return "ERROR";
     }
 
 
-    public String auditStatus(String saName,String saNum,String saBankName,String merEmail,String auth,String storeNo) {
-        logger.info("#ManagerService.auditStatus# saName={},saNum={},saBankName={},merEmail={},auth={},storeNO={}",
-                saName,saNum,saBankName,merEmail,auth,storeNo);
+    public String auditStatus(String saName,String saNum,String saBankName,String merEmail,String auth
+    		,String storeNo,String settlementType,String rate,String idCard,String phone) {
+        logger.info("#ManagerService.auditStatus# saName={},saNum={},saBankName={},merEmail={},auth={},storeNO={},settlementType={},rate={},idCard={},phone={}",
+                saName,saNum,saBankName,merEmail,auth,storeNo,settlementType, rate, idCard, phone);
         try{
+        	 Integer status = tbStoreNoDao.getStatusByStoreNo(storeNo);
+             if(status == null){
+                 return "商家编号不存在";
+             }
+             if(status == 2){
+                 return "SUCCESS";
+             }
             String data = tbStoreExtendDao.getDataByStoreNo(storeNo,1);
             MSStoreBean msStoreBean = JSONObject.parseObject(data,MSStoreBean.class);
             msStoreBean.setSa_name(saName);
@@ -194,23 +199,29 @@ public class ManagerService {
             msStoreBean.setAgent_no(MtConfig.getProperty("agent_no", "95272016121410000062"));
             msStoreBean.setSa_bank_type("00");
             msStoreBean.setUser_pid("");
+            msStoreBean.setLegal_person(saNum);
             msStoreBean.setStoreNo(storeNo);
+            msStoreBean.setLegal_person_id(idCard);
+            msStoreBean.setWx_rate(rate);
+            msStoreBean.setAli_rate(rate);
+            msStoreBean.setSettlement_type(settlementType);
+            msStoreBean.setReg_contact_tel(phone);
+            msStoreBean.setFiled1(phone);
+            
             String json = JSONObject.toJSON(msStoreBean).toString();
             //更新扩展
-            tbStoreExtendDao.updateByStoreNo(storeNo, 1, json);
+            int num = tbStoreExtendDao.updateByStoreNoAndStep(storeNo, 1, json,3,2);
+            if(num <=0){
+            	return "不要重复提交";
+            }
             //如果已经提交，不再提交
-            Integer status = tbStoreNoDao.getStatusByStoreNo(storeNo);
-            if(status == null){
-                return "商家编号不存在";
-            }
-            if(status == 2){
-                return "SUCCESS";
-            }
             String result = minshengService.openAccount(msStoreBean);
             if("SUCCESS".equals(result)){
                 long saleId = LoginUserUtil.getLoginUser().getId();
                 tbStoreNoDao.updateStatusByStoreNoAndSaleId(saleId, storeNo);
                 tbStoreDao.updateStatus(1,storeNo);
+            }else{
+            	tbStoreExtendDao.updateByStoreNo(storeNo,1,json,2);
             }
             return result;
         }catch (Exception e){

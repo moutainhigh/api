@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>新增进件</title>
+    <title>创建商户</title>
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="no">
@@ -72,10 +72,10 @@
                      <label class="span-label" for="storeName">店&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名</label>
                      <span class="span-result"><input id="storeName" type="text" placeholder="店名"></span>
                  </p>
-                 <p >
+                <!--  <p >
                      <label class="span-label" for="storePhone">商户手机</label>
                      <span class="span-result"><input type="text" id="storePhone" placeholder="11位正确手机号"></span>
-                 </p>
+                 </p> -->
                  <p >
                      <label class="span-label" for="storeAccount">登录账号</label>
                      <span class="span-result"><input type="text" id="storeAccount" placeholder="建议使用手机号"></span>
@@ -108,11 +108,11 @@
 
     function _submit(){
         var storeName = $.trim($("#storeName").val());
-        var storePhone = $.trim($("#storePhone").val());
+       // var storePhone = $.trim($("#storePhone").val());
         var storeAccount = $.trim($("#storeAccount").val());
         var storeNo = $.trim($("#storeNo").val());
 
-        if(storeName == "" || storePhone=="" || storeAccount == "" || storeNo==""){
+        if(storeName == "" || storeAccount == "" || storeNo==""){
             jalert.show("不能有空值");
             return;
         }
@@ -127,13 +127,7 @@
             return false;
         }
 
-        var myreg = /^(1+\d{10})$/;
-        if(!myreg.test(storePhone)) {
-            jalert.show('请输入有效的手机号码！');
-            return false;
-        }
-
-        var jsonData = {"storeName":storeName,"storePhone":storePhone,"storeAccount":storeAccount,"storeNo":storeNo,"auth":auth};
+        var jsonData = {"storeName":storeName,"storeAccount":storeAccount,"storeNo":storeNo,"auth":auth};
         $.post("./realnameauth",jsonData,function(obj){
             if(obj.code == 0){
                 location.href = obj.data.url+"?auth="+obj.data.auth+"&storeNo="+obj.data.storeNo;

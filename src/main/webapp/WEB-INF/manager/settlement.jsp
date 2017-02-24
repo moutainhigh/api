@@ -78,14 +78,22 @@
             <div class="p-group">
                 <p>
                     <label class="span-label" for="sa_name">开户名</label>
-                    <span class="span-result"><input type="text" id="sa_name" placeholder=""></span>
+                    <span class="span-result"><input type="text" id="sa_name" placeholder="个人姓名"></span>
                 </p>
+                <p >
+                     <label class="span-label" for="_idCard">身份证号</label>
+                     <span class="span-result"><input type="text" id="_idCard" placeholder="请输入法人身份证号"></span>
+                 </p>
                 <p>
-                    <label class="span-label" for="sa_num">银行卡号</label>
+                    <label class="span-label" for="sa_num">电子卡号</label>
                     <span class="span-result">
                         <input type="text" id="sa_num" placeholder="已开通快捷支付的银行卡">
                     </span>
                 </p>
+                 <p >
+                     <label class="span-label" for="storePhone">开户手机</label>
+                     <span class="span-result"><input type="text" id="storePhone" placeholder="11位正确手机号"></span>
+                 </p>
                 <p>
                     <label class="span-label" for="sa_bank_name">开户银行</label>
                     <span class="span-result" id="sa_bank_name">
@@ -100,6 +108,37 @@
                 </p>
             </div>
         </section>
+        <section class="f2">
+	        <div class="common-br">
+                 <div class="info">
+                       <span class="name">
+                          结算信息
+                       </span>
+                 </div>
+             </div>
+             <div class="common-br">
+                 <div class="row-label clearfix">
+                     <label class="span-label">结算时间</label>
+                     <span class="sh-right">
+                          <select id="_selectRate">
+                             <option value="T1">T1</option>
+                          </select>
+                     </span>
+                 </div>
+             </div>
+              <div class="common-br">
+                   <div class="row-label clearfix">
+                       <label>费率</label>
+                       <span class="sh-right">
+                       		<select id="_rate">
+                       		<option value="0.6">0.6</option>
+                             <option value="0.4">0.4</option>
+                             <option value="0.5">0.5</option>
+                             <option value="0.7">0.7</option>
+                          </select></span>
+                   </div>
+              </div>
+         </section>
         <section class="f3" id="_submit">
             <div class="next">下一步</div>
         </section>
@@ -122,19 +161,43 @@
 
     function _submit(){
         var sa_name = $.trim($("#sa_name").val());
+        var _idCard = $.trim($("#_idCard").val());
         var sa_num = $.trim($("#sa_num").val());
+        var _phone = $.trim($("#storePhone").val());
         var sa_bank_name = $.trim($("#sa_bank_name").text());
         var mer_email = $.trim($("#mer_email").val());
-        if(sa_name=="" || sa_num==""||sa_bank_name==""||mer_email==""){
-            jalert.show("请正确填写");
+        
+        var _rate = $.trim($("#_rate").text());
+        var _selectRate = $.trim($("#_selectRate").val());
+        
+        if(sa_name=="" ||_idCard=="" || sa_num=="" || _phone=="" ||sa_bank_name==""||mer_email==""){
+            jalert.show("账号信息请填写完整");
             return;
         }
+        var myreg = /^(1+\d{10})$/;
+        if(!myreg.test(_phone)) {
+            jalert.show('请输入有效的手机号码！');
+            return false;
+        }
+        
+        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if(reg.test(_idCard) === false)
+        {
+            jalert.show("身份证输入不合法");
+            return  false;
+        }
+        
         re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
         if(!re.test(mer_email)){
             jalert.show("邮箱填写错误");
             return;
         }
-        var jsonData = {"saName":sa_name,"saNum":sa_num,"saBankName":sa_bank_name,"merEmail":mer_email,"auth":auth,"storeNo":storeNo};
+        
+        var _rate = $.trim($("#_rate").val());
+        var _selectRate = $.trim($("#_selectRate").val());
+        
+        var jsonData = {"saName":sa_name,"saNum":sa_num,"saBankName":sa_bank_name,"merEmail":mer_email,"auth":auth,
+        		"storeNo":storeNo,"settlementType":_selectRate,"rate":_rate,"idCard":_idCard,"phone":_phone};
         $.post("./auditStatus",jsonData,function(obj){
             if(obj.code == 0){
                 location.href = obj.data.url+"?auth="+obj.data.auth+"&storeNo="+obj.data.storeNo;
