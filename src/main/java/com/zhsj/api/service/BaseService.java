@@ -1,8 +1,11 @@
 package com.zhsj.api.service;
 
 import com.zhsj.api.bean.CityCodeBean;
+import com.zhsj.api.bean.BusinessTypeBean;
 import com.zhsj.api.dao.TBCityCodeDao;
+import com.zhsj.api.dao.TBBusinessTypeDao;
 import com.zhsj.api.util.SSLUtil;
+
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,8 @@ public class BaseService {
 
     @Autowired
     TBCityCodeDao tbCityCodeDao;
+    @Autowired
+    TBBusinessTypeDao tbBusinessTypeDao;
 
     public List<CityCodeBean> getCityCode(String cityCode){
         logger.info("#BaseService.getCityCode# cityCode={}",cityCode);
@@ -30,6 +35,29 @@ public class BaseService {
         }
 
         return cityCodeBeanList;
+    }
+    
+    
+    public List<BusinessTypeBean> getBusinessTypeListByParentId(int id){
+    	logger.info("#BaseService.getMgtListByParentId# id={}",id);
+    	List<BusinessTypeBean> businessTypeBeanList = new ArrayList<>();
+    	try {
+    		businessTypeBeanList = tbBusinessTypeDao.getListById(id);
+		} catch (Exception e) {
+			logger.error("AbcService e={}",e.getMessage(),e);
+		}
+    	return businessTypeBeanList;
+    }
+    
+    public int addBusinessType(BusinessTypeBean businessTypeBean){
+    	logger.info("#BaseService.addBusinessType #businessTypeBean",businessTypeBean);
+    	int index = 0;
+    	try {
+			index = tbBusinessTypeDao.insert(businessTypeBean);
+		} catch (Exception e) {
+			logger.error("AbcService e={}",e.getMessage(),e);
+		}
+    	return index;
     }
 
 

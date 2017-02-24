@@ -29,17 +29,30 @@ $(function(){
                 $('#endTime').css({
                     "font-size":".8em",
                     "line-height":"2.5"
-                })
+                });
             }
         }
     },option));
     //遮罩层点击隐藏
     $(".wwt-select-store-wrapper").on("click",function(){
-        $(this).hide();
-    })
+    	$(".wwt-select-store-true").css({
+            top:'-250px'
+        });
+        var that =this;
+        var t = setTimeout(function(){
+            $(that).hide();
+            clearTimeout(t);
+        },500);
+    });
     //点击适用门店
     $(".select-store").on("click",function(){
         $(".wwt-select-store-wrapper").show();
+        var t = setTimeout(function(){
+            $(".wwt-select-store-true").css({
+                top:'30%'
+            });
+            clearTimeout(t);
+        },100);
     });
     //重置
     $(".wwt-store-reset").on("click",function(e){
@@ -50,7 +63,14 @@ $(function(){
     var storeList = [];//定义全局的门店数组(用于当保存优惠)
     //确定
     $(".wwt-store-confirm").on("click",function(e){
-        $(".wwt-select-store-wrapper").hide();
+        $(".wwt-select-store-true").css({
+            top:'-250px'
+        });
+        var t = setTimeout(function(){
+            $(".wwt-select-store-wrapper").hide();
+            clearTimeout(t);
+        },500);
+        
         var ps = $(".wwt-storelist").find("p"),//所有的门店
             len = ps.length,
             count = 0,//用于判断显示
@@ -220,7 +240,7 @@ $(function(){
             "type":type,
             "auth":$("#auth").val(),
             "rule":JSON.stringify(ruleList)//规则
-        }
+        };
 //        console.log(data);
         $.post("./addDiscount",data,function(obj){
         	if(obj.code == 0){

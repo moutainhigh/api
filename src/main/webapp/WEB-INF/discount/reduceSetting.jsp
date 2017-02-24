@@ -262,15 +262,21 @@ pageEncoding="UTF-8"%>
             z-index: 888;
             opacity: 0.2;
         }
+        
         .wwt-select-store-true{
             position: absolute;
-            top: 30%;
             left: 10%;
+            top: -250px;
             width: 80%;
             background: #FFF;
             border-radius: 5px;
             opacity: 1;
             z-index: 10000;
+            box-shadow: 0 0 5px rgba(0,0,0,.3);
+            /*transform:translate(0,0);*/
+            /*-webkit-transform:translate(0,0);*/
+            -webkit-transition: top 0.5s ease-in-out;
+            transition: top 0.5s ease-in-out;
         }
         .wwt-select-store-header{
             text-align: center;

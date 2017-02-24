@@ -15,8 +15,15 @@
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
     <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
+    <script type="text/javascript" src="../resource/js/jquery.select.js"></script>
     <style>
-
+          .js_time{
+             border:1px solid #EEE;
+             /*box-shadow:0 0 5px #EEE;*/
+          }
+          .js_time span{
+             padding:2px 5px;
+          }
     </style>
 </head>
 <body>
@@ -84,12 +91,11 @@
              <div class="common-br">
                  <div class="row-label clearfix">
                      <label>结算时间</label>
-                     <span class="sh-right">
-                          <select id="_selectRate" onchange="_selectRate()">
-                             <option value="T1">T1</option>
-                             <option value="D0">D0</option>
-                          </select>
-                     </span>
+                     <div class="sh-right">
+                          <div class="js_time">
+                              <span id="_selectRate" data-id="T0">T0</span>
+                          </div>
+                     </div>
                  </div>
              </div>
              <div class="common-br">
@@ -100,14 +106,14 @@
                      <div class="select-pro-city">
                          <ul class="clearfix">
                              <li>
-	                             <select id="_province">
-	                                 <option value="0">请选择省份</option>
-	                             </select>
+	                             <span id="_province">
+	                                                                 请选择省份
+	                             </span>
                              </li>
                              <li>
-		                         <select id="_city">
-		                             <option value="0">请选择城市</option>
-		                         </select>
+		                         <span id="_city">
+		                                                           请选择城市
+		                         </span>
 		                     </li>
                          </ul>
                      </div>
@@ -126,30 +132,15 @@
                      <label for="_businessType">行业类型</label>
                  </div>
                  <div class="row-label-hytype-select">
-                     <ul class="clearfix">
+                     <ul>
                         <li>
-	                         <select>
-	                             <option>商户类型</option>
-	                             <option>个体工商户</option>
-	                         </select>
+	                        <span id="first">请选择</span>
                         </li>
                         <li>
-	                         <select>
-	                             <option>行业大类</option>
-	                             <option>餐饮/食品</option>
-	                             <option>线下零售</option>
-	                             <option>其它</option>
-	                         </select>
+	                        <span id="two">请选择</span>
                         </li>
                         <li>
-	                         <select id="_businessType">
-	                             <option>类目</option>
-	                             <option value="292">食品,292</option>
-	                             <option value="153">餐饮,153</option>
-	                             <option value="209">便利店,209</option>
-	                             <option value="210">其他综合零售,210</option>
-	                             <option value="158">其他行业,158</option>
-	                         </select>
+	                        <span id="three">请选择</span>
                          </li>
                      </ul>
                  </div>
@@ -192,50 +183,122 @@
         $("#_submit").on("touchend",function(){
             _submit();
         });
-        $("#_province").on("change",function(){
-            var selOpt = $("#_city option");
-            selOpt.remove();
-            $("#_city").append("<option value=\"0\">请选择城市</option>");
-            var _province = $("#_province").val();
-            _selectCity("_city",_province)
+        //选择省份
+        //_selectCity("_province","0");
+        $("#_province").parent("li").on("click",function(){
+            jselect.operateObj.defaultsel = $(this).children("span").attr("data-id");
+            _selectCity("_province",0,function(){
+        		$("#_city").text("请选择城市").removeAttr("data-id");
+        	});
+        	jselect.show();
         });
-        _selectCity("_province","0");
+        //选择城市
+        $("#_city").parent("li").on("click",function(){//第三选择
+        	if($("#_province").attr("data-id") == undefined){
+        		return false;
+        	}
+        	jselect.operateObj.defaultsel = $(this).children("span").attr("data-id");
+        	_selectCity("_city",$("#_province").attr("data-id"));
+        	jselect.show();
+        });
+        
+        //经营类型
+        //_selectBusinessType("first",0);//默认加载
+        $("#first").parent("li").on("click",function(){//第一选择
+        	jselect.operateObj.defaultsel = $(this).children("span").attr("data-id");
+        	_selectBusinessType("first",0,function(){
+        		$("#two").text("请选择").removeAttr("data-id");
+            	$("#three").text("请选择").removeAttr("data-id");
+        	});
+        	jselect.show();
+        });
+        
+        $("#two").parent("li").on("click",function(){//第二选择
+        	if($("#first").attr("data-id") == undefined){
+        		return false;
+        	}
+        	jselect.operateObj.defaultsel = $(this).children("span").attr("data-id");
+        	_selectBusinessType("two",$("#first").attr("data-id"),function(){
+        		$("#three").text("请选择").removeAttr("data-id");
+        	});
+        	jselect.show();
+        });
+        $("#three").parent("li").on("click",function(){//第三选择
+        	if($("#two").attr("data-id") == undefined){
+        		return false;
+        	}
+        	jselect.operateObj.defaultsel = $(this).children("span").attr("data-id");
+        	_selectBusinessType("three",$("#two").attr("data-id"));
+        	jselect.show();
+        });
     };
-
-    function _selectRate(){
-        var _selectRate = $("#_selectRate").val();
-        if(_selectRate == "D0"){
-            $("#_rate").text(0.39);
-        }
-        if(_selectRate == "T1"){
-            $("#_rate").text(0.40);
-        }
+     
+    //选择行业类型
+    function _selectBusinessType(_id,btpid,fun){
+    	$.post("../getListByParentId",{id:btpid},function(result){
+ 		  jselect.operateObj.curObj = $("#"+_id);
+ 		   if(result.code == 0){
+ 			   var list = result.data;
+ 			   jselect.init();
+ 			   for(var i =0;i<list.length;i++){
+ 				  jselect.add({
+ 					  msg:list[i].name,
+ 					  id:list[i].id,
+ 					  exec:fun
+ 				  });
+ 			   }
+ 			   
+ 		   }
+ 	   });
     }
+    //费率
+    $("#_selectRate").on("click",function(){//第一选择
+        	jselect.operateObj.defaultsel = $(this).attr("data-id");
+        	jselect.operateObj.curObj = $(this);
+        	jselect.init();
+        	jselect.add({
+				  msg:'T0',
+				  id:'T0',
+				  exec:function(){
+					  $("#_rate").text(0.39);
+				  }
+			  }).add({
+				  msg:'T1',
+				  id:'T1',
+				  exec:function(){
+					  $("#_rate").text(0.40);
+				  }
+			  });
+        	jselect.show();
+        });
 
-    function _selectCity(_id,cityCode){
+    function _selectCity(_id,cityCode,fun){
         $.post("../getCityCode",{"cityCode":cityCode},function(data){
+        	jselect.operateObj.curObj = $("#"+_id);
             if(data.code == 0){
-                var options = "";
+            	jselect.init();
                 $.each(data.data,function(n,obj) {
-                    options += "<option value=\""+obj.code+"\">"+obj.name+"</option>";
+                    jselect.add({
+   					  msg:obj.name,
+   					  id:obj.code,
+   					  exec:fun
+   				  });
                 });
-                $("#"+_id).append(options);
-
             }else{
                 jalert.show("出错了");
             }
-        })
+        });
     }
 
     function _submit(){
         var _rate = $.trim($("#_rate").text());
-        var _selectRate = $.trim($("#_selectRate").val());
-        var _city = $.trim($("#_city").val());
+        var _selectRate = $.trim($("#_selectRate").attr("data-id"));
+        var _city = $.trim($("#_city").attr("data-id"));
         var _address = $.trim($("#_address").val());
-        var _businessType = $.trim($("#_businessType").val());
+        var _three = $.trim($("#three").attr("data-id"));
         var _name = $.trim($("#_name").val());
         var _idCard = $.trim($("#_idCard").val());
-        if(_rate=="" || _selectRate==""||_city==""||_address==""||_businessType==""||_name==""||_idCard==""){
+        if(_rate=="" || _selectRate==""||_city==""||_address==""||_three==""||_name==""||_idCard==""){
             jalert.show("请正确填写");
             return;
         }

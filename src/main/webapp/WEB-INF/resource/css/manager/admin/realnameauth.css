@@ -5,7 +5,7 @@ img{
 }
 .f1{
     background-color: #fc324a;
-    font-size:.7em;
+    font-size:.8em;
     color:#FFF
 }
 .common-mg{
@@ -14,32 +14,32 @@ img{
 .common-pd{
     padding: 20px 0;
 }
-ul{
+.container .f1 ul{
     list-style: none;
 }
-ul li{
+.container .f1 ul li{
     float: left;
     text-align: center;
 }
-ul li p{
+.container .f1 ul li p{
     padding-bottom:10px;
 }
-ul li:first-child{
+.container .f1 ul li:first-child{
     width:21%;
 }
-ul li:not(:first-child){
+.container .f1 ul li:not(:first-child){
     width:26%;
     text-align:right;
 }
-ul li:nth-child(2){
+.container .f1 ul li:nth-child(2){
     background: url(../../../img/changjiantou.png)  left top/50% no-repeat ;
 }
-ul li:nth-child(3),
-ul li:last-child{
+.container .f1 ul li:nth-child(3),
+.container .f1 ul li:last-child{
     background: url(../../../img/zhihujiantou.png)  left top/50% no-repeat ;
 }
-ul li:nth-child(3) p:last-child,
-ul li:last-child p:last-child{
+.container .f1 ul li:nth-child(3) p:last-child,
+.container .f1 ul li:last-child p:last-child{
 	opacity:.5;
 }
 .f2,.f3{
@@ -115,16 +115,20 @@ ul li:last-child p:last-child{
 	list-style:none;
 }
 .row-label-hytype-select ul li{
-    float:left;
-    width:33.3%;
-    text-align:left;	
+    /*float:left;
+    width:30%;*/
+    text-align: center;
+    border:1px solid #EFEFEF;	
+    /*box-shadow: 0 0 2px #EEE;*/
+    margin:8px 0;
+    padding:2px;
+    color:#CCC;
+    font-size: .9em;
 }
-.row-label-hytype-select ul li:not(:last-child){
-	width:30%;
+.row-label-hytype-select ul li span[data-id]{
+	color:#000;
 }
-.row-label-hytype-select ul li:last-child{
-	width:40%;
-}
+
 .select-pro-city,
 .row-label-address span{
 	-webkit-box-flex:1;
@@ -137,8 +141,23 @@ ul li:last-child p:last-child{
 }
 .select-pro-city ul li{
 	float:left;
-	width:50%;
+	width:45%;
 	text-align:center;
+	border:1px solid #EFEFEF;
+	color:#CCC;
+	font-size: .9em;
+    padding: 1px;
+	/*box-shadow: 0 0 2px #EEE;*/
+}
+.select-pro-city ul li span[data-id]{
+	color:#000;
+}
+.select-pro-city ul li:first-child{
+	margin-right: 5px;
+}
+.select-pro-city ul li:last-child{
+	float:right;
+	margin-left: 5px;
 }
 .row-label-address input[type=text]{
 	 width:100%;

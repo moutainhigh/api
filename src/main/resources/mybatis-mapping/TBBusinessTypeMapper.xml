@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBBusinessTypeDao">
+
+    <select id="getListById" resultType="com.zhsj.api.bean.BusinessTypeBean">
+	      select id,parent_id,name 
+	      from tb_business_type
+	      where parent_id = #{id}
+    </select>
+
+    <insert id="insert">
+      insert into tb_business_type (parent_id,name) values (#{parentId},#{name})
+    </insert>
+</mapper>

@@ -32,7 +32,15 @@ public class StoreUtils {
     }
 
     public static void main(String[] args){
-    	System.out.println(StoreUtils.getOrderNO("1110674308"));
-    	System.out.println(StoreUtils.getStoreNO(345L));
+    	//System.out.println(StoreUtils.getOrderNO("1110674308"));
+    	//System.out.println(StoreUtils.getStoreNO(345L));
+    	System.out.println(getStoreNO(61L));
+    	System.err.println(getOrderNO("1110674656"));
+    	//1110674656
+//    	10674656170222497211847
+//    	1110674656
+//    	10674656170222497341114
+//    	1110674656
+//    	10674656170222497816641
     }
 }

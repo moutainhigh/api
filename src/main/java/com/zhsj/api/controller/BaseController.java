@@ -1,17 +1,21 @@
 package com.zhsj.api.controller;
 
+import com.zhsj.api.bean.BusinessTypeBean;
 import com.zhsj.api.service.BaseService;
 import com.zhsj.api.util.CommonResult;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.PrintWriter;
 import java.util.Map;
 
@@ -84,6 +88,28 @@ public class BaseController {
     public Object getCityCode(String cityCode) {
         return CommonResult.build(0, "", baseService.getCityCode(cityCode));
     }
-
-
+    /**
+     * 
+     * @Title: getListByParentId
+     * @Description: TODO
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/getListByParentId", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object getListByParentId(int id){
+    	return CommonResult.success("", baseService.getBusinessTypeListByParentId(id));
+    }
+    /**
+     * 
+     * @Title: addMgtCategory
+     * @Description: TODO
+     * @param mBean
+     * @return
+     */
+    @RequestMapping(value = "/addBusinessType", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object addBusinessType(BusinessTypeBean mBean){
+    	return CommonResult.success("", baseService.addBusinessType(mBean));
+    }
 }
