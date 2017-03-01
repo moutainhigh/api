@@ -1,5 +1,7 @@
 package com.zhsj.api.bean;
 
+import java.util.List;
+
 /**
  * Created by lcg on 17/1/1.
  */
@@ -15,6 +17,8 @@ public class PayBean {
 
     private String openId;  //微信openId
     private String buyerId; //支付宝唯一id
+
+    private String discountIds;
 
     public long getDiscountId() {
         return discountId;
@@ -78,6 +82,14 @@ public class PayBean {
 
     public void setDiscountPrice(double discountPrice) {
         this.discountPrice = discountPrice;
+    }
+
+    public String getDiscountIds() {
+        return discountIds;
+    }
+
+    public void setDiscountIds(String discountIds) {
+        this.discountIds = discountIds;
     }
 
     @Override

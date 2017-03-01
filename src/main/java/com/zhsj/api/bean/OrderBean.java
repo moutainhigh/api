@@ -22,6 +22,7 @@ public class OrderBean {
     private long ctime;
     private String orgIds;
     private long saleId;
+    private String discountIds;
 
     public long getCtime() {
         return ctime;
@@ -165,5 +166,13 @@ public class OrderBean {
 
     public void setStoreName(String storeName) {
         this.storeName = storeName;
+    }
+
+    public String getDiscountIds() {
+        return discountIds;
+    }
+
+    public void setDiscountIds(String discountIds) {
+        this.discountIds = discountIds;
     }
 }

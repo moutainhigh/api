@@ -9,6 +9,8 @@ public class DiscountRuleBean {
     private double expendAmount;
     private double discount1;
     private double discount2;
+    private double planAmount;
+    private double actualAmount;
 
     public long getId() {
         return id;
@@ -48,5 +50,21 @@ public class DiscountRuleBean {
 
     public void setDiscount2(double discount2) {
         this.discount2 = discount2;
+    }
+
+    public double getPlanAmount() {
+        return planAmount;
+    }
+
+    public void setPlanAmount(double planAmount) {
+        this.planAmount = planAmount;
+    }
+
+    public double getActualAmount() {
+        return actualAmount;
+    }
+
+    public void setActualAmount(double actualAmount) {
+        this.actualAmount = actualAmount;
     }
 }

@@ -20,5 +20,6 @@ public interface TBDiscountRuleDao {
     
     int delByDiscountId(@Param("discountId")long discountid);
 
-
+    int updateActual(@Param("id")long id,
+                     @Param("discountPrice")double discountPrice);
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zhsj.api.bean.*;
 import com.zhsj.api.bean.result.RateBean;
+import com.zhsj.api.constants.DiscountATypeCons;
 import com.zhsj.api.constants.OrderStatus;
 import com.zhsj.api.dao.*;
 import com.zhsj.api.util.*;
@@ -151,23 +152,59 @@ public class MinshengService {
 		if(discountIdList == null || discountIdList.isEmpty()){
 			return payBean;
 		}
-//		DiscountBean discountBean = tbDiscountDao.getById(discountIdList.get(0));
 		List<DiscountBean> disList = tbDiscountDao.getByIds(discountIdList);
 		if(disList == null || disList.isEmpty()){
 			return payBean;
 		}
-		DiscountBean discountBean = disList.get(0);
-		//查是不是有第公司活动
+
+		Map<Integer,DiscountBean> discountBeanMap = new HashMap<>();
 		for(DiscountBean bean :disList){
-			if(bean.getaType() == 1){
-				discountBean = bean;
-				break;
+			discountBeanMap.put(bean.getaType(),bean);
+		}
+		//是否有优惠1
+		DiscountBean beant1 = discountBeanMap.get(DiscountATypeCons.unique.getType());
+		//是否有优惠3
+		DiscountBean beant3 = discountBeanMap.get(DiscountATypeCons.blend.getType());
+		//是滞有优惠2
+		DiscountBean beant2 = discountBeanMap.get(DiscountATypeCons.STORE.getType());
+		if(beant1 != null){
+			payBean = this.calDiscountProc(payBean,beant1,null);
+		}else if(beant2 != null){
+			payBean = this.calDiscountProc(payBean,beant2,beant3);
+		}else if(beant3 != null){
+			payBean = this.calDiscountProc(payBean,beant3,null);
+		}
+		return payBean;
+	}
+
+	private PayBean calDiscountProc(PayBean payBean,DiscountBean bean1,DiscountBean bean2){
+
+		double disPrice = 0.0;
+		List<Long> ids = new ArrayList<>();
+		if(bean2 !=null){
+			disPrice = this.getDiscountPrice(payBean,bean2);
+			if(disPrice > 0){
+				payBean.setDiscountType(bean2.getType());
+				payBean.setDiscountId(bean2.getId());
+				ids.add(bean2.getId());
 			}
 		}
-		
+
+		double price = this.getDiscountPrice(payBean,bean1);
+		if(price > 0){
+			payBean.setDiscountType(bean1.getType());
+			payBean.setDiscountId(bean1.getId());
+			ids.add(bean1.getId());
+		}
+		payBean.setDiscountIds(StringUtil.list2SqlString(ids));
+		return payBean;
+
+	}
+
+	private double getDiscountPrice(PayBean payBean,DiscountBean discountBean){
 		List<DiscountRuleBean> ruleBeans = tbDiscountRuleDao.getByDisId(discountBean.getId());
 		if(ruleBeans == null || ruleBeans.isEmpty()){
-			return payBean;
+			return 0;
 		}
 		DiscountRuleBean discountRuleBean = null;
 		for(DiscountRuleBean bean :ruleBeans){
@@ -178,7 +215,7 @@ public class MinshengService {
 			}
 		}
 		if(discountRuleBean == null){
-			return payBean;
+			return 0;
 		}
 		double discountPrice = 0.0f;
 		if(discountBean.getType() == 2){
@@ -194,11 +231,20 @@ public class MinshengService {
 			discountPrice = discountRuleBean.getDiscount1();
 		}
 
+		if(discountRuleBean.getPlanAmount() == 0){
+			return discountPrice;
+		}
+		if(discountRuleBean.getPlanAmount()-discountRuleBean.getActualAmount()-discountPrice < 0){
+			return 0;
+		}
+		int num = tbDiscountRuleDao.updateActual(discountRuleBean.getId(),discountPrice);
+		if(num > 0){
+			return discountPrice;
+		}else {
+			return 0;
+		}
 
-		payBean.setDiscountId(discountBean.getId());
-		payBean.setDiscountType(discountBean.getType());
-		payBean.setDiscountPrice(discountPrice);
-		return payBean;
+
 	}
 
 	private StorePayInfo prePay(PayBean payBean,String orderNo){
@@ -247,6 +293,7 @@ public class MinshengService {
 		orderBean.setSaleId(storeBean.getSaleId());
 		orderBean.setDiscountType(payBean.getDiscountType());
 		orderBean.setDiscountId(payBean.getDiscountId());
+		orderBean.setDiscountIds(payBean.getDiscountIds());
 		int num = bmOrderDao.insertOrder(orderBean);
 		return storePayInfo;
 	}

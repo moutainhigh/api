@@ -5,7 +5,7 @@
         tb_discount_rule
     </sql>
     <sql id="SELECT_FIELD">
-        id,discount_id,expend_amount,discount1,discount2
+        id,discount_id,expend_amount,discount1,discount2,actual_amount,plan_amount
     </sql>
 
     <select id="getByDisId" resultType="discountRuleBean">
@@ -27,6 +27,11 @@
     	delete from <include refid="TABLE"/>
     	Where discount_id = #{discountId}
     </delete>
-    
+
+    <update id="updateActual">
+        UPDATE <include refid="TABLE"/>
+        SET actual_amount = actual_amount+#{discountPrice}
+        WHERE id=#{id} AND plan_amount - actual_amount >= #{discountPrice}
+    </update>
 
 </mapper>
