@@ -215,8 +215,8 @@
             return;
         }
         
-        var _rate = $.trim($("#_rate").val());
-        var _selectRate = $.trim($("#_selectRate").val());
+        var _rate = $.trim(_rate);
+        var _selectRate = $.trim(_selectRate);
         
         var jsonData = {"saName":sa_name,"saNum":sa_num,"saBankName":sa_bank_name,"merEmail":mer_email,"auth":auth,
         		"storeNo":storeNo,"settlementType":_selectRate,"rate":_rate,"idCard":_idCard,"phone":_phone};
