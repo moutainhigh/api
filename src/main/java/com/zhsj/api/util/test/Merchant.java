@@ -73,11 +73,11 @@ public class Merchant
 	
 	public static void updateMerchantByPaykey() {
 		Map<String, String> reqData = new HashMap<String, String>();
-		reqData.put("paykey", "85a6c4e20bf54505bea8e75bc870d587"); //修改商户的paykey
+		reqData.put("paykey", "3eb3bf9ba2994b57929fc2193c1dc4e7"); //修改商户的paykey
         reqData.put("agent_no", "95272016121410000062");//代理商编号
-        reqData.put("wx_rate", "0.4"); //微信费率
-        reqData.put("ali_rate", "0.4");//支付宝费率
-        reqData.put("settlement_type", "D0");//商户结算周期
+        reqData.put("wx_rate", "0.25"); //微信费率
+        reqData.put("ali_rate", "0.25");//支付宝费率
+        reqData.put("settlement_type", "T1");//商户结算周期
 	try
 	{
 		String signString = CertUtil.reqSign(MapUtil.coverMap2String(reqData), StaticConfig.CERT_PATH_P12,

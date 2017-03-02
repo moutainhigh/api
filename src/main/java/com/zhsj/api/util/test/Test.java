@@ -21,8 +21,11 @@ public class Test {
 //        System.out.println(strs[0]);
 //        System.out.println(strs[1]);
 //        System.out.println("2,".contains("2"));
-        for(int i=33333;i<34444;i++)
-                System.out.println(i^876987);
+    	int min = (int)(0.1*100);
+		int max = (int)(0.9*100);
+		Random random = new Random();
+		int s = random.nextInt(max)%(max-min+1) + min;
+		System.out.println(s/100.0);
 //        int min =1;
 //        int max = Integer.MAX_VALUE;
 //        Set<String> set = new HashSet<>();

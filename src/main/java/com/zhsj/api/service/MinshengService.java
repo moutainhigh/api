@@ -194,6 +194,7 @@ public class MinshengService {
 		if(price > 0){
 			payBean.setDiscountType(bean1.getType());
 			payBean.setDiscountId(bean1.getId());
+			payBean.setDiscountPrice(price);
 			ids.add(bean1.getId());
 		}
 		payBean.setDiscountIds(StringUtil.list2SqlString(ids));
@@ -219,8 +220,8 @@ public class MinshengService {
 		}
 		double discountPrice = 0.0f;
 		if(discountBean.getType() == 2){
-			int min = (int)discountRuleBean.getDiscount1()*100;
-			int max = (int)discountRuleBean.getDiscount2()*100;
+			int min = (int)(discountRuleBean.getDiscount1()*100);
+			int max = (int)(discountRuleBean.getDiscount2()*100);
 			Random random = new Random();
 			int s = random.nextInt(max)%(max-min+1) + min;
 			discountPrice = s/100.0;
