@@ -16,6 +16,15 @@
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
     <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
     <script type="text/javascript" src="../resource/js/jquery.select.js"></script>
+    <style>
+      #_address{
+        border-radius:0;
+        -webkit-appearance: none;
+        background-color: transparent;
+        padding:0 5px;
+        font-size:0.8em;
+      }
+    </style>
 </head>
 <body>
 <input value="${auth}" id="auth" name="auth" type="hidden">
