@@ -154,5 +154,86 @@
         limit #{startNo},#{pageSize}
     </select>
 
-
+    <!-- xlc 170306 -->
+    <select id="getMemberCountByParam" parameterType="java.util.Map" resultType="java.lang.Integer">
+      select count(distinct(user_id)) from tb_order
+      <where>
+        <if test="storeNo != null and storeNo != ''">
+           store_no = #{storeNo}
+        </if>
+        <if test="startTime != null and endTime != null">
+           and ctime between #{startTime} and #{endTime}
+        </if>
+      </where>
+    </select>
+    
+    <select id="getCountByMoney" resultType="java.lang.Integer">
+      select count(distinct(user_id)) from tb_order
+      <where>
+         store_no = #{storeNo}
+         <if test="actualChargeAmount1 != null">
+            and actual_charge_amount >= #{actualChargeAmount1}
+         </if>
+         <if test="actualChargeAmount2 != null">
+            and actual_charge_amount &lt; #{actualChargeAmount2}
+         </if>
+      </where>
+    </select>
+    
+    <select id="getCountByTime" resultType="java.lang.Integer">
+       select count(1) from (
+          select count(1) from tb_order where  store_no = #{storeNo}
+          GROUP BY user_id having  
+          <if test="time ==1">
+             count(user_id) = 1
+          </if>
+          <if test="time == 2">
+            (count(user_id) >= 2 and count(user_id) &lt;= 4)
+          </if>
+          <if test="time == 3">
+            (count(user_id) >= 5 and count(user_id) &lt;= 8)
+          </if>
+          <if test="time == 4">
+            count(user_id) >= 9
+          </if>
+          ) a
+    </select>
+        
+        
+     <select id="getByStoreNoAndUserId" resultType="com.zhsj.api.bean.result.CountMember">
+       select count(1) count, sum(actual_charge_amount) sum from tb_order
+       <where>
+            store_no = #{storeNo} and user_id = #{userId}
+       </where>
+     </select>   
+     
+     <select id="getByStoreNoAndMoney" resultType="com.zhsj.api.bean.result.CountMember">
+        select distinct(user_id) userId from tb_order
+        <where>
+	        store_no = #{storeNo}
+	         <if test="actualChargeAmount1 != null">
+	            and actual_charge_amount >= #{actualChargeAmount1}
+	         </if>
+	         <if test="actualChargeAmount2 != null">
+	            and actual_charge_amount &lt; #{actualChargeAmount2}
+	         </if>
+        </where>
+     </select>
+     
+     <select id="getByStoreNoAndTime" resultType="com.zhsj.api.bean.result.CountMember">
+        select distinct(user_id) userId from tb_order where  store_no = #{storeNo}
+          GROUP BY user_id having  
+          <if test="time ==1">
+             count(user_id) = 1
+          </if>
+          <if test="time == 2">
+            (count(user_id) >= 2 and count(user_id) &lt;= 4)
+          </if>
+          <if test="time == 3">
+            (count(user_id) >= 5 and count(user_id) &lt;= 8)
+          </if>
+          <if test="time == 4">
+            count(user_id) >= 9
+          </if>
+     </select>
 </mapper>

@@ -51,4 +51,29 @@ public class PageController {
 	public String reduceSet(){
 		return "discount/reduceSetting";
 	}
+	
+	@RequestMapping(value = "saleIndex")
+	public String saleIndex(){
+		return "manager/index";
+	}
+	
+	@RequestMapping(value = "login")
+	public String login(){
+		return "manager/bindWeChat";
+	}
+	
+	@RequestMapping(value = "shoplogin")
+	public String shoplogin(){
+		return "shop/bindWeChat";
+	}
+	
+	@RequestMapping(value = "mdata")
+	public String mdata(){
+		return "member/memberData";
+	}
+	
+	@RequestMapping(value = "mdetail")
+	public String mDetail(){
+		return "member/memberDetail";
+	}
 }

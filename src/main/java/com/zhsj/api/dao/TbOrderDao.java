@@ -3,9 +3,11 @@ package com.zhsj.api.dao;
 
 import com.zhsj.api.bean.result.CountDealBean;
 import com.zhsj.api.bean.result.CountDiscount;
+import com.zhsj.api.bean.result.CountMember;
 import com.zhsj.api.util.db.DynamicDataSource;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.util.db.DS;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
@@ -75,5 +77,23 @@ public interface TbOrderDao {
     CountDiscount countDiscountOrder(@Param("discountId")long discountId,
                                      @Param("startTime")int startTime,
                                      @Param("endTime")int endTime);
-
+    //xlc --20170306
+	int getMemberCountByParam(Map<String, Object> paramMap);
+	
+	int getCountByMoney(@Param("storeNo")String storeNo,
+			@Param("actualChargeAmount1")Double actualChargeAmount1,
+			@Param("actualChargeAmount2")Double actualChargeAmount2);
+	
+	int getCountByTime(@Param("storeNo")String storeNo,@Param("time")int time);
+	
+	
+	CountMember getByStoreNoAndUserId(@Param("storeNo")String storeNo,
+			                              @Param("userId")long userId);
+	
+	List<CountMember> getByStoreNoAndMoney(@Param("storeNo")String storeNo,
+			@Param("actualChargeAmount1")Double actualChargeAmount1,
+			@Param("actualChargeAmount2")Double actualChargeAmount2);
+	
+	List<CountMember> getByStoreNoAndTime(@Param("storeNo")String storeNo,@Param("time")int time);
+    
 }

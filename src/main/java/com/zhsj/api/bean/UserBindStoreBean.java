@@ -8,6 +8,7 @@ public class UserBindStoreBean {
     private long userId;
     private int userType;
     private String storeNo;
+    private long utime;
 
     public long getId() {
         return id;
@@ -40,4 +41,14 @@ public class UserBindStoreBean {
     public void setStoreNo(String storeNo) {
         this.storeNo = storeNo;
     }
+
+	public long getUtime() {
+		return utime;
+	}
+
+	public void setUtime(long utime) {
+		this.utime = utime;
+	}
+    
+    
 }

@@ -174,14 +174,14 @@ footer {
     background:#14d212;
     color:#fff;
     box-shadow: 0 0 2px #14d212;
-    transition: .6s;
+    transition: .3s;
     transform: scale(1.05);
   }
   .ali-pay{
     background:#3289ce;
     color:#fff;
 	box-shadow: 0 0 2px #3289ce;
-	transition: .6s;
+	transition: .3s;
 	transform: scale(1.05);
   }
   .ali-input-gl{

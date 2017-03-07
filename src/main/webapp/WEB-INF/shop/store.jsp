@@ -37,13 +37,13 @@ pageEncoding="UTF-8"%>
               <div class="list-group">
                   <p class="clearfix common-mg yu-e ">
                       <span class="span-label">余额</span>
-                      <span class="span-result common-jt">
+                      <span class="span-result common-jt yxaccount">
                            <span>￥0.00</span>
                       </span>
                   </p>
                   <p class="clearfix common-mg qy" id="signInfo">
                       <span class="span-label">签约</span>
-                      <span class="span-result common-jt">
+                      <span class="span-result common-jt ">
                           <span>&nbsp;</span>
                       </span>
                   </p>
@@ -141,7 +141,8 @@ pageEncoding="UTF-8"%>
 
         //我的会员
         $("#_myMember").on("touchend",function(){
-            jalert.show("我的会员");
+//             jalert.show("我的会员");
+        	location.href="./toMemberData?auth="+auth;
         });
         //经营
         $("#_index").on("touchend",function(){

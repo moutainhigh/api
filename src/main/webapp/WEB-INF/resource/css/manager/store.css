@@ -53,8 +53,12 @@
 /**
 
 **/
+.yxaccount{
+	background-size:14.5% !important;
+}
 .common-jt{
       background:url(../../img/app/gengduo.png) no-repeat right center;
+      background-size:40%;
 }
 .yu-e{
     background: url(../../img/app/yu-e.png)  no-repeat left center/7%;

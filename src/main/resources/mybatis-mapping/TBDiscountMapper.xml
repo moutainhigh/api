@@ -10,7 +10,7 @@
 
     <select id="getById" resultType="discountBean">
         SELECT <include refid="SELECT_FIELD"/>
-        FROM <include refid="TABLE"/>
+        FROM <include refid="TABLE" />
         WHERE id=#{id}
     </select>
 

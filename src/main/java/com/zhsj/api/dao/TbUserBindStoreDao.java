@@ -1,9 +1,12 @@
 package com.zhsj.api.dao;
 
 
+import java.util.List;
+
 import com.zhsj.api.bean.UserBindStoreBean;
 import com.zhsj.api.util.db.DS;
 import com.zhsj.api.util.db.DynamicDataSource;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
@@ -25,4 +28,8 @@ public interface TbUserBindStoreDao {
     int countByParentNo(@Param("parentNO")String parentNO,
                         @Param("startTime")int startTime,
                         @Param("endTime")int endTime);
+    //xlc
+    List<UserBindStoreBean> getListByStoreNo(@Param("storeNo")String storeNo,
+    		                                 @Param("startTime")int startTime,
+    		                                 @Param("endTime")int endTime);
 }

@@ -1,6 +1,5 @@
 package com.zhsj.api.bean;
 
-import java.util.List;
 
 /**
  * Created by lcg on 17/2/4.

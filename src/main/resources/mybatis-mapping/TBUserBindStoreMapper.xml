@@ -3,7 +3,7 @@
 <mapper namespace="com.zhsj.api.dao.TbUserBindStoreDao">
 
     <select id="getByStoreAndUser" resultType="userBindStoreBean" >
-        select id,user_type,user_id,store_no
+        select id,user_type,user_id,store_no,utime
         FROM tb_user_bind_store
         WHERE user_id=#{userId} and store_no = #{storeNo}
     </select>
@@ -35,4 +35,19 @@
         and utime BETWEEN #{startTime} AND #{endTime}
     </select>
 
+    <!-- xlc20170307 -->
+    <select id="getListByStoreNo" resultType="userBindStoreBean">
+         select 
+            id,
+            user_type userType,
+            user_id userId,
+            store_no storeNo,
+            utime
+          from tb_user_bind_store
+         <where>
+            store_no = #{storeNo}
+            and utime BETWEEN #{startTime} AND #{endTime}
+            order by utime desc
+         </where>
+    </select>
 </mapper>

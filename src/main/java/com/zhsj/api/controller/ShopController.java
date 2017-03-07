@@ -16,13 +16,14 @@ import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.WebUtils;
 import com.zhsj.api.service.MinshengService;
 import com.zhsj.api.service.WXService;
-
 import com.zhsj.api.util.login.LoginUserUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -133,7 +134,7 @@ public class ShopController {
     public ModelAndView test() throws UnsupportedEncodingException {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./shop/index");
-        String auth = "oFvcxwfZrQxlisYN4yIPbxmOT8KM";
+        String auth = "o5pmes7HP9w6OhjgjBpc5tTWL8Bs";
         modelAndView.addObject("auth", "21" + auth);
         return modelAndView;
     }
@@ -331,7 +332,39 @@ public class ShopController {
         return CommonResult.build(0, "success",userService.getUserId(userId));
     }
 
-
-
-
+    @RequestMapping(value = "toMemberData" ,method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object toMemberData(String auth){
+    	logger.info("#ShopController.toMemberData# auth={}", auth);
+//    	try {
+//    		return shopService.getMemberData();
+//		} catch (Exception e) {
+//			return CommonResult.defaultError("ERROR");
+//		}
+    	ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("./member/memberData");
+        modelAndView.addObject("data", shopService.getMemberData());
+        modelAndView.addObject("auth", auth);
+        return modelAndView;
+    	
+    }
+    @RequestMapping(value = "toMdPage")
+    @ResponseBody
+    public Object toMemberDetailPage(String auth,String type,int number){
+    	logger.info("#ShopController.toMemberDetailPage# auth={},type={},number={}", auth,type,number);
+    	ModelAndView mv = new ModelAndView();
+    	mv.setViewName("./member/memberDetail");
+    	mv.addObject("auth", auth);
+    	mv.addObject("type", type);
+    	mv.addObject("number",number);
+    	return mv;
+    }
+    
+    @RequestMapping(value = "toMemberDetail" ,method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object toMemberDetail(String auth,String type,int number){
+    	logger.info("#ShopController.toMemberDetail# auth={},type={},number={}", auth,type,number);
+    	return CommonResult.success("success", shopService.getMemberDetail(type, number));
+    }
+    
 }
