@@ -129,7 +129,11 @@
 			 }else{
 				 for(var i =0;i<len;i++){
 					 if(obj[i].nick == null){
-						 obj[i].nick = '支付宝用户';
+						 if(obj[i].userType == 1){
+							 obj[i].nick = '微信支付用户';
+						 }else{
+							 obj[i].nick = '支付宝用户';
+						 }
 					 }
 					 var s = '<div class="member-li">'
 			                +'<div class="common-mg">'

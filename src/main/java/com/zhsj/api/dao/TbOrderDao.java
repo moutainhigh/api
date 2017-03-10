@@ -78,8 +78,6 @@ public interface TbOrderDao {
                                      @Param("startTime")int startTime,
                                      @Param("endTime")int endTime);
     //xlc --20170306
-	int getMemberCountByParam(Map<String, Object> paramMap);
-	
 	int getCountByMoney(@Param("storeNo")String storeNo,
 			@Param("actualChargeAmount1")Double actualChargeAmount1,
 			@Param("actualChargeAmount2")Double actualChargeAmount2);

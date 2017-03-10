@@ -2,6 +2,7 @@ package com.zhsj.api.dao;
 
 
 import java.util.List;
+import java.util.Map;
 
 import com.zhsj.api.bean.UserBindStoreBean;
 import com.zhsj.api.util.db.DS;
@@ -29,6 +30,8 @@ public interface TbUserBindStoreDao {
                         @Param("startTime")int startTime,
                         @Param("endTime")int endTime);
     //xlc
+    int getMemberCountByParam(Map<String, Object> paramMap);
+    
     List<UserBindStoreBean> getListByStoreNo(@Param("storeNo")String storeNo,
     		                                 @Param("startTime")int startTime,
     		                                 @Param("endTime")int endTime);

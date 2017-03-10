@@ -15,7 +15,9 @@ pageEncoding="UTF-8"%>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
     <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
     <style type="text/css">
-
+       .bottom{
+         margin-bottom: 80px;
+       }
     </style>
 </head>
 <body>
@@ -65,7 +67,7 @@ pageEncoding="UTF-8"%>
                 </p>
             </div>
         </section>
-        <section class="f2">
+        <section class="f2 bottom">
             <div class="list-group">
                 <p class="clearfix common-mg kfMan" id="mySale">
                     <span class="span-label">我的客服经理</span>

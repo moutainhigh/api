@@ -3,13 +3,14 @@ package com.zhsj.api.bean.result;
  * 会员统计
  *
  */
-public class CountMember implements Comparable{
+public class CountMember implements Comparable<Object>{
 
-	private String headImg;
-	private String nick;
-	private int count;
-	private Double sum;
-	private long time;
+	private String headImg;//用户头像
+	private String nick;//昵称
+	private int count;//次数
+	private Double sum;//总金额
+	private int userType;//用户类型
+	private long time;//最近一个购买时间
 	//
 	private long userId;
 	
@@ -36,6 +37,12 @@ public class CountMember implements Comparable{
 	}
 	public void setSum(Double sum) {
 		this.sum = sum;
+	}
+	public int getUserType() {
+		return userType;
+	}
+	public void setUserType(int userType) {
+		this.userType = userType;
 	}
 	public long getTime() {
 		return time;

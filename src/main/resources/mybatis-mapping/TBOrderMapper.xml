@@ -155,17 +155,6 @@
     </select>
 
     <!-- xlc 170306 -->
-    <select id="getMemberCountByParam" parameterType="java.util.Map" resultType="java.lang.Integer">
-      select count(distinct(user_id)) from tb_order
-      <where>
-        <if test="storeNo != null and storeNo != ''">
-           store_no = #{storeNo}
-        </if>
-        <if test="startTime != null and endTime != null">
-           and ctime between #{startTime} and #{endTime}
-        </if>
-      </where>
-    </select>
     
     <select id="getCountByMoney" resultType="java.lang.Integer">
       select count(distinct(user_id)) from tb_order

@@ -306,10 +306,10 @@ public class ShopService {
         String storeNo = storeBean.getStoreNo();
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("storeNo", storeNo);
-        int sumCount = orderDao.getMemberCountByParam(paramMap);
+        int sumCount = tbUserBindStoreDao.getMemberCountByParam(paramMap);
         paramMap.put("startTime", startTime);
         paramMap.put("endTime", endTime);
-        int todayCount =orderDao.getMemberCountByParam(paramMap);
+        int todayCount =tbUserBindStoreDao.getMemberCountByParam(paramMap);
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("sumCount", sumCount);
         resultMap.put("todayCount", todayCount);
@@ -382,6 +382,7 @@ public class ShopService {
 	        	cm.setHeadImg(userBean.getHeadImg());
 	        	cm.setNick(userBean.getNickName());
 	        	cm.setTime(usBean.getUtime());
+	        	cm.setUserType(usBean.getUserType());
 	        	countMembers.add(cm);
 	        }
 	        return countMembers;
@@ -406,6 +407,7 @@ public class ShopService {
     			cMember.setSum(cm.getSum());
     			UserBindStoreBean userStore = tbUserBindStoreDao.getByStoreAndUser(cMember.getUserId(), storeNo);
     			cMember.setTime(userStore.getUtime());
+    			cMember.setUserType(userStore.getUserType());
     		}
     		Collections.sort(mList);
     		return mList;
@@ -420,6 +422,7 @@ public class ShopService {
     			tMember.setSum(cm.getSum());
     			UserBindStoreBean userStore = tbUserBindStoreDao.getByStoreAndUser(tMember.getUserId(), storeNo);
     			tMember.setTime(userStore.getUtime());
+    			tMember.setUserType(userStore.getUserType());
     		}
     		Collections.sort(timeList);
     		return timeList;
