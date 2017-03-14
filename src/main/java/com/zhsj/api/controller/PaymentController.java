@@ -90,6 +90,10 @@ public class PaymentController {
             return modelAndView;
         }
         StoreBean storeBean = storeService.getStoreByNO(state);
+        if(storeBean == null){
+        	modelAndView.setViewName("error");
+            return modelAndView;
+        }
         UserBean userBean = userService.saveStoreUser(openId, 1, state,storeBean.getParentNo());
         modelAndView.setViewName("pay/weChatPay");
         modelAndView.addObject("openId", openId);
@@ -103,9 +107,17 @@ public class PaymentController {
     @RequestMapping(value = "/getBuyerId", method = {RequestMethod.GET,RequestMethod.POST})
     public ModelAndView getBuyerId(String storeNo,HttpServletRequest request, HttpServletResponse response) throws Exception {
         logger.info("#PaymentController.getBuyerId# storeNo={}",storeNo);
-        String[] args = storeNo.split("\\?buyer_id=");
-        StoreBean storeBean = storeService.getStoreByNO(args[0]);
         ModelAndView modelAndView = new ModelAndView();
+        String[] args = storeNo.split("\\?buyer_id=");
+        if(args.length<2 || StringUtils.isEmpty(args[1])){
+        	modelAndView.setViewName("error");
+            return modelAndView;
+        }
+        StoreBean storeBean = storeService.getStoreByNO(args[0]);
+        if(storeBean == null){
+        	modelAndView.setViewName("error");
+            return modelAndView;
+        }
         modelAndView.setViewName("pay/aliPay");
         modelAndView.addObject("buyerId", args[1]);
         modelAndView.addObject("payMethod", 2);
