@@ -82,6 +82,8 @@
             <mvc:exclude-mapping path="/shop/index" />
             <mvc:exclude-mapping path="/shop/login" />
             <mvc:exclude-mapping path="/shop/bindWeChat" />
+            <mvc:exclude-mapping path="/shop/transactionOrder" />
+             <mvc:exclude-mapping path="/shop/searchUserInfo" />
             <mvc:exclude-mapping path="/shop/test"/>
             <bean class="com.zhsj.api.interceptors.LoginInterceptor" />
         </mvc:interceptor>

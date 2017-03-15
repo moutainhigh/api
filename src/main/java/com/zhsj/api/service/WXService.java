@@ -25,6 +25,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,12 +168,12 @@ public class WXService {
             stroeMessage = stroeMessage.replace("_openId",userBean.getOpenId());
             stroeMessage = stroeMessage.replace("_url","");
             stroeMessage = stroeMessage.replace("_first", " \"value\": \"您已支付成功订单\"");
-            stroeMessage = stroeMessage.replace("_keyword1","\"value\": \" "+ orderBean.getOrderId() + "\"");
-            stroeMessage = stroeMessage.replace("_keyword2","\"value\": \"支付成功\"");
-            stroeMessage = stroeMessage.replace("_keyword3","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\"");
-            stroeMessage = stroeMessage.replace("_keyword4","\"value\": \""+storeBean.getName()+"\"");
-            stroeMessage = stroeMessage.replace("_remark", " \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\"");
-            stroeMessage = stroeMessage.replace("_keyword5", " \"value\": \"金额： "+orderBean.getActualChargeAmount()+"\"");
+            stroeMessage = stroeMessage.replace("_keyword1","\"value\": \" "+ storeBean.getName() + "商家买单\"");
+            stroeMessage = stroeMessage.replace("_keyword2","\"value\": \""+orderBean.getOrderId()+"\"");
+            stroeMessage = stroeMessage.replace("_keyword3","\"value\": \""+orderBean.getPlanChargeAmount()+"\"");
+            stroeMessage = stroeMessage.replace("_keyword4","\"value\": \""+orderBean.getActualChargeAmount()+"\"");
+            stroeMessage = stroeMessage.replace("_keyword5", " \"value\": \""+DateUtil.getTime(orderBean.getCtime()*1000)+"\"");
+            stroeMessage = stroeMessage.replace("_remark", " \"value\":\"有任何疑问咨询商家\"");
             String result = SSLUtil.postSSL(url, stroeMessage);
             logger.info("#WXService.sendMessageUser# result orderId={},result={}",orderBean.getOrderId(),result);
 
@@ -221,11 +222,13 @@ public class WXService {
                     continue;
                 }
                 stroeMessage = stroeMessage.replace("_openId",openId);
-                stroeMessage = stroeMessage.replace("_url","");
-                stroeMessage = stroeMessage.replace("_first", " \"value\": \"订单支付成功\"");
-                stroeMessage = stroeMessage.replace("_keyword1","\"value\": \" "+ orderBean.getOrderId() + "\"");
-                stroeMessage = stroeMessage.replace("_keyword2","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\"");
-                stroeMessage = stroeMessage.replace("_remark", " \"value\": \""+"应付"+orderBean.getPlanChargeAmount()+"实付"+orderBean.getActualChargeAmount()+"\"");
+                stroeMessage = stroeMessage.replace("_url","wwt.bj37du.com/api/shop/transactionOrder?auth=&id="+orderBean.getId());
+                stroeMessage = stroeMessage.replace("_first", " \"value\": \"您好,您有一笔订单收款成功\"");
+                stroeMessage = stroeMessage.replace("_keyword1","\"value\": \""+ orderBean.getActualChargeAmount()+"\\n优惠金额："+(orderBean.getPlanChargeAmount()-orderBean.getActualChargeAmount()) + "\"");
+                stroeMessage = stroeMessage.replace("_keyword2","\"value\": \""+("1".equals(orderBean.getPayMethod())?"微信":"支付宝")+"\"");
+                stroeMessage = stroeMessage.replace("_keyword3","\"value\": \" "+ DateUtil.getTime(orderBean.getCtime()*1000) + "\"");
+                stroeMessage = stroeMessage.replace("_keyword4","\"value\": \" "+ orderBean.getOrderId() + "\"");
+                stroeMessage = stroeMessage.replace("_remark", " \"value\": \"有任何疑问咨询公众号\"");
                 logger.info("#WXService.sendMessageStore# url={},msg={}",url,stroeMessage);
                 String result = SSLUtil.postSSL(url, stroeMessage);
                 logger.info("#WXService.sendMessageStore# result orderId={},result={}",orderBean.getOrderId(),result);
@@ -332,12 +335,48 @@ public class WXService {
     }
 
     public static void main(String[] args) throws Exception {
-       String token = "ip1gsu4JQTaST3TBX94GCBhKK-X5IPR5h9jwPtBWkSeJO8UMvfhTv37JYzNFHReqLyAxK_fJYTfe1bWdWzmi9mlIS9hBpuNnL1m0KjgdYwstVvJ3ok1EZGO9a0JNm-81TIOiAAAETZ";
-        OrderBean orderBean = new OrderBean();
-        orderBean.setOrderId("33333");
-        orderBean.setPlanChargeAmount(10.2);
-        orderBean.setActualChargeAmount(9.2);
-        new WXService().testMessage("oFvcxwfZrQxlisYN4yIPbxmOT8KM",orderBean,token);
+    	String openId="o5pmes_cN1AMrFptmwpDaNj6DXkI";
+       String token = "_hYxvWw5Oa-ECafyOXmJvTfFMLp4vrBZXS79KQ0KgRohVUsoVmGTElcjeL0nxKLVUw_PFu_iKJW37EjEpU0Xu2OwV2c5rK342nAE2bntoW6CWj1loRAQR_ALOQhifQNIDXLfCJAHBP";
+       String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+token;
+       String stroeMessage = MtConfig.getProperty("STORE_MESSAGE", "");
+       OrderBean orderBean = new OrderBean();
+     orderBean.setOrderId("33333");
+     orderBean.setPlanChargeAmount(10.2);
+     orderBean.setActualChargeAmount(9.2);
+     orderBean.setCtime(4000);
+       stroeMessage = stroeMessage.replace("_openId",openId);
+       stroeMessage = stroeMessage.replace("_url","wwt.bj37du.com/api/shop/transactionOrder?auth=&id="+orderBean.getId());
+       stroeMessage = stroeMessage.replace("_first", " \"value\": \"您好,您有一笔订单收款成功\"");
+       stroeMessage = stroeMessage.replace("_keyword1","\"value\": \""+ orderBean.getActualChargeAmount()+"\\n优惠金额："+(orderBean.getPlanChargeAmount()-orderBean.getActualChargeAmount()) + "\"");
+       stroeMessage = stroeMessage.replace("_keyword2","\"value\": \""+(orderBean.getPayType()==1?"微信":"支付宝")+"\"");
+       stroeMessage = stroeMessage.replace("_keyword3","\"value\": \" "+ DateUtil.getTime(orderBean.getCtime()) + "\"");
+       stroeMessage = stroeMessage.replace("_keyword4","\"value\": \" "+ orderBean.getOrderId() + "\"");
+       stroeMessage = stroeMessage.replace("_remark", " \"value\": \"有任何疑问咨询公众号\"");
+       logger.info("#WXService.sendMessageStore# url={},msg={}",url,stroeMessage);
+       String result = SSLUtil.postSSL(url, stroeMessage);
+       logger.info(result);
+//       StoreBean storeBean = new StoreBean();
+//       storeBean.setName("小林");
+//        OrderBean orderBean = new OrderBean();
+//        orderBean.setOrderId("33333");
+//        orderBean.setPlanChargeAmount(10.2);
+//        orderBean.setActualChargeAmount(9.2);
+//        orderBean.setCtime(4000);
+//        String appId = MtConfig.getProperty("weChat_appId", "wx8651744246a92699");
+//        String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+token;
+//
+//        String stroeMessage = MtConfig.getProperty("USER_MESSAGE", "");
+//        stroeMessage = stroeMessage.replace("_openId",openId);
+//        stroeMessage = stroeMessage.replace("_url","");
+//        stroeMessage = stroeMessage.replace("_first", " \"value\": \"您已支付成功订单\"");
+//        stroeMessage = stroeMessage.replace("_keyword1","\"value\": \" "+ storeBean.getName() + "商家买单\"");
+//        stroeMessage = stroeMessage.replace("_keyword2","\"value\": \""+orderBean.getOrderId()+"\"");
+//        stroeMessage = stroeMessage.replace("_keyword3","\"value\": \""+orderBean.getPlanChargeAmount()+"\"");
+//        stroeMessage = stroeMessage.replace("_keyword4","\"value\": \""+orderBean.getActualChargeAmount()+"\"");
+//        stroeMessage = stroeMessage.replace("_keyword5", " \"value\": \""+DateUtil.getTime(orderBean.getCtime())+"\"");
+//        stroeMessage = stroeMessage.replace("_remark", " \"value\":\"有任何疑问咨询商家\"");
+//        String result = SSLUtil.postSSL(url, stroeMessage);
+//        new WXService().testMessage("oFvcxwfZrQxlisYN4yIPbxmOT8KM",orderBean,token);
     }
 
 }

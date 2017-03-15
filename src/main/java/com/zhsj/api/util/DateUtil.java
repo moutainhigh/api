@@ -64,6 +64,19 @@ public class DateUtil
 			return null;
 		}
 	}
+	
+	public static String getTime(long date)
+	{
+		try 
+		{
+			String stringTime = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date(date));
+			return stringTime;
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	
 	public static String getDateFormat(String format)
