@@ -202,7 +202,8 @@ pageEncoding="UTF-8"%>
         });
         //管理店员
         $("#memberManager").on("touchend",function(){
-            jalert.show("暂末开通");
+//             jalert.show("暂末开通");
+             location.href="./toManageStaffPage?auth="+auth;
         });
 
         $.post("./countDeal",{"auth":auth},function(obj){
@@ -211,7 +212,7 @@ pageEncoding="UTF-8"%>
                 $("#_sum").text(obj.data.sum);
                 $("#_count").text(obj.data.count);
             }
-        })
+        });
 
     }
 </script>

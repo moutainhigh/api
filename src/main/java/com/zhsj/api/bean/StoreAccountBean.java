@@ -1,9 +1,10 @@
 package com.zhsj.api.bean;
 
+
 /**
  * Created by lcg on 17/1/24.
  */
-public class StoreAccountBean {
+public class StoreAccountBean{
     private long id;
     private String account;
     private String password;
@@ -11,6 +12,7 @@ public class StoreAccountBean {
     private String name;
     private String mobile;
     private String headImg;
+    private int valid;
 
     public long getId() {
         return id;
@@ -67,4 +69,14 @@ public class StoreAccountBean {
     public void setHeadImg(String headImg) {
         this.headImg = headImg;
     }
+
+	public int getValid() {
+		return valid;
+	}
+
+	public void setValid(int valid) {
+		this.valid = valid;
+	}
+
+
 }

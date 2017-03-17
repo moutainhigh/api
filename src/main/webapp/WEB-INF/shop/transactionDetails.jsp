@@ -19,6 +19,14 @@ pageEncoding="UTF-8"%>
     <link rel="stylesheet" href="../resource/mobiscroll/css/mobiscroll.custom-3.0.0-beta2.min.css">
     <script src="../resource/mobiscroll/js/mobiscroll.custom-3.0.0-beta2.min.js"></script>
     <style type="text/css">
+        .mbsc-sc-whl-gr-c{
+           width:60% !important;
+           text-align:center !important;
+           margin: 0 auto;
+        }
+        .mbsc-ios .mbsc-dt-whl-m .mbsc-sc-itm{
+           text-align:center !important;
+        }
         .color-read{
             color:#fc324a;
         }
@@ -57,7 +65,7 @@ pageEncoding="UTF-8"%>
             width:100%;
             background: #FFF;
             font-size: .8em;
-            -webkit-box-shadow: 0 2px 5px #666;
+            -webkit-box-shadow: 0 2px 3px #666;
             display: none;
         }
         .con-select{
@@ -96,7 +104,7 @@ pageEncoding="UTF-8"%>
         }
         .con-time ul li span{
             padding: 1px 0 !important;
-            border-radius: 0 !important;;
+/*             border-radius: 0 !important;; */
         }
         .wwt-find-con ul li span{
             border-radius: 4px;
@@ -166,9 +174,11 @@ pageEncoding="UTF-8"%>
         .con-time input{
             width:90%;
             background: #EEE;
-            font-size:.9em;
+            height: 1.4em;
+            vertical-align: middle;
             text-align: center;
             color:#666;
+            font-size:1em;
         }
 
         :-moz-placeholder { /* Mozilla Firefox 4 to 18 */

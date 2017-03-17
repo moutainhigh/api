@@ -366,5 +366,116 @@ public class ShopController {
     	logger.info("#ShopController.toMemberDetail# auth={},type={},number={}", auth,type,number);
     	return CommonResult.success("success", shopService.getMemberDetail(type, number));
     }
+    /**
+     * 
+     * @Title: toManageStaffPage
+     * @Description: 管理店员首页
+     */
+    @RequestMapping(value="toManageStaffPage")
+    @ResponseBody
+    public Object toManageStaffPage(String auth){
+    	logger.info("#shopController.toManageStaffPage #auth = {}",auth);
+    	ModelAndView mv = new ModelAndView();
+    	mv.addObject("auth", auth);
+    	mv.setViewName("./managerStaff/index");
+    	return mv;
+    }
     
+    @RequestMapping(value = "toAddStaffPage")
+    @ResponseBody
+    public Object toAddStaffPage(String auth){
+    	logger.info("#ShopController.toAddStaffPage #auth = {}",auth);
+    	ModelAndView mv = new ModelAndView();
+    	mv.addObject("auth", auth);
+    	mv.setViewName("./managerStaff/addStaff");
+    	return mv;
+    }
+    
+    @RequestMapping(value = "toStaffDetailPage")
+    public Object toStaffDetailPage(String auth,long id){
+    	logger.info("#ShopController.toStaffDetailPage #auth = {},id = {}", auth, id);
+    	ModelAndView mv = new ModelAndView();
+    	mv.addObject("auth",auth);
+    	mv.addObject("StoreAccount",shopService.getStoreAccountById(id));
+    	mv.setViewName("./managerStaff/staffDetail");
+    	return mv;
+    }
+    
+    @RequestMapping(value = "toModifyStaffPage")
+    public Object toModifyStaffPage(String auth,long id){
+    	logger.info("#ShopController.toModifyStaff #auth = {},id = {}", auth, id);
+    	ModelAndView mv = new ModelAndView();
+    	mv.addObject("auth",auth);
+    	mv.addObject("StoreAccount",shopService.getStoreAccountById(id));
+    	mv.setViewName("./managerStaff/modifyStaff");
+    	return mv;
+    }
+    
+    @RequestMapping(value = "toModifyPassWordPage")
+    public Object toModifyPassWordPage(String auth,long id){
+    	logger.info("#ShopController.toModifyPassWord #auth = {},id = {}", auth, id);
+    	ModelAndView mv = new ModelAndView();
+    	mv.addObject("auth",auth);
+//    	mv.addObject("StoreAccount",shopService.getStoreAccountById(id));
+    	mv.setViewName("./managerStaff/modifyPassWord");
+    	return mv;
+    }
+    /**
+     * 
+     * @Title: saveStoreAccount
+     * @Description: 添加员工
+     * @param storeAccountBean
+     * @param roleId
+     * @return
+     */
+    @RequestMapping(value = "saveStoreAccount" ,method = RequestMethod.POST)
+    @ResponseBody
+    public Object saveStoreAccount(StoreAccountBean storeAccountBean,int roleId,String auth){
+    	logger.info("#ShopController.saveStoreAccount# storeAccountBean={} ,roleId = {},auth = {} ",storeAccountBean,roleId,auth);
+    	return shopService.saveStoreAccount(storeAccountBean,roleId);
+    }
+    
+    @RequestMapping(value = "getStoreAccountList" ,method = RequestMethod.POST)
+    @ResponseBody
+    public Object getStoreAccountList(String auth){
+    	logger.info("#ShopController.getStoreAccountList #auth={}",auth);
+    	return shopService.getStoreAccountList();
+    }
+    
+    @RequestMapping(value = "getStoreAccountById" ,method = RequestMethod.POST)
+    @ResponseBody
+    public Object getStoreAccountById(long id){
+    	logger.info("#ShopController.getStoreAccountById #id = {}", id);
+    	return shopService.getStoreAccountById(id);
+    }
+    
+    @RequestMapping(value = "updateStoreAccount" ,method = RequestMethod.POST)
+    @ResponseBody
+    public Object updateStoreAccount(StoreAccountBean storeAccountBean,String auth){
+    	logger.info("#ShopController.updateStoreAccount #storeAccountBean == {},auth = {}",storeAccountBean,auth);
+    	
+    	return shopService.updateStoreAccount(storeAccountBean);
+    }
+    
+    @RequestMapping(value = "updateStoreAccountPw" ,method = RequestMethod.POST)
+    @ResponseBody
+    public Object updateStoreAccountPw(StoreAccountBean storeAccountBean,String auth,String newPassWord){
+    	logger.info("#ShopController.updateStoreAccountPw #stoeAccountBean == {}, auth = {}, newPassWord = {}",storeAccountBean,auth,newPassWord);
+    	return shopService.updateStoreAccountPw(storeAccountBean, newPassWord);
+    }
+    
+    @RequestMapping(value = "unbindStoreAccount" ,method = RequestMethod.POST)
+    @ResponseBody
+    public Object unbindStoreAccount(String auth,long id){
+    	logger.info("#ShopController.unbindStoreAccount #auth = {},id = {}",auth,id);
+    	return shopService.unbindStoreAccount(id);
+    }
+    
+    
+    @RequestMapping(value = "isExistAccount",method = RequestMethod.POST)
+    @ResponseBody
+    public Object isExistAccount(String auth,String account){
+    	logger.info("#ShopController.isExitAccount #auth = {},account = {}",auth,account);
+    	return shopService.isExistAccount(account);
+    }
 }

@@ -1,11 +1,13 @@
 package com.zhsj.api.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mysql.fabric.xmlrpc.base.Array;
 import com.zhsj.api.bean.*;
 import com.zhsj.api.bean.result.CountDealBean;
 import com.zhsj.api.bean.result.CountMember;
 import com.zhsj.api.bean.result.OrderPage;
 import com.zhsj.api.bean.result.RateBean;
+import com.zhsj.api.bean.result.StaffMsg;
 import com.zhsj.api.constants.ResultStatus;
 import com.zhsj.api.constants.StroeRole;
 import com.zhsj.api.dao.*;
@@ -17,6 +19,7 @@ import com.zhsj.api.util.login.LoginUserUtil;
 import com.zhsj.api.util.test.Test;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.taglibs.standard.lang.jstl.test.beans.PublicBean1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -429,6 +432,135 @@ public class ShopService {
     	}
     	
     	return null;
+    }
+    
+    
+    public Object saveStoreAccount(StoreAccountBean storeAccountBean,int roleId){
+    	logger.info("#ShopService.saveStoreAccount #StoreAccountBean = {},roleId = {}",storeAccountBean,roleId);
+    	StoreBean storeBean = LoginUserUtil.getStore();
+    	if(storeBean  == null){
+    		return CommonResult.defaultError("error");
+    	}
+    	try{
+    		storeAccountBean.setPassword(Md5.encrypt(storeAccountBean.getPassword()));
+    	   tbStoreAccountDao.insert(storeAccountBean);
+    	   tbStoreBindAccountDao.insert(storeBean.getStoreNo(), storeAccountBean.getId());
+    	   tbStoreAccountBindRoleDao.insert(storeAccountBean.getId(), roleId);
+    	}catch(Exception e){
+    		logger.error("#ShopService.saveStoreAccount #storeAccountBean= {},#roleId = {}",storeAccountBean, roleId,e);
+    	}
+    	return CommonResult.success("success");
+    }
+    
+    public Object getStoreAccountList(){
+    	logger.info("#ShopService.getStoreAccountList");
+    	StoreBean storeBean = LoginUserUtil.getStore();
+    	if(null == storeBean){
+    		return CommonResult.defaultError("error");
+    	}
+    	try{
+	    	List<Long> idlist = tbStoreBindAccountDao.getAccountIdByStoreNo(storeBean.getStoreNo());
+	    	List<StoreAccountBean> storeAccountBeans = tbStoreAccountDao.getSaListByIds(idlist);
+	    	String manager = MtConfig.getProperty("STORE_MANAGER_ROLE", "");
+	    	String staff = MtConfig.getProperty("RECEIVE_SUCCESS_MESSAGE_ROLE", "");
+	    	List<StaffMsg> manageList = new ArrayList<StaffMsg>();
+	    	List<StaffMsg> staffList = new ArrayList<StaffMsg>();
+	    	for(StoreAccountBean sab:storeAccountBeans){
+	    		List<Integer> roleIds =  tbStoreAccountBindRoleDao.getRoleIdByAccountId(sab.getId());
+	    		for(Integer id:roleIds){
+	    			StaffMsg sm = new StaffMsg();
+	    			sm.setSab(sab);
+	    			sm.setRoleId(id);
+	    			if(manager.equals(String.valueOf(id))){
+	    				sm.setRoleName("店长");
+	    				manageList.add(sm);
+	    			}else if(staff.equals(String.valueOf(id))){
+	    				sm.setRoleName("员工");
+	    				staffList.add(sm);
+	    			}
+	    			break;
+	    		}
+	    	}
+	    	Collections.sort(staffList);
+	    	Map<String,Object> map = new HashMap<String, Object>();
+	    	map.put("manager", manageList);
+	    	map.put("staff", staffList);
+	    	return CommonResult.success("success", map);
+    	}catch(Exception e){
+    		logger.error("#ShopService.getStoreAccountList",e);
+    	    return CommonResult.defaultError("error");
+    	}
+    }
+    
+    public Object getStoreAccountById(long id){
+    	logger.info("#ShopService.getStoreAccountById #id = {}",id);
+    	try{
+    	   StoreAccountBean storeAccountBean = tbStoreAccountDao.getById(id);
+    	   return  storeAccountBean;
+    	}catch(Exception e){
+    		logger.error("#ShopService.getStoreAccountById #id = {}",id,e);
+    		return null;
+    	}
+    }
+    
+    public Object updateStoreAccount(StoreAccountBean storeAccountBean){
+    	logger.info("#ShopServie.updateStoreAccount #storeAccountBean = {}",storeAccountBean);
+    	try{
+    		StoreAccountBean sab = tbStoreAccountDao.getById(storeAccountBean.getId());
+    		if(!(sab.getPassword()).equals(Md5.encrypt(storeAccountBean.getPassword()))){
+    			return CommonResult.build(2, "密码不匹配");
+    		}else{
+    			tbStoreAccountDao.updateStoreAccount(storeAccountBean);
+    		}
+    		return CommonResult.success("success");
+    	}catch(Exception e){
+    		logger.error("#ShopService.updateStoreAccount #storeAccountBean = {}",storeAccountBean,e);
+    		return CommonResult.defaultError("error");
+    	}
+    }
+    
+    public Object updateStoreAccountPw(StoreAccountBean storeAccountBean,String newPassword){
+    	logger.info("#ShopService.updateStoreAccountPw #storeAccountBean = {},newPassword",storeAccountBean,newPassword);
+    	try{
+    		StoreAccountBean sab = tbStoreAccountDao.getById(storeAccountBean.getId());
+    		if(!(sab.getPassword()).equals(Md5.encrypt(storeAccountBean.getPassword()))){
+    			return CommonResult.build(2, "密码不匹配");
+    		}else{
+    			storeAccountBean.setPassword(Md5.encrypt(newPassword));
+    			tbStoreAccountDao.updateStoreAccount(storeAccountBean);
+    		}
+    		return CommonResult.success("success");
+    	}catch(Exception e){
+    		logger.error("#ShopService.updateStoreAccount #storeAccountBean = {}",storeAccountBean,e);
+    		return CommonResult.defaultError("error");
+    	}
+    }
+    
+    public Object unbindStoreAccount(long id){
+    	logger.info("#ShopService.unbindStoreAccount #id = {}",id);
+    	try{
+    	    tbStoreAccountDao.unbindStoreAccount(id);
+    	    return CommonResult.success("解绑成功");
+    	}catch(Exception e){
+    		logger.error("#ShopService.unbindStoreAccount #id = {}",id, e);
+    		return CommonResult.defaultError("解绑失败");
+    	}
+    }
+    
+    public Object isExistAccount(String account){
+    	logger.info("#ShopService.isExistAccount #account = {}",account);
+    	try{
+	    	StoreAccountBean sab = tbStoreAccountDao.getOneByAccount(account);
+	    	if(sab != null){
+	    		return CommonResult.build(2, "账户已经存在");
+	    	}else{
+	    		return CommonResult.success("账户不存在");
+	    	}
+    	}catch(Exception e){
+    		logger.error("#ShopService.isExistAccount #account = {}",account,e);
+    		return CommonResult.defaultError("error");
+    		
+    	}
     }
 
 }

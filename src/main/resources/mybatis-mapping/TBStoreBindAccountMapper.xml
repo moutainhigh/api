@@ -8,6 +8,15 @@
         WHERE store_no = #{storeNo}
          and status = 1  limit 100;
     </select>
+    
+    <select id="getAccountIdByStoreNoAndPage" resultType="java.lang.Long"> 
+       select store_account_id
+       from tb_store_bind_account
+       WHERE store_no = #{storeNo}
+       and status = 1  order by ctime desc 
+       limit #{start},#{end}
+       
+    </select>
 
     <insert id="insert">
         INSERT INTO tb_store_bind_account

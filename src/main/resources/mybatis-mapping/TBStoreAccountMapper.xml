@@ -7,12 +7,18 @@
         FROM tb_store_account
         WHERE status=1 and valid = 1 and account = #{account}
     </select>
+    
+    <select id="getOneByAccount" resultType="storeAccountBean">
+        SELECT id,account,password,open_id,name,head_img
+        FROM tb_store_account
+        WHERE account = #{account}
+    </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="bean.id">
         INSERT INTO tb_store_account
-        (account,password,mobile,status,valid,utime,ctime)
+        (name,account,password,mobile,status,valid,utime,ctime)
         VALUES
-        (#{bean.account},#{bean.password},#{bean.mobile},1,1,unix_timestamp(now()),unix_timestamp(now()))
+        (#{bean.name},#{bean.account},#{bean.password},#{bean.mobile},1,1,unix_timestamp(now()),unix_timestamp(now()))
     </insert>
 
     <select id="getByOpenId" resultType="storeAccountBean">
@@ -64,6 +70,25 @@
         </choose>
     </select>
     
+    <select id="getSaListByIds" resultType="storeAccountBean">
+        SELECT id,account,password,open_id,name,head_img,valid
+        FROM tb_store_account
+        WHERE status=1
+        <choose>
+            <when test="ids != null and ids.size() > 0">
+                AND id IN
+                <foreach collection="ids" item="id"
+                         open="(" separator="," close=")" >
+                    #{id}
+                </foreach>
+            </when>
+            <otherwise>
+                AND 1 = 0
+            </otherwise>
+        </choose>
+        order by valid desc,open_id desc 
+    </select>
+    
     <select id="getOpenIdByAccountId" resultType="string">
         SELECT open_id
         FROM tb_store_account
@@ -81,4 +106,48 @@
             </otherwise>
         </choose>
     </select>
+ 
+ 
+    <select id="getById" parameterType="java.lang.Long" resultType="storeAccountBean">
+       select id,account,password,open_id,name,head_img,mobile
+       from tb_store_account
+       <where>
+          id = #{id}
+       </where>
+    </select>
+    
+    <update id="updateStoreAccount">
+       update tb_store_account
+       <trim prefix="set" suffixOverrides="," suffix=" where id = #{id}">
+           <if test="account != null and account != ''">
+               account = #{account},
+           </if>
+           <if test="password != null and password != ''">
+               password = #{password},
+           </if>
+           <if test="openId != null and openId != ''">
+               open_id = #{openId},
+           </if>
+           <if test="name != null and name != ''">
+                name = #{name},
+           </if>
+           <if test="headImg != null and headImg != ''">
+                head_img = #{headImg},
+           </if>
+           <if test="mobile != null and mobile != ''">
+                mobile = #{mobile},
+           </if>
+               utime = unix_timestamp(now()),
+       </trim>
+    
+    </update>
+    
+    <update id="unbindStoreAccount" parameterType="java.lang.Integer">
+         update tb_store_account
+          set open_id = '',
+              valid = 0
+          <where>
+             id = #{id}    
+          </where>
+    </update>
 </mapper>

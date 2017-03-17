@@ -13,6 +13,9 @@ import java.util.List;
 public interface TBStoreBindAccountDao {
 
     List<Long> getAccountIdByStoreNo(@Param("storeNo")String storeNo);
+    //xlc20170315
+    List<Long> getAccountIdByStoreNoAndPage(@Param("storeNo")String storeNo,
+    		@Param("start")int start,@Param("end")int end);
 
     int insert(@Param("storeNO")String storeNO,@Param("storeAccountId")long storeAccountId);
 
