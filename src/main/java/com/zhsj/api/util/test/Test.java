@@ -12,6 +12,11 @@ public class Test {
 
 
     public static void main(String[] args){
+    	double discountPrice = 0.0;
+    	double aa = 1000.00000000000;
+    	discountPrice = aa * (1.0-8.5/10.0);
+		discountPrice = Math.round((discountPrice-0.005)*100)/100.0; //四舍五入
+		System.out.println(discountPrice);
 //        String str = "{\"access_token\":\"EdTWv9QQkZ-Nmnkvlt9W9oM8tJriMQvk_f7j_tsiXpTnQO9-Mm-IMnLrAUDDU4gyLbx-04BgPg24sTu24bXKg-I-sNDuPmrBoQ0f3vg-xl8\",\"expires_in\":7200,\"refresh_token\":\"e_tWcYvlwBAmFhh_pblOGjLNzyz8iTXZIrfgrsraTI-d8zh9l6R-ZaEMutjGFa-jBnFGXvoI7H0s8Y85UpnrasaU_vWhagHre4A_QELMlD8\",\"openid\":\"ofbvZvycdbsQSIAkXzwBJ_vm1Ogg\",\"scope\":\"snsapi_base\"} ";
 //
 //        Map<String,String> map = JSON.parseObject(str, Map.class);
@@ -21,11 +26,6 @@ public class Test {
 //        System.out.println(strs[0]);
 //        System.out.println(strs[1]);
 //        System.out.println("2,".contains("2"));
-    	int min = (int)(0.1*100);
-		int max = (int)(0.9*100);
-		Random random = new Random();
-		int s = random.nextInt(max)%(max-min+1) + min;
-		System.out.println(s/100.0);
 //        int min =1;
 //        int max = Integer.MAX_VALUE;
 //        Set<String> set = new HashSet<>();
