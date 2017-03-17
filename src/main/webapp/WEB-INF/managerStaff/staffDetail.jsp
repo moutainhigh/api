@@ -72,7 +72,7 @@
         .item:last-child span{
             margin:.5rem 0 1rem;
          }
-        #cancel,#modifyPw,#unbind{
+        #cancel{
             background: #CCC;
         }
         footer{
