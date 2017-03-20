@@ -62,7 +62,7 @@ public class MinshengService {
 			String orderNo = StoreUtils.getOrderNO(storeNo);
 			payBean = this.calDiscount(payBean);
 			StorePayInfo storePayInfo = prePay(payBean,orderNo);
-			double orderPrice = payBean.getOrderPrice()-payBean.getDiscountPrice();
+			double orderPrice = Arith.sub(payBean.getOrderPrice(), payBean.getDiscountPrice());
 			if(orderPrice <= 0){
 				orderPrice = 0.01;
 			}
@@ -111,7 +111,7 @@ public class MinshengService {
 			payBean = this.calDiscount(payBean);
 			StorePayInfo storePayInfo = prePay(payBean, orderNo);
 			//调用接口
-			double orderPrice = payBean.getOrderPrice()-payBean.getDiscountPrice();
+			double orderPrice = Arith.sub(payBean.getOrderPrice(), payBean.getDiscountPrice());
 			if(orderPrice <= 0){
 				orderPrice = 0.01;
 			}
@@ -226,7 +226,8 @@ public class MinshengService {
 			int s = random.nextInt(max)%(max-min+1) + min;
 			discountPrice = s/100.0;
 		}else if(discountBean.getType() == 3){
-			discountPrice = payBean.getOrderPrice() * (1.0-discountRuleBean.getDiscount1()/10.0);
+			double discp = Arith.sub(1.0,Arith.div(discountRuleBean.getDiscount1(), 10.0, 3) );
+			discountPrice = Arith.mul(payBean.getOrderPrice() , discp);
 			discountPrice = Math.round((discountPrice-0.005)*100)/100.0; //四舍五入
 		}else if(discountBean.getType() == 1){
 			discountPrice = discountRuleBean.getDiscount1();
