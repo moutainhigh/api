@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBStoreBalanceDetailsDao">
+   
+   <sql id="TABLE">
+      tb_store_balance_details
+   </sql>
+   
+   <sql id="FIELD">
+      id,type,price,description,payment_status,partner_trade_no,payment_time,ctime
+   </sql>
+   
+    
+   <insert id="insert" useGeneratedKeys="true" keyProperty="bean.id">
+     insert into <include refid="TABLE"></include> 
+     (
+        store_no,type,price,description,payment_status,partner_trade_no,payment_no,payment_time,utime,ctime
+     ) values (
+        #{bean.storeNo},#{bean.type},#{bean.price},#{bean.description},#{bean.paymentStatus},#{bean.partnerTradeNo},#{bean.paymentNo},#{bean.paymentTime},unix_timestamp(now()),unix_timestamp(now())
+     )
+   </insert>
+
+   
+   <select id="getListByStoreNo" resultType="storeBalanceDetailBean">
+      select <include refid="FIELD"></include>
+      from <include refid="TABLE"></include>
+      <where>
+        store_no = #{storeNo} and payment_status = 2 order by ctime desc limit #{start},#{end}
+      </where>
+   </select>
+   
+   
+   <update id="update" parameterType="storeBalanceDetailBean">
+      update <include refid="TABLE"></include>
+      set payment_status = #{paymentStatus},
+         payment_no = #{paymentNo},
+         payment_time = #{paymentTime},
+         utime = unix_timestamp(now())
+         <where>
+            id = #{id}
+         </where>
+   </update>
+</mapper>

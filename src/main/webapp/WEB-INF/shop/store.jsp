@@ -8,7 +8,7 @@ pageEncoding="UTF-8"%>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="no">
     <meta content="black" name="apple-mobile-web-app-status-bar-style">
-    <meta content="telephone=no" name="format-detection">
+<!--     <meta content="telephone=no" name="format-detection"> -->
     <link href="../resource/css/manager/common.css" type="text/css" rel="stylesheet">
     <link href="../resource/css/manager/store.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
@@ -25,7 +25,7 @@ pageEncoding="UTF-8"%>
         <section class="f1">
              <div class="store-header">
                  <p>
-                     <img id="_storeImg"  onerror="this.src='../resource/img/app/header.png'" class="header">
+                   <img id="_storeImg"  onerror="this.src='../resource/img/app/header.png'" class="header">
                  </p>
                  <p id="_storeName">
 
@@ -37,10 +37,10 @@ pageEncoding="UTF-8"%>
         </section>
         <section class="f2">
               <div class="list-group">
-                  <p class="clearfix common-mg yu-e ">
-                      <span class="span-label">余额</span>
+                  <p class="clearfix common-mg yu-e " id="marketAccount">
+                      <span class="span-label">营销账户</span>
                       <span class="span-result common-jt yxaccount">
-                           <span>￥0.00</span>
+                           <span>￥${price}</span>
                       </span>
                   </p>
                   <p class="clearfix common-mg qy" id="signInfo">
@@ -77,7 +77,7 @@ pageEncoding="UTF-8"%>
                 </p>
                 <p class="clearfix common-mg kfHot">
                     <span class="span-label">客服热线</span>
-                    <span class="span-phone">400-826-7710</span>
+                    <span class="span-phone"><a href="tel:400-661-0003">400-661-0003</a></span>
                 </p>
             </div>
         </section>
@@ -120,6 +120,10 @@ pageEncoding="UTF-8"%>
         load();
     });
     function load() {
+    	//marketAccount(营销账户)
+    	$("#marketAccount").click(function(){
+    		location.href="./toAccountBalancePage?auth="+auth;
+    	});
         //签约
         $("#signInfo").on("touchend", function () {
             window.open("./signInfo?auth="+auth);

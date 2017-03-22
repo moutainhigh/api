@@ -44,4 +44,7 @@ public class MD5Util {
         int d2 = n % 16;
         return hex[d1] + hex[d2];
     }
+    public static void main(String[] args) {
+		System.err.println(encode("123456"));
+	}
 }

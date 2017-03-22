@@ -27,5 +27,9 @@ public interface TbStoreDao {
 
     List<StoreBean> getListByNos(@Param("nos")List<String> nos);
 
-
+    double getPriceByStoreNo(@Param("storeNo")String storeNo);
+    
+    int updatePriceByStoreNo(@Param("amount")double amount,@Param("storeNo")String storeNo,
+    		@Param("price")double price,@Param("type")int type,@Param("isPrice")int isPrice);
+    
 }

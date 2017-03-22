@@ -64,4 +64,27 @@
         and status = 1 and valid = 1
     </select>
 
+
+    <select id="getPriceByStoreNo" resultType="java.lang.Double">
+       select price from tb_store
+       <where>
+         store_no = #{storeNo}
+       </where>
+    </select>
+    
+    <update id="updatePriceByStoreNo">
+       update tb_store set
+       <if test="type == 1">
+          price = price - #{amount}
+       </if>
+       <if test="type == 2">
+          price = price + #{amount}
+       </if>
+       <where>
+          store_no = #{storeNo}
+          <if test="isPrice == 1">
+          and price = #{price} 
+          </if>
+       </where>
+    </update>
 </mapper>

@@ -1,5 +1,6 @@
 package com.zhsj.api.bean;
 
+
 /**
  * Created by lcg on 16/12/29.
  */

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.tools.internal.ws.processor.model.Model;
 import com.zhsj.api.bean.*;
 import com.zhsj.api.constants.ResultStatus;
 import com.zhsj.api.service.ShopService;
@@ -218,6 +219,7 @@ public class ShopController {
     public ModelAndView store() throws Exception {
         logger.info("#ShopController.store# no={}");
         ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("price", shopService.getPrice());
         modelAndView.setViewName("./shop/store");
         return modelAndView;
     }
@@ -295,6 +297,7 @@ public class ShopController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./shop/store");
         modelAndView.addObject("auth", auth);
+        modelAndView.addObject("price", shopService.getPrice());
         return modelAndView;
     }
 
@@ -477,5 +480,59 @@ public class ShopController {
     public Object isExistAccount(String auth,String account){
     	logger.info("#ShopController.isExitAccount #auth = {},account = {}",auth,account);
     	return shopService.isExistAccount(account);
+    }
+    /**
+     * 营销账户
+     */
+    @RequestMapping(value = "toAccountBalancePage")
+    public Object toAccountBalancePage(String auth){
+    	logger.info("#ShopController.toAccountBalancePage #auth = {}",auth);
+    	ModelAndView mv = new ModelAndView();
+    	mv.addObject("auth", auth);
+    	mv.addObject("price",shopService.getPrice());
+    	mv.setViewName("./marketAccount/accountBalance");
+    	return mv;
+    }
+    /**
+     * 提现至微信钱包
+     */
+    @RequestMapping(value = "toWithDrawWxWallet")
+    public Object toWithDrawWxWallet(String auth){
+    	logger.info("#ShopController.toWithDrawWxWallet #auth = {}",auth);
+    	ModelAndView mv = new ModelAndView();
+    	mv.addObject("auth", auth);
+    	mv.addObject("price", shopService.getPrice());
+    	mv.setViewName("./marketAccount/withdraw");
+    	return mv;
+    }
+    
+    @RequestMapping(value = "getAccountBalance",method = RequestMethod.POST)
+    @ResponseBody
+    public Object getAccountBalance(String auth){
+    	logger.info("#ShopController.getAccountBalance #auth = {}",auth);
+    	return shopService.getPrice();
+    }
+    
+    @RequestMapping(value = "withDrawWx",method = RequestMethod.POST)
+    @ResponseBody
+    public Object withDrawWx(String auth,double amount,HttpServletRequest request){
+    	logger.info("#ShopController.withDrawWx #auth={},amount={}",auth,amount);
+    	return wxService.transfers(amount, WebUtils.getRemoteAddr(request));
+    }
+    /*
+     * wx消推提醒(点击查看的详情list)
+     */
+    public Object toPushMsgList(String storeNo){
+    	logger.info("#ShopController.toPushMsgList #storeNo = {}" ,storeNo);
+    	ModelAndView mv = new ModelAndView();
+    	mv.addObject("data", "");
+        return mv;	
+    }
+    
+    @RequestMapping(value = "getListByStoreNo",method=RequestMethod.POST)
+    @ResponseBody
+    public Object getListByStoreNo(String auth,int page,int pageSize){
+    	logger.info("#ShopController.getListByStoreNo #auth = {},#page={},#pageSize={}",auth,page,pageSize);
+    	return shopService.getListByStoreNoAndPage( page, pageSize);
     }
 }

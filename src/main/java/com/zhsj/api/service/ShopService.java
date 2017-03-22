@@ -53,6 +53,8 @@ public class ShopService {
     TBStoreAccountBindRoleDao tbStoreAccountBindRoleDao;
     @Autowired
     TbUserDao tbUserDao;
+    @Autowired
+    TBStoreBalanceDetailsDao tbStoreBalanceDetailsDao;
 
     public Map<String,String> loginByOpenId(String code,String appId){
         logger.info("#ShopService.loginByOpenId# code={},appId={}",code,appId);
@@ -481,7 +483,7 @@ public class ShopService {
 	    			break;
 	    		}
 	    	}
-	    	Collections.sort(staffList);
+//	    	Collections.sort(staffList);
 	    	Map<String,Object> map = new HashMap<String, Object>();
 	    	map.put("manager", manageList);
 	    	map.put("staff", staffList);
@@ -560,6 +562,29 @@ public class ShopService {
     		logger.error("#ShopService.isExistAccount #account = {}",account,e);
     		return CommonResult.defaultError("error");
     		
+    	}
+    }
+    
+    public double getPrice(){
+    	logger.info("#ShopService.getPrice");
+    	StoreBean storeBean = LoginUserUtil.getStore();
+    	try{
+    	     double price = tbStoreDao.getPriceByStoreNo(storeBean.getStoreNo()); 
+    	     return price;
+    	}catch(Exception e){
+    		 logger.error("#ShopService.getPrice");
+    		 return 0.00;
+    	}
+    }
+    public Object getListByStoreNoAndPage(int page,int pageSize){
+    	logger.info("#ShopService.getListByStoreNoAndPage page = {},pageSize={}",page,pageSize);
+    	try{
+    		 StoreBean storeBean = LoginUserUtil.getStore(); 
+    	     List<StoreBalanceDetailBean> list = tbStoreBalanceDetailsDao.getListByStoreNo(storeBean.getStoreNo(), (page-1)*pageSize, pageSize);
+    	     return CommonResult.success("Success", list);
+    	}catch(Exception e){
+    		logger.error("#ShopService.getListByStoreNoAndPage page = {},pageSize = {}",page,pageSize);
+    		return CommonResult.defaultError("error");
     	}
     }
 

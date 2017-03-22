@@ -2,7 +2,7 @@ package com.zhsj.api.bean.result;
 
 import com.zhsj.api.bean.StoreAccountBean;
 
-public class StaffMsg implements Comparable<StaffMsg>{
+public class StaffMsg {
 
 	private StoreAccountBean sab;
 	private int roleId;
@@ -29,11 +29,6 @@ public class StaffMsg implements Comparable<StaffMsg>{
 		this.roleName = roleName;
 	}
 	
-	@Override
-	public int compareTo(StaffMsg smg) {
-	    return (!"".equals(this.sab.getOpenId())) && (!"".equals(smg.sab.getOpenId()))?0:(!"".equals(this.sab.getOpenId()))?1: 
-	    	(!"".equals(smg.sab.getOpenId()))?1:-1;
-	}
 	
 	
 }
