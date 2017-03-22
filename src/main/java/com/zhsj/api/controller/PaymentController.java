@@ -4,6 +4,7 @@ import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.PayBean;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.UserBean;
+import com.zhsj.api.bean.WeixinUserBean;
 import com.zhsj.api.service.*;
 import com.zhsj.api.task.async.OrderSuccessAsync;
 import com.zhsj.api.util.AyncTaskUtil;
@@ -80,8 +81,8 @@ public class PaymentController {
     //获取微信openId
     @RequestMapping(value = "/getUserOpenId", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView getUserOpenId(@RequestParam("code") String code,@RequestParam("state") String state) throws Exception {
-        logger.info("#PaymentController.getUserOpenId# code={},state={}",code,state);
+    public ModelAndView getUserOpenId(@RequestParam("code") String code,@RequestParam("state") String state,@RequestParam("appid")String appid) throws Exception {
+        logger.info("#PaymentController.getUserOpenId# code={},state={},appid",code,state,appid);
         ModelAndView modelAndView = new ModelAndView();
         String appId = MtConfig.getProperty("weChat_appId","wx8651744246a92699");
         String openId = wxService.getOpenId(code,appId);
@@ -94,7 +95,7 @@ public class PaymentController {
         	modelAndView.setViewName("error");
             return modelAndView;
         }
-        UserBean userBean = userService.saveStoreUser(openId, 1, state,storeBean.getParentNo());
+        UserBean userBean = userService.saveStoreUser(openId, 1, state,storeBean.getParentNo(),appId,1);
         modelAndView.setViewName("pay/weChatPay");
         modelAndView.addObject("openId", openId);
         modelAndView.addObject("payMethod",1);
@@ -121,7 +122,7 @@ public class PaymentController {
         modelAndView.setViewName("pay/aliPay");
         modelAndView.addObject("buyerId", args[1]);
         modelAndView.addObject("payMethod", 2);
-        UserBean userBean = userService.saveStoreUser(args[1], 2, args[0],storeBean.getParentNo());
+        UserBean userBean = userService.saveStoreUser(args[1], 2, args[0],storeBean.getParentNo(),"",0);
         modelAndView.addObject("store",storeBean);
         logger.info("#PaymentController.getBuyerId# result storeNo={},buyerId={},userId={}", args[0], args[1], userBean.getId());
         return modelAndView;
@@ -184,7 +185,11 @@ public class PaymentController {
             orderService.updateOrderByOrderId(2,order_no);
         }
         String appId = MtConfig.getProperty("weChat_appId","wx8651744246a92699");
-        wxService.getUserInfo(field1,appId);
+        WeixinUserBean bean = wxService.getWeixinUser(field1,appId);
+        if(bean != null && bean.getSubscribe() == 1){
+        	userService.updateUserInfoByOpenId(bean);
+        }
+        
 
     	Map<String,Object> map = request.getParameterMap();
     	for(String name: map.keySet()){

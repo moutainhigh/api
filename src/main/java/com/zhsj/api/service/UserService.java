@@ -2,6 +2,7 @@ package com.zhsj.api.service;
 
 import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.UserBindStoreBean;
+import com.zhsj.api.bean.WeixinUserBean;
 import com.zhsj.api.dao.TbUserBindStoreDao;
 import com.zhsj.api.dao.TbUserDao;
 import org.apache.commons.lang3.StringUtils;
@@ -29,22 +30,30 @@ public class UserService {
     public UserBean getUserId(long id){
         return  bmUserDao.getUserById(id);
     }
-
-    public void insertOpenId(String openId,int type){
-        UserBean userBean = new UserBean();
-        userBean.setOpenId(openId);
-        userBean.setType(type);
-        Long num = bmUserDao.insertOpenId(userBean);
-        logger.info("num={},id={}",num,userBean.getId());
+    
+    public int updateUserInfoByOpenId(WeixinUserBean bean){
+    	 return bmUserDao.updateUserInfoByOpenId(bean);
     }
 
+//    public void insertOpenId(String openId,int type,String appId,int subscribe){
+//        UserBean userBean = new UserBean();
+//        userBean.setOpenId(openId);
+//        userBean.setType(type);
+//        userBean.setAppId(appId);
+//        userBean.setSubscribe(subscribe);
+//        Long num = bmUserDao.insertOpenId(userBean);
+//        logger.info("num={},id={}",num,userBean.getId());
+//    }
 
 
-    public UserBean saveStoreUser(String openId,int type,String storeNo,String parentNo){
+
+    public UserBean saveStoreUser(String openId,int type,String storeNo,String parentNo,String appId,int subscribe){
         UserBean userBean = bmUserDao.getUserByOpenId(openId,type);
         if (userBean == null){
             userBean = new UserBean();
             userBean.setOpenId(openId);
+            userBean.setAppId(appId);
+            userBean.setSubscribe(subscribe);
             userBean.setType(type);
             bmUserDao.insertOpenId(userBean);
         }

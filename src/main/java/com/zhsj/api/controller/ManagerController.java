@@ -61,8 +61,8 @@ public class ManagerController {
 
     @RequestMapping(value = "/login" , method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView login(String code,String state) {
-        logger.info("#ManagerController.login# code={},state={}", code,state);
+    public ModelAndView login(String code,String state,String appid) {
+        logger.info("#ManagerController.login# code={},state={},appid={}", code,state,appid);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("error");
         try {

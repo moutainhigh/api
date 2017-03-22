@@ -59,9 +59,9 @@ public class HttpClient {
 			// 响应头部获取
 			Map<String, List<String>> headers = httpConn.getHeaderFields();
 			// 遍历所有的响应头字段
-			for (String key : headers.keySet()) {
-				System.out.println(key + "\t：\t" + headers.get(key));
-			}
+//			for (String key : headers.keySet()) {
+//				System.out.println(key + "\t：\t" + headers.get(key));
+//			}
 			// 定义BufferedReader输入流来读取URL的响应,并设置编码方式
 			in = new BufferedReader(new InputStreamReader(httpConn.getInputStream(), "UTF-8"));
 			String line;
