@@ -496,20 +496,15 @@ public class MinshengService {
 //		json.put("wxRate",Double.parseDouble("7.8"));
 //		json.put("settlementType","e");
 //
-//		String jj = json.toJSONString();
-//		System.out.println(jj);
-//		NOTPAY
-//				FAIL SUCCESS  "WAITING_PAYMENT
-//		new MinshengService().queryOrder("201701141602121fdSN0ba482a1d");
-//		new AyncTaskUtil().commitAyncTask(new OrderSuccessAsync(null));
-		for(int i =0;i<100;i++){
-			int min = (int)2.0*100;
-			int max = (int)3.4*100;
-			Random random = new Random();
-			int s = random.nextInt(max)%(max-min+1) + min;
-			System.out.println(s/100.0);
-		}
-
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("paykey","ffe91102af5a429e8bd2aba258e266a9");
+		parameters.put("order_no","1001170322710655045");  //请自己试试自己发起的订单
+		/////签名///
+		String sign = getSign(parameters, "bfc9a24ccd34474686230d825c03f00b");//
+		parameters.put("sign",sign);
+		String postUrl = MtConfig.getProperty("ms_URL","http://115.159.235.109:8208")+"/qthd-pay-web-gateway/scanPay/QueryReturnJson";
+		String str = HttpClient.sendPost(postUrl, parameters);
+		System.out.print(str);
 	}
 
 }

@@ -183,14 +183,19 @@ public class WXService {
                 }
                 openIds += openId+",";
             }
-            
-             String url = MtConfig.getProperty("OPEN_URL", "")+ "/sendMessage";
-         	 Map<String, String> parameters = new HashMap();
-         	 parameters.put("appId", appId);
-         	 parameters.put("openIds", openIds);
-         	 parameters.put("message", stroeMessage);
-         	 parameters.put("url", "wwt.bj37du.com/api/shop/transactionOrder?auth=&id="+orderBean.getId());
-         	 String result = HttpClient.sendGet(url, parameters);
+            stroeMessage = stroeMessage.replace("_first", " \"value\": \"您好,您有一笔订单收款成功\"");
+            stroeMessage = stroeMessage.replace("_keyword1","\"value\": \""+ orderBean.getActualChargeAmount()+"\\n优惠金额："+(orderBean.getPlanChargeAmount()-orderBean.getActualChargeAmount()) + "\"");
+            stroeMessage = stroeMessage.replace("_keyword2","\"value\": \""+("1".equals(orderBean.getPayMethod())?"微信":"支付宝")+"\"");
+            stroeMessage = stroeMessage.replace("_keyword3","\"value\": \" "+ DateUtil.getTime(orderBean.getCtime()*1000) + "\"");
+            stroeMessage = stroeMessage.replace("_keyword4","\"value\": \" "+ orderBean.getOrderId() + "\"");
+            stroeMessage = stroeMessage.replace("_remark", " \"value\": \"有任何疑问咨询公众号\"");
+            String url = MtConfig.getProperty("OPEN_URL", "")+ "/sendMessage";
+         	Map<String, String> parameters = new HashMap();
+         	parameters.put("appId", appId);
+         	parameters.put("openIds", openIds);
+         	parameters.put("message", stroeMessage);
+         	parameters.put("url", "wwt.bj37du.com/api/shop/transactionOrder?auth=&id="+orderBean.getId());
+         	String result = HttpClient.sendGet(url, parameters);
          	logger.info("#WXService.sendMessageStore# result orderId={},result={}",orderBean.getOrderId(),result);
         }catch(Exception e){
             logger.error("#WXService.sendMessageStore# orderBean.orderId", orderBean.getOrderId());

@@ -19,6 +19,8 @@ public interface TbUserDao {
     int updateUserInfoByOpenId(@Param("bean")WeixinUserBean bean);
 
     UserBean getUserById(@Param("id")long id);
+    
+    int updateUnionidByOpenId(@Param("bean")WeixinUserBean bean);
 
 
 

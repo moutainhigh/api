@@ -186,8 +186,13 @@ public class PaymentController {
         }
         String appId = MtConfig.getProperty("weChat_appId","wx8651744246a92699");
         WeixinUserBean bean = wxService.getWeixinUser(field1,appId);
-        if(bean != null && bean.getSubscribe() == 1){
-        	userService.updateUserInfoByOpenId(bean);
+        if(bean != null ){
+        	if(bean.getSubscribe() == 1){
+        		userService.updateUserInfoByOpenId(bean);
+        	}else{
+        		userService.updateUnionidByOpenId(bean);
+        	}
+        	
         }
         
 

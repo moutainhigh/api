@@ -28,6 +28,12 @@
         country = #{bean.country},utime=unix_timestamp(now()),subscribe=#{bean.subscribe},unionid=#{bean.unionid}
         where open_id = #{bean.openid}
     </update>
+    
+     <update id="updateUnionidByOpenId">
+        update tb_user
+        set subscribe=#{bean.subscribe},unionid=#{bean.unionid}
+        where open_id = #{bean.openid}
+    </update>
 
 
 

@@ -34,18 +34,10 @@ public class UserService {
     public int updateUserInfoByOpenId(WeixinUserBean bean){
     	 return bmUserDao.updateUserInfoByOpenId(bean);
     }
-
-//    public void insertOpenId(String openId,int type,String appId,int subscribe){
-//        UserBean userBean = new UserBean();
-//        userBean.setOpenId(openId);
-//        userBean.setType(type);
-//        userBean.setAppId(appId);
-//        userBean.setSubscribe(subscribe);
-//        Long num = bmUserDao.insertOpenId(userBean);
-//        logger.info("num={},id={}",num,userBean.getId());
-//    }
-
-
+    
+    public int updateUnionidByOpenId(WeixinUserBean bean){
+   	 return bmUserDao.updateUnionidByOpenId(bean);
+   }
 
     public UserBean saveStoreUser(String openId,int type,String storeNo,String parentNo,String appId,int subscribe){
         UserBean userBean = bmUserDao.getUserByOpenId(openId,type);
