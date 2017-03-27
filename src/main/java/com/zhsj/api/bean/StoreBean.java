@@ -23,6 +23,8 @@ public class StoreBean {
     private String orgIds;
     private long saleId;
     private String appId;
+    
+    private double price;
 
     public long getId() {
         return id;
@@ -167,4 +169,14 @@ public class StoreBean {
     public void setAppId(String appId) {
         this.appId = appId;
     }
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+    
+    
 }

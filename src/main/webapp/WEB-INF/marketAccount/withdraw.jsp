@@ -99,17 +99,16 @@
             <div class="input_row">
                 <label>提取现金</label>
                 <div class="input_text">
-                    <input type="text" placeholder="输入金额" autofocus id="input_money">
+                    <input type="text" placeholder="可用余额￥ ${price}" autofocus id="input_money">
+                    <span id="all_withdraw">全部提现</span>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="input_row">
-                <label>可用余额</label>
+                <label>真实姓名</label>
                 <div class="input_text">
-                    <i>￥</i>
-                    <input type="text" value="${price}" readonly id="all_money">
-                    <span id="all_withdraw">全部提现</span>
+                    <input type="text" placeholder="请输入真实姓名" id="realname">
                 </div>
             </div>
         </div>
@@ -134,13 +133,18 @@
 
 <script>
     $(function(){
-    	var auth = $("#auth").val();
+    	var auth = $("#auth").val(),all_money=${price};
         $("#apply_withdraw").on("click",function(){
-        	   var input_money = $("#input_money").val();
+        	   var input_money = $("#input_money").val(),
+        	       realname = $("#realname").val();
         	   console.log($("#input_money"));
         	   console.log(input_money);
         	   if(input_money == ""){
         		   jalert.show('请输入提现金额');
+        		   return false;
+        	   }
+        	   if(realname == ""){
+        		   jalert.show('请输入真实姓名');
         		   return false;
         	   }
         	   if(!/^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/.test(input_money) ){
@@ -150,13 +154,14 @@
 //             jalert.show('申请提现');
                $.post("./withDrawWx",{
             	   auth:auth,
-            	   amount:input_money
+            	   amount:input_money,
+            	   realname:realname
                },function(result){
             	   if(result.code == 0){
             		    jalert.show('提现成功');
             		    location.href="./toAccountBalancePage?auth="+auth;
             	   }else if(result.code == 2 || result.code == 3){
-            		   jalert.show(result.msg+" 提现失败");
+            		   jalert.show(result.msg);
             	   }else{
             		   jalert.show('提现失败');
             	   }
@@ -164,10 +169,8 @@
         });
 
         $("#all_withdraw").on("click",function(){
-//             jalert.show('全部提现');
-               var all = $("#all_money").val();
-               if(all*100 != 0){
-                  $("#input_money").val(all);
+               if(all_money*100 != 0){
+                  $("#input_money").val(all_money);
                }else{
             	   jalert.show('没有可用余额');
             	   return;

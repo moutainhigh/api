@@ -8,11 +8,13 @@ import com.zhsj.api.bean.StoreBalanceDetailBean;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.WeixinUserBean;
+import com.zhsj.api.bean.result.QueryTransfers;
 import com.zhsj.api.bean.result.Transfers;
 import com.zhsj.api.dao.*;
 import com.zhsj.api.task.WeChatToken;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.DateUtil;
+import com.zhsj.api.util.HttpsRequest;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.SSLUtil;
 import com.zhsj.api.util.StoreUtils;
@@ -24,6 +26,7 @@ import com.zhsj.api.util.login.LoginUserUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -33,6 +36,7 @@ import java.lang.String;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -66,6 +70,8 @@ public class WXService {
     private TbStoreDao tbStoreDao;
     @Autowired
     private TBStoreBalanceDetailsDao tbStoreBalanceDetailsDao;
+    @Autowired
+    private ShopService shopService;
 
     public String getOpenId(String code,String appId){
         String openId = "";
@@ -359,8 +365,8 @@ public class WXService {
 ◆ 每个用户每天最多可付款10次，可以在商户平台--API安全进行设置
 ◆ 给同一个用户付款时间间隔不得低于15秒
      */
-    public Object transfers(double amount,String ip){
-    	logger.info("#WXService.transfers #amount = {},ip = {}",amount,ip);
+    public Object transfers(double amount,String ip,String realname){
+    	logger.info("#WXService.transfers #amount = {},ip = {},relaname={}",amount,ip,realname);
     	StoreBean storeBean = LoginUserUtil.getStore();
     	LoginUser loginUser = LoginUserUtil.getLoginUser();
     	String storeNo = storeBean.getStoreNo();
@@ -371,21 +377,18 @@ public class WXService {
     	transfers.setNonce_str(UUID.randomUUID().toString().replaceAll("-", ""));
     	String orderNo = StoreUtils.getOrderNO(storeNo);
     	transfers.setPartner_trade_no(orderNo);
-//    	transfers.setPartner_trade_no("101170321632455683");
-//    	transfers.setSpbill_create_ip(ip);
-    	transfers.setSpbill_create_ip("114.215.223.220");
+    	transfers.setSpbill_create_ip(ip);
+//    	transfers.setSpbill_create_ip("114.215.223.220");
     	try {
-//			transfers.setRe_user_name(new String(transfers.getRe_user_name().getBytes("UTF-8")));
-//			transfers.setDesc(new String(transfers.getDesc().getBytes("UTF-8")));
-			transfers.setRe_user_name(URLEncoder.encode(transfers.getRe_user_name(), "UTF-8"));
-			transfers.setDesc(URLEncoder.encode(transfers.getDesc(), "UTF-8"));
+			transfers.setRe_user_name(URLEncoder.encode(realname, "UTF-8"));
+//			transfers.setDesc(URLEncoder.encode(transfers.getDesc(),"UTF-8"));
+//			transfers.setDesc(new String(transfers.getDesc().getBytes("UTF-8"),"UTF-8"));
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
 		}
-    	logger.info(transfers.toString());
     	StoreBalanceDetailBean storeBalanceDetailBean = new StoreBalanceDetailBean();
     	storeBalanceDetailBean.setStoreNo(storeNo);
-    	storeBalanceDetailBean.setPaymentStatus(1);
+    	storeBalanceDetailBean.setPaymentStatus(0);
     	storeBalanceDetailBean.setPrice(new BigDecimal(amount));
     	storeBalanceDetailBean.setPartnerTradeNo(orderNo);
     	storeBalanceDetailBean.setDescription("提现");
@@ -393,84 +396,103 @@ public class WXService {
     	String result = "";
     	double price = tbStoreDao.getPriceByStoreNo(storeNo);
 		try {
-			tbStoreBalanceDetailsDao.insert(storeBalanceDetailBean);
-			tbStoreDao.updatePriceByStoreNo(amount, storeNo, price, 1, 1);//type == 1提现 isPrice=1验证price 否则不验证
-			logger.info("#WXService.transfers #amount = {},storeNo={},price={},type={}",amount,storeNo,price,1);
-			logger.info("#WXService.transfers #url={}#transfers={}",url,transfers);
-//			result = SSLUtil.postSSL(url, transfers.toString());
-			result = WXHttpUtils.post(url, transfers.toString());
-			logger.info("#WXService.transfers #result = {}",result);
+			int initAddId =tbStoreBalanceDetailsDao.insert(storeBalanceDetailBean);
+			if(0 == initAddId){
+				logger.info("#WXService.transfers #insert storeBalanceDetailBean fail,#storeBalanceDetailBean={}",storeBalanceDetailBean);
+			}
+			int initUpdateId = tbStoreDao.updatePriceByStoreNo(amount, storeNo, price, 1, 1);//type == 1提现 isPrice=1验证price 否则不验证
+			if(0 == initUpdateId){
+				logger.info("#WXService.transfers #initUpdateId store price fail");
+			}
+			logger.info("#WXService.transfers #amount = {},storeNo={},price={},type={},#url={}#transfers={}",amount,storeNo,price,1,url,transfers);
+//			result = WXHttpUtils.post(url, transfers.toString());
+			result = new HttpsRequest().sendPost(url, transfers.toString());
 			Map<String,String> map = XMLBeanUtils.xmlToMap(result);
 			logger.info("#WXServie.transfers #result_code = {} #map = {},result={}",map.get("return_code"),map,result);
 			if("SUCCESS".equals(map.get("return_code"))){
+				logger.info("#WXService.transfers #return_code={},#return_msg={},#mch_appid={},#mchid={},#device_info={},"
+						+ "#nonce_str={},#result_code={},#err_code={},#err_code_des={}",map.get("return_code"),map.get("return_msg"),
+						map.get("mch_appid"), map.get("mchid"), map.get("device_info"), map.get("nonce_str"), map.get("result_code"),
+						map.get("err_code"), map.get("err_code_des"));
 				if("SUCCESS".equals(map.get("result_code"))){
-					logger.info("SUCCESS");
-//					String partner_trade_no = map.get("partner_trade_no");
-					storeBalanceDetailBean.setPaymentTime(Integer.valueOf(map.get("payment_time")));
-					storeBalanceDetailBean.setPaymentStatus(2);
-					storeBalanceDetailBean.setPaymentNo(map.get("payment_no"));
-					int rightId = tbStoreBalanceDetailsDao.update(storeBalanceDetailBean);
-					if(rightId == 1){
-						logger.info("#WXService.transfers 提现成功！更新数据成功");
-					}else{
-						logger.info("#WXService.transfers 提现成功！更新数据失败");
-					}
-					return CommonResult.success("Success");
+					 logger.info("#WXService.transfers #partner_trade_no={},#payment_no={},#payment_time={}",map.get("partner_trade_no"),
+							 map.get("payment_no"),map.get("payment_time"));
+					 CommonResult cr = (CommonResult) queryTransfersInfo(orderNo);
+					 logger.info("queryResult----#code={},#msg={}",cr.getCode(),cr.getMsg());
+					 if(cr.getCode() == 0){
+						 if("SUCCESS".equals(cr.getMsg())){
+							 storeBalanceDetailBean.setPaymentTime(new Long(
+									 DateUtil.formatStringUnixTime(map.get("payment_time"), "yyyy-MM-dd HH:mm:ss")).intValue());
+							 storeBalanceDetailBean.setPaymentStatus(1);
+							 storeBalanceDetailBean.setPaymentNo(map.get("payment_no"));
+							 int rightId = tbStoreBalanceDetailsDao.update(storeBalanceDetailBean);
+							 logger.info("提现成功");
+							 if(rightId == 0){
+								 logger.info("#WXService.transfers 提现成功！更新数据失败");
+							 }
+							 return  CommonResult.build(0, "提现成功");
+						 }else if("PROCESSING".equals(cr.getMsg())){
+							 logger.info("提现处理中");
+							 //轮询0
+							 return CommonResult.build(0, "提现处理中");
+						 }
+					 }else if(cr.getCode() == 1 || cr.getCode() == 2){
+						  shopService.updateAdd(storeBalanceDetailBean, amount, storeNo, price);
+						  return CommonResult.build(1, "提现失败");
+					 }
 				}else{
-					logger.info("result_code = FAIL #err_code = {},#err_code_des = {}",map.get("err_code"),map.get("err_code_des"));
-					storeBalanceDetailBean.setPaymentStatus(3);
-					int failResultId = tbStoreBalanceDetailsDao.update(storeBalanceDetailBean);
-					if(failResultId == 1){
-						logger.info("#WXService.transfers 提现失败。更新storeBalanceDetailBean #status Success");
-					}else {
-						logger.info("#WXService.transfers 提现失败 。更新storeBalanceDetailBean #status fail");
-					}
-					int storePriceid = tbStoreDao.updatePriceByStoreNo(amount, storeNo, price, 2, 2);//type == 1提现
-					if(storePriceid == 1){
-						logger.info("#WXService.transfers 提现失败 。更新store #Price Success");
-					}else{
-						logger.info("#WXservice.transfers 提现事变。更新store #Price　fail");
-					}
-					logger.info("#WXService.transfers #amount = {},storeNo={},price={},type={}",amount,storeNo,price,2);
-					return CommonResult.build(2, map.get("return_msg"));
+					 shopService.updateAdd(storeBalanceDetailBean, amount, storeNo, price);
+					 return CommonResult.build(1, "提现失败");
 				}
-				
 			}else{
-				logger.info("return_code = FAIL");
-				storeBalanceDetailBean.setPaymentStatus(3);
-				int returnCodeId = tbStoreBalanceDetailsDao.update(storeBalanceDetailBean);
-				if(returnCodeId == 1){
-					logger.info("#WXService.transfers 提现失败。更新storeBalanceDetailBean #status Success");
-				}else{
-					logger.info("#WXService.transfers 提现失败 。更新storeBalanceDetailBean #status fail");
-				}
-				int storeReturnId = tbStoreDao.updatePriceByStoreNo(amount, storeNo, price, 2, 2);//type == 1提现
-				if(storeReturnId == 1){
-					logger.info("#WXService.transfers 提现失败 。更新store #Price Success");
-				}else{
-					logger.info("#WXservice.transfers 提现失败。更新store #Price　fail");
-				}
-				logger.info("#WXService.transfers #amount = {},storeNo={},price={},type={}",amount,storeNo,price,2);
-				return CommonResult.build(3, map.get("err_code_des"));
+				shopService.updateAdd(storeBalanceDetailBean, amount, storeNo, price);
+				tbStoreDao.updatePriceByStoreNo(amount, storeNo, price, 2, 2);
+				return CommonResult.build(1, "提现失败");
 			}
-			
 		} catch (Exception e) {
-			logger.error("#WXService.transfers #amount={},ip = {}",amount,ip);
-			storeBalanceDetailBean.setPaymentStatus(3);
-			int returnECodeId = tbStoreBalanceDetailsDao.update(storeBalanceDetailBean);
-			if(returnECodeId == 1){
-				logger.error("#WXService.transfers 提现失败。更新storeBalanceDetailBean #status Success");
-			}else{
-				logger.error("#WXService.transfers 提现失败 。更新storeBalanceDetailBean #status fail");
+			logger.error("#WXService.transfers #amount={},ip = {}",amount,ip,e);
+			shopService.updateAdd(storeBalanceDetailBean, amount, storeNo, price);
+			tbStoreDao.updatePriceByStoreNo(amount, storeNo, price, 2, 2);
+			return CommonResult.build(1, "提现失败");
+		}
+		return null;
+    }
+    /*
+     * 查询企业付款
+     */
+    //orderId 为自己生成的订单号
+    public Object queryTransfersInfo(String orderId){
+    	
+    	QueryTransfers queryTransfers = new QueryTransfers();
+    	queryTransfers.setNonce_str(UUID.randomUUID().toString().replaceAll("-", ""));
+    	queryTransfers.setPartner_trade_no(orderId);
+    	String url = "https://api.mch.weixin.qq.com/mmpaymkttransfers/gettransferinfo";
+    	try {
+			String result = new HttpsRequest().sendPost(url, queryTransfers.toString());
+			Map<String, String> map = XMLBeanUtils.xmlToMap(result);
+			logger.info("#WXService.queryTransfersInfo #map = {}",map);
+			
+			if("SUCCESS".equals(map.get("return_code")) && "SUCCESS".equals(map.get("result_code"))){
+				logger.info("WXService.queryTransfersInfo #return_code={},#return_msg={},#partner_trade_no={},#mch_id={},#detail_id={},"
+						+ "#reason={},#openid={},#transfer_name={},#payment_amount={},#transfer_time={},#desc={}",
+						map.get("return_code"),map.get("return_msg"),map.get("partner_trade_no"),map.get("mch_id"),map.get("detail_id"),
+						map.get("status"),map.get("reason"),map.get("openid"),map.get("transfer_name"),map.get("payment_amount"),
+						map.get("transfer_time"),map.get("desc"));
+				String status = map.get("status");
+				logger.info("#status={}",status);
+				if("SUCCESS".equals(status)){
+					return CommonResult.build(0, "SUCCESS",map);
+				}else if("PROCESSING".equals(status)){
+					return CommonResult.build(0, "PROCESSING");
+				}else{
+					return CommonResult.build(2, "FAILED");
+				}
 			}
-			int storeEReturnId = tbStoreDao.updatePriceByStoreNo(amount, storeNo, price, 2, 2);//type == 1提现
-			if(storeEReturnId == 1){
-				logger.error("#WXService.transfers 提现失败 。更新store #Price Success");
-			}else{
-				logger.error("#WXservice.transfers 提现失败。更新store #Price　fail");
-			}
+		} catch (Exception e) {
+			logger.error("#WXService.queryTransfersInfo #orderId={}",orderId,e);
 			return CommonResult.defaultError("error");
 		}
+    	return null;
     }
 
     public static void main(String[] args) throws Exception {

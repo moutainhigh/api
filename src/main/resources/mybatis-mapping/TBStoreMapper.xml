@@ -3,7 +3,7 @@
 <mapper namespace="com.zhsj.api.dao.TbStoreDao">
     <sql id="SELECT_FIELDS">
         id,parent_no,store_no,name,city_code,address,phone,shop_logo,intro,status,
-        latitude,longitude,valid,utime,ctime,org_ids,sale_id,app_id
+        latitude,longitude,valid,utime,ctime,org_ids,sale_id,app_id,price
     </sql>
 
     <select id="getStoreByNo" resultType="storeBean" >

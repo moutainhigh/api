@@ -4,8 +4,11 @@ package com.zhsj.api.bean.result;
 import java.util.HashMap;
 import java.util.Map;
 
-import sun.tools.tree.ThisExpression;
 
+
+
+
+import com.zhsj.api.util.MD5Util;
 import com.zhsj.api.util.Md5;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.XMLBeanUtils;
@@ -23,9 +26,9 @@ public class Transfers {
 	private String partner_trade_no = "";//商户订单号
 	private String openid = "";//用户openid
 	private String check_name = "OPTION_CHECK";//校验用户姓名选项
-	private String re_user_name = "刘建英";//收款用户姓名
+	private String re_user_name = "";//收款用户姓名
 	private int amount;//金额
-	private String desc = "测试提现";//企业付款描述信息
+	private String desc = "商户提现至零钱";//企业付款描述信息
 	private String spbill_create_ip = "";//Ip地址
 	private String key = MtConfig.getProperty("key", "");
 	
@@ -121,9 +124,9 @@ public class Transfers {
 	@Override
 	public String toString() {
 		String param = "amount="+this.getAmount()+"&check_name="+this.getCheck_name()+"&desc="+this.getDesc()+"&mch_appid="+this.getMch_appid()
-				+"&mchid="+this.getMchid()+"&nonce_str"+this.getNonce_str()+"&openid="+this.getOpenid()+"&partner_trade_no="+this.getPartner_trade_no()
+				+"&mchid="+this.getMchid()+"&nonce_str="+this.getNonce_str()+"&openid="+this.getOpenid()+"&partner_trade_no="+this.getPartner_trade_no()
 				+"&re_user_name="+this.getRe_user_name()+"&spbill_create_ip="+this.getSpbill_create_ip();
-		String sign = (Md5.encrypt(param+"&key="+this.key)).toUpperCase();
+		String sign = (MD5Util.encode(param+"&key="+this.key)).toUpperCase();
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("amount", String.valueOf(this.getAmount()));
 		map.put("check_name", this.getCheck_name());
@@ -137,6 +140,13 @@ public class Transfers {
 		map.put("spbill_create_ip", this.getSpbill_create_ip());
 		map.put("sign", sign);
 		return  XMLBeanUtils.mapToXml(map);
+	}
+	
+  
+	public static void main(String[] args) {
+		String str = "amount=100&check_name=OPTION_CHECK&desc=提现测试&mch_appid=wx79bd044fd98536f4&mchid=1273081001&nonce_str=d23c086dfa6545c7a374a7cffbb08751&openid=o5pmesyob9P9Otj-jl-U3ETnArlY&partner_trade_no=28377075170326369232897&re_user_name=%E8%AE%B8%E6%9E%97%E5%88%9B&spbill_create_ip=114.215.223.220&key=wanwutongkejibeijing888888888888";
+		System.err.println(Md5.encrypt(str).toUpperCase());
+		System.err.println(MD5Util.encode(str).toUpperCase());
 	}
 	
 }

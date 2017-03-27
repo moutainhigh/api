@@ -25,7 +25,7 @@
       select <include refid="FIELD"></include>
       from <include refid="TABLE"></include>
       <where>
-        store_no = #{storeNo} and payment_status = 2 order by ctime desc limit #{start},#{end}
+        store_no = #{storeNo} order by ctime desc limit #{start},#{end}
       </where>
    </select>
    
@@ -40,4 +40,20 @@
             id = #{id}
          </where>
    </update>
+   
+   <select id="getlistByStatus" resultType="java.lang.String">
+      select partner_trade_no from <include refid="TABLE"></include>
+      <where>
+         payment_status = 0
+      </where>
+   </select>
+   
+   
+   <select id="getByPartnerTradeNo" parameterType="java.lang.String" resultType="storeBalanceDetailBean">
+       select <include refid="FIELD"></include> 
+       from <include refid="TABLE"></include>
+       <where>
+          partner_trade_no = #{partnerTradeNo} and type = 1
+       </where>
+   </select>
 </mapper>

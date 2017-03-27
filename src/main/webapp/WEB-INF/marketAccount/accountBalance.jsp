@@ -83,7 +83,7 @@
         .item_detail .money{
             position: absolute;
             right:0;
-            top:35%;
+            top:17%;
             color: #fc324a;
         }
         .content p:first-child{
@@ -125,8 +125,8 @@
 	                <div class="my_money">
 	                   <span id="balance">${price}</span>元
 	                </div>
-	                <div class="to_wechat_packet" id="withdraw">
-	                    <span>提现至微信钱包</span>
+	                <div class="to_wechat_packet" >
+	                    <span id="withdraw">提现至微信钱包</span>
 	                </div>
 	          </section>
 	          <section class="balance_detail">
@@ -273,21 +273,21 @@
         		if(result.code == 0){
         			var items = result.data,
         			    len = items.length;
-        			if(len == 0){
-        				jalert.show('暂无数据了');
-        				return;
-        			}
-        			if(len < pageSize){
-        				isUseData = false;
-        			}
-        			
         			var s = "";
         			for(var i =0;i<len;i++){
+        				var status = "";
         				if(items[i].type == 1){
             				items[i].type = '提现';
             			}else if(items[i].type == 2){
-            				items[i].type = '活动返现';
+            				items[i].type = '提现失败返现';
             			}
+        				if(items[i].paymentStatus == 0){
+        					status = "处理中";
+        				}else if(items[i].paymentStatus == 1){
+        					status = "成功";
+        				}else{
+        					status = "失败";
+        				}
         				s += '<div class="item">'
                         +'<div class="item_detail">'
                         +'<div class="content">'
@@ -295,10 +295,20 @@
                         +'  <p>'+new Date(items[i].ctime*1000).Format("yyyy-MM-dd hh:mm")+'</p>'
                         +'</div>'
                         +'<div class="money">'
-                        +'    <span>'+items[i].price+'</span>元'
-                        +'</div>'
+                        +'    <p style="color: #777;">'+items[i].price+'元</p>';
+                        if(items[i].paymentStatus == 1){
+                        	s +='    <p style="color:green;margin-top:.25rem;font-size:.8rem;">'+status+'</p>';
+                        }else if(items[i].paymentStatus == 0){
+                        	s +='    <p style="color:#CCC;margin-top:.25rem;font-size:.8rem;">'+status+'</p>';
+                        }else{
+                        	s +='    <p style="margin-top:.25rem;font-size:.8rem;">'+status+'</p>';
+                        }
+                        s+='</div>'
                         +'</div>'
                         +'</div>';
+        			}
+        			if(len < pageSize){
+        				isUseData = false;
         			}
         			
         			$("#itemList").append(s);

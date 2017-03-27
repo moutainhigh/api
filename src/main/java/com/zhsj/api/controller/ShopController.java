@@ -135,7 +135,7 @@ public class ShopController {
     public ModelAndView test() throws UnsupportedEncodingException {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./shop/index");
-        String auth = "o5pmes7HP9w6OhjgjBpc5tTWL8Bs";
+        String auth = "o5pmesyob9P9Otj-jl-U3ETnArlY";
         modelAndView.addObject("auth", "21" + auth);
         return modelAndView;
     }
@@ -515,9 +515,9 @@ public class ShopController {
     
     @RequestMapping(value = "withDrawWx",method = RequestMethod.POST)
     @ResponseBody
-    public Object withDrawWx(String auth,double amount,HttpServletRequest request){
+    public Object withDrawWx(String auth,double amount,String realname,HttpServletRequest request){
     	logger.info("#ShopController.withDrawWx #auth={},amount={}",auth,amount);
-    	return wxService.transfers(amount, WebUtils.getRemoteAddr(request));
+    	return wxService.transfers(amount, WebUtils.getRemoteAddr(request), realname);
     }
     /*
      * wx消推提醒(点击查看的详情list)

@@ -4,12 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.KeyStore;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -18,7 +14,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContexts;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -33,26 +28,15 @@ public class WXHttpUtils {
 	
 	public static String post(String url,String json) throws Exception{
 		logger.info("#WXHttpUtils.post #url = {},#json = {}", url, json);
-//		json = new String(json.getBytes("utf-8"),"utf-8");
-		System.setProperty("javax.net.ssl.trustStore", MtConfig.getProperty("wx_cert",""));
 		KeyStore keyStore = KeyStore.getInstance("PKCS12");
-		TrustManager tm = new X509TrustManager() {      
-            public X509Certificate[] getAcceptedIssuers() {      
-                return null;      
-            }      
-			@Override
-			public void checkClientTrusted(X509Certificate[] chain,
-					String authType) throws CertificateException {
-			}
-			@Override
-			public void checkServerTrusted(X509Certificate[] chain,
-					String authType) throws CertificateException {
-			}  
-        }; 
+		
         FileInputStream instream = new FileInputStream(new File(MtConfig.getProperty("wx_cert","")));
         try {
 			keyStore.load(instream, MtConfig.getProperty("mchid", "").toCharArray());
-        } finally {
+        } catch(Exception e){
+        	logger.error("",e);
+        	e.printStackTrace();
+        }finally {
 			instream.close();
         }
 
@@ -60,7 +44,6 @@ public class WXHttpUtils {
         SSLContext sslcontext = SSLContexts.custom()
 			        .loadKeyMaterial(keyStore, MtConfig.getProperty("mchid", "").toCharArray())
 			        .build();
-        sslcontext.init(null, new TrustManager[] { tm }, null);      
         // Allow TLSv1 protocol only
         SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
                 sslcontext,
@@ -72,7 +55,7 @@ public class WXHttpUtils {
                 .build();
         
         HttpPost httpPost = new HttpPost(url);
-        StringEntity sEntity = new StringEntity(json,ContentType.APPLICATION_XML);
+        StringEntity sEntity = new StringEntity(json);
 		httpPost.setEntity(sEntity);
 		CloseableHttpResponse response = null;
 		String callback = "";
@@ -93,9 +76,9 @@ public class WXHttpUtils {
 		        logger.info("#WXHttpUtils.post #Response content = {}", callback);
 		    }  
 		}  catch (ClientProtocolException e) {
-			e.printStackTrace();
+			logger.info("WXHttpUtils #ClientProtocolException ",e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.info("WXHttpUtils #IOException ",e);
 		}finally {  
 		      if(response != null){
 		    	  try {

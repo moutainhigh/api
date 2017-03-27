@@ -147,5 +147,6 @@ public class DateUtil
 	{
 //		String time = DateUtil.getCurrentTimeHaveHR();
 		System.out.println(DateUtil.getMonthStartTime()+"=="+DateUtil.getMonthEndTime());
+		System.err.println(formatStringUnixTime("2015-05-19 15:26:59","yyyy-MM-dd HH:mm:ss"));
 	}
 }

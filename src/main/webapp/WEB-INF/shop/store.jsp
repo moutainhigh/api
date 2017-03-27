@@ -16,7 +16,11 @@ pageEncoding="UTF-8"%>
     <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
     <style type="text/css">
        .bottom{
-         margin-bottom: 80px;
+          margin-bottom: 80px;
+       }
+       a{
+          text-decoration: none;
+          color: #666;
        }
     </style>
 </head>

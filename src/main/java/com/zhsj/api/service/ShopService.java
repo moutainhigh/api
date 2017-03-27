@@ -587,5 +587,40 @@ public class ShopService {
     		return CommonResult.defaultError("error");
     	}
     }
+    
+    public void updateAdd(StoreBalanceDetailBean storeBalanceDetailBean,double amount,String storeNo,double price){
+    	  logger.info("#ShopService.updateAdd #StoreBalanceDetailBean = {}",storeBalanceDetailBean);
+    	//更新数据
+		  storeBalanceDetailBean.setPaymentStatus(2);
+		  try{
+			  int failResultId = tbStoreBalanceDetailsDao.update(storeBalanceDetailBean);
+			  if(failResultId == 0){
+					logger.info("#ShopService.updateAdd 更新storeBalanceDetailBean #status fail");
+			  }
+		  }catch(Exception e){
+			  logger.error("#ShopService.updateAdd 更新提现#StoreBalnceDetailBean = {},",storeBalanceDetailBean,e);
+		  }
+		 //插入数据
+		  StoreBalanceDetailBean asbd = new StoreBalanceDetailBean();
+		  asbd.setStoreNo(storeBalanceDetailBean.getStoreNo());
+		  asbd.setType(2);
+		  asbd.setPrice(storeBalanceDetailBean.getPrice());
+		  asbd.setDescription("返回提现");
+		  asbd.setPaymentStatus(1);
+		  asbd.setPartnerTradeNo(storeBalanceDetailBean.getPartnerTradeNo());
+		  try{
+			  int addId = tbStoreBalanceDetailsDao.insert(asbd);
+			  if(addId == 0){
+				  logger.info("#ShopService.updateAdd add.return.withdraw.success");
+			  }
+			}catch(Exception e){
+				logger.error("#ShopService.updateAdd 添加返回提现#StoreBalnceDetailBean = {},",storeBalanceDetailBean,e);
+			}
+		  
+		  int a = tbStoreDao.updatePriceByStoreNo(amount, storeNo, price, 2, 2);
+		  if(0 == a){
+			  logger.info("#WXService.transfers updateprice fail.添加回去");
+		  }
+    }
 
 }
