@@ -62,7 +62,7 @@ public class MinshengService {
 			String orderNo = StoreUtils.getOrderNO(storeNo);
 			payBean = this.calDiscount(payBean);
 			StorePayInfo storePayInfo = prePay(payBean,orderNo);
-			double orderPrice = payBean.getOrderPrice()-payBean.getDiscountPrice();
+			double orderPrice = Arith.sub(payBean.getOrderPrice(), payBean.getDiscountPrice());
 			if(orderPrice <= 0){
 				orderPrice = 0.01;
 			}
@@ -111,7 +111,7 @@ public class MinshengService {
 			payBean = this.calDiscount(payBean);
 			StorePayInfo storePayInfo = prePay(payBean, orderNo);
 			//调用接口
-			double orderPrice = payBean.getOrderPrice()-payBean.getDiscountPrice();
+			double orderPrice = Arith.sub(payBean.getOrderPrice(), payBean.getDiscountPrice());
 			if(orderPrice <= 0){
 				orderPrice = 0.01;
 			}
@@ -226,7 +226,8 @@ public class MinshengService {
 			int s = random.nextInt(max)%(max-min+1) + min;
 			discountPrice = s/100.0;
 		}else if(discountBean.getType() == 3){
-			discountPrice = payBean.getOrderPrice() * (1.0-discountRuleBean.getDiscount1()/10.0);
+			double discp = Arith.sub(1.0,Arith.div(discountRuleBean.getDiscount1(), 10.0, 3) );
+			discountPrice = Arith.mul(payBean.getOrderPrice() , discp);
 			discountPrice = Math.round((discountPrice-0.005)*100)/100.0; //四舍五入
 		}else if(discountBean.getType() == 1){
 			discountPrice = discountRuleBean.getDiscount1();
@@ -495,20 +496,15 @@ public class MinshengService {
 //		json.put("wxRate",Double.parseDouble("7.8"));
 //		json.put("settlementType","e");
 //
-//		String jj = json.toJSONString();
-//		System.out.println(jj);
-//		NOTPAY
-//				FAIL SUCCESS  "WAITING_PAYMENT
-//		new MinshengService().queryOrder("201701141602121fdSN0ba482a1d");
-//		new AyncTaskUtil().commitAyncTask(new OrderSuccessAsync(null));
-		for(int i =0;i<100;i++){
-			int min = (int)2.0*100;
-			int max = (int)3.4*100;
-			Random random = new Random();
-			int s = random.nextInt(max)%(max-min+1) + min;
-			System.out.println(s/100.0);
-		}
-
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("paykey","ffe91102af5a429e8bd2aba258e266a9");
+		parameters.put("order_no","1001170322710655045");  //请自己试试自己发起的订单
+		/////签名///
+		String sign = getSign(parameters, "bfc9a24ccd34474686230d825c03f00b");//
+		parameters.put("sign",sign);
+		String postUrl = MtConfig.getProperty("ms_URL","http://115.159.235.109:8208")+"/qthd-pay-web-gateway/scanPay/QueryReturnJson";
+		String str = HttpClient.sendPost(postUrl, parameters);
+		System.out.print(str);
 	}
 
 }

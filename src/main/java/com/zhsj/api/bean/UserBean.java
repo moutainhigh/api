@@ -17,6 +17,8 @@ public class UserBean {
     private String unionid;
     private int utime;
     private int ctime;
+    private int subscribe;
+    private String appId;
 
     public int getType() {
         return type;
@@ -121,4 +123,21 @@ public class UserBean {
     public void setCtime(int ctime) {
         this.ctime = ctime;
     }
+
+	public int getSubscribe() {
+		return subscribe;
+	}
+
+	public void setSubscribe(int subscribe) {
+		this.subscribe = subscribe;
+	}
+
+	public String getAppId() {
+		return appId;
+	}
+
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
+    
 }

@@ -12,6 +12,9 @@ public class WeixinUserBean {
     private String  province;
     private String  country;
     private String  headimgurl;
+    private String unionid;
+    private int errcode;
+    private String errmsg;
 
     public int getSubscribe() {
         return subscribe;
@@ -76,8 +79,34 @@ public class WeixinUserBean {
     public void setHeadimgurl(String headimgurl) {
         this.headimgurl = headimgurl;
     }
+    
+    
 
-    @Override
+    public String getUnionid() {
+		return unionid;
+	}
+
+	public void setUnionid(String unionid) {
+		this.unionid = unionid;
+	}
+
+	public int getErrcode() {
+		return errcode;
+	}
+
+	public void setErrcode(int errcode) {
+		this.errcode = errcode;
+	}
+
+	public String getErrmsg() {
+		return errmsg;
+	}
+
+	public void setErrmsg(String errmsg) {
+		this.errmsg = errmsg;
+	}
+
+	@Override
     public String toString() {
         return "WeixinUserBean{" +
                 "subscribe=" + subscribe +

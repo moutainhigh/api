@@ -141,11 +141,12 @@ public class SSLUtil {
      * @throws Exception
      */
     public static String httpsPost(String reqUrl, String data) throws Exception {
+    	System.out.println("==============="+reqUrl+"===="+data);
         URL url = new URL(reqUrl);
-        System.setProperty("javax.net.ssl.trustStore", MtConfig.getProperty("JSSECACERTS_PATH","")); //jssecacerts安全认证
-        System.setProperty("javax.net.ssl.keyStore", MtConfig.getProperty("CERT_PATH_JKS",""));// 商户自身的JKS证书
-        System.setProperty("javax.net.ssl.keyStorePassword", MtConfig.getProperty("CERT_JKS_P12_PASSWORD","")); // 商户自身的JKS证书密码
-        System.setProperty("javax.net.ssl.keyStoreType", "jks");
+//        System.setProperty("javax.net.ssl.trustStore", MtConfig.getProperty("JSSECACERTS_PATH","")); //jssecacerts安全认证
+//        System.setProperty("javax.net.ssl.keyStore", MtConfig.getProperty("CERT_PATH_JKS",""));// 商户自身的JKS证书
+//        System.setProperty("javax.net.ssl.keyStorePassword", MtConfig.getProperty("CERT_JKS_P12_PASSWORD","")); // 商户自身的JKS证书密码
+//        System.setProperty("javax.net.ssl.keyStoreType", "jks");
         HostnameVerifier hv = new HostnameVerifier() {
             public boolean verify(String urlHostName, SSLSession session) {
                 return true;

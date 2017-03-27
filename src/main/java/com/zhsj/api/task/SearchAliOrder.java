@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -29,10 +30,9 @@ public class SearchAliOrder implements InitializingBean {
     // 轮询
     private ScheduledExecutorService refreshExecutorService = Executors.newScheduledThreadPool(1);
     // 轮询间隔
-    private long refreshPeriod = 300; // seconds
+    private long refreshPeriod = 60; // seconds
 
     private long id;
-    private boolean loker = false;
 
     @Autowired
     private OrderService orderService;
@@ -58,38 +58,42 @@ public class SearchAliOrder implements InitializingBean {
     }
 
     public void refresh(){
-        logger.info("#SearchOrder#============");
+        logger.info("#SearchAliOrder.SearchOrder#============");
         try {
-            if(loker){
-                return;
-            }
-
-            loker = true;
-            long ctime = 0;
-            if(id <=0 ){
-                ctime = DateUtil.unixTime() - 60*5;
-            }
+        	long ctime = 0;
+        	if(id <= 0 ){
+        		ctime = DateUtil.unixTime() - 60*15;
+        	}
+        	logger.info("#SearchAliOrder.SearchOrder# id={}",id);
             List<OrderBean> list = orderService.getMSAliListByCtime(id,new Long(ctime).intValue(),100);
+            if(CollectionUtils.isEmpty(list)){
+            	return;
+            }
+            boolean flag = false;
             for(OrderBean orderBean:list){
-            	logger.info("#refresh# orderNo={}",orderBean.getOrderId());
+            	logger.info("#SearchAliOrder.refresh# orderNo={}",orderBean.getOrderId());
                 String result = minshengService.queryOrder(orderBean.getOrderId());
+                logger.info("#SearchAliOrder.refresh# result={}",result);
                 if(StringUtils.isEmpty(result)){
                     continue;
                 }
-                if(OrderStatus.FAIL.equals(result) || OrderStatus.NOTPAY.equals(result)){
+                if(OrderStatus.FAIL.equals(result)){
                     orderService.updateOrderByOrderIdAndStatus(2, orderBean.getOrderId(), 0);
                 }else if(OrderStatus.SUCCESS.equals(result)){
                     int num = orderService.updateOrderByOrderIdAndStatus(1,orderBean.getOrderId(),0);
                     if(num > 0){
                         wxService.sendSuccess(orderBean);
                     }
+                }else if(!flag){
+                	long time = DateUtil.unixTime() - orderBean.getCtime();
+                	if(time <= 60*20){
+                		id = orderBean.getId();
+                		flag = true;
+                	}
                 }
-                id = orderBean.getId();
             }
         }catch (Exception e){
             logger.error("#SearchAliOrder.refresh# e={}",e.getMessage(),e);
-        }finally {
-            loker = false;
         }
 
     }

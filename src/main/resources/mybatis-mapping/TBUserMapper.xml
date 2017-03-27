@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhsj.api.dao.TbUserDao">
     <sql id="SELECT_FIELDS">
-        id,open_id,nick_name,head_img,sex,city,province,country,privilege,unionid,utime,ctime
+        id,open_id,nick_name,head_img,sex,city,province,country,privilege,unionid,utime,ctime,app_id,subscribe
     </sql>
 
     <select id="getUserByOpenId" resultType="userBean" >
@@ -18,13 +18,20 @@
     </select>
 
     <insert id="insertOpenId" keyProperty="userBean.id" useGeneratedKeys="true">
-        insert into tb_user (open_id,type) VALUE (#{userBean.openId},#{userBean.type})
+        insert into tb_user (open_id,type,app_id,utime,ctime,subscribe) 
+        VALUE (#{userBean.openId},#{userBean.type},#{userBean.appId},unix_timestamp(now()),unix_timestamp(now()),subscribe)
     </insert>
 
     <update id="updateUserInfoByOpenId">
         update tb_user
         set nick_name = #{bean.nickname},head_img=#{bean.headimgurl},sex=#{bean.sex},city=#{bean.city},province=#{bean.province},
-        country = #{bean.country}
+        country = #{bean.country},utime=unix_timestamp(now()),subscribe=#{bean.subscribe},unionid=#{bean.unionid}
+        where open_id = #{bean.openid}
+    </update>
+    
+     <update id="updateUnionidByOpenId">
+        update tb_user
+        set subscribe=#{bean.subscribe},unionid=#{bean.unionid}
         where open_id = #{bean.openid}
     </update>
 
