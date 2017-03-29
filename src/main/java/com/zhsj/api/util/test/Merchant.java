@@ -18,9 +18,9 @@ public class Merchant
 		 */
 //		StaticConfig.REQ_URL = "https://115.28.58.174:6789/merSettled.do";
 		//商户入驻
-//		mersettled();
+		mersettled();
 		//商户信息修改
-		updateMerchantByPaykey();
+//		updateMerchantByPaykey();
 	}
 	
 	public static void mersettled() {
@@ -33,16 +33,16 @@ public class Merchant
         reqData.put("agent_no", "95272016121410000062aaaaaa");//此字符串由民生提供
         reqData.put("wx_business_type", "277"); //商户营业类别
         reqData.put("ali_business_type", "2016062900190196"); //支付宝口碑类目
-        reqData.put("mer_name", "万物通科技(北京)有限公司"); //商户全称
-        reqData.put("wx_rate", "0.5");   //微信费率     示例:0.5，代表和该入驻商户签约千分之5的费率      
-        reqData.put("ali_rate", "0.5");   //支付宝费率     示例:0.5，代表和该入驻商户签约千分之5的费率       
+        reqData.put("mer_name", "民生银行特约商户"); //商户全称
+        reqData.put("wx_rate", "0.25");   //微信费率     示例:0.5，代表和该入驻商户签约千分之5的费率      
+        reqData.put("ali_rate", "0.25");   //支付宝费率     示例:0.5，代表和该入驻商户签约千分之5的费率       
         reqData.put("sa_name", "王军");   //结算账户名称       G
         reqData.put("sa_num", "6216920053824716");   //结算账户账号     
         reqData.put("sa_bank_name", "中国民生银行");   //结算账户银行 
         reqData.put("sa_bank_type", "00");   //结算账户类型(对公=01)(对私=00)
 		reqData.put("settlement_type", "T1");   //商户结算类型D0:实时清算,T1:隔天清算 若不传，默认D0清算
         reqData.put("user_pid", "2088421759224451");//支付宝ISV的pid
-        reqData.put("mer_short_name", "简称");//商户简称
+        reqData.put("mer_short_name", "民生银行特约商户");//商户简称
 
 	try
 	{
