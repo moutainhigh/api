@@ -531,8 +531,8 @@ public class ShopController {
     
     @RequestMapping(value = "getListByStoreNo",method=RequestMethod.POST)
     @ResponseBody
-    public Object getListByStoreNo(String auth,int page,int pageSize){
+    public Object getListByStoreNo(String auth, int type, int page, int pageSize){
     	logger.info("#ShopController.getListByStoreNo #auth = {},#page={},#pageSize={}",auth,page,pageSize);
-    	return shopService.getListByStoreNoAndPage( page, pageSize);
+    	return shopService.getListByStoreNoAndPage( type ,page, pageSize);
     }
 }

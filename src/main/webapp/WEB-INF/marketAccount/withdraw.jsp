@@ -137,8 +137,8 @@
         $("#apply_withdraw").on("click",function(){
         	   var input_money = $("#input_money").val(),
         	       realname = $("#realname").val();
-        	   console.log($("#input_money"));
-        	   console.log(input_money);
+//         	   console.log($("#input_money"));
+//         	   console.log(input_money);
         	   if(input_money == ""){
         		   jalert.show('请输入提现金额');
         		   return false;
@@ -151,7 +151,15 @@
         		    jalert.show('有不合法字符');
         		    return false;
         	   }
-//             jalert.show('申请提现');
+        	   if(parseFloat(all_money) == 0){
+        		   jalert.show('没有可用余额');
+        		   return false;
+        	   }
+        	   if(parseFloat(input_money) > parseFloat(all_money)){
+        		   jalert.show('提现金额不能大于可用余额');
+        		   return false;
+        	   }
+        	   
                $.post("./withDrawWx",{
             	   auth:auth,
             	   amount:input_money,
@@ -160,7 +168,7 @@
             	   if(result.code == 0){
             		    jalert.show('提现成功');
             		    location.href="./toAccountBalancePage?auth="+auth;
-            	   }else if(result.code == 2 || result.code == 3){
+            	   }else if(result.code == 2 || result.code == 3 || result.code == 5){
             		   jalert.show(result.msg);
             	   }else{
             		   jalert.show('提现失败');
@@ -169,7 +177,7 @@
         });
 
         $("#all_withdraw").on("click",function(){
-               if(all_money*100 != 0){
+               if(all_money*100 > 0){
                   $("#input_money").val(all_money);
                }else{
             	   jalert.show('没有可用余额');

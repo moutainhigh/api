@@ -1,7 +1,6 @@
 package com.zhsj.api.service;
 
 import com.alibaba.fastjson.JSON;
-import com.sun.org.apache.xpath.internal.operations.*;
 import com.zhsj.api.bean.LoginUser;
 import com.alibaba.fastjson.JSONObject;
 import com.zhsj.api.bean.OrderBean;
@@ -19,15 +18,12 @@ import com.zhsj.api.util.HttpClient;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.SSLUtil;
 import com.zhsj.api.util.StoreUtils;
-import com.zhsj.api.util.WXHttpUtils;
-import com.zhsj.api.util.WebUtils;
 import com.zhsj.api.util.XMLBeanUtils;
 import com.zhsj.api.util.login.LoginUserUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -36,7 +32,6 @@ import java.lang.String;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -315,6 +310,10 @@ public class WXService {
     	logger.info("#WXService.transfers #amount = {},ip = {},relaname={}",amount,ip,realname);
     	StoreBean storeBean = LoginUserUtil.getStore();
     	LoginUser loginUser = LoginUserUtil.getLoginUser();
+    	List<Integer> roleId = tbStoreAccountBindRoleDao.getRoleIdByAccountId(loginUser.getId());
+    	if(!roleId.contains(MtConfig.getProperty("STORE_MANAGER_ROLE", ""))){//如果不包含5
+    		return CommonResult.build(5, "没有权限提现");
+    	}
     	String storeNo = storeBean.getStoreNo();
     	String url = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
     	Transfers transfers = new Transfers();
@@ -323,12 +322,10 @@ public class WXService {
     	transfers.setNonce_str(UUID.randomUUID().toString().replaceAll("-", ""));
     	String orderNo = StoreUtils.getOrderNO(storeNo);
     	transfers.setPartner_trade_no(orderNo);
-    	transfers.setSpbill_create_ip(ip);
-//    	transfers.setSpbill_create_ip("114.215.223.220");
+//    	transfers.setSpbill_create_ip(ip);
+    	transfers.setSpbill_create_ip("114.215.223.220");
     	try {
 			transfers.setRe_user_name(URLEncoder.encode(realname, "UTF-8"));
-//			transfers.setDesc(URLEncoder.encode(transfers.getDesc(),"UTF-8"));
-//			transfers.setDesc(new String(transfers.getDesc().getBytes("UTF-8"),"UTF-8"));
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -338,7 +335,7 @@ public class WXService {
     	storeBalanceDetailBean.setPrice(new BigDecimal(amount));
     	storeBalanceDetailBean.setPartnerTradeNo(orderNo);
     	storeBalanceDetailBean.setDescription("提现");
-    	storeBalanceDetailBean.setType(1);
+    	storeBalanceDetailBean.setType(2);
     	String result = "";
     	double price = tbStoreDao.getPriceByStoreNo(storeNo);
 		try {

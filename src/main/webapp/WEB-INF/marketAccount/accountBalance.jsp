@@ -83,16 +83,16 @@
         .item_detail .money{
             position: absolute;
             right:0;
-            top:17%;
+            top:35%;
             color: #fc324a;
         }
         .content p:first-child{
-            padding-bottom:.25rem;
-            font-weight:600;
+            padding-bottom: .25rem;
+            font-weight: 600;
             color: #777;
         }
         .content p:last-child{
-            font-size:.7rem;
+            font-size: .7rem;
             color: #999;
         }
         .header_fixed{
@@ -101,14 +101,41 @@
 			 left: 0;
 			 width: 100%;
 			 z-index: 10000;
-			 box-shadow: 0 1px 15px #cdc1c1;
+			 box-shadow: 0 1px 5px #cdc1c1;
         }
         .header_fixed > .balance_detail{
              background:#EEE;
         }
         .money_list{
-            margin-top:13.4rem;
+            margin-top:14.5rem;
         }
+        
+        /*选项卡*/
+        .on{
+/*             border-bottom:2px solid #ccc; */
+            background:#fff;
+        }
+        .balance_detail div{
+            font-size:0.7rem;
+        }
+        #money-detail1, money-detail2{
+            display: none;
+        }
+        input{
+            border:0;
+            width:50%;
+            padding:1rem;
+            background:#f0f0f0;
+            line-height:0.4rem;
+            text-align: center;
+            font-size:0.8rem;
+        }
+
+        /*解决input变圆的问题*/
+        input, textarea {
+           -webkit-appearance: none;
+           -webkit-border-radius: 0;
+       }
     </style>
 </head>
 <body>
@@ -129,114 +156,22 @@
 	                    <span id="withdraw">提现至微信钱包</span>
 	                </div>
 	          </section>
-	          <section class="balance_detail">
-	                <div class="title">
-	                         <span>余额明细</span>
-	                </div>
+	          <section class="balance_detail" id="balance_tbn">
+	                <input type="button" value="余额" class="on" /><input type="button" value="提现" />
 	          </section>
           </div>
-          <section class="balance_detail money_list">
-                <div class="itemList" id="itemList">
-<!--                      <div class="item"> -->
-<!--                             <div class="item_detail"> -->
-<!--                                   <div class="content"> -->
-<!--                                          <p>返现</p> -->
-<!--                                          <p>2017-02-27 16:13:13</p> -->
-<!--                                   </div> -->
-<!--                                   <div class="money"> -->
-<!--                                       <span>+10000.00</span>元 -->
-<!--                                   </div> -->
-<!--                             </div> -->
-<!--                      </div> -->
-<!--                     <div class="item"> -->
-<!--                         <div class="item_detail"> -->
-<!--                             <div class="content"> -->
-<!--                                 <p>返现</p> -->
-<!--                                 <p>2017-02-27 16:13:13</p> -->
-<!--                             </div> -->
-<!--                             <div class="money"> -->
-<!--                                 <span>+10000.00</span>元 -->
-<!--                             </div> -->
-<!--                         </div> -->
-<!--                     </div> -->
-<!--                     <div class="item"> -->
-<!--                         <div class="item_detail"> -->
-<!--                             <div class="content"> -->
-<!--                                 <p>提现</p> -->
-<!--                                 <p>2017-02-27 16:13:13</p> -->
-<!--                             </div> -->
-<!--                             <div class="money"> -->
-<!--                                 <span>+10000.00</span>元 -->
-<!--                             </div> -->
-<!--                         </div> -->
-<!--                     </div> -->
-<!--                     <div class="item"> -->
-<!--                         <div class="item_detail"> -->
-<!--                             <div class="content"> -->
-<!--                                 <p>提现</p> -->
-<!--                                 <p>2017-02-27 16:13:13</p> -->
-<!--                             </div> -->
-<!--                             <div class="money"> -->
-<!--                                 <span>+10000.00</span>元 -->
-<!--                             </div> -->
-<!--                         </div> -->
-<!--                     </div> -->
-<!--                     <div class="item"> -->
-<!--                         <div class="item_detail"> -->
-<!--                             <div class="content"> -->
-<!--                                 <p>提现</p> -->
-<!--                                 <p>2017-02-27 16:13:13</p> -->
-<!--                             </div> -->
-<!--                             <div class="money"> -->
-<!--                                 <span>+10000.00</span>元 -->
-<!--                             </div> -->
-<!--                         </div> -->
-<!--                     </div> -->
-<!--                     <div class="item"> -->
-<!--                         <div class="item_detail"> -->
-<!--                             <div class="content"> -->
-<!--                                 <p>提现</p> -->
-<!--                                 <p>2017-02-27 16:13:13</p> -->
-<!--                             </div> -->
-<!--                             <div class="money"> -->
-<!--                                 <span>+10000.00</span>元 -->
-<!--                             </div> -->
-<!--                         </div> -->
-<!--                     </div> -->
-<!--                     <div class="item"> -->
-<!--                         <div class="item_detail"> -->
-<!--                             <div class="content"> -->
-<!--                                 <p>提现</p> -->
-<!--                                 <p>2017-02-27 16:13:13</p> -->
-<!--                             </div> -->
-<!--                             <div class="money"> -->
-<!--                                 <span>+10000.00</span>元 -->
-<!--                             </div> -->
-<!--                         </div> -->
-<!--                     </div> -->
-<!--                     <div class="item"> -->
-<!--                         <div class="item_detail"> -->
-<!--                             <div class="content"> -->
-<!--                                 <p>提现</p> -->
-<!--                                 <p>2017-02-27 16:13:13</p> -->
-<!--                             </div> -->
-<!--                             <div class="money"> -->
-<!--                                 <span>+10000.00</span>元 -->
-<!--                             </div> -->
-<!--                         </div> -->
-<!--                     </div> -->
-<!--                     <div class="item"> -->
-<!--                         <div class="item_detail"> -->
-<!--                             <div class="content"> -->
-<!--                                 <p>提现</p> -->
-<!--                                 <p>2017-02-27 16:13:13</p> -->
-<!--                             </div> -->
-<!--                             <div class="money"> -->
-<!--                                 <span>+10000.00</span>元 -->
-<!--                             </div> -->
-<!--                         </div> -->
-<!--                     </div> -->
-                </div>
+          <section class="balance_detail money_list" id="balance_detail">
+                <!--余额详细内容-->
+                <h3 class="itemList" id="money-detail1" style="display: block;">
+                    
+                </h3>
+              <!--余额详细内容end-->
+              <!--提现详细内容-->
+                <h3 class="itemList" id="money-detail2" style="display: none;"   >
+
+                </h3>
+              <!--提现详细内容end-->
+                     
 
           </section>
 
@@ -247,25 +182,65 @@
     $(function(){
     	var auth = $("#auth").val();
         $("#withdraw").on("click",function(){
-//             jalert.show('提现至微信钱包');
              location.href="./toWithDrawWxWallet?auth="+auth;
         });
+//         var oBox=document.getElementById("balance_tbn");
+//         var aBtn=oBox.getElementsByTagName("input");
+//         var oD = document.getElementById("balance_detail");
+//         var aDiv=oD.getElementsByTagName("h3");
+//         for(var i=0;i<aBtn.length;i++){
+//             aBtn[i].index=i;
+//             aBtn[i].onclick=function(){
+//                 for(var i=0;i<aBtn.length;i++){
+//                     aBtn[i].className='';
+//                     aDiv[i].style.display='none';
+//                 }
+//                 this.className='on';
+//                 aDiv[this.index].style.display='block';
+//                 if(i == 0){
+//                 	if(page_income == 1){
+//                 		load(page_income,type_income);
+//                 	}
+//                 }else if(i == 1){
+//                 	if(page_pay == 1){
+//                 		load(page_pay,type_pay);
+//                 	}
+//                 }
+//             };
+//         }
+         var inputs = $("#balance_tbn").find("input");
+         inputs.on("click",function(){
+        	 $(this).siblings("input").removeClass("on");
+        	 var index = inputs.index($(this));
+        	 $($("h3")[index]).show().siblings().hide();
+        	 $(this).addClass("on");
+        	 if(index == 0){
+        		 if(page_income == 1){
+             		load(page_income,type_income);
+             	}
+        	 }else{
+        		 if(page_pay == 1){
+             		load(page_pay,type_pay);
+             	}
+        	 }
+         });
         
-//         $.post("./getAccountBalance",{
-//         	auth:auth
-//         },function(result){
-//         	console.log(result);
-//         	if(result.code == 0){
-//         		$("#balance").text(result.data);
-//         	}else{
-//         		jalert.show('error');
-//         	}
-//         });
-        var page = 1,pageSize = 10,isUseData = true;
-        load(page);
-        function load(page){
+        //page_income余额默认页
+        //page_pay 提现默认页
+        //type_income 余额类型1
+        //type_pay 提现类型2
+        //isUseData_income 默认可以加载余额
+        //isUseData_pay 默认可以加载提现
+        var page_income = 1,page_pay = 1,
+        type_income = 1,type_pay = 2,
+        pageSize = 10,isUseData_income = true,
+        isUseData_pay = true;
+        
+        load(page_income,type_income);//默认type=1收入 type=2支出
+        function load(page,type){
         	$.post("./getListByStoreNo",{
         		auth:auth,
+        		type:type,
         		page:page,
         		pageSize:pageSize
         	},function(result){
@@ -275,19 +250,11 @@
         			    len = items.length;
         			var s = "";
         			for(var i =0;i<len;i++){
-        				var status = "";
         				if(items[i].type == 1){
-            				items[i].type = '提现';
+            				items[i].type = '收入';
             			}else if(items[i].type == 2){
-            				items[i].type = '提现失败返现';
+            				items[i].type = '提现';
             			}
-        				if(items[i].paymentStatus == 0){
-        					status = "处理中";
-        				}else if(items[i].paymentStatus == 1){
-        					status = "成功";
-        				}else{
-        					status = "失败";
-        				}
         				s += '<div class="item">'
                         +'<div class="item_detail">'
                         +'<div class="content">'
@@ -295,36 +262,51 @@
                         +'  <p>'+new Date(items[i].ctime*1000).Format("yyyy-MM-dd hh:mm")+'</p>'
                         +'</div>'
                         +'<div class="money">'
-                        +'    <p style="color: #777;">'+items[i].price+'元</p>';
-                        if(items[i].paymentStatus == 1){
-                        	s +='    <p style="color:green;margin-top:.25rem;font-size:.8rem;">'+status+'</p>';
-                        }else if(items[i].paymentStatus == 0){
-                        	s +='    <p style="color:#CCC;margin-top:.25rem;font-size:.8rem;">'+status+'</p>';
-                        }else{
-                        	s +='    <p style="margin-top:.25rem;font-size:.8rem;">'+status+'</p>';
-                        }
-                        s+='</div>'
+                        +'    <p>'+items[i].price+'元</p>'
+                        +'</div>'
                         +'</div>'
                         +'</div>';
         			}
-        			if(len < pageSize){
-        				isUseData = false;
-        			}
         			
-        			$("#itemList").append(s);
+	        			
+	        			if(type == type_income){
+	        				if(len < pageSize){
+	        					isUseData_income = false;
+		        			}
+	        				page_income++;
+	        				$("#money-detail1").append(s);
+        				}else{
+        					if(len < pageSize){
+        					    isUseData_pay = false;
+        					}
+        					page_pay++;
+        					$("#money-detail2").append(s);
+        				}
         		}else{
         			jalert.show('error');
         		}
         	});
         }
         
-        
         window.onscroll = pageQuery;
         function pageQuery(){
                 if(document.body.scrollTop >= document.body.scrollHeight - window.innerHeight-30){
-                	if(isUseData){
-                       load(++page);
+                	var inputs = $("#balance_tbn").find("input");
+                	for(var i = 0,len = inputs.length ;i < len; i++){
+                		var cla = $(inputs[i]).attr("class");
+                		if(cla.indexOf("on") != -1){
+                			if(i == 0){
+                				if(isUseData_income){
+                                    load(page_income,type_income);
+                             	}
+                			}else{
+                				if(isUseData_pay){
+                                    load(page_pay,type_pay);
+                             	}
+                			}
+                		}
                 	}
+                	
                 }
         }
     });

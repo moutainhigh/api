@@ -85,6 +85,9 @@
           <if test="isPrice == 1">
           and price = #{price} 
           </if>
+          <if test="type == 1">  
+          and price > 0 and price >= #{amount}
+          </if>
        </where>
     </update>
 </mapper>

@@ -25,7 +25,8 @@
       select <include refid="FIELD"></include>
       from <include refid="TABLE"></include>
       <where>
-        store_no = #{storeNo} order by ctime desc limit #{start},#{end}
+        store_no = #{storeNo} and type = #{type} 
+        order by ctime desc limit #{start},#{end}
       </where>
    </select>
    
