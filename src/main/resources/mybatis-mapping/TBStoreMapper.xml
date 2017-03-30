@@ -94,7 +94,7 @@
     <select id="getStoreByLimitId" resultType="storeBean">
     	select <include refid="SELECT_FIELDS"/>
         FROM tb_store
-        WHERE id >= #{minId} and id &lt #{maxId} and status = 1 and valid = 1 
+        WHERE id >= #{minId} and id &lt; #{maxId} and status = 1 and valid = 1 
     </select>
     
      <select id="getMaxMin" resultType="minMaxBean">
