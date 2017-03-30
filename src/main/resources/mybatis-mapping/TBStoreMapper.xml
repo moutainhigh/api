@@ -90,4 +90,17 @@
           </if>
        </where>
     </update>
+    
+    <select id="getStoreByLimitId" resultType="storeBean">
+    	select <include refid="SELECT_FIELDS"/>
+        FROM tb_store
+        WHERE id >= #{minId} and id &lt; #{maxId} and status = 1 and valid = 1 
+    </select>
+    
+     <select id="getMaxMin" resultType="minMaxBean">
+    	select min(id) min,max(id) max
+        FROM tb_store
+        WHERE status = 1 and valid = 1 
+    </select>
+    
 </mapper>
