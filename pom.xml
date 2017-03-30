@@ -73,7 +73,11 @@
       <version>${spring.version}</version>
       <scope>test</scope>
     </dependency>
-
+	<dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-context-support</artifactId>
+	    <version>${spring.version}</version>
+	</dependency>
     <!-- mybatis 包 -->
     <dependency>
       <groupId>org.mybatis</groupId>
@@ -225,7 +229,6 @@
 	    <artifactId>dom4j</artifactId>
 	    <version>1.6.1</version>
 	</dependency>
-    
   </dependencies>
 
 

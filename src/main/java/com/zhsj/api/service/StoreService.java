@@ -1,7 +1,12 @@
 package com.zhsj.api.service;
 
+import java.util.List;
+
+import com.zhsj.api.bean.MinMaxBean;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.dao.TbStoreDao;
+
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,5 +24,13 @@ public class StoreService {
 
     public StoreBean getStoreByNO(String storeNo){
         return tbStoreDao.getStoreByNo(storeNo);
+    }
+    
+    public List<StoreBean> getStoreByLimitId(int minId,int maxId){
+    	return tbStoreDao.getStoreByLimitId(minId, maxId);
+    }
+
+    public MinMaxBean getMaxMin(){
+    	return tbStoreDao.getMaxMin();
     }
 }

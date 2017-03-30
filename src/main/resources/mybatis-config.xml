@@ -30,5 +30,6 @@
         <typeAlias type="com.zhsj.api.bean.DiscountRuleBean" alias="discountRuleBean"/>
         <typeAlias type="com.zhsj.api.bean.result.CountDiscount" alias="countDiscount"/>
         <typeAlias type="com.zhsj.api.bean.StoreBalanceDetailBean" alias="storeBalanceDetailBean"/>
+        <typeAlias type="com.zhsj.api.bean.MinMaxBean" alias="minMaxBean"/>
     </typeAliases>
 </configuration>
