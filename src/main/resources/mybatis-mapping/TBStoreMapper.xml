@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhsj.api.dao.TbStoreDao">
     <sql id="SELECT_FIELDS">
-        id,parent_no,store_no,name,city_code,address,phone,shop_logo,intro,status,
+        id,parent_no,store_no,name,city_code,address,phone,gitPicURL(shop_logo) as shop_logo,intro,status,
         latitude,longitude,valid,utime,ctime,org_ids,sale_id,app_id,price
     </sql>
 

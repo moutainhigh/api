@@ -311,7 +311,8 @@ public class WXService {
     	StoreBean storeBean = LoginUserUtil.getStore();
     	LoginUser loginUser = LoginUserUtil.getLoginUser();
     	List<Integer> roleId = tbStoreAccountBindRoleDao.getRoleIdByAccountId(loginUser.getId());
-    	if(!roleId.contains(MtConfig.getProperty("STORE_MANAGER_ROLE", ""))){//如果不包含5
+    	String rid = MtConfig.getProperty("STORE_MANAGER_ROLE", "0");
+    	if(!roleId.contains(Integer.valueOf(rid))){//如果不包含5
     		return CommonResult.build(5, "没有权限提现");
     	}
     	String storeNo = storeBean.getStoreNo();
