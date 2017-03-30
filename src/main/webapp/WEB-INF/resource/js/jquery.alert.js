@@ -32,7 +32,7 @@
               }
              return this;
          },
-         show:function(msg){
+         show:function(msg,delay){
              this.init().content.text(msg);
              var top = ($(window).height()-this.bg.height())/2-20,
                  left = ($(window).width()-this.bg.width())/2;
@@ -57,7 +57,7 @@
                      'left':Math.random()*1000
                  })*/
                  clearTimeout(time);
-             },1000)
+             },(delay || 3000));
          }
      };
      window.jalert = jQ_alert;

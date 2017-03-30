@@ -268,16 +268,14 @@
                  auth:auth,
                  id:id
               },function(result){
+            	  $(".unbind_tips").fadeOut("slow");
                   if(result.code == 0){
                      jalert.show(result.msg);
-                     $(".unbind_tips").fadeOut("slow");
                      location.href="./toManageStaffPage?auth="+auth;
                   }else{
-                     jalert.show(result.msg);
+                     jalert.show(result.msg,5000);
                   }
-                 
               });
-              
           });
     });
 

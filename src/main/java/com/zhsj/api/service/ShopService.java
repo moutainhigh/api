@@ -541,6 +541,10 @@ public class ShopService {
     public Object unbindStoreAccount(long id){
     	logger.info("#ShopService.unbindStoreAccount #id = {}",id);
     	try{
+    		LoginUser loginUser = LoginUserUtil.getLoginUser();
+    		if(loginUser.getId() == id){
+    			return CommonResult.build(3, "解绑失败,您不能解绑自己!");
+    		}
     	    tbStoreAccountDao.unbindStoreAccount(id);
     	    return CommonResult.success("解绑成功");
     	}catch(Exception e){
@@ -576,11 +580,11 @@ public class ShopService {
     		 return 0.00;
     	}
     }
-    public Object getListByStoreNoAndPage(int page,int pageSize){
-    	logger.info("#ShopService.getListByStoreNoAndPage page = {},pageSize={}",page,pageSize);
+    public Object getListByStoreNoAndPage(int type, int page,int pageSize){
+    	logger.info("#ShopService.getListByStoreNoAndPage type = {} ,page = {},pageSize={}", type, page, pageSize);
     	try{
     		 StoreBean storeBean = LoginUserUtil.getStore(); 
-    	     List<StoreBalanceDetailBean> list = tbStoreBalanceDetailsDao.getListByStoreNo(storeBean.getStoreNo(), (page-1)*pageSize, pageSize);
+    	     List<StoreBalanceDetailBean> list = tbStoreBalanceDetailsDao.getListByStoreNo(storeBean.getStoreNo(), type,(page-1)*pageSize, pageSize);
     	     return CommonResult.success("Success", list);
     	}catch(Exception e){
     		logger.error("#ShopService.getListByStoreNoAndPage page = {},pageSize = {}",page,pageSize);
@@ -603,7 +607,7 @@ public class ShopService {
 		 //插入数据
 		  StoreBalanceDetailBean asbd = new StoreBalanceDetailBean();
 		  asbd.setStoreNo(storeBalanceDetailBean.getStoreNo());
-		  asbd.setType(2);
+		  asbd.setType(3);
 		  asbd.setPrice(storeBalanceDetailBean.getPrice());
 		  asbd.setDescription("返回提现");
 		  asbd.setPaymentStatus(1);

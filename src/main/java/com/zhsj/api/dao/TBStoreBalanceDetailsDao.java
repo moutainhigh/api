@@ -14,7 +14,7 @@ public interface TBStoreBalanceDetailsDao {
 
 	int insert(@Param("bean")StoreBalanceDetailBean storeBalanceDetailBean);
 	
-	List<StoreBalanceDetailBean> getListByStoreNo(@Param("storeNo")String storeNo,
+	List<StoreBalanceDetailBean> getListByStoreNo(@Param("storeNo")String storeNo,@Param("type")int type,
 			@Param("start")int start,@Param("end")int end);
 	
 	int update(StoreBalanceDetailBean storeBalanceDetailBean);
