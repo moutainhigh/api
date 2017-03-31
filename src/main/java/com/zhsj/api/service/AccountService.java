@@ -1,13 +1,16 @@
 package com.zhsj.api.service;
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import com.zhsj.api.bean.AccountBean;
 import com.zhsj.api.bean.LoginUser;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.WeixinUserBean;
 import com.zhsj.api.dao.TBAccountDao;
 import com.zhsj.api.dao.TbOrderDao;
+import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.Md5;
 import com.zhsj.api.util.login.LoginUserUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +58,23 @@ public class AccountService {
 
     public AccountBean getByOpenId(String openId){
         return tbAccountDao.getByOpenId(openId);
+    }
+    
+    public Object logout(){
+    	logger.info("#AccountService.logout");
+    	try{
+    	LoginUser loginUser = LoginUserUtil.getLoginUser();
+    	int code  = tbAccountDao.updateOpenId(loginUser.getAccount(), 
+    			loginUser.getPassword(), "", "", "");
+    	if(code == 0){
+    		logger.info("#AccoutService.logout --------fail");
+    		return CommonResult.build(2, "logout error");
+    	}
+    	return CommonResult.success("Success");
+    	}catch(Exception e){
+    		logger.error("#AccountService.logout",e);
+    		return CommonResult.defaultError("error");
+    	}
     }
 }
 

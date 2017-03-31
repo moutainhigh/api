@@ -105,15 +105,27 @@ pageEncoding="UTF-8"%>
         
         //退出
         $("#logout").on("click",function(){
-        	jalert.show("退出登录");
+            $.post("./logout",{
+            	auth:auth
+            },function(result){
+            	if(result.code == 0){
+            		if (typeof WeixinJSBridge == "undefined"){
+                        window.close();
+                    }else{
+                       WeixinJSBridge.call('closeWindow');
+                    }
+            	}else{
+            		jalert.show(result.msg);
+            	}
+            });
         });
     });
 
     function load(){
-        $("#newInsert").on("touchend",function(){
+        $("#newInsert").on("click",function(){
             window.open("./newInsert?auth="+auth) ;
         });
-        $("#opendAcount").on("touchend",function(){
+        $("#opendAcount").on("click",function(){
             window.open("https://www.mszxyh.com/wapserver/outer/index.html?Page=login&ChannelId=mszx02279");
         });
 
