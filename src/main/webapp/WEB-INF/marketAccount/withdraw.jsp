@@ -75,6 +75,7 @@
         .warm_tips{
             margin-top:.9rem;
             padding-left:1rem;
+            padding-right:1rem;
         }
         .warm_tips .title{
             font-size: .8rem;
@@ -88,6 +89,7 @@
         }
         .warm_tips .content p{
             padding-bottom:.25rem;
+            line-height: 1.8;
         }
     </style>
 </head>
@@ -123,8 +125,8 @@
     <section class="warm_tips">
           <div class="title">温馨提示</div>
           <div class="content">
-               <p>1、本次最大金额可提现10000.00元</p>
-               <p>2、当天支持多次提现</p>
+               <p>1、1.00元 ≦ 单笔提现金额 &lt; 5000.00元，每天最多提现3次；</p>
+               <p>2、必须是微信实名认证用户，提现时需填写真实姓名，提现到微信钱包；</p>
           </div>
     </section>
 </div>
