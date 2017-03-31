@@ -116,6 +116,14 @@
             jalert.show("不能有空值");
             return;
         }
+        if(/^[a-zA-Z]*$/.test(storeName)){
+        	jalert.show('店名不能是纯字母');
+        	return false;
+        }
+        if(/^[0-9]*$/.test(storeName)){
+        	jalert.show("店名不能是纯数字");
+        	return false;
+        }
         var realLength = 0, len = storeName.length, charCode = -1;
         for (var i = 0; i < len; i++) {
             charCode = storeName.charCodeAt(i);
