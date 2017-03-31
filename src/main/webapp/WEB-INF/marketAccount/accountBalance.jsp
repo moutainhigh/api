@@ -106,9 +106,9 @@
         .header_fixed > .balance_detail{
              background:#EEE;
         }
-        .money_list{
-            margin-top:14.5rem;
-        }
+/*         .money_list{ */
+/*             margin-top:14.5rem; */
+/*         } */
         
         /*选项卡*/
         .on{
@@ -180,6 +180,8 @@
 </html>
 <script>
     $(function(){
+    	
+    	$(".money_list").css("margin-top",$(".header_fixed").height());
     	var auth = $("#auth").val();
         $("#withdraw").on("click",function(){
              location.href="./toWithDrawWxWallet?auth="+auth;

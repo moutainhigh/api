@@ -6,7 +6,6 @@ import com.zhsj.api.bean.MinMaxBean;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.dao.TbStoreDao;
 
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -382,6 +382,7 @@ public class WXService {
 						 }
 					 }else if(cr.getCode() == 1 || cr.getCode() == 2){
 						  shopService.updateAdd(storeBalanceDetailBean, amount, storeNo, price);
+						  tbStoreDao.updatePriceByStoreNo(amount, storeNo, price, 2, 2);
 						  return CommonResult.build(1, "提现失败");
 					 }
 				}else{
@@ -390,13 +391,11 @@ public class WXService {
 				}
 			}else{
 				shopService.updateAdd(storeBalanceDetailBean, amount, storeNo, price);
-				tbStoreDao.updatePriceByStoreNo(amount, storeNo, price, 2, 2);
 				return CommonResult.build(1, "提现失败");
 			}
 		} catch (Exception e) {
 			logger.error("#WXService.transfers #amount={},ip = {}",amount,ip,e);
 			shopService.updateAdd(storeBalanceDetailBean, amount, storeNo, price);
-			tbStoreDao.updatePriceByStoreNo(amount, storeNo, price, 2, 2);
 			return CommonResult.build(1, "提现失败");
 		}
 		return null;

@@ -164,7 +164,7 @@ pageEncoding="UTF-8"%>
     function initStore(){
         $.post("./getStoreInfo",{"auth":auth},function(obj){
             if(obj.code == 0){
-                $("#_storeImg").attr("img",obj.data.store.shopLogo);
+                $("#_storeImg").attr("src",obj.data.store.shopLogo);
                 $("#_storeName").text(obj.data.store.name);
                 $("#_userAccount").text(obj.data.loginUser.account);
             }

@@ -25,7 +25,7 @@
       select <include refid="FIELD"></include>
       from <include refid="TABLE"></include>
       <where>
-        store_no = #{storeNo} and type = #{type} 
+        store_no = #{storeNo} and type = #{type} and payment_status = 1
         order by ctime desc limit #{start},#{end}
       </where>
    </select>
