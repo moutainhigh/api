@@ -374,6 +374,7 @@ public class WXService {
 							 if(rightId == 0){
 								 logger.info("#WXService.transfers 提现成功！更新数据失败");
 							 }
+							 this.sendGetCashMsg(map.get("payment_no"));
 							 return  CommonResult.build(0, "提现成功");
 						 }else if("PROCESSING".equals(cr.getMsg())){
 							 logger.info("提现处理中");
@@ -438,6 +439,120 @@ public class WXService {
     	return null;
     }
 
+    
+    public void sendPayCashMsg(StoreBean storeBean,int count,double price){
+        logger.info("#WXService.sendPayCashMsg# storeNo={}",storeBean.getStoreNo());
+        try {
+            String payCashMsg = MtConfig.getProperty("PAY_CASH_MESSAGE", "");
+            if(StringUtils.isEmpty(payCashMsg)){
+            	 logger.info("#WXService.sendPayCashMsg# storeNo={} msg={}",storeBean.getStoreNo(),"没有模板消息");
+                 return;
+            }
+            
+            if(StringUtils.isEmpty(storeBean.getAppId())){
+            	 logger.info("#WXService.sendPayCashMsg# storeNo={} msg={}",storeBean.getStoreNo(),"没有绑定接收人");
+                 return;
+            }
+            
+            List<Long> accountIdList = tbStoreBindAccountDao.getAccountIdByStoreNo(storeBean.getStoreNo());
+            if(CollectionUtils.isEmpty(accountIdList)){
+                return;
+            }
+            String roleId = MtConfig.getProperty("STORE_MANAGER_ROLE", "");
+            List<Long> managerIdList = tbStoreAccountBindRoleDao.filterAccountIdByRole(Long.parseLong(roleId), accountIdList);
+            if(CollectionUtils.isEmpty(managerIdList)){
+            	 logger.info("#WXService.sendPayCashMsg# storeNo={} msg={}",storeBean.getStoreNo(),"没有绑定接收人");
+                 return;
+            }
+            List<String> openIdList = tbStoreAccountDao.getOpenIdByAccountId(managerIdList);
+            if(CollectionUtils.isEmpty(openIdList)){
+                return;
+            }
+            String openIds = "";
+            for(String openId:openIdList){
+                if(StringUtils.isEmpty(openId)){
+                    continue;
+                }
+                openIds += openId+",";
+            }
+            payCashMsg = payCashMsg.replace("_first", " \"value\": \"返现原因：平台优惠结算\"");
+            payCashMsg = payCashMsg.replace("_keyword1","\"value\": \" "+ price + "\"");
+            payCashMsg = payCashMsg.replace("_keyword2","\"value\": \""+count+"\"");
+            payCashMsg = payCashMsg.replace("_keyword3","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\"");
+            payCashMsg = payCashMsg.replace("_remark", " \"value\":\""+"请到公众号-商户后台-营销账户里查看详情"+"\"");
+            
+            String url = MtConfig.getProperty("OPEN_URL", "")+ "/sendMessage";
+          	 Map<String, String> parameters = new HashMap();
+          	 parameters.put("appId", storeBean.getAppId());
+          	 parameters.put("openIds", openIds);
+          	 parameters.put("message", payCashMsg);
+          	 parameters.put("url", "");
+          	 String result = HttpClient.sendGet(url, parameters);
+             logger.info("#WXService.sendPayCashMsg# result storeNo={},result={}",storeBean.getStoreNo(),result);
+        }catch (Exception e){
+            logger.error("#WXService.sendPayCashMsg# storeNo={}",storeBean.getStoreNo(),e);
+        }
+    }
+    
+    public void sendGetCashMsg(String paymentNo){
+        logger.info("#WXService.sendGetCashMsg# paymentNo={}",paymentNo);
+        try {
+            String getCashMsg = MtConfig.getProperty("GET_CASH_MESSAGE", "");
+            if(StringUtils.isEmpty(getCashMsg)){
+            	 logger.info("#WXService.getCashMsg# paymentNo={} msg={}",paymentNo,"没有模板消息");
+                 return;
+            }
+            StoreBalanceDetailBean bean = tbStoreBalanceDetailsDao.getByPaymentNo(paymentNo);
+            if(bean == null){
+            	return;
+            }
+            
+            StoreBean storeBean = tbStoreDao.getStoreByNo(bean.getStoreNo());
+            if(StringUtils.isEmpty(storeBean.getAppId())){
+            	 logger.info("#WXService.sendPayCashMsg# storeNo={} msg={}",storeBean.getStoreNo(),"没有绑定接收人");
+                 return;
+            }
+            
+            List<Long> accountIdList = tbStoreBindAccountDao.getAccountIdByStoreNo(storeBean.getStoreNo());
+            if(CollectionUtils.isEmpty(accountIdList)){
+                return;
+            }
+            String roleId = MtConfig.getProperty("STORE_MANAGER_ROLE", "");
+            List<Long> managerIdList = tbStoreAccountBindRoleDao.filterAccountIdByRole(Long.parseLong(roleId), accountIdList);
+            if(CollectionUtils.isEmpty(managerIdList)){
+            	 logger.info("#WXService.sendPayCashMsg# storeNo={} msg={}",storeBean.getStoreNo(),"没有绑定接收人");
+                 return;
+            }
+            List<String> openIdList = tbStoreAccountDao.getOpenIdByAccountId(managerIdList);
+            if(CollectionUtils.isEmpty(openIdList)){
+                return;
+            }
+            String openIds = "";
+            for(String openId:openIdList){
+                if(StringUtils.isEmpty(openId)){
+                    continue;
+                }
+                openIds += openId+",";
+            }
+            getCashMsg = getCashMsg.replace("_first", " \"value\": \"余额提现\"");
+            getCashMsg = getCashMsg.replace("money","\"value\": \" "+ String.valueOf(bean.getPrice()) + "\"");
+            getCashMsg = getCashMsg.replace("timet","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\\n提现方式：微信钱包"+"\"");
+            getCashMsg = getCashMsg.replace("_remark","\"value\": \""+"请到微信钱包查询到账资金，如有疑问请在公众号里反馈！"+"\"");
+            
+            String url = MtConfig.getProperty("OPEN_URL", "")+ "/sendMessage";
+          	 Map<String, String> parameters = new HashMap();
+          	 parameters.put("appId", storeBean.getAppId());
+          	 parameters.put("openIds", openIds);
+          	 parameters.put("message", getCashMsg);
+          	 parameters.put("url", "");
+          	 String result = HttpClient.sendGet(url, parameters);
+             logger.info("#WXService.sendPayCashMsg# result paymentNo={},result={}",paymentNo,result);
+        }catch (Exception e){
+            logger.error("#WXService.sendPayCashMsg# paymentNo={}",paymentNo,e);
+        }
+    }
+
+    
     public static void main(String[] args) throws Exception {
     	String openId="o5pmes_cN1AMrFptmwpDaNj6DXkI";
        String token = "_hYxvWw5Oa-ECafyOXmJvTfFMLp4vrBZXS79KQ0KgRohVUsoVmGTElcjeL0nxKLVUw_PFu_iKJW37EjEpU0Xu2OwV2c5rK342nAE2bntoW6CWj1loRAQR_ALOQhifQNIDXLfCJAHBP";

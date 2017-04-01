@@ -225,4 +225,17 @@
             count(user_id) >= 9
           </if>
      </select>
+     
+      <select id="countOrgDiscountPrice" resultType="java.lang.Integer">
+     	SELECT count(org_discount_price) FROM tb_order 
+     	WHERE store_No = #{storeNo} 
+     	and ctime BETWEEN #{startTime} AND #{endTime} and status=1 and org_discount_price > 0
+     </select>
+     
+     <select id="getOrgDiscountPrice" resultType="java.lang.Double">
+     	SELECT SUM(org_discount_price) FROM tb_order 
+     	WHERE store_No = #{storeNo} 
+     	and ctime BETWEEN #{startTime} AND #{endTime} and status=1
+     </select>
+     
 </mapper>

@@ -32,4 +32,8 @@ public class StoreService {
     public MinMaxBean getMaxMin(){
     	return tbStoreDao.getMaxMin();
     }
+    
+    public void updatePrice(double price,String storeNo){
+    	 tbStoreDao.updatePrice(price, storeNo);
+    }
 }

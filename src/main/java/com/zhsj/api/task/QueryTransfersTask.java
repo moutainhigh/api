@@ -60,6 +60,7 @@ public class QueryTransfersTask implements InitializingBean{
 									 if(rightId == 0){
 										 logger.info("#WXService.transfers 提现成功！更新数据失败");
 									 }
+									 wxService.sendGetCashMsg(map.get("payment_no"));
 								}
 							}else if(cr.getCode() == 2){//错误
 								StoreBean storeBean = tbStoreDao.getStoreByNo(sbdb.getStoreNo());

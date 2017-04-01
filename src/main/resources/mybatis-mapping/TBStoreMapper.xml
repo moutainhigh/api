@@ -103,4 +103,10 @@
         WHERE status = 1 and valid = 1 
     </select>
     
+    <select id="updatePrice">
+    	update tb_store
+    	set price = price + #{price}
+    	where store_no = #{storeNo}
+    </select>
+    
 </mapper>

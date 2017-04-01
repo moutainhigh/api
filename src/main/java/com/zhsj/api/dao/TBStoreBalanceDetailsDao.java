@@ -22,4 +22,8 @@ public interface TBStoreBalanceDetailsDao {
 	List<String> getlistByStatus();
 	
 	StoreBalanceDetailBean getByPartnerTradeNo(@Param("partnerTradeNo")String partnerTradeNo);
+	
+	StoreBalanceDetailBean getByPaymentNo(@Param("paymentNo")String partnerTradeNo);
+	
+	
 }

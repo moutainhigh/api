@@ -34,6 +34,18 @@ public class OrderService {
     public List<OrderBean> getMSAliListByCtime(long id,int time ,int pageSize){
         return  bmOrderDao.getMSAliListByCtime(id,time,pageSize);
     }
+    
+    public double getOrgDiscountPrice(String storeNo,int startTime,int endTime){
+    	Double totalPrice = bmOrderDao.getOrgDiscountPrice(storeNo, startTime, endTime);
+        return  totalPrice == null ? 0:totalPrice;
+    }
+    
+    public int countOrgDiscountPrice(String storeNo,int startTime,int endTime){
+    	Integer num = bmOrderDao.countOrgDiscountPrice(storeNo, startTime, endTime);
+        return  num == null ? 0:num;
+    }
+    
+    
 
 }
 
