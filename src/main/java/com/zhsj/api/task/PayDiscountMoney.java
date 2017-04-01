@@ -35,8 +35,8 @@ public class PayDiscountMoney {
     @Autowired
     WXService wxService;
     
-//    @Scheduled(cron="0 0 8 * * ?")   //每5秒执行一次  
-    @Scheduled(cron="0 0 17 * * ?")   //每5秒执行一次  
+    @Scheduled(cron="0 0 8 * * ?")   //每5秒执行一次  
+//    @Scheduled(cron="0 0 17 * * ?")   //每5秒执行一次  
     public void execute() {  
     	logger.info("#PayDiscountMoney.execute#======");
     	try{
