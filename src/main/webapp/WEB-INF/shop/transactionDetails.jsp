@@ -109,6 +109,8 @@ pageEncoding="UTF-8"%>
         .wwt-find-con ul li span{
             border-radius: 4px;
             padding: 1px 5px;
+            width: 95%;
+            display: block;
         }
         .select-store{
             text-align: center;
@@ -206,10 +208,6 @@ pageEncoding="UTF-8"%>
     </style>
     <script>
         $(function(){
-            //jalert.show($(window).width());
-            //jalert.show($(window).innerWidth());
-            //jalert.show($(window).clientWidth)
-            //jalert.show($("body").css("font-size"));
             //动态的判断nav显示.
             $(".find-content").css({
                 "margin-top":$("nav").height()
@@ -237,7 +235,6 @@ pageEncoding="UTF-8"%>
             //slideDown slideUp
              $("#showSelect").on("touchend",function(){
 
-                 //console.log($(".wwt-find-tj").css("display") );
                  displayResult($(this));
              });
 
@@ -280,7 +277,6 @@ pageEncoding="UTF-8"%>
             $("#payType").find("li").on("click",function(){
                 $("#payType").find("li").children('span').removeClass('con-select').addClass('con-noselect').removeClass('selectWeChat').removeClass('selectAli');
                 var index = $("#payType").find("li").index($(this));
-                //jalert.show(index);
                 if(index == 0){//全部类型
                     $(this).children('span').removeClass('con-noselect').addClass('con-select');
                 }else if(index == 1){//微信
@@ -288,8 +284,6 @@ pageEncoding="UTF-8"%>
                 }else{//支付宝
                     $(this).children('span').removeClass('con-noselect').addClass('selectAli');
                 }
-                //$(this).children('span').removeClass('con-noselect').addClass('con-select');
-                //jalert.show($(this).text());
             });
             //交易时间
             $("#transactionDate").find(".true-date").find("li").on("click",function(){
@@ -297,13 +291,11 @@ pageEncoding="UTF-8"%>
                 $(this).children('span').removeClass('con-noselect').addClass('con-select');
                 $('#endDate').removeClass("inputSelect").val("").parent("span").removeClass("inputSpanSelect");
                 $("#startDate").removeClass("inputSelect").val("").parent("span").removeClass("inputSpanSelect");
-                jalert.show($(this).text());
             })
             //交易状态
             $("#status").find("li").on("click",function(){
                 $("#status").find("li").children('span').removeClass('con-select').addClass('con-noselect');
                 $(this).children('span').removeClass('con-noselect').addClass('con-select');
-                jalert.show($(this).text());
             })
             //重置
             $("#reset").on("click",function(){
@@ -316,7 +308,6 @@ pageEncoding="UTF-8"%>
                 $("#status").find("li:first-child").children('span').removeClass('con-noselect').addClass('con-select');
                 $('#endDate').removeClass("inputSelect").val("").parent("span").removeClass("inputSpanSelect");
                 $("#startDate").removeClass("inputSelect").val("").parent("span").removeClass("inputSpanSelect");
-                jalert.show('重置了')
             });
             //查询
             $("#search").on("click",function(){
@@ -468,10 +459,10 @@ pageEncoding="UTF-8"%>
                                        <span class="con-select">全部类型</span>
                                    </li>
                                    <li>
-                                       <span class="con-noselect">&nbsp;&nbsp;&nbsp;&nbsp;微信&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                       <span class="con-noselect">微信</span>
                                    </li>
                                    <li>
-                                       <span class="con-noselect">&nbsp;&nbsp;支付宝&nbsp;&nbsp;</span>
+                                       <span class="con-noselect">支付宝</span>
                                    </li>
                                </ul>
                            </div>
@@ -481,26 +472,26 @@ pageEncoding="UTF-8"%>
                            <div class="wwt-find-con">
                                <ul class="clearfix true-date">
                                    <li>
-                                       <span class="con-select">&nbsp;&nbsp;&nbsp;&nbsp;今日&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                       <span class="con-select">今日</span>
                                    </li>
                                    <li>
-                                       <span class="con-noselect">&nbsp;&nbsp;&nbsp;&nbsp;昨日&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                       <span class="con-noselect">昨日</span>
                                    </li>
                                    <li>
-                                       <span class="con-noselect">&nbsp;&nbsp;&nbsp;&nbsp;本周&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                       <span class="con-noselect">本周</span>
                                    </li>
                                </ul>
                            </div>
                            <div class="wwt-find-con con-jj">
                                <ul class="clearfix true-date">
                                    <li>
-                                       <span class="con-noselect">&nbsp;&nbsp;&nbsp;&nbsp;上周&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                       <span class="con-noselect">上周</span>
                                    </li>
                                    <li>
-                                       <span class="con-noselect">&nbsp;&nbsp;&nbsp;&nbsp;本月&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                       <span class="con-noselect">本月</span>
                                    </li>
                                    <li>
-                                       <span class="con-noselect">&nbsp;&nbsp;&nbsp;&nbsp;上月&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                       <span class="con-noselect">上月</span>
                                    </li>
                                </ul>
                            </div>
@@ -529,10 +520,10 @@ pageEncoding="UTF-8"%>
                                        <span class="con-select">全部状态</span>
                                    </li>
                                    <li>
-                                       <span class="con-noselect">&nbsp;&nbsp;已收款&nbsp;&nbsp;</span>
+                                       <span class="con-noselect">已收款</span>
                                    </li>
                                    <li>
-                                       <span class="con-noselect">&nbsp;&nbsp;已退款&nbsp;&nbsp;</span>
+                                       <span class="con-noselect">已退款</span>
                                    </li>
                                </ul>
                            </div>
