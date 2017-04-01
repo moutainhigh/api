@@ -68,11 +68,7 @@ pageEncoding="UTF-8"%>
         $(".f1").on("touchend", function () {
             $.post("./logout",{"auth":auth},function(obj){
                 if(obj.code == 0){
-                    if (typeof WeixinJSBridge == "undefined"){
-                        window.close();
-                    }else{
-                       WeixinJSBridge.call('closeWindow');
-                    }
+                	 location.href = "./index?appId=wx79bd044fd98536f4";
                 }
             });
         });
