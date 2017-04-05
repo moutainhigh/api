@@ -24,6 +24,15 @@
           .js_time span{
              padding:2px 5px;
           }
+          
+          input[type=tel]{
+		   -webkit-appearance: none;
+		    width: 100%;
+		    padding: 0;
+		    border: 0;
+		    background-color: transparent;
+		    font-size:100%;
+		}
     </style>
 </head>
 <body>
@@ -99,7 +108,7 @@
                 </p>
                  <p >
                      <label class="span-label" for="storePhone">开户手机</label>
-                     <span class="span-result"><input type="text" id="storePhone" placeholder="11位正确手机号"></span>
+                     <span class="span-result"><input type="tel" id="storePhone" placeholder="11位正确手机号"></span>
                  </p>
                 <p>
                     <label class="span-label" for="sa_bank_name">开户银行</label>
@@ -164,17 +173,26 @@
             	jselect.operateObj.curObj = $(this);
             	jselect.init();
             	jselect.add({
+    				  msg:'0.3',
+    				  id:'0.3',
+    			  }).add({
+    				  msg:'0.38',
+    				  id:'0.38',
+    			  }).add({
     				  msg:'0.4',
     				  id:'0.4',
+    			  }).add({
+    				  msg:'0.45',
+    				  id:'0.45',
     			  }).add({
     				  msg:'0.5',
     				  id:'0.5',
     			  }).add({
+    				  msg:'0.55',
+    				  id:'0.55',
+    			  }).add({
     				  msg:'0.6',
     				  id:'0.6',
-    			  }).add({
-    				  msg:'0.7',
-    				  id:'0.7',
     			  });
             	jselect.show();
             });
@@ -217,7 +235,8 @@
         
         var _rate = $.trim(_rate);
         var _selectRate = $.trim(_selectRate);
-        
+        console.log(_rate);
+        return false;
         var jsonData = {"saName":sa_name,"saNum":sa_num,"saBankName":sa_bank_name,"merEmail":mer_email,"auth":auth,
         		"storeNo":storeNo,"settlementType":_selectRate,"rate":_rate,"idCard":_idCard,"phone":_phone};
         $.post("./auditStatus",jsonData,function(obj){

@@ -16,7 +16,14 @@
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
     <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
     <style>
-
+        input[type=tel]{
+		   -webkit-appearance: none;
+		    width: 100%;
+		    padding: 0;
+		    border: 0;
+		    background-color: transparent;
+		    font-size:100%;
+		}
     </style>
 </head>
 <body>
@@ -82,7 +89,7 @@
                  </p>
                  <p >
                      <label class="span-label" for="storeNo">编&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号</label>
-                     <span class="span-result"><input type="text" id="storeNo" placeholder="输入编号"></span>
+                     <span class="span-result"><input type="tel" id="storeNo" placeholder="输入编号"></span>
                  </p>
              </div>
 
