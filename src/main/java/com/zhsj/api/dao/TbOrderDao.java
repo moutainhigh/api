@@ -93,5 +93,13 @@ public interface TbOrderDao {
 			@Param("actualChargeAmount2")Double actualChargeAmount2);
 	
 	List<CountMember> getByStoreNoAndTime(@Param("storeNo")String storeNo,@Param("time")int time);
+	
+	Double getOrgDiscountPrice(@Param("storeNo")String storeNo,
+							   @Param("startTime") int startTime,
+							   @Param("endTime")int endTime);
+	
+	Integer countOrgDiscountPrice(@Param("storeNo")String storeNo,
+								  @Param("startTime") int startTime,
+								  @Param("endTime")int endTime);
     
 }

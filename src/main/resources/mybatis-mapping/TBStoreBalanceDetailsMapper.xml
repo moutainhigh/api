@@ -57,4 +57,12 @@
           partner_trade_no = #{partnerTradeNo} and type = 1
        </where>
    </select>
+   
+   <select id="getByPaymentNo" parameterType="java.lang.String" resultType="storeBalanceDetailBean">
+       select <include refid="FIELD"></include> 
+       from <include refid="TABLE"></include>
+       <where>
+          payment_no = #{paymentNo} and type = 2
+       </where>
+   </select>
 </mapper>

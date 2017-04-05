@@ -1,5 +1,6 @@
 package com.zhsj.api.task;
 
+import java.math.BigDecimal;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +10,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import com.zhsj.api.bean.MinMaxBean;
+import com.zhsj.api.bean.StoreBalanceDetailBean;
 import com.zhsj.api.bean.StoreBean;
+import com.zhsj.api.dao.TBStoreBalanceDetailsDao;
+import com.zhsj.api.service.OrderService;
 import com.zhsj.api.service.StoreService;
+import com.zhsj.api.service.WXService;
+import com.zhsj.api.util.DateUtil;
 
 /**
  * Created by lcg on 17/1/14.
@@ -22,9 +28,15 @@ public class PayDiscountMoney {
     
     @Autowired
     StoreService storeService;
+    @Autowired
+    OrderService orderService;
+    @Autowired
+    TBStoreBalanceDetailsDao tbStoreBalanceDetailsDao;
+    @Autowired
+    WXService wxService;
     
     @Scheduled(cron="0 0 8 * * ?")   //每5秒执行一次  
-//    @Scheduled(cron="0/5 * * * * ?")   //每5秒执行一次  
+//    @Scheduled(cron="0 0 17 * * ?")   //每5秒执行一次  
     public void execute() {  
     	logger.info("#PayDiscountMoney.execute#======");
     	try{
@@ -51,17 +63,30 @@ public class PayDiscountMoney {
     
     private void calStore(StoreBean storeBean){
     	try{
-    		//查询过去一天的订单有优惠的订单分页查询
-			
-			//判断是否是总部做的优惠
-			
-			//++++
-			
-			//加到流水表
-			
-			//加到总金额中
-			
-			//发消息
+			//查询过去一天总部做的优惠总额
+    		int todayStartTime = DateUtil.getTodayStartTime();
+    		int startTime = todayStartTime - 24*60*60;
+    		int endTime = todayStartTime - 1;
+    		int count = orderService.countOrgDiscountPrice(storeBean.getStoreNo(), startTime, endTime);
+    		if(count <=0){
+    			return;
+    		}
+			double totalPrice = orderService.getOrgDiscountPrice(storeBean.getStoreNo(), startTime, endTime);
+			if(totalPrice >0){
+				//加到流水表
+				StoreBalanceDetailBean bean = new StoreBalanceDetailBean();
+				bean.setStoreNo(storeBean.getStoreNo());
+				bean.setType(1);
+				bean.setPaymentStatus(1);
+				bean.setPrice(new BigDecimal(totalPrice));
+				bean.setDescription("优惠返现");
+				int num = tbStoreBalanceDetailsDao.insert(bean);
+				if(num > 0){
+					//加到总金额中
+					 storeService.updatePrice(totalPrice, storeBean.getStoreNo());
+					 wxService.sendPayCashMsg(storeBean,count,totalPrice);
+				}
+			}
     	}catch (Exception e) {
     		logger.error("#PayDiscountMoney.calStore# storeNo={}",storeBean.getStoreNo(),e);
 		}
