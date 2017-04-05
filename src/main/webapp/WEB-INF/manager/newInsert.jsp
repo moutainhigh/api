@@ -18,11 +18,13 @@
     <style>
         input[type=tel]{
 		   -webkit-appearance: none;
-		    width: 100%;
-		    padding: 0;
-		    border: 0;
 		    background-color: transparent;
-		    font-size:100%;
+		    width: 100%;
+		    font-size: .8em;
+		    color: #333;
+		    position: absolute;
+		    top: 0;
+		    left: 0;
 		}
     </style>
 </head>
