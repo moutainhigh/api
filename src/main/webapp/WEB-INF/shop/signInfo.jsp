@@ -13,7 +13,10 @@ pageEncoding="UTF-8"%>
     <link href="../resource/css/manager/signInfo.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
     <style>
-
+          #protocol{
+             text-decoration: none;
+             color: inherit;
+          }  
     </style>
 </head>
 <body>
@@ -44,7 +47,7 @@ pageEncoding="UTF-8"%>
        <section class="f3">
            <div class="agreement">
                <div class="content">
-                   <span>协议与条款</span>
+                   <span><a href="http://zhihuishangjie.mikecrm.com/ZMJql5V" id="protocol">协议与条款</a></span>
                </div>
            </div>
        </section>

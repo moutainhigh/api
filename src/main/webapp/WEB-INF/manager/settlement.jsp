@@ -98,12 +98,12 @@
                 </p>
                 <p >
                      <label class="span-label" for="_idCard">身份证号</label>
-                     <span class="span-result"><input type="text" id="_idCard" placeholder="请输入法人身份证号"></span>
+                     <span class="span-result"><input type="tel" id="_idCard" placeholder="请输入法人身份证号"></span>
                  </p>
                 <p>
                     <label class="span-label" for="sa_num">电子卡号</label>
                     <span class="span-result">
-                        <input type="text" id="sa_num" placeholder="已开通快捷支付的银行卡">
+                        <input type="tel" id="sa_num" placeholder="已开通快捷支付的银行卡">
                     </span>
                 </p>
                  <p >
