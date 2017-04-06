@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBStoreBindPrinterDao">
+     <sql id="TABLE">
+       tb_store_printer
+     </sql>
+
+     <sql id="FIELD">
+        store_no,device_id,number,secert_key,valid,utime,ctime
+     </sql>
+     <insert id="insert" keyProperty="id" keyColumn="id">
+        insert into <include refid="TABLE" /> (
+           <include refid="FIELD"></include>
+        ) values (
+          storeNo,deviceId,number,secertKey,1,unix_timestamp(now()),unix_timestamp(now())
+        )
+     </insert>
+     
+     
+     <select id="getByStoreNo" resultType="com.zhsj.api.bean.StoreBindPrinterBean">
+       select 
+         id,
+         store_no storeNo,
+         device_id deviceId,
+         number,
+         secert_key secertKey
+       from <include refid="TABLE"/>
+       <where>
+         store_no = #{storeNo} and valid = 1
+       </where>
+     </select>
+</mapper>
