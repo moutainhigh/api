@@ -7,7 +7,7 @@
    </sql>
    
    <sql id="FIELD">
-      id,type,price,description,payment_status,partner_trade_no,payment_time,ctime
+      id,store_no storeNo,type,price,description,payment_status paymentStatus,partner_trade_no partnerTradeNo,payment_time paymentTime,ctime
    </sql>
    
     

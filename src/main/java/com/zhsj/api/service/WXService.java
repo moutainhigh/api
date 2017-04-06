@@ -534,9 +534,10 @@ public class WXService {
                 }
                 openIds += openId+",";
             }
+            
             getCashMsg = getCashMsg.replace("_first", " \"value\": \"余额提现\"");
-            getCashMsg = getCashMsg.replace("money","\"value\": \" "+ String.valueOf(bean.getPrice()) + "\"");
-            getCashMsg = getCashMsg.replace("timet","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\\n提现方式：微信钱包"+"\"");
+            getCashMsg = getCashMsg.replace("_keyword1","\"value\": \" "+ String.valueOf(bean.getPrice()) + "\"");
+            getCashMsg = getCashMsg.replace("_keyword2","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\\n提现方式：微信钱包"+"\"");
             getCashMsg = getCashMsg.replace("_remark","\"value\": \""+"请到微信钱包查询到账资金，如有疑问请在公众号里反馈！"+"\"");
             
             String url = MtConfig.getProperty("OPEN_URL", "")+ "/sendMessage";
