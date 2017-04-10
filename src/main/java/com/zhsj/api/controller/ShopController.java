@@ -3,17 +3,14 @@ package com.zhsj.api.controller;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.sun.tools.internal.ws.processor.model.Model;
 import com.zhsj.api.bean.*;
 import com.zhsj.api.constants.ResultStatus;
 import com.zhsj.api.service.ShopService;
 import com.zhsj.api.service.UserService;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.Md5;
-import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.WebUtils;
 import com.zhsj.api.service.MinshengService;
 import com.zhsj.api.service.WXService;
@@ -24,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -535,4 +531,16 @@ public class ShopController {
     	logger.info("#ShopController.getListByStoreNo #auth = {},#page={},#pageSize={}",auth,page,pageSize);
     	return shopService.getListByStoreNoAndPage( type ,page, pageSize);
     }
+    
+    
+    @RequestMapping(value = "toBank" ,method = RequestMethod.GET)
+    @ResponseBody
+    public Object toBank(String auth,HttpServletResponse response){
+    	logger.info("#ShopController.toBank #auth = {}",auth);
+    	if(shopService.getRoleByStoreAccount()){
+    		return CommonResult.success("https://www.mszxyh.com/wapserver/outer/index.html?Page=relogin&ChannelId=mszx02279");
+    	}
+    	return CommonResult.build(1, "您没有权限");
+    }
+    
 }

@@ -1,7 +1,6 @@
 package com.zhsj.api.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mysql.fabric.xmlrpc.base.Array;
 import com.zhsj.api.bean.*;
 import com.zhsj.api.bean.result.CountDealBean;
 import com.zhsj.api.bean.result.CountMember;
@@ -16,10 +15,8 @@ import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.Md5;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.login.LoginUserUtil;
-import com.zhsj.api.util.test.Test;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.taglibs.standard.lang.jstl.test.beans.PublicBean1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -444,7 +441,7 @@ public class ShopService {
     		return CommonResult.defaultError("error");
     	}
     	try{
-    		storeAccountBean.setPassword(Md5.encrypt(storeAccountBean.getPassword()));
+    	   storeAccountBean.setPassword(Md5.encrypt(storeAccountBean.getPassword()));
     	   tbStoreAccountDao.insert(storeAccountBean);
     	   tbStoreBindAccountDao.insert(storeBean.getStoreNo(), storeAccountBean.getId());
     	   tbStoreAccountBindRoleDao.insert(storeAccountBean.getId(), roleId);
@@ -625,6 +622,17 @@ public class ShopService {
 		  if(0 == a){
 			  logger.info("#WXService.transfers updateprice fail.添加回去");
 		  }
+    }
+    
+    public boolean getRoleByStoreAccount(){
+    	logger.info("#ShopService.getRoleByStoreAccount");
+    	LoginUser loginUser = LoginUserUtil.getLoginUser();
+    	List<Integer> roleIds = tbStoreAccountBindRoleDao.getRoleIdByAccountId(loginUser.getId());
+    	String manager_role = MtConfig.getProperty("STORE_MANAGER_ROLE", "0");
+        if(!CollectionUtils.isEmpty(roleIds) && roleIds.contains(Integer.parseInt(manager_role))){
+        	return true;
+        }
+        return false;
     }
 
 }
