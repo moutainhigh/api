@@ -5,7 +5,7 @@ package com.zhsj.api.bean;
 public class PrinterSecretBean {
 
 	private int id;
-	private String secertKey;//秘钥key
+	private String secretKey;//秘钥key
 	private String name;//名称
 	private String des;//描述
 	private int valid;//0 无效 1有效
@@ -18,11 +18,11 @@ public class PrinterSecretBean {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getSecertKey() {
-		return secertKey;
+	public String getSecretKey() {
+		return secretKey;
 	}
-	public void setSecertKey(String secertKey) {
-		this.secertKey = secertKey;
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
 	}
 	public String getName() {
 		return name;

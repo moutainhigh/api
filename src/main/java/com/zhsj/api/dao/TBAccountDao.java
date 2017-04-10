@@ -31,5 +31,4 @@ public interface TBAccountDao {
     AccountBean getByAccount(@Param("account") String account);
 
 
-
 }

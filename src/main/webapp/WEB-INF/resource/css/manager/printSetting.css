@@ -19,7 +19,8 @@
 .p-group p:last-child{
     border-bottom: 0;
 }
-input[type=text]{
+input[type=text],
+input[type=tel]{
     border: 1px solid #DDD;
     line-height: 2;
     width:100%;

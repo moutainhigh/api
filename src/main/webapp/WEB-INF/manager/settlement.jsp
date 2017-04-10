@@ -98,7 +98,7 @@
                 </p>
                 <p >
                      <label class="span-label" for="_idCard">身份证号</label>
-                     <span class="span-result"><input type="tel" id="_idCard" placeholder="请输入法人身份证号"></span>
+                     <span class="span-result"><input type="text" id="_idCard" placeholder="请输入法人身份证号"></span>
                  </p>
                 <p>
                     <label class="span-label" for="sa_num">电子卡号</label>
@@ -235,8 +235,8 @@
         
         var _rate = $.trim(_rate);
         var _selectRate = $.trim(_selectRate);
-        console.log(_rate);
-        return false;
+//         console.log(_rate);
+//         return false;
         var jsonData = {"saName":sa_name,"saNum":sa_num,"saBankName":sa_bank_name,"merEmail":mer_email,"auth":auth,
         		"storeNo":storeNo,"settlementType":_selectRate,"rate":_rate,"idCard":_idCard,"phone":_phone};
         $.post("./auditStatus",jsonData,function(obj){

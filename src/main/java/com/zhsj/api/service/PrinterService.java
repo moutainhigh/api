@@ -1,5 +1,6 @@
 package com.zhsj.api.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -8,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.zhsj.api.bean.PrinterSecretBean;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.StoreBindPrinterBean;
+import com.zhsj.api.dao.TBPrinterSecretDao;
 import com.zhsj.api.dao.TBStoreBindPrinterDao;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.login.LoginUserUtil;
@@ -22,10 +25,17 @@ public class PrinterService {
 	
 	@Autowired
 	private TBStoreBindPrinterDao tbStoreBindPrinterDao;
+	@Autowired
+	private TBPrinterSecretDao tbPrinterSecretDao;
 	
 	
 	public Object addStoreBindPrinter(StoreBindPrinterBean storeBindPrinterBean){
 		logger.info("#PrinterService.addStoreBindPrinter #storeBindPrinterBean={}",storeBindPrinterBean);
+		String deviceId = storeBindPrinterBean.getDeviceId();
+		StoreBindPrinterBean deBean = tbStoreBindPrinterDao.getByDeviceId(deviceId);
+		if(deBean != null){
+			return CommonResult.build(2, "该设备已经被使用!");
+		}
 		StoreBean storeBean = LoginUserUtil.getStore();
 		storeBindPrinterBean.setStoreNo(storeBean.getStoreNo());
 		try{
@@ -34,14 +44,56 @@ public class PrinterService {
 			  logger.info("#PrinterService.addStoreBindPrinter #fail");
 			  return CommonResult.defaultError("fail");
 		  }
-		  return CommonResult.success("success");
+		  return CommonResult.success("添加成功");
 		}catch(Exception e){
-			logger.error("#PrinterService.addStoreBindPrinter #",e);
+			logger.error("#PrinterService.addStoreBindPrinter#",e);
 			return CommonResult.defaultError("error");
 		}
 	}
 	
+	public Object getSecretKeyList(){
+		logger.info("#PrinterService.getSecretKeyList#");
+		try {
+			List<PrinterSecretBean> list =  tbPrinterSecretDao.getList();
+			return CommonResult.success("success", list);
+		} catch (Exception e) {
+			logger.error("#PrinterService.getSecretKeyList# ",e);
+			return CommonResult.defaultError("error");
+		}
+	}
 	
+	public Object getStorePrinter(){
+		logger.info("#PrinterService.getStorePrinter#");
+		StoreBean storeBean = LoginUserUtil.getStore();
+		String storeNo = storeBean.getStoreNo();
+		try {
+	        StoreBindPrinterBean storeBindPrinterBean = tbStoreBindPrinterDao.getByStoreNo(storeNo);
+	        if(storeBindPrinterBean != null){
+	        	PrinterSecretBean printerSecretBean = tbPrinterSecretDao.getBySecretKey(storeBindPrinterBean.getSecretKey());
+	        	storeBindPrinterBean.setName(printerSecretBean.getName());
+	        	return CommonResult.success("succes",storeBindPrinterBean);
+	        }
+	        return CommonResult.build(2, "没有关联打印机");
+		} catch(Exception e){
+			logger.error("#PrinterService.getStorePrinter# ",e);
+			return CommonResult.defaultError("error");
+		}
+	    
+	}
+	
+	public Object updateStorePrinter(StoreBindPrinterBean storeBindPrinterBean){
+		logger.info("#PrinterService.updateStorePrinter#");
+		try {
+			int code = tbStoreBindPrinterDao.update(storeBindPrinterBean);
+			if(code == 0){
+				return CommonResult.success("fail");
+			}
+			return CommonResult.success("更新成功");
+		} catch (Exception e) {
+			logger.error("#PrinterService.updateStorePrinter# ",e);
+			return CommonResult.defaultError("error");
+		}
+	}
 	
 	/**
 	 * 

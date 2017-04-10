@@ -14,4 +14,9 @@ public interface TBStoreBindPrinterDao {
 	int insert(StoreBindPrinterBean storeBindPrinterBean);
 	
 	StoreBindPrinterBean getByStoreNo(@Param("storeNo")String storeNo);
+	
+	StoreBindPrinterBean getByDeviceId(@Param("deviceId")String deviceId);
+	
+	int update(StoreBindPrinterBean storeBindPrinterBean);
+	
 }
