@@ -50,31 +50,31 @@ public class ShopController {
     private UserService userService;
 
 
-    @RequestMapping(value = "/updateMerchantByPaykey", method = RequestMethod.GET)
-    @ResponseBody
-    public Object updateMerchantByPaykey(@RequestParam("storeNo") String storeNo,
-                                         @RequestParam("wxRate")String wxRate,@RequestParam("aliRate")String aliRate,
-                                         @RequestParam("settlementType")String settlementType) throws Exception {
-        boolean result = minshengService.updateMerchantByPaykey(storeNo, wxRate, aliRate, settlementType);
-        if(result){
-            return CommonResult.build(0, "success");
-        }else {
-            return CommonResult.build(1, "success");
-        }
-    }
+//    @RequestMapping(value = "/updateMerchantByPaykey", method = RequestMethod.GET)
+//    @ResponseBody
+//    public Object updateMerchantByPaykey(@RequestParam("storeNo") String storeNo,
+//                                         @RequestParam("wxRate")String wxRate,@RequestParam("aliRate")String aliRate,
+//                                         @RequestParam("settlementType")String settlementType) throws Exception {
+//        boolean result = minshengService.updateMerchantByPaykey(storeNo, wxRate, aliRate, settlementType);
+//        if(result){
+//            return CommonResult.build(0, "success");
+//        }else {
+//            return CommonResult.build(1, "success");
+//        }
+//    }
 
-    @RequestMapping(value = "/queryOrder", method = RequestMethod.GET)
-    @ResponseBody
-    public Object queryOrder(@RequestParam("orderNo") String orderNo
-                                        ) throws Exception {
-        logger.info("#ShopController.queryOrder# orderNo={}",orderNo);
-        String result = minshengService.queryOrderAndUpdate(orderNo);
-        if(StringUtils.isEmpty(result)){
-            return CommonResult.build(1, "fail");
-        }else {
-            return CommonResult.build(0, "success",result);
-        }
-    }
+//    @RequestMapping(value = "/queryOrder", method = RequestMethod.GET)
+//    @ResponseBody
+//    public Object queryOrder(@RequestParam("orderNo") String orderNo
+//                                        ) throws Exception {
+//        logger.info("#ShopController.queryOrder# orderNo={}",orderNo);
+//        String result = minshengService.queryOrderAndUpdate(orderNo);
+//        if(StringUtils.isEmpty(result)){
+//            return CommonResult.build(1, "fail");
+//        }else {
+//            return CommonResult.build(0, "success",result);
+//        }
+//    }
     
     @RequestMapping(value = "/qrcode", method = RequestMethod.GET)
     @ResponseBody

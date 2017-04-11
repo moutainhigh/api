@@ -8,7 +8,7 @@
     <select id="getStorePayInfoByNO" resultType="storePayInfo" >
         select <include refid="SELECT_FIELDS"/>
         FROM tb_store_pay_info
-        WHERE store_no = #{storeNo}
+        WHERE store_no = #{storeNo} and status = 1 and valid = 1
     </select>
 
     <insert id="insertPayInfo">
@@ -23,12 +23,6 @@
         
     </insert>
 
-    <update id="updateByNo">
-        UPDATE tb_store_pay_info
-        SET remark = #{remark},utime=unix_timestamp(now()),
-        field3 = #{rate},field4=#{settlementType}
-        WHERE store_no = #{storeNo} and pay_method = #{payMethod} and pay_type = 2
-    </update>
 
 
 

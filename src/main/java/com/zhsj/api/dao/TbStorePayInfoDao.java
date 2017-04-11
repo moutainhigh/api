@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public interface TbStorePayInfoDao {
 
 
-    StorePayInfo getStorePayInfoByNO(@Param("storeNo") String storeNo);
+    List<StorePayInfo> getStorePayInfoByNO(@Param("storeNo") String storeNo);
 
     int insertPayInfo(@Param("storeNo")String storeNo,
                       @Param("payType")int payType,
@@ -26,11 +26,11 @@ public interface TbStorePayInfoDao {
                       @Param("remark") String remark,
                       @Param("status") int status);
 
-    int updateByNo (@Param("remark") String remark,
-    				 @Param("storeNo")String storeNO,
-    				 @Param("rate")String rate,
-    				 @Param("settlementType")String settlementType,
-    				 @Param("payMethod")String paymethod);
+//    int updateByNo1 (@Param("remark") String remark,
+//    				 @Param("storeNo")String storeNO,
+//    				 @Param("rate")String rate,
+//    				 @Param("settlementType")String settlementType,
+//    				 @Param("payMethod")String paymethod);
 
 
 }

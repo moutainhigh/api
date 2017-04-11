@@ -161,13 +161,18 @@ public class ShopService {
             if(storeBean == null ||StringUtils.isEmpty(storeBean.getStoreNo()) ){
                 return rateBean;
             }
-            StorePayInfo storePayInfo = tbStorePayInfoDao.getStorePayInfoByNO(storeBean.getStoreNo());
-            if(storePayInfo == null || StringUtils.isEmpty(storePayInfo.getRemark())){
+            List<StorePayInfo> storePayInfos = tbStorePayInfoDao.getStorePayInfoByNO(storeBean.getStoreNo());
+            if(CollectionUtils.isEmpty(storePayInfos)){
                 return rateBean;
             }
-            Map<String,String> map = JSONObject.parseObject(storePayInfo.getRemark(), Map.class);
-            rateBean.setAlRate(map.get("aliRate") + "%");
-            rateBean.setWxRate(map.get("wxRate") + "%");
+            for(StorePayInfo bean:storePayInfos){
+            	if("1".equals(bean.getPayMethod())){
+            		rateBean.setWxRate(bean.getField3() + "%");
+            	}
+            	if("2".equals(bean.getPayMethod())){
+            		rateBean.setAlRate(bean.getField3() + "%");
+            	}
+            }
         }catch (Exception e){
             logger.error("#ShopService.getStoreChild# e={}",e.getMessage(),e);
         }

@@ -372,44 +372,44 @@ public class MinshengService {
 		return rspMap;
 	}
 
-	public boolean updateMerchantByPaykey(String storeNo,String wxRate,String aliRate,String settlementType) {
-		boolean result = false;
-		String url = MtConfig.getProperty("REQ_URL","")+"/updateMerchantByPaykey.do";
-		try{
-			StorePayInfo storePayInfo = bmStorePayInfoDao.getStorePayInfoByNO(storeNo);
-			if(storePayInfo == null){
-				return false;
-			}
-			Map<String, String> reqData = new HashMap<String, String>();
-			reqData.put("paykey", storePayInfo.getField1()); //修改商户的paykey
-			reqData.put("agent_no", MtConfig.getProperty("agent_no", "95272016121410000062"));//代理商编号
-			reqData.put("wx_rate", wxRate); //微信费率
-			reqData.put("ali_rate", aliRate);//支付宝费率
-			reqData.put("settlement_type", settlementType);//商户结算周期
-			String CERT_PATH_P12 = MtConfig.getProperty("CERT_PATH_P12","");
-			String CERT_JKS_P12_PASSWORD = MtConfig.getProperty("CERT_JKS_P12_PASSWORD","");
-			String signString = CertUtil.reqSign(MapUtil.coverMap2String(reqData), CERT_PATH_P12, CERT_JKS_P12_PASSWORD);
-			reqData.put("sign", new String(signString)); // 签名后的字符串
-			String stringData = MapUtil.getRequestParamString(reqData);
-//
-			String reqBase64 = new String(CertUtil.base64Encode(stringData.getBytes("UTF-8")));
-			String rspBase64 = SSLUtil.httpsPost(url, reqBase64);
-			String rspData = new String(CertUtil.base64Decode(rspBase64.getBytes("UTF-8")));
-			Map<String,String> resultMap = MapUtil.convertResultStringToMap(rspData);
-			if("SUCCESS".equals(resultMap.get("result_code"))){
-				JSONObject json = new JSONObject();
-				json.put("aliRate",aliRate);
-				json.put("wxRate",wxRate);
-				json.put("settlementType",settlementType);
-				bmStorePayInfoDao.updateByNo(json.toJSONString(),storeNo,wxRate,settlementType,"1");
-				bmStorePayInfoDao.updateByNo(json.toJSONString(),storeNo,aliRate,settlementType,"2");
-				return true;
-			}
-		} catch (Exception e){
-			logger.error("#MinshengService.updateMerchantByPaykey# storeNO={},wxRate={},aliRate={},settlementType={}",storeNo,wxRate,aliRate,settlementType,e);
-		}
-		return result;
-	}
+//	public boolean updateMerchantByPaykey(String storeNo,String wxRate,String aliRate,String settlementType) {
+//		boolean result = false;
+//		String url = MtConfig.getProperty("REQ_URL","")+"/updateMerchantByPaykey.do";
+//		try{
+//			StorePayInfo storePayInfo = bmStorePayInfoDao.getStorePayInfoByNO(storeNo);
+//			if(storePayInfo == null){
+//				return false;
+//			}
+//			Map<String, String> reqData = new HashMap<String, String>();
+//			reqData.put("paykey", storePayInfo.getField1()); //修改商户的paykey
+//			reqData.put("agent_no", MtConfig.getProperty("agent_no", "95272016121410000062"));//代理商编号
+//			reqData.put("wx_rate", wxRate); //微信费率
+//			reqData.put("ali_rate", aliRate);//支付宝费率
+//			reqData.put("settlement_type", settlementType);//商户结算周期
+//			String CERT_PATH_P12 = MtConfig.getProperty("CERT_PATH_P12","");
+//			String CERT_JKS_P12_PASSWORD = MtConfig.getProperty("CERT_JKS_P12_PASSWORD","");
+//			String signString = CertUtil.reqSign(MapUtil.coverMap2String(reqData), CERT_PATH_P12, CERT_JKS_P12_PASSWORD);
+//			reqData.put("sign", new String(signString)); // 签名后的字符串
+//			String stringData = MapUtil.getRequestParamString(reqData);
+////
+//			String reqBase64 = new String(CertUtil.base64Encode(stringData.getBytes("UTF-8")));
+//			String rspBase64 = SSLUtil.httpsPost(url, reqBase64);
+//			String rspData = new String(CertUtil.base64Decode(rspBase64.getBytes("UTF-8")));
+//			Map<String,String> resultMap = MapUtil.convertResultStringToMap(rspData);
+//			if("SUCCESS".equals(resultMap.get("result_code"))){
+//				JSONObject json = new JSONObject();
+//				json.put("aliRate",aliRate);
+//				json.put("wxRate",wxRate);
+//				json.put("settlementType",settlementType);
+//				bmStorePayInfoDao.updateByNo(json.toJSONString(),storeNo,wxRate,settlementType,"1");
+//				bmStorePayInfoDao.updateByNo(json.toJSONString(),storeNo,aliRate,settlementType,"2");
+//				return true;
+//			}
+//		} catch (Exception e){
+//			logger.error("#MinshengService.updateMerchantByPaykey# storeNO={},wxRate={},aliRate={},settlementType={}",storeNo,wxRate,aliRate,settlementType,e);
+//		}
+//		return result;
+//	}
 
 //	//查询更新状态，发通知
 //	public OrderBean paySuccess1(String orderNo){
@@ -425,49 +425,48 @@ public class MinshengService {
 //	}
 
 	//查询更新状态
-	public String queryOrderAndUpdate(String orderNo){
-		logger.info("#MinshengService.queryOrderAndUpdate# orderNo={}",orderNo);
-		String result = queryOrder(orderNo);
-		if(StringUtils.isEmpty(result)){
-			return "";
-		}
-		if(OrderStatus.FAIL.equals(result) || OrderStatus.NOTPAY.equals(result)){
-			orderService.updateOrderByOrderId(2,orderNo);
-		}else if(OrderStatus.SUCCESS.equals(result)){
-			orderService.updateOrderByOrderId(1,orderNo);
-		}
-		return result;
-	}
+//	public String queryOrderAndUpdate(String orderNo){
+//		logger.info("#MinshengService.queryOrderAndUpdate# orderNo={}",orderNo);
+//		String result = queryOrder(orderNo);
+//		if(StringUtils.isEmpty(result)){
+//			return "";
+//		}
+//		if(OrderStatus.FAIL.equals(result) || OrderStatus.NOTPAY.equals(result)){
+//			orderService.updateOrderByOrderId(2,orderNo);
+//		}else if(OrderStatus.SUCCESS.equals(result)){
+//			orderService.updateOrderByOrderId(1,orderNo);
+//		}
+//		return result;
+//	}
 
-	//查询订单状态
-	public String queryOrder(String orderNo){
-		logger.info("#MinshengService.queryOrder# orderNo={}",orderNo);
-		String result = "";
-		try {
-			OrderBean orderBean = orderService.getByOrderId(orderNo);
-			StorePayInfo storePayInfo = bmStorePayInfoDao.getStorePayInfoByNO(orderBean.getStoreNo());
-			if(storePayInfo == null){
-				return "";
-			}
-
-			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("paykey",storePayInfo.getField1());
-			parameters.put("order_no",orderNo);  //请自己试试自己发起的订单
-			/////签名///
-			String sign = getSign(parameters, storePayInfo.getField2());//
-			parameters.put("sign",sign);
-			String postUrl = MtConfig.getProperty("ms_URL","http://115.159.235.109:8208")+"/qthd-pay-web-gateway/scanPay/QueryReturnJson";
-			String str = HttpClient.sendPost(postUrl, parameters);
-			Map<String,Object> map = JSON.parseObject(str, Map.class);
-			result = (String)map.get("result_code");
-			logger.info("#MinshengService.queryOrder# orderNo={} result ={}",orderNo,result);
-		}catch (Exception e){
-			logger.error("#MinshengService.queryOrder# orderNo={}",orderNo,e);
-			return "";
-		}
-		return result;
+//	//查询订单状态
+//	public String queryOrder(String orderNo){
+//		logger.info("#MinshengService.queryOrder# orderNo={}",orderNo);
+//		String result = "";
+//		try {
+//			OrderBean orderBean = orderService.getByOrderId(orderNo);
+//			StorePayInfo storePayInfo = bmStorePayInfoDao.getStorePayInfoByNO(orderBean.getStoreNo());
+//			if(storePayInfo == null){
+//				return "";
+//			}
 //
-	}
+//			Map<String, Object> parameters = new HashMap<String, Object>();
+//			parameters.put("paykey",storePayInfo.getField1());
+//			parameters.put("order_no",orderNo);  //请自己试试自己发起的订单
+//			/////签名///
+//			String sign = getSign(parameters, storePayInfo.getField2());//
+//			parameters.put("sign",sign);
+//			String postUrl = MtConfig.getProperty("ms_URL","http://115.159.235.109:8208")+"/qthd-pay-web-gateway/scanPay/QueryReturnJson";
+//			String str = HttpClient.sendPost(postUrl, parameters);
+//			Map<String,Object> map = JSON.parseObject(str, Map.class);
+//			result = (String)map.get("result_code");
+//			logger.info("#MinshengService.queryOrder# orderNo={} result ={}",orderNo,result);
+//		}catch (Exception e){
+//			logger.error("#MinshengService.queryOrder# orderNo={}",orderNo,e);
+//			return "";
+//		}
+//		return result;
+//	}
 
 	public static void main(String[] args) {
 //		new MinshengService().updateMerchantByPaykey("85a6c4e20bf54505bea8e75bc870d587","0.4","0.4","D0");

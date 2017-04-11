@@ -101,21 +101,21 @@
                      <span class="span-result"><input type="tel" id="_idCard" placeholder="请输入法人身份证号"></span>
                  </p>
                 <p>
-                    <label class="span-label" for="sa_num">电子卡号</label>
+                    <label class="span-label" for="sa_num">银行卡号</label>
                     <span class="span-result">
-                        <input type="tel" id="sa_num" placeholder="已开通快捷支付的银行卡">
+                        <input type="tel" id="sa_num" placeholder="银行卡号">
                     </span>
                 </p>
-                 <p >
-                     <label class="span-label" for="storePhone">开户手机</label>
-                     <span class="span-result"><input type="tel" id="storePhone" placeholder="11位正确手机号"></span>
-                 </p>
                 <p>
                     <label class="span-label" for="sa_bank_name">开户银行</label>
                     <span class="span-result" id="sa_bank_name">
                                                                    中国民生银行
                     </span>
                 </p>
+                 <p >
+                     <label class="span-label" for="storePhone">开户手机</label>
+                     <span class="span-result"><input type="tel" id="storePhone" placeholder="11位正确手机号"></span>
+                 </p>
                 <p >
                     <label class="span-label" for="mer_email">邮箱</label>
                     <span class="span-result">
