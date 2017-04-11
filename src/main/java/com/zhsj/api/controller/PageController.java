@@ -27,6 +27,11 @@ public class PageController {
 		return "manager/realnameauth";
 	}
 	
+	@RequestMapping(value = "newInsert")
+	public String newInsert(){
+		return "manager/newInsert";
+	}
+	
 	@RequestMapping(value = "settlement")
 	public String settlement(){
 		return "manager/settlement";
@@ -75,5 +80,10 @@ public class PageController {
 	@RequestMapping(value = "mdetail")
 	public String mDetail(){
 		return "member/memberDetail";
+	}
+	
+	@RequestMapping(value = "signInfo")
+	public String signInfo(){
+		return "shop/signInfo";
 	}
 }

@@ -1,4 +1,6 @@
 package com.zhsj.api.bean;
+
+
 /*
  * 门店和打印机关系
  */
@@ -8,10 +10,12 @@ public class StoreBindPrinterBean {
 	private String storeNo;//门店编号
 	private String deviceId;//设备id
 	private int number;//打印联数
-	private String secertKey;//秘钥key
+	private String secretKey;//秘钥key
 	private int valid;//0 无效 1有效
 	private long utime;
 	private long ctime;
+    //transient 20170407
+	private String name;
 	
 	
 	public long getId() {
@@ -38,11 +42,11 @@ public class StoreBindPrinterBean {
 	public void setNumber(int number) {
 		this.number = number;
 	}
-	public String getSecertKey() {
-		return secertKey;
+	public String getSecretKey() {
+		return secretKey;
 	}
-	public void setSecertKey(String secertKey) {
-		this.secertKey = secertKey;
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
 	}
 	public int getValid() {
 		return valid;
@@ -62,6 +66,11 @@ public class StoreBindPrinterBean {
 	public void setCtime(long ctime) {
 		this.ctime = ctime;
 	}
-	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 }

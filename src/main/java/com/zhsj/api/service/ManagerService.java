@@ -244,6 +244,7 @@ public class ManagerService {
         return new CountDealBean();
     }
 
+    
     public static void main(String[] args){
 //        MSStoreBean msStoreBean = new MSStoreBean();
 //        msStoreBean.setReg_contact_tel("3");

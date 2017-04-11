@@ -166,8 +166,15 @@ pageEncoding="UTF-8"%>
             window.open("./toTransactionDetails?auth="+auth+"&storeNo=-1");
         });
         //提现
-        $(".withdraw").on("touchend",function(){
-            window.open("https://www.mszxyh.com/wapserver/outer/index.html?Page=relogin&ChannelId=mszx02279");
+        $(".withdraw").on("click",function(){
+//             window.open("https://www.mszxyh.com/wapserver/outer/index.html?Page=relogin&ChannelId=mszx02279");
+             $.get("./toBank",{auth:auth},function(result){
+            	 if(result.code == 0){
+            	     window.location.href=result.msg;
+            	 }else{
+            	     jalert.show(result.msg);
+            	 }
+             });
         });
 
         //店铺
