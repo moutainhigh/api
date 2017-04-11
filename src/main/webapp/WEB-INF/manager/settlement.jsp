@@ -176,23 +176,50 @@
 				  msg:'中国民生银行',
 				  id:'中国民生银行',
 			  }).add({
-				  msg:'中国民生银行1',
-				  id:'中国民生银行1',
+				  msg:'中国农业银行',
+				  id:'中国农业银行',
 			  }).add({
-				  msg:'中国民生银行2',
-				  id:'中国民生银行2',
+				  msg:'工商银行',
+				  id:'工商银行',
 			  }).add({
-				  msg:'中国民生银行3',
-				  id:'中国民生银行3',
+				  msg:'建设银行',
+				  id:'建设银行',
 			  }).add({
-				  msg:'中国民生银行4',
-				  id:'中国民生银行4',
+				  msg:'中国银行',
+				  id:'中国银行',
 			  }).add({
-				  msg:'中国民生银行5',
-				  id:'中国民生银行5',
+				  msg:'广发银行',
+				  id:'广发银行',
 			  }).add({
-				  msg:'中国民生银行6',
-				  id:'中国民生银行6',
+				  msg:'光大银行',
+				  id:'光大银行',
+			  }).add({
+				  msg:'华夏银行',
+				  id:'华夏银行',
+			  }).add({
+				  msg:'交通银行',
+				  id:'交通银行',
+			  }).add({
+				  msg:'平安银行',
+				  id:'平安银行',
+			  }).add({
+				  msg:'齐鲁银行',
+				  id:'齐鲁银行',
+			  }).add({
+				  msg:'青岛商行',
+				  id:'青岛商行',
+			  }).add({
+				  msg:'兴业银行',
+				  id:'兴业银行',
+			  }).add({
+				  msg:'中国邮政储蓄银行',
+				  id:'中国邮政储蓄银行',
+			  }).add({
+				  msg:'招商银行',
+				  id:'招商银行',
+			  }).add({
+				  msg:'中信银行',
+				  id:'中信银行',
 			  });
       	jselect.show();
         });
@@ -238,6 +265,7 @@
         
         var _rate = $.trim($("#_rate").attr("data-id"));
         var _selectRate = $.trim($("#_selectRate").attr("data-id"));
+        var sa_bank_name = $.trim($("#sa_bank_name").attr("data-id"));
         
         if(sa_name=="" ||_idCard=="" || sa_num=="" || _phone=="" ||sa_bank_name==""||mer_email==""){
             jalert.show("账号信息请填写完整");
@@ -264,8 +292,6 @@
         
         var _rate = $.trim(_rate);
         var _selectRate = $.trim(_selectRate);
-//         console.log(_rate);
-//         return false;
         var jsonData = {"saName":sa_name,"saNum":sa_num,"saBankName":sa_bank_name,"merEmail":mer_email,"auth":auth,
         		"storeNo":storeNo,"settlementType":_selectRate,"rate":_rate,"idCard":_idCard,"phone":_phone};
         $.post("./auditStatus",jsonData,function(obj){

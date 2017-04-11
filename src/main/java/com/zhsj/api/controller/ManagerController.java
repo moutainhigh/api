@@ -1,33 +1,18 @@
 package com.zhsj.api.controller;
 
-import com.zhsj.api.bean.StoreBean;
-import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.constants.ResultStatus;
 import com.zhsj.api.service.AccountService;
 import com.zhsj.api.service.ManagerService;
-import com.zhsj.api.service.UserService;
-import com.zhsj.api.service.WXService;
 import com.zhsj.api.util.CommonResult;
-import com.zhsj.api.util.MtConfig;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
