@@ -33,6 +33,9 @@
 		    background-color: transparent;
 		    font-size:100%;
 		}
+		#sa_bank_name{
+		   border:1px solid #EEE;
+		}
     </style>
 </head>
 <body>
@@ -112,9 +115,7 @@
                  </p>
                 <p>
                     <label class="span-label" for="sa_bank_name">开户银行</label>
-                    <span class="span-result" id="sa_bank_name">
-                                                                   中国民生银行
-                    </span>
+                    <span class="span-result " id="sa_bank_name" data-id="中国民生银行" >中国民生银行</span>
                 </p>
                 <p >
                     <label class="span-label" for="mer_email">邮箱</label>
@@ -166,7 +167,35 @@
         $("#_submit").on("touchend",function(){
             _submit();
         });
-        
+        //开户银行
+        $("#sa_bank_name").on("click",function(){
+        	jselect.operateObj.defaultsel = $(this).attr("data-id");
+        	jselect.operateObj.curObj = $(this);
+        	jselect.init();
+        	jselect.add({
+				  msg:'中国民生银行',
+				  id:'中国民生银行',
+			  }).add({
+				  msg:'中国民生银行1',
+				  id:'中国民生银行1',
+			  }).add({
+				  msg:'中国民生银行2',
+				  id:'中国民生银行2',
+			  }).add({
+				  msg:'中国民生银行3',
+				  id:'中国民生银行3',
+			  }).add({
+				  msg:'中国民生银行4',
+				  id:'中国民生银行4',
+			  }).add({
+				  msg:'中国民生银行5',
+				  id:'中国民生银行5',
+			  }).add({
+				  msg:'中国民生银行6',
+				  id:'中国民生银行6',
+			  });
+      	jselect.show();
+        });
       //费率
         $("#_rate").on("click",function(){
             	jselect.operateObj.defaultsel = $(this).attr("data-id");
