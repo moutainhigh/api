@@ -1,4 +1,4 @@
-package com.zhsj.api.util.print;
+package com.zhsj.api.util.print.libPrint;
 
 public class CloudPrinter {
 
@@ -66,7 +66,7 @@ public class CloudPrinter {
 	/**
 	 * 停车券 两次回车换行
 	 */
-	public static final String  PARKING_TICKET = "智慧商街\r\n\r\n";
+	public static final String  PARKING_TICKET = "瑞工停车券\r\n\r\n";
 	/**
 	 * 微信扫一扫
 	 */
@@ -79,7 +79,7 @@ public class CloudPrinter {
 	/**
 	 * 注:.....
 	 */
-	public static final String  DESCRIPTIONDESCRIPTION = "注:智慧商街test-demo智慧商街test-demo智慧商街test-demo智慧商街test-demo智慧商街test-demo智慧商街test-demo智慧商街test-demo\r\n\r\n\r\n\r\n\r\n";
+	public static final String  DESCRIPTIONDESCRIPTION = "注:本券可抵扣瑞工停车费(不找零).本券最终解释权归本公司所属 400-666-1234\r\n\r\n\r\n\r\n\r\n";
 	
 	// 发送打印机指令
 	
@@ -91,7 +91,7 @@ public class CloudPrinter {
 	 * 1b4501 加粗 
 	 * 1d2111 字体大小
 	 */
-	public static final String  TITLESE_TTING = "1b61011b21281b45011d21111b337f";
+	public static final String  TITLESE_TTING = "1b61011b21281b45011d2111";
 	/**
 	 * 设置内容格式
 	 * 1b6101 居中 
@@ -99,7 +99,7 @@ public class CloudPrinter {
 	 * 1b4501 取消加粗 
 	 * 1d2111 字体默认大小
 	 */
-	public static final String  CONTENT_SETTING = "1b61001b21001b45001d21001b332f";
+	public static final String  CONTENT_SETTING = "1b61001b21001b45001d2100";
 	/**
 	 * 设置公司内容格式
 	 * 1b6101 居中 
@@ -114,7 +114,7 @@ public class CloudPrinter {
 	 * 1d5a02 打印二维码
 	 * 1b5a004c06 二维码类型 和 大小 
 	 */
-	public static final String  QRCODE_SETTING = "1b61011d5a021b5a004c061b330f";
+	public static final String  QRCODE_SETTING = "1b61011d5a021b5a004c06";
 	
 	/**
 	 * 打印机格式初始化
@@ -125,7 +125,5 @@ public class CloudPrinter {
 	 */
 	public static final String  HEXSTRING = "0123456789ABCDEF";
 	
-	public static void main(String[] args) {
-		
-	}
+	
 }
