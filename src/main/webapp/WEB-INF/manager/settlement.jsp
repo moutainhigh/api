@@ -144,7 +144,7 @@
                        <label>费率</label>
                        <div class="sh-right">
                           <div class="js_time">
-                               <span id="_rate" data-id="0.6">0.6</span>
+                               <span id="_rate" data-id="0.38">0.38</span>
                         </div>
                      </div>
                    </div>
@@ -229,26 +229,14 @@
             	jselect.operateObj.curObj = $(this);
             	jselect.init();
             	jselect.add({
+    				  msg:'0.25',
+    				  id:'0.25',
+    			  }).add({
     				  msg:'0.3',
     				  id:'0.3',
     			  }).add({
     				  msg:'0.38',
     				  id:'0.38',
-    			  }).add({
-    				  msg:'0.4',
-    				  id:'0.4',
-    			  }).add({
-    				  msg:'0.45',
-    				  id:'0.45',
-    			  }).add({
-    				  msg:'0.5',
-    				  id:'0.5',
-    			  }).add({
-    				  msg:'0.55',
-    				  id:'0.55',
-    			  }).add({
-    				  msg:'0.6',
-    				  id:'0.6',
     			  });
             	jselect.show();
             });
