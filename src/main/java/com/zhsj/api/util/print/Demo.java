@@ -12,6 +12,11 @@ import org.aspectj.weaver.ast.Var;
 import com.zhsj.api.util.print.libPrint.CloudPrinter;
 
 public class Demo {
+	/*
+	 * 1Byte = 	8 bits
+	 * 1kb = 1024Byte
+	 * 1MB = 1024Kb
+	 */
     static String url = "http://weixin.qq.com/r/lUyOlhXEYEgfrVH19xmH";
 	public static void main(String[] args) throws Exception{
 		String device_id = "1083";
@@ -21,11 +26,12 @@ public class Demo {
 		byte[] content = getContent();
 		int len = 0;
 		for(Byte b:content){
-//			System.err.println(b);
+			System.err.println(b);
 			len ++;
 		}
-		System.err.println(len*8);
-		System.err.println(len*8/1024);
+		System.err.println("------------------------------");
+		System.err.println(len);
+//		System.err.println(len*8/1024);
 //		String result  =PrinterUtil.requestPrintPost(device_id, 
 //				secertKey, content );
 //		System.err.println(result);
