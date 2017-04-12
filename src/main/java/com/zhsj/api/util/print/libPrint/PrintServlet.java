@@ -101,7 +101,7 @@ public class PrintServlet {
 		System.out.println("打印数据开始！");
 		
 		try {
-			printParkingTicket(device_id,"REGO","2016-11-24",10);
+			printParkingTicket(device_id,"智慧商街demo","2017-11-24",1000);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

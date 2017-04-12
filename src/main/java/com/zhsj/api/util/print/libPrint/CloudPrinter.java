@@ -66,16 +66,15 @@ public class CloudPrinter {
 	/**
 	 * 停车券 两次回车换行
 	 */
-	public static final String  PARKING_TICKET = "瑞工停车券\r\n\r\n";
+	public static final String  PARKING_TICKET = "智慧商街\r\n\r\n";
 	/**
 	 * 微信扫一扫
 	 */
 	public static final String  SWEEP = "微信扫一扫可保存本券\r\n";
-	
 	/**
 	 * 二二维码 停车券url
 	 */
-	public static final String  PARKING_TICKET_URL = "http://www.baidu.com";
+	public static final String  PARKING_TICKET_URL = "http://weixin.qq.com/r/lUyOlhXEYEgfrVH19xmH";
 	/**
 	 * 注:.....
 	 */

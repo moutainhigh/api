@@ -7,6 +7,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import org.aspectj.weaver.ast.Var;
+
+import com.zhsj.api.util.print.libPrint.CloudPrinter;
+
 public class Demo {
     static String url = "http://weixin.qq.com/r/lUyOlhXEYEgfrVH19xmH";
 	public static void main(String[] args) throws Exception{
@@ -15,9 +19,21 @@ public class Demo {
 //		System.err.println(PrinterUtil.queryState(device_id, secertKey));
 		
 		byte[] content = getContent();
-		String result  =PrinterUtil.requestPrintPost(device_id, 
-				secertKey, content );
-		System.err.println(result);
+		int len = 0;
+		for(Byte b:content){
+//			System.err.println(b);
+			len ++;
+		}
+		System.err.println(len*8);
+		System.err.println(len*8/1024);
+//		String result  =PrinterUtil.requestPrintPost(device_id, 
+//				secertKey, content );
+//		System.err.println(result);
+		
+//		String initial = CloudPrinter.PRINTER_INIT;
+//		byte[] initByte = PrinterUtil.hexStringToBytes(initial);
+//		String printInitial = PrinterUtil.requestPrintPost(device_id,secertKey, initByte);
+//		System.out.println("print01" + printInitial);
 //		getC(device_id,secertKey,"测试","2017-04-11",1000);
 	}
 	
@@ -31,7 +47,7 @@ public class Demo {
 		byte[] titleSettingByte = PrinterUtil.hexStringToBytes(tilteSetting);
 		byteBuffer.put(titleSettingByte);
 		//3、title设置
-		String title = "智慧商街小票testDemo\r\n";
+		String title = "智慧商街小票testDemo\r\n\r\n";
 		byte[] titleByte = title.getBytes(CloudPrinter.CHARSET);
 		byteBuffer.put(titleByte);
 		//content 设置格式
@@ -45,14 +61,14 @@ public class Demo {
 		String c_industry = "行业:IT科技-互联网|电子商务\r\n";
 		String c_example = "内容示例:您好,这是您的消费电子小票\r\n";
 		String c_store_name = "商店名称:小小花便利店\r\n";
-//		String c_store_no = "单号:12845662645\r\n";
-//		String c_pay_type = "支付方式:现金\r\n";
-//		String c_sum = "合计:88元\r\n";
-//		String c_date = "时间:2017年4月11日  12:12:56\r\n";
-//		String c_thinks = "感谢您的惠顾!";
+		String c_store_no = "单号:12845662645\r\n";
+		String c_pay_type = "支付方式:现金\r\n";
+		String c_sum = "合计:88元\r\n";
+		String c_date = "时间:2017年4月11日  12:12:56\r\n";
+		String c_thinks = "感谢您的惠顾!";
 		contentBuffer.append(c_no).append(c_title)
-		.append(c_industry).append(c_example).append(c_store_name);
-//		.append(c_store_no).append(c_pay_type).append(c_sum).append(c_date).append(c_thinks);
+		.append(c_industry).append(c_example).append(c_store_name)
+		.append(c_store_no).append(c_pay_type).append(c_sum).append(c_date).append(c_thinks);
 		byte[] contentByte = contentBuffer.toString().getBytes(CloudPrinter.CHARSET);
 		byteBuffer.put(contentByte);
 //		二维码

@@ -90,16 +90,18 @@ public class CloudPrinter {
 	 * 1b2128 倍宽倍高 
 	 * 1b4501 加粗 
 	 * 1d2111 字体大小
+	 * 1b337f 行高
 	 */
-	public static final String  TITLESE_TTING = "1b61011b21281b45011d21111b337f";
+	public static final String  TITLESE_TTING = "1b61011b21281b45011d2111";
 	/**
 	 * 设置内容格式
 	 * 1b6101 居中 
 	 * 1b2100 取消倍宽倍高 
 	 * 1b4501 取消加粗 
 	 * 1d2111 字体默认大小
+	 * 1b332f 行高
 	 */
-	public static final String  CONTENT_SETTING = "1b61001b21001b45001d21001b332f";
+	public static final String  CONTENT_SETTING = "1b61001b21001b45001d2100";
 	/**
 	 * 设置公司内容格式
 	 * 1b6101 居中 
@@ -114,7 +116,7 @@ public class CloudPrinter {
 	 * 1d5a02 打印二维码
 	 * 1b5a004c06 二维码类型 和 大小 
 	 */
-	public static final String  QRCODE_SETTING = "1b61011d5a021b5a004c061b330f";
+	public static final String  QRCODE_SETTING = "1b61011d5a021b5a004c06";
 	
 	/**
 	 * 打印机格式初始化
