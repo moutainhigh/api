@@ -4,6 +4,8 @@ import com.zhsj.api.constants.ResultStatus;
 import com.zhsj.api.service.AccountService;
 import com.zhsj.api.service.ManagerService;
 import com.zhsj.api.util.CommonResult;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +55,9 @@ public class ManagerController {
         logger.info("#ManagerController.login# code={},state={},appid={}", code,state,appid);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("error");
+        if(StringUtils.isEmpty(code) || StringUtils.isEmpty(state)){
+        	return modelAndView;
+        }
         try {
             Map<String,String> result = managerService.loginByOpenId(code,state);
             if(ResultStatus.RESULT_ERROR.equals(result.get(ResultStatus.RESULT_KEY))){
@@ -88,6 +93,9 @@ public class ManagerController {
     @ResponseBody
     public Object bindWeChat(String account,String password,String openId,String appId) {
         logger.info("#ManagerController.bindWeChat# account={},password={},openId={},appId={}", account, password, openId,appId);
+        if(StringUtils.isEmpty(account) || StringUtils.isEmpty(password)){
+        	 return CommonResult.build(1, "false");
+        }
         int num = accountService.updateOpenId(account, password, openId,appId);
         if(num > 0){
             return CommonResult.build(0, "",appId);

@@ -13,8 +13,7 @@
         }
     </script>
 </head>
-    <input type="button" value="电子账户开户" onclick="opendAcount()"/>
-    <input type="button" value="电子账户登录" onclick="login()"/>
-<iframe id="iframe" style="display: block;margin-top: 20px" src="https://www.mszxyh.com/wapserver/outer/index.html?Page=login&ChannelId=mszx02279" height="600px"></iframe>
+<body>
+	<h1>hello word</h1>
 </body>
 </html>

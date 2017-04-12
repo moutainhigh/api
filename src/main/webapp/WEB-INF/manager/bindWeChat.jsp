@@ -145,10 +145,14 @@
         });
     });
     function _submit(){
-        var account = $("#account").val();
-        var password = $("#password").val();
+        var account = $.trim($("#account").val());
+        var password = $.trim($("#password").val());
         var openId = $("#openId").val();
         var appId = $("#appId").val();
+        if(account=="" ||password=="" ){
+        	jalert.show("请输入帐号或密码");
+        	return;
+        }
         $.post("./bindWeChat",{"account":account,"password":password,"openId":openId,"appId":appId},function(data){
             if(data.code == 0){
                 location.href = "./index?appId="+data.data;

@@ -1,6 +1,8 @@
 package com.zhsj.api.interceptors;
 
 import com.alibaba.fastjson.JSON;
+import com.zhsj.api.util.WebUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -26,27 +28,27 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public void handleUnexpectedServerError(HttpServletRequest request, HttpServletResponse response, Exception ex) {
-//    	String url = request.getRequestURI();
-//    	String ua = request.getHeader("user-agent");
-//    	String head = JSON.toJSONString(WebUtils.getHeaders(request));
-//    	String param = WebUtils.getParams(request);
-//    	logger.error("Api request exception ua={} url={} head={} param={}", ua, url, head, param, ex);
+    	String url = request.getRequestURI();
+    	String ua = request.getHeader("user-agent");
+    	String head = JSON.toJSONString(WebUtils.getHeaders(request));
+    	String param = WebUtils.getParams(request);
+    	logger.error("Api request exception ua={} url={} head={} param={}", ua, url, head, param, ex);
 //
 //    	// 记录不支持请求类型日志, 没有进入拦截器
 //		if (ex instanceof HttpRequestMethodNotSupportedException) {
 //			AccessProcesser.preInitArgs(request);
 //		}
-//    	sendFailResponse(response, SysErrorCode.SYSTEM_ERROR);
-        logger.error("e={}", ex.getMessage(),ex);
+    	sendFailResponse(response);
+//        logger.error("e={}", ex.getMessage(),ex);
     }
     
     private void sendFailResponse(HttpServletResponse response) {
-//    	DataResponse resp = new DataResponse(errorCode);
-//    	String json = resp.toJson().toJSONString();
-//    	// 记录access日志
-//    	AccessProcesser.postResultArgs(json, "ApiExceptionHandler.handleUnexpectedServerError()", 0, resp.getCode());
-//
-//    	WebUtils.writeJson(response, json);
+    	String html = "<html><body>";
+    	html+="<h2>出错了,请重新操作</h2>";
+    	html+="</body></html>";
+    			
+    	
+    	WebUtils.writeHtml(response, html);
     }
     
 }  

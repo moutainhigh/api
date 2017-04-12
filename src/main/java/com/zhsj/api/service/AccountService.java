@@ -39,6 +39,9 @@ public class AccountService {
         logger.info("#AccountService.updateOpenId# account={},password={},openId={},appId={}",account,password,openId,appId);
         try{
             AccountBean accountBean = tbAccountDao.getByAccount(account);
+            if(accountBean == null){
+            	return 0;
+            }
             String name = accountBean.getName();
             String headImg = accountBean.getHeadImg();
             if(!StringUtils.isEmpty(openId) && (StringUtils.isEmpty(name) || StringUtils.isEmpty(headImg))){
