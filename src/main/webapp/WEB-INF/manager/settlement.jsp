@@ -144,7 +144,7 @@
                        <label>费率</label>
                        <div class="sh-right">
                           <div class="js_time">
-                               <span id="_rate" data-id="0.38">0.38</span>
+                               <span id="_rate" data-id="0.6">0.6</span>
                         </div>
                      </div>
                    </div>
@@ -237,6 +237,12 @@
     			  }).add({
     				  msg:'0.38',
     				  id:'0.38',
+    			  }).add({
+    				  msg:'0.45',
+    				  id:'0.45',
+    			  }).add({
+    				  msg:'0.6',
+    				  id:'0.6',
     			  });
             	jselect.show();
             });
