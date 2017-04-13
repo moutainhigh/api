@@ -70,8 +70,8 @@
     </style>
 </head>
 <body>
-    <input type="hidden" name="auth" value="${auth}">
-    <input type="hidden" name="id" value="${id}">
+    <input type="hidden" name="auth" value="${auth}" id="auth">
+    <input type="hidden" name="id" value="${id}" id="id">
     <div class="container">
         <section class="f">
             <div class="row">

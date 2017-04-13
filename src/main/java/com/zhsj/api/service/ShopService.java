@@ -514,6 +514,7 @@ public class ShopService {
     		if(!(sab.getPassword()).equals(Md5.encrypt(storeAccountBean.getPassword()))){
     			return CommonResult.build(2, "密码不匹配");
     		}else{
+    			storeAccountBean.setPassword(Md5.encrypt(storeAccountBean.getPassword()));
     			tbStoreAccountDao.updateStoreAccount(storeAccountBean);
     		}
     		return CommonResult.success("success");

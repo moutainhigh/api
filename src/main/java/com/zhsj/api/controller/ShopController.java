@@ -415,7 +415,7 @@ public class ShopController {
     	logger.info("#ShopController.toModifyPassWord #auth = {},id = {}", auth, id);
     	ModelAndView mv = new ModelAndView();
     	mv.addObject("auth",auth);
-//    	mv.addObject("StoreAccount",shopService.getStoreAccountById(id));
+    	mv.addObject("id",id);
     	mv.setViewName("./managerStaff/modifyPassWord");
     	return mv;
     }
@@ -452,11 +452,10 @@ public class ShopController {
     @ResponseBody
     public Object updateStoreAccount(StoreAccountBean storeAccountBean,String auth){
     	logger.info("#ShopController.updateStoreAccount #storeAccountBean == {},auth = {}",storeAccountBean,auth);
-    	
     	return shopService.updateStoreAccount(storeAccountBean);
     }
     
-    @RequestMapping(value = "updateStoreAccountPw" ,method = RequestMethod.POST)
+    @RequestMapping(value = "updateStoreAccountPw" )
     @ResponseBody
     public Object updateStoreAccountPw(StoreAccountBean storeAccountBean,String auth,String newPassWord){
     	logger.info("#ShopController.updateStoreAccountPw #stoeAccountBean == {}, auth = {}, newPassWord = {}",storeAccountBean,auth,newPassWord);
