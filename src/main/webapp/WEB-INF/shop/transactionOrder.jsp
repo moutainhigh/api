@@ -60,7 +60,7 @@ pageEncoding="UTF-8"%>
                 </p>
                 <p class="clearfix">
                     <span class="span-label">收款门店</span>
-                    <span class="span-result">${order.storeName}</span>
+                    <span class="span-result" id="storeName"></span>
                 </p>
             </div>
         </section>
@@ -87,7 +87,7 @@ pageEncoding="UTF-8"%>
 
     </div>
     <footer>
-        <div class="footer" ontouchend="window.close()">
+        <div class="footer" id="logout" >
             <span>关闭</span>
         </div>
 
@@ -101,13 +101,17 @@ pageEncoding="UTF-8"%>
     })
 
     function load(){
+    	 $("#logout").on("click",function(){WeixinJSBridge.call('closeWindow');});
+    	
         var price = "￥"+parseFloat(${order.planChargeAmount} - ${order.actualChargeAmount}).toFixed(2);
         var time = ${order.ctime*1000};
         var status = ${order.status};
         var payMethod = ${order.payMethod}==1?"微信支付":"支付宝支付";
+        var storeName =  '${order.storeName}';
         $("#_ctime").text(new Date(time).Format("yyyy-MM-dd hh:mm:ss"));
         $("#payMethod").text(payMethod);
         $("#discountPrice").text(price);
+        $("#storeName").text(storeName);
         if(status == 1){
             $("#payStatus").text("支付成功");
         }else if(status == 2){

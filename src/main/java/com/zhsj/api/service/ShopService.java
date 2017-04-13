@@ -267,10 +267,7 @@ public class ShopService {
         if(orderBean == null){
             return orderBean;
         }
-        StoreBean storeBean = LoginUserUtil.getStore();
-        if (storeBean == null){
-           storeBean = tbStoreDao.getStoreByNo(orderBean.getStoreNo());
-        }
+        StoreBean storeBean = tbStoreDao.getStoreByNo(orderBean.getStoreNo());
         orderBean.setStoreName(storeBean.getName());
         return orderBean;
     }
