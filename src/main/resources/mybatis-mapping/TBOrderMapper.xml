@@ -190,9 +190,9 @@
         
         
      <select id="getByStoreNoAndUserId" resultType="com.zhsj.api.bean.result.CountMember">
-       select count(1) count, sum(actual_charge_amount) sum from tb_order
+       select count(1) count, IFNULL(SUM(actual_charge_amount),0) sum from tb_order
        <where>
-            store_no = #{storeNo} and user_id = #{userId}
+            store_no = #{storeNo} and user_id = #{userId} and status = 1
        </where>
      </select>   
      
