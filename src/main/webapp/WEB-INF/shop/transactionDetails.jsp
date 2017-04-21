@@ -16,6 +16,7 @@ pageEncoding="UTF-8"%>
     <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
     <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
+    <script type="text/javascript" src="../resource/js/jquery.select.js"></script>
     <link rel="stylesheet" href="../resource/mobiscroll/css/mobiscroll.custom-3.0.0-beta2.min.css">
     <script src="../resource/mobiscroll/js/mobiscroll.custom-3.0.0-beta2.min.js"></script>
     <style type="text/css">
@@ -533,15 +534,15 @@ pageEncoding="UTF-8"%>
                            <div class="wwt-find-con">
                                <div class="select-store">
                                    <div class="select-store-default" id="store" data-val="-1">请选择门店</div>
-                                   <div class="select-store-select">
-                                       <ul>
-                                           <c:forEach items="${storeList}" var="store">
-                                               <li data-id="${store.storeNo}">
-                                                   <span>${store.name}</span>
-                                               </li>
-                                           </c:forEach>
-                                       </ul>
-                                   </div>
+<!--                                    <div class="select-store-select"> -->
+<!--                                        <ul> -->
+<!--                                            <c:forEach items="${storeList}" var="store"> -->
+<!--                                                <li data-id="${store.storeNo}"> -->
+<!--                                                    <span>${store.name}</span> -->
+<!--                                                </li> -->
+<!--                                            </c:forEach> -->
+<!--                                        </ul> -->
+<!--                                    </div> -->
                                </div>
                            </div>
                            <div class="wwt-find-con reset-find">
@@ -584,6 +585,9 @@ pageEncoding="UTF-8"%>
 </body>
 </html>
 <script>
+
+       
+    
     var auth = "${auth}";
     var payMethod = "${payMethod}";
     var startTime = "${startTime}";
@@ -596,13 +600,32 @@ pageEncoding="UTF-8"%>
 
     $(function(){
         load();
-    })
+        
+       $("#store").on("click",function(){
+	       jselect.operateObj.curObj = $("#store");
+	       jselect.operateObj.defaultsel = $(this).attr("data-id");
+	 	   jselect.init();
+	 	   <c:forEach items="${storeList}" var="store">
+	 		   jselect.add({
+	 				  msg:"${store.name}",
+	 				  id:"${store.storeNo}",
+	 		   });
+	 	   </c:forEach>
+	 	   jselect.show();
+       });
+    });
     function load(){
         search(pageNo);
     }
 
     function search(pageNo){
-        console.log(pageNo);
+//         console.log(pageNo);
+           if($("#store").attr("data-id") != "" || $("#store").attr("data-id") != undefined){
+        	   storeNo = $("#store").attr("data-id");
+           }
+           if(storeNo == "" || storeNo == null){
+        	   storeNo = "-1";
+           }
         var json = {"auth":auth,"pageNo":pageNo,"pageSize":10,"payMethod":payMethod,"startTime":startTime,"endTime":endTime,"status":orderStatus,"storeNo":storeNo};
         $.post("./transactionDetails",json,function(obj){
             if(obj.code == 0){
