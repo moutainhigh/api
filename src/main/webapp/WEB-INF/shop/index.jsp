@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
+<%@ taglib prefix="zhsj" uri="http://www.zhsj.com/mytag" %>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -16,7 +17,9 @@ pageEncoding="UTF-8"%>
     <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
 
 </head>
-<body>
+<body>ff
+<zhsj:hasUrlPerm link="dd">fffdd</zhsj:hasUrlPerm>
+dd
 <input value="${auth}" id="auth" name="auth" type="hidden">
    <div class="container">
           <section class="f1 clearfix">

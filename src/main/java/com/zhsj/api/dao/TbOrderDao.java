@@ -4,6 +4,7 @@ package com.zhsj.api.dao;
 import com.zhsj.api.bean.result.CountDealBean;
 import com.zhsj.api.bean.result.CountDiscount;
 import com.zhsj.api.bean.result.CountMember;
+import com.zhsj.api.bean.result.StoreCountResult;
 import com.zhsj.api.util.db.DynamicDataSource;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.util.db.DS;
@@ -101,5 +102,15 @@ public interface TbOrderDao {
 	Integer countOrgDiscountPrice(@Param("storeNo")String storeNo,
 								  @Param("startTime") int startTime,
 								  @Param("endTime")int endTime);
+	
+	StoreCountResult countStore(@Param("storeNo")String storeNo,
+								@Param("parentStoreNo")String parentStoreNo,
+								  @Param("startTime") int startTime,
+								  @Param("endTime")int endTime);
+	
+	int countStoreRefund(@Param("storeNo")String storeNo,
+						@Param("parentStoreNo")String parentStoreNo,
+						 @Param("startTime") int startTime,
+						  @Param("endTime")int endTime);
     
 }
