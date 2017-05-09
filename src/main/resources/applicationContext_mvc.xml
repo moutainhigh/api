@@ -75,6 +75,7 @@
             <mvc:mapping path="/manager/**" />
             <mvc:mapping path="/shop/**" />
             <mvc:mapping path="/discount/**" />
+            <mvc:mapping path="/mchAdd/**" />
             <mvc:exclude-mapping path="/manager/index" />
             <mvc:exclude-mapping path="/manager/login" />
             <mvc:exclude-mapping path="/manager/bindWeChat" />
