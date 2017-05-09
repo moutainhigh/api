@@ -101,5 +101,9 @@ public interface TbOrderDao {
 	Integer countOrgDiscountPrice(@Param("storeNo")String storeNo,
 								  @Param("startTime") int startTime,
 								  @Param("endTime")int endTime);
+	
+	List<OrderBean> getByStatusAndCtime(@Param("status")int status,
+										@Param("startTime")int startTime,
+										@Param("endTime")int endTime);
     
 }

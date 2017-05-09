@@ -3,7 +3,6 @@ package com.zhsj.api.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zhsj.api.bean.*;
-import com.zhsj.api.constants.OrderStatus;
 import com.zhsj.api.dao.*;
 import com.zhsj.api.util.*;
 import com.zhsj.api.util.minsheng.CertUtil;
@@ -12,6 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
 import java.util.*;
 
 /**
@@ -22,263 +23,9 @@ public class MinshengService {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MinshengService.class);
 
 	@Autowired
-	private TbStorePayInfoDao bmStorePayInfoDao;
+	private TbStorePayInfoDao tbStorePayInfoDao;
 	@Autowired
 	private OrderService orderService;
-
-    /*此二字段由民生提供给各个商户*/
-//	static String  payKey = "85a6c4e20bf54505bea8e75bc870d587";//此字符串由民生提供，作为商户的唯一标识
-//	static String  paySec = "60f811a8b472495fa6c656c507f44cdc";//此字符串由民生提供，用作商户投递信息加密用，请妥善保管，请只放在服务器端
-
-//    public Map payWeChat(PayBean payBean,String hostName){
-//		Map map = new HashMap();
-//		try{
-//			String storeNo = payBean.getStoreNo();
-//			if(StringUtils.isEmpty(storeNo)){
-//				map.put("return_code","FAIL");
-//				return map;
-//			}
-//			//获定单号
-//			String orderNo = StoreUtils.getOrderNO(storeNo);
-//			payBean = this.calDiscount(payBean);
-//			StorePayInfo storePayInfo = prePay(payBean,orderNo);
-//			double orderPrice = Arith.sub(payBean.getOrderPrice(), payBean.getDiscountPrice());
-//			if(orderPrice <= 0){
-//				orderPrice = 0.01;
-//			}
-//			//调用接口
-//			Map<String, Object> parameters = new HashMap<String, Object>();
-//			parameters.put("order_price", String.valueOf(orderPrice)); //支付费用单位：元，支付一分钱
-//			parameters.put("pay_way_code", "WXF2F");//当面付标识
-//			parameters.put("order_no", orderNo); ////入驻商户号+yyyyMMddHHmmss
-//			parameters.put("order_date", new SimpleDateFormat("yyyyMMdd").format(new Date()));
-//			parameters.put("order_time", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-//			parameters.put("paykey", storePayInfo.getField1());//此字符串由民生提供，作为商户的唯一标识
-//			parameters.put("product_name", storePayInfo.getStoreName()+"-支付"); //产品名称，商户根据自己的需求填写
-//			parameters.put("order_ip", hostName); //发起交易的服务器地址
-//			parameters.put("remark", storePayInfo.getStoreName()+"-支付"); //附件内容
-//			parameters.put("order_period", "5");   //必填
-//			parameters.put("notify_url", "http://wwt.bj37du.com/api/pay/payNotifyWeChat");//必填，请填写通知地址
-//			parameters.put("field1", payBean.getOpenId()); //可不填
-//			parameters.put("field2", ""); //可不填，建议填写代理商名称
-//			parameters.put("field3", "");
-//			parameters.put("field4", "");
-//			parameters.put("field5", "");
-//			String sign = getSign(parameters, storePayInfo.getField2());////paySec 此字符串由民生提供，用作商户投递信息加密用，请妥善保管，请只放在服务器端
-//			parameters.put("sign",sign);
-//			String postUrl = MtConfig.getProperty("ms_URL", "http://115.159.235.109:8208")+"/qthd-pay-web-gateway/scanPay/wxPrePay";
-//			String result = HttpClient.sendPost(postUrl, parameters);
-//			map = JSON.parseObject(result, Map.class);
-//			map.put("orderId",orderNo);
-//			logger.info("#MinshengService.payWeChat# result={}",result);
-//		}catch (Exception e){
-//			logger.error("#MinshengService.payWeChat e={}#",e.getMessage(),e);
-//			map.put("return_code","FAIL");
-//		}
-//		return map;
-//	}
-//
-//	public Map<String,String> payAli(PayBean payBean,String hostName){
-//		Map map = new HashMap();
-//		try{
-//			String storeNo = payBean.getStoreNo();
-//			if(StringUtils.isEmpty(storeNo)){
-//				map.put("return_code","FAIL");
-//				return map;
-//			}
-//			//获定单号
-//			String orderNo = StoreUtils.getOrderNO(storeNo);
-//			payBean = this.calDiscount(payBean);
-//			StorePayInfo storePayInfo = prePay(payBean, orderNo);
-//			//调用接口
-//			double orderPrice = Arith.sub(payBean.getOrderPrice(), payBean.getDiscountPrice());
-//			if(orderPrice <= 0){
-//				orderPrice = 0.01;
-//			}
-//			Map<String, Object> parameters = new HashMap<String, Object>();
-//			parameters.put("buyer_id", payBean.getBuyerId()); // 支付费用单位：元，支付一分钱
-//			parameters.put("order_price", orderPrice); // 支付费用单位：元，支付一分钱
-//			parameters.put("paykey", storePayInfo.getField1());// 此字符串由民生提供，作为商户的唯一标识
-//			parameters.put("order_date", new SimpleDateFormat("yyyyMMdd").format(new Date()));
-//			parameters.put("order_time", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-//			parameters.put("store_id", storeNo); // 附件内容
-//			parameters.put("operator_id", "oper001"); //
-//			parameters.put("order_ip", hostName); // 发起交易的服务器地址
-//
-//			parameters.put("order_no", orderNo); //// 入驻商户号+yyyyMMddHHmmss
-//			parameters.put("product_name", storePayInfo.getStoreName()+"-支付"); // 产品名称，商户根据自己的需求填写
-//			parameters.put("remark", storePayInfo.getStoreName()+"-支付"); // 附件内容
-//
-//			parameters.put("order_period", "5"); // 必填 ，分钟
-//
-//			String sign = getSign(parameters, storePayInfo.getField2());//// paySec
-//			//// 此字符串由民生提供，用作商户投递信息加密用，请妥善保管，请只放在服务器端
-//			parameters.put("sign", sign);
-//			String postUrl = MtConfig.getProperty("ms_URL","http://115.159.235.109:8208") + "/qthd-pay-web-gateway/scanPay/createAliFixPayEx";
-//			String result = HttpClient.sendPost(postUrl, parameters);
-//			map = JSON.parseObject(result, Map.class);
-//			map.put("orderId",orderNo);
-//			logger.info("#MinshengService.payAli# result map={}", map);
-//
-//		}catch (Exception e){
-//			logger.error("#MinshengService.payAli e={}#",e.getMessage(),e);
-//			map.put("return_code","FAIL");
-//		}
-//		return map;
-//	}
-//
-//	private PayBean calDiscount(PayBean payBean){
-//		List<Long> discountIdList = tbStoreBindDiscountDao.getDiscountIdByStoreNo(payBean.getStoreNo());
-//		if(discountIdList == null || discountIdList.isEmpty()){
-//			return payBean;
-//		}
-//		List<DiscountBean> disList = tbDiscountDao.getByIds(discountIdList);
-//		if(disList == null || disList.isEmpty()){
-//			return payBean;
-//		}
-//
-//		Map<Integer,DiscountBean> discountBeanMap = new HashMap<>();
-//		for(DiscountBean bean :disList){
-//			discountBeanMap.put(bean.getaType(),bean);
-//		}
-//		//是否有优惠1
-//		DiscountBean beant1 = discountBeanMap.get(DiscountATypeCons.unique.getType());
-//		//是否有优惠3
-//		DiscountBean beant3 = discountBeanMap.get(DiscountATypeCons.blend.getType());
-//		//是滞有优惠2
-//		DiscountBean beant2 = discountBeanMap.get(DiscountATypeCons.STORE.getType());
-//		if(beant1 != null){
-//			payBean = this.calDiscountProc(payBean,beant1,null);
-//		}else if(beant2 != null){
-//			payBean = this.calDiscountProc(payBean,beant2,beant3);
-//		}else if(beant3 != null){
-//			payBean = this.calDiscountProc(payBean,beant3,null);
-//		}
-//		return payBean;
-//	}
-//
-//	private PayBean calDiscountProc(PayBean payBean,DiscountBean bean1,DiscountBean bean2){
-//
-//		double disPrice = 0.0;
-//		List<Long> ids = new ArrayList<>();
-//		if(bean2 !=null){
-//			disPrice = this.getDiscountPrice(payBean,bean2);
-//			if(disPrice > 0){
-//				payBean.setDiscountType(bean2.getType());
-//				payBean.setDiscountId(bean2.getId());
-//				ids.add(bean2.getId());
-//			}
-//		}
-//
-//		double price = this.getDiscountPrice(payBean,bean1);
-//		if(price > 0){
-//			payBean.setDiscountType(bean1.getType());
-//			payBean.setDiscountId(bean1.getId());
-//			payBean.setDiscountPrice(price);
-//			ids.add(bean1.getId());
-//		}
-//		payBean.setDiscountIds(StringUtil.list2SqlString(ids));
-//		return payBean;
-//
-//	}
-//
-//	private double getDiscountPrice(PayBean payBean,DiscountBean discountBean){
-//		List<DiscountRuleBean> ruleBeans = tbDiscountRuleDao.getByDisId(discountBean.getId());
-//		if(ruleBeans == null || ruleBeans.isEmpty()){
-//			return 0;
-//		}
-//		DiscountRuleBean discountRuleBean = null;
-//		for(DiscountRuleBean bean :ruleBeans){
-//			if(payBean.getOrderPrice() >= bean.getExpendAmount()){
-//				if(discountRuleBean ==null || discountRuleBean.getExpendAmount() < bean.getExpendAmount()){
-//					discountRuleBean = bean;
-//				}
-//			}
-//		}
-//		if(discountRuleBean == null){
-//			return 0;
-//		}
-//		double discountPrice = 0.0f;
-//		if(discountBean.getType() == 2){
-//			int min = (int)(discountRuleBean.getDiscount1()*100);
-//			int max = (int)(discountRuleBean.getDiscount2()*100);
-//			Random random = new Random();
-//			int s = random.nextInt(max)%(max-min+1) + min;
-//			discountPrice = s/100.0;
-//		}else if(discountBean.getType() == 3){
-//			double discp = Arith.sub(1.0,Arith.div(discountRuleBean.getDiscount1(), 10.0, 3) );
-//			discountPrice = Arith.mul(payBean.getOrderPrice() , discp);
-//			discountPrice = Math.round((discountPrice-0.005)*100)/100.0; //四舍五入
-//		}else if(discountBean.getType() == 1){
-//			discountPrice = discountRuleBean.getDiscount1();
-//		}
-//
-//		if(discountRuleBean.getPlanAmount() == 0){
-//			return discountPrice;
-//		}
-//		if(discountRuleBean.getPlanAmount()-discountRuleBean.getActualAmount()-discountPrice < 0){
-//			return 0;
-//		}
-//		int num = tbDiscountRuleDao.updateActual(discountRuleBean.getId(),discountPrice);
-//		if(num > 0){
-//			return discountPrice;
-//		}else {
-//			return 0;
-//		}
-//
-//
-//	}
-//
-//	private StorePayInfo prePay(PayBean payBean,String orderNo){
-//		String storeNo = payBean.getStoreNo();
-//		//查询商家
-//		StoreBean storeBean = bmStoreDao.getStoreByNo(storeNo);
-//		if(storeBean == null){
-//			return null;
-//		}
-//		//查询商家绑定组织
-//		Long orgId = bmStoreBindOrgDao.getOrgIdByStoreNO(storeNo);
-//		//查询人员信息
-//		UserBean userBean = null;
-//		if(payBean.getPayMethod() == 1){
-//			userBean =bmUserDao.getUserByOpenId(payBean.getOpenId(),payBean.getPayMethod());
-//		}else if(payBean.getPayMethod() == 2){
-//			userBean =bmUserDao.getUserByOpenId(payBean.getBuyerId(),payBean.getPayMethod());
-//		}
-//		//查询商家支付方式
-//		StorePayInfo storePayInfo = bmStorePayInfoDao.getStorePayInfoByNO(storeNo);
-//		storePayInfo.setStoreName(storeBean.getName());
-//
-//		//保存定单
-//		OrderBean orderBean = new OrderBean();
-//		orderBean.setOrderId(orderNo);
-//		orderBean.setActualChargeAmount(payBean.getOrderPrice()-payBean.getDiscountPrice());
-//		orderBean.setPlanChargeAmount(payBean.getOrderPrice());
-//		orderBean.setStatus(0);
-//		orderBean.setDiscountType(0);
-//		orderBean.setDiscountId(0);
-//
-//		orderBean.setPayType(storePayInfo.getPayType());
-//		orderBean.setPayMethod(String.valueOf(payBean.getPayMethod()));
-//		orderBean.setStoreNo(storeNo);
-//		if(StringUtils.isEmpty(storeBean.getParentNo()) || "0".equals(storeBean.getParentNo())){
-//			orderBean.setParentStoreNo(storeBean.getStoreNo());
-//		}else {
-//			orderBean.setParentStoreNo(storeBean.getParentNo());
-//		}
-//		orderBean.setOrgId(orgId);
-//		orderBean.setUserId(userBean.getId());
-//
-//		orderBean.setUtime(DateUtil.unixTime());
-//		orderBean.setCtime(DateUtil.unixTime());
-//		orderBean.setOrgIds(storeBean.getOrgIds());
-//		orderBean.setSaleId(storeBean.getSaleId());
-//		orderBean.setDiscountType(payBean.getDiscountType());
-//		orderBean.setDiscountId(payBean.getDiscountId());
-//		orderBean.setDiscountIds(payBean.getDiscountIds());
-//		int num = bmOrderDao.insertOrder(orderBean);
-//		return storePayInfo;
-//	}
 
     /**
 	 * 获取参数签名
@@ -324,7 +71,7 @@ public class MinshengService {
 			List<String> payMethods = new ArrayList<>();
 			payMethods.add("1");
 			payMethods.add("2");
-			bmStorePayInfoDao.insertPayInfo(msStoreBean.getStoreNo(),2,payMethods,paykey,paysec,ali_rate,settlementType,json.toJSONString(),1);
+			tbStorePayInfoDao.insertPayInfo(msStoreBean.getStoreNo(),2,payMethods,paykey,paysec,ali_rate,settlementType,json.toJSONString(),1);
 		}catch (Exception e){
 			logger.error("#MinshengService.openAccount# e={}",e.getMessage(),e);
 			result = "系统出错";
@@ -372,101 +119,91 @@ public class MinshengService {
 		return rspMap;
 	}
 
-//	public boolean updateMerchantByPaykey(String storeNo,String wxRate,String aliRate,String settlementType) {
-//		boolean result = false;
-//		String url = MtConfig.getProperty("REQ_URL","")+"/updateMerchantByPaykey.do";
-//		try{
-//			StorePayInfo storePayInfo = bmStorePayInfoDao.getStorePayInfoByNO(storeNo);
-//			if(storePayInfo == null){
-//				return false;
-//			}
-//			Map<String, String> reqData = new HashMap<String, String>();
-//			reqData.put("paykey", storePayInfo.getField1()); //修改商户的paykey
-//			reqData.put("agent_no", MtConfig.getProperty("agent_no", "95272016121410000062"));//代理商编号
-//			reqData.put("wx_rate", wxRate); //微信费率
-//			reqData.put("ali_rate", aliRate);//支付宝费率
-//			reqData.put("settlement_type", settlementType);//商户结算周期
-//			String CERT_PATH_P12 = MtConfig.getProperty("CERT_PATH_P12","");
-//			String CERT_JKS_P12_PASSWORD = MtConfig.getProperty("CERT_JKS_P12_PASSWORD","");
-//			String signString = CertUtil.reqSign(MapUtil.coverMap2String(reqData), CERT_PATH_P12, CERT_JKS_P12_PASSWORD);
-//			reqData.put("sign", new String(signString)); // 签名后的字符串
-//			String stringData = MapUtil.getRequestParamString(reqData);
-////
-//			String reqBase64 = new String(CertUtil.base64Encode(stringData.getBytes("UTF-8")));
-//			String rspBase64 = SSLUtil.httpsPost(url, reqBase64);
-//			String rspData = new String(CertUtil.base64Decode(rspBase64.getBytes("UTF-8")));
-//			Map<String,String> resultMap = MapUtil.convertResultStringToMap(rspData);
-//			if("SUCCESS".equals(resultMap.get("result_code"))){
-//				JSONObject json = new JSONObject();
-//				json.put("aliRate",aliRate);
-//				json.put("wxRate",wxRate);
-//				json.put("settlementType",settlementType);
-//				bmStorePayInfoDao.updateByNo(json.toJSONString(),storeNo,wxRate,settlementType,"1");
-//				bmStorePayInfoDao.updateByNo(json.toJSONString(),storeNo,aliRate,settlementType,"2");
-//				return true;
-//			}
-//		} catch (Exception e){
-//			logger.error("#MinshengService.updateMerchantByPaykey# storeNO={},wxRate={},aliRate={},settlementType={}",storeNo,wxRate,aliRate,settlementType,e);
-//		}
-//		return result;
-//	}
-
-//	//查询更新状态，发通知
-//	public OrderBean paySuccess1(String orderNo){
-//		logger.info("#MinshengService.paySuccess# orderNo={}",orderNo);
-//		OrderBean orderBean = orderService.getByOrderId(orderNo);
-//		if(orderBean == null){
-//			return null;
-//		}
-//		if(orderBean.getPayMethod().contains("2")){
-//			ayncTaskUtil.commitAyncTask(new OrderSuccessAsync(orderBean));
-//		}
-//		return orderBean;
-//	}
-
-	//查询更新状态
-//	public String queryOrderAndUpdate(String orderNo){
-//		logger.info("#MinshengService.queryOrderAndUpdate# orderNo={}",orderNo);
-//		String result = queryOrder(orderNo);
-//		if(StringUtils.isEmpty(result)){
-//			return "";
-//		}
-//		if(OrderStatus.FAIL.equals(result) || OrderStatus.NOTPAY.equals(result)){
-//			orderService.updateOrderByOrderId(2,orderNo);
-//		}else if(OrderStatus.SUCCESS.equals(result)){
-//			orderService.updateOrderByOrderId(1,orderNo);
-//		}
-//		return result;
-//	}
-
-//	//查询订单状态
-//	public String queryOrder(String orderNo){
-//		logger.info("#MinshengService.queryOrder# orderNo={}",orderNo);
-//		String result = "";
-//		try {
-//			OrderBean orderBean = orderService.getByOrderId(orderNo);
-//			StorePayInfo storePayInfo = bmStorePayInfoDao.getStorePayInfoByNO(orderBean.getStoreNo());
-//			if(storePayInfo == null){
-//				return "";
-//			}
-//
-//			Map<String, Object> parameters = new HashMap<String, Object>();
-//			parameters.put("paykey",storePayInfo.getField1());
-//			parameters.put("order_no",orderNo);  //请自己试试自己发起的订单
-//			/////签名///
-//			String sign = getSign(parameters, storePayInfo.getField2());//
-//			parameters.put("sign",sign);
-//			String postUrl = MtConfig.getProperty("ms_URL","http://115.159.235.109:8208")+"/qthd-pay-web-gateway/scanPay/QueryReturnJson";
-//			String str = HttpClient.sendPost(postUrl, parameters);
-//			Map<String,Object> map = JSON.parseObject(str, Map.class);
-//			result = (String)map.get("result_code");
-//			logger.info("#MinshengService.queryOrder# orderNo={} result ={}",orderNo,result);
-//		}catch (Exception e){
-//			logger.error("#MinshengService.queryOrder# orderNo={}",orderNo,e);
-//			return "";
-//		}
-//		return result;
-//	}
+	
+	public String refundMoney(OrderBean orderBean,double price,int userId){
+		logger.info("#MinshengService.refundMoney# orderBean={},price{},userId={}",orderBean,price,userId);
+		String result = "SUCCESS";
+		try{
+			List<StorePayInfo> storePayInfos = tbStorePayInfoDao.getByStoreNoAndType(orderBean.getStoreNo(), orderBean.getPayType(), orderBean.getPayMethod());
+			if(CollectionUtils.isEmpty(storePayInfos)){
+				return "支付类型错误";
+			}
+			StorePayInfo storePayInfo = storePayInfos.get(0);
+			
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("paykey", storePayInfo.getField1());// 01b0e7c141634a1e8ed4c0bd3c51bb58
+			if ("1".equals(orderBean.getPayMethod())){
+				parameters.put("sub_app_id", storePayInfo.getAppId()); // 商家的微信公众号，必须和入驻二级商户号对应
+				parameters.put("pay_way_code", "WXF2F"); // 订单的支付方式 WXF2F,ALIF2F
+			}else{
+				parameters.put("sub_app_id", "");
+				parameters.put("pay_way_code", "ALIF2F"); // 订单的支付方式 WXF2F,ALIF2F
+			}
+				
+			parameters.put("order_no", orderBean.getOrderId()); // 请自己试试自己发起的订单
+			parameters.put("device_info", ""); // 目前保留，后期会用
+			// 入驻商户号+yyyyMMddHHmmss 商户发起的退款订单号
+			parameters.put("out_refund_no", "re"+orderBean.getOrderId());
+			parameters.put("order_price", String.valueOf(orderBean.getActualChargeAmount())); // 订单总金额 单位：圆
+			parameters.put("refund_fee", String.valueOf(price)); // 订单总金额
+			parameters.put("op_user_id", String.valueOf(userId)); // 操作员id,目前保留，后期会用
+			
+			///// 签名///
+			String sign = getSign(parameters, storePayInfo.getField2());// 此字符串由民生提供，用作商户投递信息加密用，请妥善保管，请只放在服务器端
+			parameters.put("sign", sign);
+			
+			String postUrl = MtConfig.getProperty("ms_URL","")+"/qthd-pay-web-gateway/scanPay/Refund";
+			String resultString = HttpClient.sendPost(postUrl, parameters);
+			logger.info("#MinshengService.refundMoney# orderBean={},result={}",orderBean,resultString);
+			Map<String,String> map = JSON.parseObject(resultString, Map.class);
+			if(!"SUCCESS".equals(map.get("result_code"))){
+				result = map.get("err_code_des");
+			}else {
+				result = "SUCCESS";
+			}
+		}catch (Exception e) {
+			result = "系统错误";
+			logger.error("#MinshengService.refundMoney# orderBean={}",orderBean,e);
+		}
+		return result;
+	}
+	
+	public String searchRefund(OrderBean orderBean){
+		logger.info("#MinshengService.searchRefund# orderBean={}",orderBean);
+		String result = "SUCCESS";
+		try{
+			List<StorePayInfo> storePayInfos = tbStorePayInfoDao.getByStoreNoAndType(orderBean.getStoreNo(), orderBean.getPayType(), orderBean.getPayMethod());
+			if(CollectionUtils.isEmpty(storePayInfos)){
+				return "支付类型错误";
+			}
+			StorePayInfo storePayInfo = storePayInfos.get(0);
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("paykey", storePayInfo.getField1());// 此字符串由民生提供，作为商户的唯一标识
+			parameters.put("out_refund_no", "re"+orderBean.getOrderId()); // 请自己试试自己发起的订单
+			parameters.put("device_info", ""); // 目前保留，后期会用
+			if ("1".equals(orderBean.getPayMethod())){
+				parameters.put("pay_way_code", "WXF2F"); // 订单的支付方式 WXF2F,ALIF2F
+			}else{
+				parameters.put("pay_way_code", "ALIF2F"); // 订单的支付方式 WXF2F,ALIF2F
+			}
+			///// 签名///
+			String sign = getSign(parameters, storePayInfo.getField2());//
+			parameters.put("sign", sign);
+			String postUrl = MtConfig.getProperty("ms_URL","")+"/qthd-pay-web-gateway/scanPay/QueryRefund";
+			String resultString = HttpClient.sendPost(postUrl, parameters);
+			logger.info("#MinshengService.searchRefund# orderBean={},result={}",orderBean,resultString);
+			Map<String,String> map = JSON.parseObject(resultString, Map.class);
+			if(!"SUCCESS".equals(map.get("result_code"))){
+				result = map.get("err_code_des");
+			}else {
+				result = "SUCCESS";
+			}
+		}catch (Exception e) {
+			result="系统异常";
+			logger.error("#MinshengService.searchRefund# orderBean={}",orderBean,e);
+		}
+		return result;
+	}
 
 	public static void main(String[] args) {
 //		new MinshengService().updateMerchantByPaykey("85a6c4e20bf54505bea8e75bc870d587","0.4","0.4","D0");
@@ -475,15 +212,22 @@ public class MinshengService {
 //		json.put("wxRate",Double.parseDouble("7.8"));
 //		json.put("settlementType","e");
 //
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("paykey","ffe91102af5a429e8bd2aba258e266a9");
-		parameters.put("order_no","1001170322710655045");  //请自己试试自己发起的订单
-		/////签名///
-		String sign = getSign(parameters, "bfc9a24ccd34474686230d825c03f00b");//
-		parameters.put("sign",sign);
-		String postUrl = MtConfig.getProperty("ms_URL","http://115.159.235.109:8208")+"/qthd-pay-web-gateway/scanPay/QueryReturnJson";
-		String str = HttpClient.sendPost(postUrl, parameters);
-		System.out.print(str);
+//		Map<String, Object> parameters = new HashMap<String, Object>();
+//		parameters.put("paykey","ffe91102af5a429e8bd2aba258e266a9");
+//		parameters.put("order_no","1001170322710655045");  //请自己试试自己发起的订单
+//		/////签名///
+//		String sign = getSign(parameters, "bfc9a24ccd34474686230d825c03f00b");//
+//		parameters.put("sign",sign);
+//		String postUrl = MtConfig.getProperty("ms_URL","http://115.159.235.109:8208")+"/qthd-pay-web-gateway/scanPay/QueryReturnJson";
+//		String str = HttpClient.sendPost(postUrl, parameters);
+//		System.out.print(str);
+		
+		OrderBean orderBean = new OrderBean();
+		orderBean.setActualChargeAmount(1);
+		orderBean.setOrderId("106745901705025244617621");
+		orderBean.setPayMethod("1");
+//		new MinshengService().refundMoney(orderBean);
+		new MinshengService().searchRefund(orderBean);
 	}
 
 }

@@ -23,6 +23,9 @@ public class OrderBean {
     private String orgIds;
     private long saleId;
     private String discountIds;
+    private String refundNo;
+    private double refundMoney;
+    private int payChannel;
 
     public long getCtime() {
         return ctime;
@@ -175,4 +178,38 @@ public class OrderBean {
     public void setDiscountIds(String discountIds) {
         this.discountIds = discountIds;
     }
+    
+
+	public String getRefundNo() {
+		return refundNo;
+	}
+
+	public void setRefundNo(String refundNo) {
+		this.refundNo = refundNo;
+	}
+
+	public double getRefundMoney() {
+		return refundMoney;
+	}
+
+	public void setRefundMoney(double refundMoney) {
+		this.refundMoney = refundMoney;
+	}
+
+	public int getPayChannel() {
+		return payChannel;
+	}
+
+	public void setPayChannel(int payChannel) {
+		this.payChannel = payChannel;
+	}
+
+	@Override
+	public String toString() {
+		return "OrderBean [orderId=" + orderId + ", planChargeAmount="
+				+ planChargeAmount + ", actualChargeAmount="
+				+ actualChargeAmount + ", status=" + status + ", storeNo="
+				+ storeNo + "]";
+	}
+    
 }

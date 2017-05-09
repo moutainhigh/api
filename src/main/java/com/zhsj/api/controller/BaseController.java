@@ -2,6 +2,7 @@ package com.zhsj.api.controller;
 
 import com.zhsj.api.bean.BusinessTypeBean;
 import com.zhsj.api.service.BaseService;
+import com.zhsj.api.service.OrderService;
 import com.zhsj.api.util.CommonResult;
 
 import org.slf4j.Logger;
@@ -24,6 +25,8 @@ public class BaseController {
 
     @Autowired
     private BaseService baseService;
+    @Autowired
+    private OrderService orderService;
 
     //微信可以访问到 网页授权域名
     @RequestMapping(value = "/accWeixin", method = RequestMethod.GET)
@@ -110,5 +113,19 @@ public class BaseController {
     @ResponseBody
     public Object addBusinessType(BusinessTypeBean mBean){
     	return CommonResult.success("", baseService.addBusinessType(mBean));
+    }
+    
+    @RequestMapping(value = "/refundMoney", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object refundMoney(String orderNo,double price,int userId){
+    	logger.info("#BaseController.refundMoney# orderNo={},price={},userId={}",orderNo,price,userId);
+    	return CommonResult.success("", orderService.refundMoney(orderNo, price, userId));
+    }
+    
+    @RequestMapping(value = "/queryRefund", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object queryRefund(String orderNo){
+    	logger.info("#BaseController.queryRefund# orderNo={}",orderNo);
+    	return CommonResult.success("", orderService.searchRefund(orderNo));
     }
 }

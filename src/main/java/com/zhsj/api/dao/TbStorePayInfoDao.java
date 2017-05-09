@@ -15,6 +15,10 @@ public interface TbStorePayInfoDao {
 
 
     List<StorePayInfo> getStorePayInfoByNO(@Param("storeNo") String storeNo);
+    
+    List<StorePayInfo> getByStoreNoAndType(@Param("storeNo") String storeNo,
+    										@Param("payType")int payType,
+    										@Param("payMethod")String payMethod);
 
     int insertPayInfo(@Param("storeNo")String storeNo,
                       @Param("payType")int payType,
