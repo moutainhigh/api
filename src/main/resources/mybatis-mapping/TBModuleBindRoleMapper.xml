@@ -16,7 +16,11 @@
             </when>
         </choose>
     </select>
-
-	
+ 
+	<select id="getRoleIdBymoduleId" resultType="int">
+		 SELECT role_id 
+       FROM tb_module_bind_role 
+       WHERE module_id=#{moduleId} and valid = 1
+	</select>
 
 </mapper>

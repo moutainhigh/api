@@ -18,7 +18,7 @@ pageEncoding="UTF-8"%>
 
 </head>
 <body>ff
-<zhsj:hasUrlPerm link="dd">fffdd</zhsj:hasUrlPerm>
+<zhsj:hasUrlPerm link="page/orderList1" auth="${auth}">fffdd</zhsj:hasUrlPerm>
 dd
 <input value="${auth}" id="auth" name="auth" type="hidden">
    <div class="container">

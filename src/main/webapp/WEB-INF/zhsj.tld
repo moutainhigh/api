@@ -20,6 +20,13 @@
             <type>java.lang.String</type>
             <description>示例：acApplication/forMain.do</description>
         </attribute>
+        <attribute>
+            <name>auth</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue><!-- 是否支持恶劣表达式 -->
+            <type>java.lang.String</type>
+            <description>示例：acApplication/forMain.do</description>
+        </attribute>
     </tag>
 
 
