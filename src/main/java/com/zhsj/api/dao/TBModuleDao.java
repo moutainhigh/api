@@ -1,7 +1,8 @@
 package com.zhsj.api.dao;
 
 
-import com.sun.tools.javac.util.List;
+import java.util.List;
+
 import com.zhsj.api.bean.ModuleBean;
 import com.zhsj.api.util.db.DS;
 import com.zhsj.api.util.db.DynamicDataSource;

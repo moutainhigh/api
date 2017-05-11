@@ -1,0 +1,140 @@
+.middle{
+    background: #eeeeee;
+}
+.top-tit{
+    left:0px;right:0px;
+    margin-left:auto;
+    margin-right:auto;
+    width:inherit;
+
+
+    text-align: center;
+    height: 0.88rem;
+    line-height: 0.88rem;
+    background: #fff;
+    font-size:0.36rem;
+}
+.today-money{
+    width:3.24rem;
+    height:1.62rem;
+    background: #6ebcce;
+    text-align: center;
+
+}
+.today-money h3{
+    font-size:12px;
+    padding-top:0.44rem;
+    padding-bottom:0.2rem;
+}
+.today-money p{
+    font-size:12px;
+}
+.receivables{
+    margin-top:0.2rem;
+    padding-top:0.2rem;
+    padding-left:0.36rem;
+    padding-right:0.36rem;
+    padding-bottom:0.2rem;
+    background: #FFFFFF;
+}
+.trade{
+    margin-top:0.2rem;
+}
+.trade-number{
+    background: #FFFFFF;
+    width: 33.3%;
+    text-align: center;
+    height:1.2rem;
+}
+.trade-number h2{
+    font-size:0.24rem;
+    padding-top:0.28rem;
+    padding-bottom:0.1rem;
+}
+.trade-number p{
+    font-size:0.2rem;
+}
+.trade-border{
+    border-right:0.01rem solid #ccc;
+}
+.shop-manager h1{
+    font-size:0.28rem;
+    padding-top:0.28rem;
+    padding-bottom:0.28rem;
+
+}
+.shop-tit{
+    border-left:0.1rem solid #6ebcce;
+
+    height: 0.3rem;
+}
+.shop-title{
+
+    padding-left:0.3rem;
+    font-size:0.3rem;
+    height: 0.3rem;
+}
+
+.shop-icon{
+    background: #fff;
+    border:0.01rem solid #ccc;
+}
+.shop-icon img{
+    width: 0.62rem;
+   /* height:0.55rem;*/
+}
+.shop-con{
+    width:33.3%;
+    text-align: center;
+}
+.shop-con p{
+    height: 0.44rem;
+    padding-top:0.6rem;
+    padding-bottom:0.8rem;
+
+}
+.shop-con h2{
+    padding-bottom:0.6rem;
+
+}
+.shop-border{
+    border-right:0.01rem solid #ccc;
+}
+.shop-manager .shop-border-no{
+    border-top:none;
+}
+/*小店样式结束*/
+
+.bottom{
+
+}
+.footer{
+    height: 1.2rem;!important;
+
+}
+
+.footer li{
+    width: 33%;
+
+    font-size:12px;
+
+}
+.foot-button img{
+    width:0.42rem;
+    height:0.38rem;
+}
+.foot-button{
+    padding-top:0.2rem;
+    padding-bottom:0.12rem;
+}
+.foot-name{
+    font-size:12px;
+    color: #00c618;
+
+}
+.footer .mine-color{
+    color: #ccc;
+}
+.footer .mine-small-bg{
+    color:#00c618;
+}

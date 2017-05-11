@@ -1,0 +1,82 @@
+.mine-title{
+    height: 3rem;
+    text-align: center;
+
+}
+.mine-title h3{
+    font-size:0.3rem;
+   /* padding-top:0.5rem;*/
+}
+.mine-title h4{
+    font-size:0.28rem;
+    padding-top:0rem;
+}
+.mine-title p{
+    padding-top:0.6rem;
+}
+.mine-list{
+
+    background: #fff;
+
+}
+.mine-list li{
+    line-height: 0.6rem;
+    padding-top:0.2rem;
+    border-bottom:0.01rem solid #ccc;
+    padding-bottom:0.2rem;
+    padding-left:0.24rem;
+    padding-right:0.24rem;
+    width:100%;
+
+}
+.mine-list .mine-list-no{
+    border-bottom:none;
+}
+.mine-list-tit{
+    padding-left:0.4rem;
+}
+.mine-list li span{
+    font-size:0.28rem;
+    display: inline-block;
+}
+.mine-list li strong{
+    font-size:0.26rem;
+    display: inline-block;
+
+
+
+}
+.mine-list li a{
+    display:inline-block;
+    font-size:0.28rem;
+}
+.mine-sign{
+    padding-left:4.4rem;
+}
+.mine-bg{
+    background: #eeeeee;
+    height: 0.26rem;
+}
+.mine-manager{
+    padding-left:0.4rem;
+}
+.mine-sign-manager{
+    padding-left:3.84rem;
+}
+.tab-mine{
+    height:10rem;
+}
+.mine-list li span img{
+    vertical-align:middle ;
+    width:20px;
+    height:20px;
+
+}
+.mine-list li a{
+    padding-left:0.3rem;
+}
+.mine-list li a img{
+    width:6px;
+    height:12px;
+    vertical-align:middle ;
+}

@@ -25,7 +25,10 @@
     <mvc:resources mapping="/resource/img/app/*.*" location="/WEB-INF/resource/img/app/" />
     <mvc:resources mapping="/resource/mobiscroll/css/*" location="/WEB-INF/resource/mobiscroll/css/"/>
     <mvc:resources mapping="/resource/mobiscroll/js/*" location="/WEB-INF/resource/mobiscroll/js/"/>
-
+    
+    <mvc:resources mapping="/resource/css/merchant/**" location="/WEB-INF/resource/css/merchant/"/>
+	<mvc:resources mapping="/resource/img/merchant/**" location="/WEB-INF/resource/img/merchant/" />
+	
 
 
     <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
@@ -94,7 +97,8 @@
     
     <mvc:interceptors>
         <mvc:interceptor>
-        	<mvc:mapping path="/module/**" />
+            <mvc:mapping path="/merchant/**" />
+            <mvc:exclude-mapping path="/merchant/test"/>
             <bean class="com.zhsj.api.interceptors.AuthInterceptor" />
         </mvc:interceptor>
     </mvc:interceptors>
