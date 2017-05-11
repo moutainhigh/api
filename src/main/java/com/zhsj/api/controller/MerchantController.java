@@ -91,4 +91,31 @@ public class MerchantController {
         modelAndView.addObject("auth", "21" + auth);
         return modelAndView;
     }
+    
+    @RequestMapping(value = "/store" , method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public ModelAndView store(String auth) throws UnsupportedEncodingException {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("./merchant/store");
+        modelAndView.addObject("auth", auth);
+        return modelAndView;
+    }
+    
+    @RequestMapping(value = "/assistant" , method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public ModelAndView assistant(String auth) throws UnsupportedEncodingException {
+    	 ModelAndView modelAndView = new ModelAndView();
+         modelAndView.setViewName("./merchant/assistant");
+         modelAndView.addObject("auth", auth);
+         return modelAndView;
+    }
+    
+    @RequestMapping(value = "/mine" , method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public ModelAndView mine(String auth) throws UnsupportedEncodingException {
+    	 ModelAndView modelAndView = new ModelAndView();
+         modelAndView.setViewName("./merchant/mine");
+         modelAndView.addObject("auth", auth);
+         return modelAndView;
+    }
 }

@@ -94,7 +94,7 @@ public class ModuleService {
 				 }
 				 
 				 List<ModuleBean> beanList = new ArrayList<>();
-				 for(ModuleBean be:beanList){
+				 for(ModuleBean be:beans){
 					 if(!moduleIds.contains(be.getId())){
 						 be.setUrl("");
 					 }
