@@ -71,7 +71,7 @@
 
         <!--开户手机-->
         <div class="settlement-box settlement-padd">
-            <span class="settlement-tit">开户手机:</span><span class="settlement-input"><input id="_accountPhone" value=${info.accountPhone } class="please-input" type="tel" placeholder="请输入手机号"/></span>
+            <span class="settlement-tit">开户手机:</span><span class="settlement-input"><input id="_accountPhone" value="${info.accountPhone }" class="please-input" type="tel" placeholder="请输入手机号"/></span>
         </div>
 
     </div>
@@ -156,6 +156,8 @@ function _submit(){
     	 jalert.show("请完整填写费率信息");
          return;
      }
+     $("#_submit").css("background","#d3d3d3");
+     $("#_submit").unbind("click");
      var jsonData = {"bankAccount":_bankAccount,"bankName":_bankName,"accountName":_accountName,
 				"accountIdCard":_accountIdCard,"accountPhone":_accountPhone,"wxRate":_wxRate,
 				"aliRate":_aliRate,
@@ -164,6 +166,10 @@ function _submit(){
 		  if(obj.code == 0){
 		      location.href = obj.data.url+"?auth="+obj.data.auth+"&storeNo="+obj.data.storeNo;
 		  }else{
+			  $("#_submit").css("background","#fc324a");
+	             $("#_submit").on("click",function(){
+	                 _submit();
+	             });
 		      jalert.show(obj.msg);
 		  }
 		});

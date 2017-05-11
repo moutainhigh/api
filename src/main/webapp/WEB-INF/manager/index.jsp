@@ -123,7 +123,7 @@ pageEncoding="UTF-8"%>
 
     function load(){
         $("#newInsert").on("click",function(){
-            window.open("./newInsert?auth="+auth) ;
+            window.open("../mchAdd/new?auth="+auth) ;
         });
         $("#opendAcount").on("click",function(){
             window.open("https://www.mszxyh.com/wapserver/outer/index.html?Page=login&ChannelId=mszx02279");

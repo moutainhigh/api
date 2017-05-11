@@ -211,7 +211,8 @@ function _submit(){
          jalert.show("邮箱填写错误");
          return;
      }
-     
+     $("#_submit").css("background","#d3d3d3");
+     $("#_submit").unbind("click");
      var _lat = 0;
      var _lon = 0;
      var auth = $("#auth").val();
@@ -226,6 +227,10 @@ function _submit(){
          if(obj.code == 0){
              location.href = obj.data.url+"?auth="+obj.data.auth+"&storeNo="+obj.data.storeNo;
          }else{
+        	 $("#_submit").css("background","#fc324a");
+             $("#_submit").on("click",function(){
+                 _submit();
+             });
              jalert.show(obj.msg);
          }
      });

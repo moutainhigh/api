@@ -12,6 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
 import java.util.*;
 
 /**
@@ -380,7 +382,11 @@ public class MinshengService {
 			Map<String,String> resultMap = this.mersettledV2(info);
 			if(!"SUCCESS".equals(resultMap.get("result_code"))){
 				return resultMap.get("error_msg");
+			}else if(StringUtils.isEmpty(resultMap.get("wx_sub_mch_id")) || 
+					StringUtils.isEmpty(resultMap.get("ali_sub_mch_id"))){
+				return resultMap.get("sub_msg");
 			}
+			
 			String paykey = resultMap.get("paykey");
 			String paysec = resultMap.get("paysec");
 			String ali_rate = resultMap.get("ali_rate");
@@ -416,7 +422,7 @@ public class MinshengService {
 			reqData.put("ali_rate", info.getAliRate());
 			reqData.put("service_phone", info.getPhone());
 			reqData.put("wx_business_type", String.valueOf(info.getBusinessType()));
-			reqData.put("ali_business_type","2016062900190196");
+			reqData.put("ali_business_type","2015050700000000");
 			reqData.put("ali_pid", "");
 			
 //			商户结算信息

@@ -104,13 +104,19 @@
          jalert.show("商家名称不能少于8个字符");
          return false;
      }
-
+     $("#_submit").css("background","#d3d3d3");
+     $("#_submit").unbind("click");
+     
      var jsonData = {"storeName":storeName,"storeAccount":storeAccount,"storeNo":storeNo,"auth":auth};
      $.post("./mchAdd",jsonData,function(obj){
          if(obj.code == 0){
              location.href = obj.data.url+"?auth="+obj.data.auth+"&storeNo="+obj.data.storeNo;
          }else{
              jalert.show(obj.msg);
+             $("#_submit").css("background","#fc324a");
+             $("#_submit").on("click",function(){
+                 _submit();
+             });
          }
      });
  }       
