@@ -1,6 +1,12 @@
 package com.zhsj.api.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.alibaba.fastjson.JSONObject;
+import com.mysql.fabric.xmlrpc.base.Array;
 import com.zhsj.api.bean.*;
 import com.zhsj.api.dao.*;
 import com.zhsj.api.util.Md5;
@@ -12,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Created by lcg on 17/1/28.
@@ -45,6 +52,8 @@ public class MchAddService {
     TbOrderDao tbOrder;
     @Autowired
     MinshengService minshengService;
+    @Autowired
+    TBCityCodeDao tbCityCodeDao;
     
     
     public String addMch(String storeName,String storeAccount,String storeNo,String auth){
@@ -111,19 +120,31 @@ public class MchAddService {
     }
     
     
-    public MchInfoAddBean getByStoreNo(String storeNo){
+    public Map<String, Object> getByStoreNo(String storeNo){
     	logger.info("#MchAddService.getByStoreNo# storeNo={}",storeNo);
-    	MchInfoAddBean info = new MchInfoAddBean();
+    	Map<String, Object> resultMap = new HashMap<String, Object>();
     	try{
     		String data = tbStoreExtendDao.getDataByStoreNo(storeNo,1);
             if(StringUtils.isEmpty(data)){
-            	return info;
+            	return resultMap;
             }
-            info = JSONObject.parseObject(data,MchInfoAddBean.class);
+            resultMap = JSONObject.parseObject(data,Map.class);
+            List<String> list = new ArrayList<>();
+            list.add((String)resultMap.get("province"));
+            list.add((String)resultMap.get("city"));
+            list.add((String)resultMap.get("county"));
+            list.add((String)resultMap.get("street"));
+            List<CityCodeBean> cityCodeBeans = tbCityCodeDao.getCityCodes(list);
+            if(!CollectionUtils.isEmpty(cityCodeBeans)){
+            	for(CityCodeBean bean:cityCodeBeans){
+            		resultMap.put(bean.getCode(), bean.getName());
+            	}
+            }
+//        	private int businessType;
     	}catch(Exception e){
     		logger.error("#MchAddService.getByStoreNo# storeNo={}",storeNo,e);
     	}
-    	return info;
+    	return resultMap;
     }
     
     

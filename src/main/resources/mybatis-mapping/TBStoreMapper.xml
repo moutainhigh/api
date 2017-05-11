@@ -111,10 +111,10 @@
     
     <update id="updateStore">
     	update tb_store
-    	set province=#{province},city=#{city},county=#{county},street=#{street},
-        business_type=#{businessType},e_mail=#{email},contacts_people=#{contactsPeople},
-        address=#{address},phone=#{phone},intro=#{intro},latitude=#{lat},longitude=#{lon}
-    	where store_no = #{storeNo}
+    	set province=#{info.province},city=#{info.city},county=#{info.county},street=#{info.street},
+        business_type=#{info.businessType},e_mail=#{info.email},contacts_people=#{info.contactsPeople},
+        address=#{info.address},phone=#{info.phone},intro=#{info.intro},latitude=#{info.lat},longitude=#{info.lon}
+    	where store_no = #{info.storeNo}
     </update>
     
 </mapper>

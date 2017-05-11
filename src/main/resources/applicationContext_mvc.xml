@@ -25,6 +25,11 @@
     <mvc:resources mapping="/resource/mobiscroll/css/*" location="/WEB-INF/resource/mobiscroll/css/"/>
     <mvc:resources mapping="/resource/mobiscroll/js/*" location="/WEB-INF/resource/mobiscroll/js/"/>
 
+    <mvc:resources mapping="/resource/css/**" location="/WEB-INF/resource/css/" />
+    <mvc:resources mapping="/resource/css/mchAdd/**" location="/WEB-INF/resource/css/mchAdd/" />
+    <mvc:resources mapping="/resource/img/mchAdd/**" location="/WEB-INF/resource/img/mchAdd/" />
+    
+
 
 
     <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->

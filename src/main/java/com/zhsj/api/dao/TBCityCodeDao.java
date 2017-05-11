@@ -15,6 +15,7 @@ import java.util.List;
 public interface TBCityCodeDao {
 
     List<CityCodeBean> getCityCode(@Param("cityCode") String cityCode);
-
-
+    
+    List<CityCodeBean> getCityCodes(@Param("cityCodes")List<String> cityCodes);
+    
 }

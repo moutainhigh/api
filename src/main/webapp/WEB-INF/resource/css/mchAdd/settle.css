@@ -1,0 +1,146 @@
+.create-title{/*除以40*/
+    height: 4.85rem;
+    width:100%;
+    background:#fc324a;
+}
+.create-icon{/*除40*/
+    padding:1.25rem 0.65rem;
+}
+.tit-icon{/*除以40*/
+    width:0.95rem;
+    height:1.025rem;
+    margin:0 auto;
+    display: inline-block;
+}
+.font-white{/*除以40*/
+    font-size:0.65rem;
+    padding-top:0.65rem;
+    color:#fff;
+}
+.font-gray{
+    font-size:0.65rem;
+    padding-top:0.65rem;
+    color:#fb8493;
+}
+#tit-arrow1{
+    width:2.125rem;
+    height:1.05rem;
+}
+.tit-arrow{
+    width:2.125rem;
+    height:1.05rem;
+}
+.tit-icon2{
+    width:1.025rem;
+    height:1.025rem;
+}
+
+.create-box{
+    padding-left:0.645rem;
+}
+.create-box2{
+    padding-left:0.24rem;
+}
+.create-box3{
+    padding-left:0.645rem;
+}
+.create-box4{
+    padding-left:0.7rem;
+}
+/*头部进度结束*/
+/*信息填写*/
+input{
+    border:none;
+}
+.base-con{
+    padding:0.5rem 0.6rem 0rem;
+}
+.settlement-tit{
+    font-size:0.85rem;
+
+}
+.settlement-input .please-input{
+  padding-left:0.78rem;
+    width:11rem;
+
+
+}
+.settlement-input input{
+
+    font-size:0.75rem;
+
+}
+.settlement-box{
+    border-bottom:0.025rem solid #efefef;
+    padding-bottom:0.45rem;
+}
+.settlement-padd{
+    padding-top:0.5rem;
+}
+.sett-time{
+    padding-left:0.6rem;
+}
+.sett-text{
+    padding-left:6.8rem;
+}
+.mask{
+    width:3.5rem;
+    height:1.4rem;
+    border:1px solid #ccc;
+    border-radius: 40px;
+
+}
+.mask2{
+    width:3.5rem;
+    height:1.4rem;
+    border:1px solid #ccc;
+    border-radius: 40px;
+}
+.sett-text2{
+    padding-left:6.8rem;
+}
+.settlement-box-last{
+    padding-bottom:0.7rem;
+}
+.next-box{
+    padding-top:206px;
+
+
+}
+.industy-next{
+    width:100%;
+    height:2.2rem;
+    background:#fd324a;
+    color:#fff;
+    font-size:0.8rem;
+}
+
+/*如果是iPhone5s(也就是小于320的)*/
+@media screen and (max-width: 330px) {
+    .create-icon {
+        padding: 1.25rem 0.65rem;
+    }
+    .base-con {
+        padding: 0.6rem 0.6rem 0rem;
+    }
+}
+/*给按钮加背景色*/
+.mask-one, .mask-two {
+    background:#f2f2f2;
+}
+
+/*去除type为number的样式*/
+
+input[type=number] {
+    -moz-appearance:textfield;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.mask{
+    display: block;
+    margin-bottom:0.4rem;
+    margin-right:0.3rem;
+}
