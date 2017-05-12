@@ -24,7 +24,7 @@ public class AuthInterceptor extends AbstractInterceptor {
         if(!StringUtils.isEmpty(authURI)){
         	uri = authURI;
         }
-        boolean result = moduleService.authByURI(uri, uri);
+        boolean result = moduleService.authByURI(uri);
         if(!result){
         	sendFailResponse(response,"{\"code\":1,\"msg\":\"没有权限\"}");
         	return false;

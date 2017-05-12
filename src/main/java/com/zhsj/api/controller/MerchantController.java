@@ -20,7 +20,8 @@ import com.zhsj.api.util.Md5;
 @Controller
 @RequestMapping("/merchant")
 public class MerchantController {
-	Logger logger = LoggerFactory.getLogger(MerchantController.class);
+	private Logger logger = LoggerFactory.getLogger(MerchantController.class);
+	
 	@Autowired
 	ShopService shopService;
 	
@@ -87,7 +88,7 @@ public class MerchantController {
     public ModelAndView test() throws UnsupportedEncodingException {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./merchant/index");
-        String auth = "o5pmesyob9P9Otj-jl-U3ETnArlY";
+        String auth = "o5pmes7HP9w6OhjgjBpc5tTWL8Bs";
         modelAndView.addObject("auth", "21" + auth);
         return modelAndView;
     }

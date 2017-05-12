@@ -49,7 +49,7 @@ public class ModuleService {
 			 }
 			 
 			 for(ModuleBean bean:allModuleBeans){
-				 if(!moduleIds.contains(bean.getId())){
+				 if(!moduleIds.contains((int)bean.getId())){
 					 bean.setUrl("");
 				 }
 				 moduleBeans.add(bean);
@@ -109,8 +109,8 @@ public class ModuleService {
 		 
 	 }
 	 
-	 public boolean authByURI(String uri,String auth){
-		 logger.info("#ModuleService.authByURI# uri={},auth={}",uri,auth);
+	 public boolean authByURI(String uri){
+		 logger.info("#ModuleService.authByURI# uri={}",uri);
 		 boolean result = false;
 		 try{
 			 LoginUser loginUser = LoginUserUtil.getLoginUser();
@@ -129,9 +129,9 @@ public class ModuleService {
 				 moduleIds = CollectionUtils.isEmpty(moduleIds)?new ArrayList<Integer>():moduleIds;
 			 }
 			 
-			 result = moduleIds.contains(moduleBean.getId());
+			 result = moduleIds.contains((int)moduleBean.getId());
 		 }catch (Exception e) {
-			 logger.error("#ModuleService.authByURI# uri={},auth={}",uri,auth,e);
+			 logger.error("#ModuleService.authByURI# uri={}",uri,e);
 		}
 		return result;
 	 }

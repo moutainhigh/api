@@ -16,7 +16,6 @@
     <mvc:annotation-driven/>
     <mvc:resources mapping="/*.txt" location="/" />
     <mvc:resources mapping="/*.html" location="/" />
-    <mvc:resources mapping="/*.tld" location="/" />
     <mvc:resources mapping="/resource/js/*.js" location="/WEB-INF/resource/js/" />
     <mvc:resources mapping="/resource/css/pay/*.css" location="/WEB-INF/resource/css/pay/" />
     <mvc:resources mapping="/resource/css/manager/*.css" location="/WEB-INF/resource/css/manager/" />
@@ -87,6 +86,11 @@
             <mvc:mapping path="/module/**" />
             <mvc:mapping path="/order/**" />
             <mvc:mapping path="/mchAdd/**" />
+            <mvc:mapping path="/merchant/**" />
+            <mvc:exclude-mapping path="/merchant/test"/>
+            <mvc:exclude-mapping path="/merchant/login" />
+            <mvc:exclude-mapping path="/merchant/index" />
+            <mvc:exclude-mapping path="/merchant/bindWeChat" />
             <mvc:exclude-mapping path="/manager/index" />
             <mvc:exclude-mapping path="/manager/login" />
             <mvc:exclude-mapping path="/manager/bindWeChat" />
@@ -105,6 +109,9 @@
         <mvc:interceptor>
             <mvc:mapping path="/merchant/**" />
             <mvc:exclude-mapping path="/merchant/test"/>
+            <mvc:exclude-mapping path="/merchant/index" />
+            <mvc:exclude-mapping path="/merchant/login" />
+            <mvc:exclude-mapping path="/merchant/bindWeChat" />
             <bean class="com.zhsj.api.interceptors.AuthInterceptor" />
         </mvc:interceptor>
     </mvc:interceptors>

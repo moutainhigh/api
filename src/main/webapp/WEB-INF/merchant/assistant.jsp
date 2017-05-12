@@ -8,9 +8,9 @@
             <!--轮播图start-->
             <div class="swiper-container">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide"><img src="img/banner/banner-one.png"/> </div>
-                    <div class="swiper-slide"><img src="img/banner/banner-two.png"/></div>
-                    <div class="swiper-slide"><img src="img/banner/banner-three.png"/></div>
+                    <div class="swiper-slide"><img src="../resource/img/merchant/banner-one.png"/> </div>
+                    <div class="swiper-slide"><img src="../resource/img/merchant/banner-two.png"/></div>
+                    <div class="swiper-slide"><img src="../resource/img/merchant/banner-three.png"/></div>
 
                 </div>
                  <!--Add Pagination -->
@@ -23,15 +23,15 @@
                 <h1><span class="shop-tit"></span><i class="shop-title">会员营销</i></h1>
                 <div class="shop-icon clearfix">
                     <div class="shop-con shop-border fl">
-                        <p><img src="img/money-bag.png"/> </p>
+                        <p><img src="../resource/img/merchant/money-bag.png"/> </p>
                         <h2>立减买单</h2>
                     </div>
                     <div class="shop-con shop-border fl">
-                        <p><img src="img/vip-point.png"/> </p>
+                        <p><img src="../resource/img/merchant/vip-point.png"/> </p>
                         <h2 class="">会员集点</h2>
                     </div>
                     <div class="shop-con fl">
-                        <p><img src="img/red-bag.png"/> </p>
+                        <p><img src="../resource/img/merchant/red-bag.png"/> </p>
                         <h2>助力红包</h2>
                     </div>
                 </div>
@@ -41,11 +41,11 @@
                 <h1><span class="shop-tit"></span><i class="shop-title">经营分析</i></h1>
                 <div class="shop-icon clearfix">
                     <div class="shop-con shop-border fl">
-                        <p><img src="img/data-scale.png"/> </p>
+                        <p><img src="../resource/img/merchant/data-scale.png"/> </p>
                         <h2>数据统计</h2>
                     </div>
                     <div class="shop-con shop-border fl">
-                        <p><img src="img/vip-manager.png"/> </p>
+                        <p><img src="../resource/img/merchant/vip-manager.png"/> </p>
                         <h2>会员管理</h2>
                     </div>
 
