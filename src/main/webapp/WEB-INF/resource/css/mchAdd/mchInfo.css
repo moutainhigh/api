@@ -1,0 +1,234 @@
+.create-title{/*除以40*/
+    height: 4.85rem;
+    width:100%;
+    background:#fc324a;
+}
+.create-icon {/*除40*/
+    padding:1.25rem 0.65rem;
+}
+.tit-icon{/*除以40*/
+    width:0.95rem;
+    height:1.025rem;
+    margin:0 auto;
+    display: inline-block;
+}
+.font-white{/*除以40*/
+    font-size:0.65rem;
+    padding-top:0.65rem;
+    color:#fff;
+}
+.font-gray{
+    font-size:0.65rem;
+    padding-top:0.65rem;
+    color:#fb8493;
+}
+#tit-arrow1{
+    width:2.125rem;
+    height:1.05rem;
+}
+.tit-arrow{
+    width:2.125rem;
+    height:1.05rem;
+}
+.tit-icon2{
+    width:1.025rem;
+    height:1.025rem;
+}
+
+.create-box{
+    padding-left:0.645rem;
+}
+.create-box2{
+    padding-left:0.24rem;
+}
+.create-box3{
+    padding-left:0.645rem;
+}
+.create-box4{
+    padding-left:0.7rem;
+}
+/*头部进度结束*/
+.base-con{
+    padding:0.6rem 0.8rem 1rem;
+}
+.base-line1{
+    position: relative;
+    border:none;
+
+}
+.base-line1:after{
+    content: '';
+    position: absolute;
+    left: 0;
+    top:0.3rem;
+    background: #fee1e4;
+    width: 4.75rem;
+    height: 1px;
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+}
+.base-list{
+    padding:0 0.6rem;
+}
+.busi-info{
+    position: absolute;
+    left:6.3rem;
+    font-size:0.9rem;
+}
+.base-line2{
+    position: relative;
+    border:none;
+}
+.base-line2:after{
+    content: '';
+    position: absolute;
+    left: 10rem;
+    top:0.3rem;
+    background: #fee1e4;
+    width: 4.75rem;
+    height: 1px;
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+}
+.base-tab{
+    padding-top:1.4rem;
+}
+.busi-address{
+    font-size:0.75rem;
+}
+input{
+    border:0;
+    background:none;
+}
+.baseborder{
+    width: 46.4%;
+    height:1.5rem;
+    border-bottom:1px solid #ccc;
+    top:-0.2rem;
+    position: relative;
+    font-size:0.7rem;
+    text-align: center;
+
+}
+.base-tab-ri{
+    padding-left:0.4rem;
+}
+.base-tab-le{
+    padding-left:0.325rem;
+}
+.busi-address{
+    font-size:0.8rem;
+   /* height:1.5rem;
+    line-height:1.5rem;*/
+    padding-top:0.2rem;
+}
+.base-tab2{
+    padding-top:1rem;
+}
+.baseborder2{
+    width: 10.2rem;
+    height:1.5rem;
+    border-bottom:1px solid #ccc;
+    top:-0.2rem;
+    position: relative;
+    font-size:0.7rem;
+    padding-left:0.2rem;
+}
+/*行业类型*/
+.industry-type{
+    padding:0.8rem 0rem;
+    font-size:0.8rem;
+}
+.industy-box{
+    width:14.4rem;
+    height:1.5rem;
+    border:1px solid #ccc;
+    font-size:0.75rem;
+    text-align: center;
+}
+.industry-padd{
+    padding:0.75rem 0;
+}
+.industry-padd2{
+    padding-bottom:1.2rem;
+}
+/*下一步*/
+.next-box{
+    padding-top:0px;
+
+}
+.industy-next{
+    width:100%;
+    height:2.5rem;
+    background:#fd324a;
+    font-size:0.8rem;
+    color:#fff;
+}
+.next-bg{
+    width:100%;
+     background:#efefef;
+   /* position: absolute;*/
+    bottom:0;
+
+}
+/*遮罩动画效果*/
+/*.busimask{
+    position: relative;
+    animation:mymove 1s ;
+    -moz-animation:mymove 1s ; !* Firefox *!
+    -webkit-animation:mymove 1s ; !* Safari and Chrome *!
+    -o-animation:mymove 1s ; !* Opera *!
+}
+@keyframes mymove
+{
+    from {height:0px;}
+    to {height:7.2rem;}
+}
+
+@-moz-keyframes mymove !* Firefox *!
+{
+    from {height:0px;}
+    to {height:7.2rem;}
+}
+
+@-webkit-keyframes mymove !* Safari 和 Chrome *!
+{
+    from {height:0px;}
+    to {height:7.2rem;}
+}
+
+@-o-keyframes mymove !* Opera *!
+{
+    from {height:0px;}
+    to {height:7.2rem;}
+}
+
+!*如果是iPhone5s(也就是小于320的)*!
+@media screen and (max-width: 330px) {
+    .create-icon {
+        padding: 1.25rem 0.65rem;
+    }
+    .base-con {
+        padding: 0.6rem 0.6rem 0rem;
+    }
+}*/
+
+
+.mask-bigbox div{
+    display: none;
+    border:1px solid red;
+}
+.on{
+    background:#d9d9d9;
+}
+.on2{
+
+}
+
+.business-type input{
+    height: 1.4rem;
+}

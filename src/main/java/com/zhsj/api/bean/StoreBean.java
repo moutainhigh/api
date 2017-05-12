@@ -25,7 +25,15 @@ public class StoreBean {
     private String appId;
     
     private double price;
-
+    
+    private String province;
+    private String city;
+    private String county;
+    private String street;
+    private String businessType;
+    private String email;
+    private String contactsPeople;
+    
     public long getId() {
         return id;
     }
@@ -176,6 +184,62 @@ public class StoreBean {
 
 	public void setPrice(double price) {
 		this.price = price;
+	}
+
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getCounty() {
+		return county;
+	}
+
+	public void setCounty(String county) {
+		this.county = county;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public String getBusinessType() {
+		return businessType;
+	}
+
+	public void setBusinessType(String businessType) {
+		this.businessType = businessType;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getContactsPeople() {
+		return contactsPeople;
+	}
+
+	public void setContactsPeople(String contactsPeople) {
+		this.contactsPeople = contactsPeople;
 	}
     
     

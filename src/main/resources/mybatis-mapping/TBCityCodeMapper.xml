@@ -5,9 +5,25 @@
     <select id="getCityCode" resultType="cityCodeBean">
         SELECT code,name,parent_code
         FROM tb_city_code
-        where parent_code=#{cityCode}
+        where parent_code=#{cityCode} order by code
     </select>
 
-
+	<select id="getCityCodes" resultType="cityCodeBean">
+        SELECT code,name
+        FROM tb_city_code
+        where 1=1
+         <choose>
+            <when test="cityCodes != null and cityCodes.size() > 0">
+                AND code IN
+                <foreach collection="cityCodes" item="cityCode"
+                         open="(" separator="," close=")" >
+                    #{cityCode}
+                </foreach>
+            </when>
+            <otherwise>
+                AND 1 = 0
+            </otherwise>
+        </choose>
+    </select>
 
 </mapper>

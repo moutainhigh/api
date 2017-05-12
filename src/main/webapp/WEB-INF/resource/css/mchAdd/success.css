@@ -1,0 +1,82 @@
+.create-title{/*除以40*/
+    height: 4.85rem;
+    width:100%;
+    background:#fc324a;
+}
+.create-icon{/*除40*/
+    padding:1.25rem 0.65rem;
+}
+.tit-icon{/*除以40*/
+    width:0.95rem;
+    height:1.025rem;
+    margin:0 auto;
+    display: inline-block;
+}
+.font-white{/*除以40*/
+    font-size:0.65rem;
+    padding-top:0.65rem;
+    color:#fff;
+}
+.font-gray{
+    font-size:0.65rem;
+    padding-top:0.65rem;
+    color:#fff;
+}
+#tit-arrow1{
+    width:2.125rem;
+    height:1.05rem;
+}
+.tit-arrow{
+    width:2.125rem;
+    height:1.05rem;
+}
+.tit-icon2{
+    width:1.025rem;
+    height:1.025rem;
+}
+
+.create-box{
+    padding-left:0.645rem;
+}
+.create-box2{
+    padding-left:0.24rem;
+}
+.create-box3{
+    padding-left:0.645rem;
+}
+.create-box4{
+    padding-left:0.7rem;
+}
+/*头部进度结束*/
+.footer{
+    width:100%;
+    padding-bottom:20.8rem;
+    background:#eeeeee;
+}
+.footer-img{
+    width:2.2rem;
+    height:2.225rem;
+    margin-top:1.15rem;
+
+}
+
+.footer-tit{
+    height:4.5rem;
+    background:#fff;
+    padding:0 0.75rem;
+}
+.footer-font{
+    font-size:0.7rem;
+    color:#14d212;
+    position: absolute;
+    top:6rem;
+    left:3.7rem;
+
+}
+.footer-pass{
+    color:#999999;
+    font-size:0.625rem;
+    position: absolute;
+    top:7.575rem;
+    left:3.65rem;
+}

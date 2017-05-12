@@ -12,6 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
 import java.util.*;
 
 /**
@@ -372,101 +374,105 @@ public class MinshengService {
 		return rspMap;
 	}
 
-//	public boolean updateMerchantByPaykey(String storeNo,String wxRate,String aliRate,String settlementType) {
-//		boolean result = false;
-//		String url = MtConfig.getProperty("REQ_URL","")+"/updateMerchantByPaykey.do";
-//		try{
-//			StorePayInfo storePayInfo = bmStorePayInfoDao.getStorePayInfoByNO(storeNo);
-//			if(storePayInfo == null){
-//				return false;
-//			}
-//			Map<String, String> reqData = new HashMap<String, String>();
-//			reqData.put("paykey", storePayInfo.getField1()); //修改商户的paykey
-//			reqData.put("agent_no", MtConfig.getProperty("agent_no", "95272016121410000062"));//代理商编号
-//			reqData.put("wx_rate", wxRate); //微信费率
-//			reqData.put("ali_rate", aliRate);//支付宝费率
-//			reqData.put("settlement_type", settlementType);//商户结算周期
-//			String CERT_PATH_P12 = MtConfig.getProperty("CERT_PATH_P12","");
-//			String CERT_JKS_P12_PASSWORD = MtConfig.getProperty("CERT_JKS_P12_PASSWORD","");
-//			String signString = CertUtil.reqSign(MapUtil.coverMap2String(reqData), CERT_PATH_P12, CERT_JKS_P12_PASSWORD);
-//			reqData.put("sign", new String(signString)); // 签名后的字符串
-//			String stringData = MapUtil.getRequestParamString(reqData);
-////
-//			String reqBase64 = new String(CertUtil.base64Encode(stringData.getBytes("UTF-8")));
-//			String rspBase64 = SSLUtil.httpsPost(url, reqBase64);
-//			String rspData = new String(CertUtil.base64Decode(rspBase64.getBytes("UTF-8")));
-//			Map<String,String> resultMap = MapUtil.convertResultStringToMap(rspData);
-//			if("SUCCESS".equals(resultMap.get("result_code"))){
-//				JSONObject json = new JSONObject();
-//				json.put("aliRate",aliRate);
-//				json.put("wxRate",wxRate);
-//				json.put("settlementType",settlementType);
-//				bmStorePayInfoDao.updateByNo(json.toJSONString(),storeNo,wxRate,settlementType,"1");
-//				bmStorePayInfoDao.updateByNo(json.toJSONString(),storeNo,aliRate,settlementType,"2");
-//				return true;
-//			}
-//		} catch (Exception e){
-//			logger.error("#MinshengService.updateMerchantByPaykey# storeNO={},wxRate={},aliRate={},settlementType={}",storeNo,wxRate,aliRate,settlementType,e);
-//		}
-//		return result;
-//	}
+	
+	//民生开户
+	public String openAccountV2(MchInfoAddBean info){
+		String result = "SUCCESS";
+		try{
+			Map<String,String> resultMap = this.mersettledV2(info);
+			if(!"SUCCESS".equals(resultMap.get("result_code"))){
+				return resultMap.get("error_msg");
+			}else if(StringUtils.isEmpty(resultMap.get("wx_sub_mch_id")) || 
+					StringUtils.isEmpty(resultMap.get("ali_sub_mch_id"))){
+				return resultMap.get("sub_msg");
+			}
+			
+			String paykey = resultMap.get("paykey");
+			String paysec = resultMap.get("paysec");
+			String ali_rate = resultMap.get("ali_rate");
+			String wx_rate = resultMap.get("wx_rate");
+			String settlementType =resultMap.get("settlement_type");
 
-//	//查询更新状态，发通知
-//	public OrderBean paySuccess1(String orderNo){
-//		logger.info("#MinshengService.paySuccess# orderNo={}",orderNo);
-//		OrderBean orderBean = orderService.getByOrderId(orderNo);
-//		if(orderBean == null){
-//			return null;
-//		}
-//		if(orderBean.getPayMethod().contains("2")){
-//			ayncTaskUtil.commitAyncTask(new OrderSuccessAsync(orderBean));
-//		}
-//		return orderBean;
-//	}
+			JSONObject json = new JSONObject();
+			json.put("aliRate",ali_rate);
+			json.put("wxRate",wx_rate);
+			json.put("settlementType",settlementType);
+			List<String> payMethods = new ArrayList<>();
+			payMethods.add("1");
+			payMethods.add("2");
+			bmStorePayInfoDao.insertPayInfo(info.getStoreNo(),2,payMethods,paykey,paysec,ali_rate,settlementType,json.toJSONString(),1);
+		}catch (Exception e){
+			logger.error("#MinshengService.openAccount# e={}",e.getMessage(),e);
+			result = "系统出错";
+		}
+		return result;
+	}
+	public Map<String, String> mersettledV2(MchInfoAddBean info) {
+		Map<String, String> rspMap = new HashMap<>();
+		try{
+			String url = MtConfig.getProperty("REQ_URL","")+"/newMerSettled.do";
+			Map<String, String> reqData = new HashMap<String, String>();
+//			商户基础信息
+			reqData.put("merchant_name", info.getStoreName());
+			reqData.put("merchant_short_name", info.getShortName());
+			reqData.put("agentNo", "95272016121410000062");
+			reqData.put("remark", "");
+			reqData.put("addType", "3");
+			reqData.put("wx_rate", info.getWxRate());
+			reqData.put("ali_rate", info.getAliRate());
+			reqData.put("service_phone", info.getPhone());
+			reqData.put("wx_business_type", String.valueOf(info.getBusinessType()));
+			reqData.put("ali_business_type","2015050700000000");
+			reqData.put("ali_pid", "");
+			
+//			商户结算信息
+			reqData.put("sa_name", info.getAccountName());
+			reqData.put("sa_num", info.getBankAccount());
+			reqData.put("sa_name_id_card_no", info.getAccountIdCard());
+			reqData.put("sa_phone", info.getAccountPhone());
+			
+			if("中国民生银行".equals(info.getBankName())){
+				reqData.put("sa_bank_name_type", "0");
+			}else {
+				reqData.put("sa_bank_name_type", "1");
+			}
+			reqData.put("sa_bank_name", info.getBankName());
+			reqData.put("sa_bank_type","00");
+			reqData.put("settlement_type", "T1");
+			
+//			商户联系人信息
+			reqData.put("contact_type","OTHER");
+			reqData.put("contact_name", info.getContactsPeople());
+			reqData.put("contact_phone", "");
+			reqData.put("contact_mobile", "");
+			reqData.put("contact_email", "");
+			reqData.put("contact_id_card_no",info.getIdCard());
+			
+//			商户地址信息
+			reqData.put("province_code",info.getProvince());
+			reqData.put("city_code", info.getCity());
+			reqData.put("district_code",info.getCounty());
+			reqData.put("address",info.getAddress());
+			reqData.put("longitude", "");
+			reqData.put("latitude", "");
+			reqData.put("address_type", "");
+			
+			String CERT_PATH_P12 = MtConfig.getProperty("CERT_PATH_P12","");
+			String CERT_JKS_P12_PASSWORD = MtConfig.getProperty("CERT_JKS_P12_PASSWORD", "");
+			String signString = CertUtil.reqSign(MapUtil.coverMap2String(reqData), CERT_PATH_P12, CERT_JKS_P12_PASSWORD);
+			reqData.put("sign", new String(signString)); // 签名后的字符串
+			String stringData = MapUtil.getRequestParamString(reqData);
 
-	//查询更新状态
-//	public String queryOrderAndUpdate(String orderNo){
-//		logger.info("#MinshengService.queryOrderAndUpdate# orderNo={}",orderNo);
-//		String result = queryOrder(orderNo);
-//		if(StringUtils.isEmpty(result)){
-//			return "";
-//		}
-//		if(OrderStatus.FAIL.equals(result) || OrderStatus.NOTPAY.equals(result)){
-//			orderService.updateOrderByOrderId(2,orderNo);
-//		}else if(OrderStatus.SUCCESS.equals(result)){
-//			orderService.updateOrderByOrderId(1,orderNo);
-//		}
-//		return result;
-//	}
+			String reqBase64 = new String(CertUtil.base64Encode(stringData.getBytes("UTF-8")));
+			String rspBase64 = SSLUtil.httpsPost(url, reqBase64);
+			String rspData = new String(CertUtil.base64Decode(rspBase64.getBytes("UTF-8")));
+			rspMap = MapUtil.convertResultStringToMap(rspData);
+		} catch (Exception e) {
+			logger.error("#MinshengService.mersettledV2# info={},", info, e);
+		}
+		return rspMap;
+	}
 
-//	//查询订单状态
-//	public String queryOrder(String orderNo){
-//		logger.info("#MinshengService.queryOrder# orderNo={}",orderNo);
-//		String result = "";
-//		try {
-//			OrderBean orderBean = orderService.getByOrderId(orderNo);
-//			StorePayInfo storePayInfo = bmStorePayInfoDao.getStorePayInfoByNO(orderBean.getStoreNo());
-//			if(storePayInfo == null){
-//				return "";
-//			}
-//
-//			Map<String, Object> parameters = new HashMap<String, Object>();
-//			parameters.put("paykey",storePayInfo.getField1());
-//			parameters.put("order_no",orderNo);  //请自己试试自己发起的订单
-//			/////签名///
-//			String sign = getSign(parameters, storePayInfo.getField2());//
-//			parameters.put("sign",sign);
-//			String postUrl = MtConfig.getProperty("ms_URL","http://115.159.235.109:8208")+"/qthd-pay-web-gateway/scanPay/QueryReturnJson";
-//			String str = HttpClient.sendPost(postUrl, parameters);
-//			Map<String,Object> map = JSON.parseObject(str, Map.class);
-//			result = (String)map.get("result_code");
-//			logger.info("#MinshengService.queryOrder# orderNo={} result ={}",orderNo,result);
-//		}catch (Exception e){
-//			logger.error("#MinshengService.queryOrder# orderNo={}",orderNo,e);
-//			return "";
-//		}
-//		return result;
-//	}
 
 	public static void main(String[] args) {
 //		new MinshengService().updateMerchantByPaykey("85a6c4e20bf54505bea8e75bc870d587","0.4","0.4","D0");
