@@ -3,9 +3,9 @@
 <mapper namespace="com.zhsj.api.dao.TbStoreDao">
     <sql id="SELECT_FIELDS">
         id,parent_no,store_no,name,city_code,address,phone,gitPicURL(shop_logo) as shop_logo,intro,status,
-        latitude,longitude,valid,utime,ctime,org_ids,sale_id,app_id,price
+        latitude,longitude,valid,utime,ctime,org_ids,sale_id,app_id,price,province,city,county,street,
+        business_type,e_mail,contacts_people
     </sql>
-
     <select id="getStoreByNo" resultType="storeBean" >
         select <include refid="SELECT_FIELDS"/>
         FROM tb_store
@@ -108,5 +108,13 @@
     	set price = price + #{price}
     	where store_no = #{storeNo}
     </select>
+    
+    <update id="updateStore">
+    	update tb_store
+    	set province=#{info.province},city=#{info.city},county=#{info.county},street=#{info.street},
+        business_type=#{info.businessType},e_mail=#{info.email},contacts_people=#{info.contactsPeople},
+        address=#{info.address},phone=#{info.phone},intro=#{info.intro},latitude=#{info.lat},longitude=#{info.lon}
+    	where store_no = #{info.storeNo}
+    </update>
     
 </mapper>

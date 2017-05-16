@@ -3,6 +3,7 @@ package com.zhsj.api.dao;
 
 import com.zhsj.api.util.db.DS;
 import com.zhsj.api.util.db.DynamicDataSource;
+import com.zhsj.api.bean.MchInfoAddBean;
 import com.zhsj.api.bean.MinMaxBean;
 import com.zhsj.api.bean.StoreBean;
 
@@ -40,5 +41,7 @@ public interface TbStoreDao {
     								  @Param("maxId")int maxId);
     
     MinMaxBean getMaxMin();
+    
+    int updateStore(@Param("info")MchInfoAddBean info);
     
 }
