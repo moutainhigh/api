@@ -54,3 +54,19 @@
             <!--经营分析结束-->
         </div>
     </div>
+    <script type="text/javascript">
+<!--
+var swiper = new Swiper('.swiper-container', {
+    pagination: '.swiper-pagination',
+    nextButton: '.swiper-button-next',
+    prevButton: '.swiper-button-prev',
+    slidesPerView: 1,
+    paginationClickable: true,
+    spaceBetween:0,
+    loop: true,
+    autoplay:1,
+    speed:2000
+
+});
+//-->
+</script>

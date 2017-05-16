@@ -105,77 +105,16 @@
 			$(".tab-shop").html("");
 			$(".tab-shop").load("./store?auth="+_auth);
 		}
-		if(id == "32"){
+		if(url == "/api/merchant/assistant"){
 			$(".tab-shop").html("");
 			$(".tab-shop").load("./assistant?auth="+_auth);
 		}
-		if(id == "33"){
+		if(url == "/api/merchant/mine"){
 			$(".tab-shop").html("");
 			$(".tab-shop").load("./mine?auth="+_auth);
 		} 
 		
 	}
-
-	
-	
-	
-	
-    $('.shop').on('touchstart',function(){
-
-        $.ajax({
-            url:"index.html",
-            cache:true,
-            async : true,
-            success:function(html){
-                $(".tab-shop").html(html);
-            }
-        });
-        $('.foot-one').attr('src','../resource/img/merchant/shop-ico-green.png');
-        $('.foot-two').attr('src','../resource/img/merchant/assistant-line.png');
-        $('.foot-three').attr('src','../resource/img/merchant/mine-line.png');
-        $('.shop span').addClass('mine-small-bg');
-        $('.assistant span').removeClass('mine-small-bg');
-
-    });
-
-
-    $('.assistant').on('touchstart',function(){
-        $.ajax({
-            url:"assistant.html",
-            cache:true,
-            async : true,
-            success:function(html){
-                $(".tab-shop").html(html);
-            }
-        });
-
-        $('.foot-one').attr('src','../resource/img/merchant/shop-line.png');
-        $('.foot-two').attr('src','../resource/img/merchant/assistant.png');
-        $('.foot-three').attr('src','../resource/img/merchant/mine-line.png');
-        $('.shop span').removeClass('mine-small-bg');
-        $('.assistant span').addClass('mine-small-bg');
-        $('.mine span').removeClass('mine-small-bg');
-
-    });
-
-
-
-
-    $('.mine').on('touchstart',function(){
-        $.ajax({
-            url:"mine.html",
-            cache:true,
-            async : true,
-            success:function(html){
-                $(".tab-shop").html(html);
-            }
-        })
-        $('.foot-three').attr('src','img/mine.png');
-        $('.mine span').addClass('mine-small-bg');
-        $('.foot-two').attr('src','img/assistant-line.png');
-        $('.assistant span').removeClass('mine-small-bg');
-
-    });
 </script>
 
 
