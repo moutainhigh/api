@@ -119,13 +119,13 @@ public class BaseController {
     @ResponseBody
     public Object refundMoney(String orderNo,double price,int userId){
     	logger.info("#BaseController.refundMoney# orderNo={},price={},userId={}",orderNo,price,userId);
-    	return CommonResult.success("", orderService.refundMoney(orderNo, price, userId));
+    	return  orderService.refundMoney(orderNo, price, userId);
     }
     
     @RequestMapping(value = "/queryRefund", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public Object queryRefund(String orderNo){
     	logger.info("#BaseController.queryRefund# orderNo={}",orderNo);
-    	return CommonResult.success("", orderService.searchRefund(orderNo));
+    	return orderService.searchRefund(orderNo);
     }
 }
