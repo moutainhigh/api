@@ -35,10 +35,16 @@
 <input value="${auth}" id="auth" name="auth" type="hidden">
     <div class="item">
         <!--小店start-->
-       <div class="tab-shop"  >
+       <div class="tab-shop"  id="_storeShow">
         </div>
         <!--小店end-->
-
+		 <!--助手start-->
+       <div class="tab-shop"  id="_assistantShow">
+        </div>
+        <!--小店end--> <!--小店start-->
+       <div class="tab-shop"  id="_mineShow" >
+        </div>
+        <!--我的end-->
         <div class="bottom ">
             <ul class="clearfix footer" id="mainMenu">
             </ul>
@@ -102,17 +108,21 @@
 		$(obj).find("span").addClass("mine-small-bg");
 		var imgUrl = $(obj).find("img").attr("src").replace("-line.png","-green.png");;
 		$(obj).find("img").attr("src",imgUrl);
+		$(".tab-shop").hide();
 		 if(url == "/api/merchant/store"){
-			$(".tab-shop").html("");
-			$(".tab-shop").load("./store?auth="+_auth);
+			 $("#_storeShow").html("");
+			$("#_storeShow").show();
+			$("#_storeShow").load("./store?auth="+_auth);
 		}
 		if(url == "/api/merchant/assistant"){
-			$(".tab-shop").html("");
-			$(".tab-shop").load("./assistant?auth="+_auth);
+			 $("#_assistantShow").html("");
+			$("#_assistantShow").show();
+			$("#_assistantShow").load("./assistant?auth="+_auth);
 		}
 		if(url == "/api/merchant/mine"){
-			$(".tab-shop").html("");
-			$(".tab-shop").load("./mine?auth="+_auth);
+			 $("#_mineShow").html("");
+			$("#_mineShow").show();
+			$("#_mineShow").load("./mine?auth="+_auth);
 		} 
 		
 	}

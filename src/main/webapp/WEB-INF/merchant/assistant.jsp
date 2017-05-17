@@ -22,7 +22,7 @@
 	            <!-- 轮播图结束-->
             
             <div class="middle" style="overflow-y: auto;overflow-x:hidden;  width: 100%;">
-                <div class="shop-manager" id="_indexModule">
+                <div class="shop-manager" id="_assModule">
                 </div>
             </div>
 </body>
@@ -39,9 +39,9 @@
 })(window,document)
 
 $(function(){
-	loadIndexModule(31);
+	loadAssModule(31);
 })
-function loadIndexModule(id){
+function loadAssModule(id){
 	 $.post("../module/getById",{"id":id,"auth":_auth},function(data){
            if(data.code == 0){
            	$.each(data.data,function(index,value){
@@ -62,7 +62,7 @@ function loadIndexModule(id){
 	            	if(value.module%3 != 0){
 	            		_html+="<\/div>";
 	            	}
-	            	$("#"+value.title.iconUrl).html(_html+_html+_html);
+	            	$("#_assModule").html(_html+_html+_html);
            	}); 
            	
            }else{
