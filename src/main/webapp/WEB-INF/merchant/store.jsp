@@ -3,11 +3,10 @@
 <html lang="en">
 <head>
 </head>
-<body style="padding-bottom: 3.6rem;">
-            <div class="top">
-                <p class="top-tit">首页</p>
+<body style="padding-bottom: 2.6rem;">
+            <div class="top" style=" width: 100%; height: 0rem; ">
             </div>
-            <div class="middle">
+            <div class="middle" style="overflow-y: auto; width: 100%;">
                 <div class="receivables clearfix">
                     <div class="today-money fl">
                         <h3>今日应收金额:</h3>
@@ -39,6 +38,15 @@
 </html>
 
 <script>
+(function(win,doc){
+    function change(){
+    	var rem = doc.documentElement.clientWidth*50/375;
+        $('.middle').css('height',$(window).height()-$('.top').height()-1.2*rem-5);
+    }
+    change();
+    win.addEventListener('resize',change,false);
+})(window,document)
+
 $(function(){
 	loadIndexModule(31);
 })
@@ -63,7 +71,7 @@ function loadIndexModule(id){
 	            	if(value.module%3 != 0){
 	            		_html+="<\/div>";
 	            	}
-	            	$("#"+value.title.iconUrl).html(_html);
+	            	$("#"+value.title.iconUrl).html(_html+_html);
            	}); 
            	
            }else{

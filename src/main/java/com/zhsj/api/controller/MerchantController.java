@@ -88,7 +88,7 @@ public class MerchantController {
     public ModelAndView test() throws UnsupportedEncodingException {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./merchant/index");
-        String auth = "o5pmes7HP9w6OhjgjBpc5tTWL8Bs";
+        String auth = "o5pmeswWjKwmkawHwlIiWuJMnTsM";
         modelAndView.addObject("auth", "21" + auth);
         return modelAndView;
     }

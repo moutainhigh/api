@@ -1,3 +1,9 @@
+.item{
+    width:100%;
+}
+.tab-shop{
+    width:100%;
+}
 .middle{
     background: #eeeeee;
 }
@@ -11,11 +17,11 @@
     text-align: center;
     height: 0.88rem;
     line-height: 0.88rem;
-    background: #fff;
+    background: #f6f6f6;
     font-size:0.36rem;
 }
 .today-money{
-    width:3.24rem;
+    width:48%;
     height:1.62rem;
     background: #6ebcce;
     text-align: center;
@@ -76,8 +82,9 @@
 }
 
 .shop-icon{
-    background: #fff;
-    border:0.01rem solid #ccc;
+     background: #fff;
+    border-top:0.01rem solid #ccc;
+    border-bottom:0.01rem solid #ccc;
 }
 .shop-icon img{
     width: 0.62rem;
@@ -110,7 +117,7 @@
 }
 .footer{
     height: 1.2rem;!important;
-
+ background: #f6f6f6;
 }
 
 .footer li{

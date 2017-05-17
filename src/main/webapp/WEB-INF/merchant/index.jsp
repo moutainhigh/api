@@ -24,17 +24,18 @@
         (function(win,doc){
             function change(){
                 doc.documentElement.style.fontSize=doc.documentElement.clientWidth*50/375+'px';
+                $('.tab-shop').css('height',$(window).height()-$('.bottom').height());
             }
             change();
             win.addEventListener('resize',change,false);
         })(window,document)
     </script>
 </head>
-<body style="padding-bottom: 3.6rem;">
+<body style="padding-bottom: 2.6rem;">
 <input value="${auth}" id="auth" name="auth" type="hidden">
     <div class="item">
         <!--小店start-->
-       <div class="tab-shop">
+       <div class="tab-shop"  >
         </div>
         <!--小店end-->
 
