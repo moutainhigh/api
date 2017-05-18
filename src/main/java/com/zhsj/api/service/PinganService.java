@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -87,6 +88,7 @@ public class PinganService {
 			reqData.setService("unified.trade.refundquery");
 			reqData.setMch_id(storePayInfo.getMchId());
 			reqData.setOut_trade_no(orderBean.getOrderId());
+			reqData.setOut_refund_no(orderBean.getRefundNo());
 			reqData.setNonce_str(RandomStringGenerator.getRandomStringByLength(10));
 			reqData.setSign(Signature.getSign(reqData.toMap(),storePayInfo.getField1()));
 			String postDataXML = XMLBeanUtils.mapToXml(reqData.toMap());

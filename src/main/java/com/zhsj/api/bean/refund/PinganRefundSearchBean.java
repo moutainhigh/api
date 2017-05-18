@@ -10,6 +10,7 @@ public class PinganRefundSearchBean {
 	private String out_trade_no;
 	private String transaction_id;
 	private String nonce_str;
+	private String out_refund_no;
 	private String sign;
 	public String getService() {
 		return service;
@@ -46,6 +47,12 @@ public class PinganRefundSearchBean {
 	}
 	public void setSign(String sign) {
 		this.sign = sign;
+	}
+	public String getOut_refund_no() {
+		return out_refund_no;
+	}
+	public void setOut_refund_no(String out_refund_no) {
+		this.out_refund_no = out_refund_no;
 	}
 	public Map<String,String> toMap(){
         Map<String,String> map = new HashMap<String, String>();
