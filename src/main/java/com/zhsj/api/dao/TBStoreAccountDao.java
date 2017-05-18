@@ -45,5 +45,7 @@ public interface TBStoreAccountDao {
     int updateStoreAccount(StoreAccountBean storeAccountBean);
     
     int unbindStoreAccount(@Param("id")long id);
+    
+    int updateSignStatus(@Param("id")long id,@Param("signStatus")int status);
 
 }

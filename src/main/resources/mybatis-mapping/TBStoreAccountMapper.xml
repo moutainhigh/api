@@ -150,4 +150,10 @@
              id = #{id}    
           </where>
     </update>
+    
+    <update id="updateSignStatus">
+    	update tb_store_account
+    		set sign_status = #{signStatus}
+    		where id=#{id}
+    </update>
 </mapper>

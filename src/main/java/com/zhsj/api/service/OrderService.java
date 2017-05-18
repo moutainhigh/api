@@ -2,12 +2,17 @@ package com.zhsj.api.service;
 
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.dao.TbOrderDao;
+import com.zhsj.api.util.CommonResult;
+import com.zhsj.api.util.DateUtil;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lcg on 16/12/29.
@@ -45,6 +50,21 @@ public class OrderService {
         return  num == null ? 0:num;
     }
     
+    public CommonResult countToday(String storeNo,String userId,String auth){
+		 logger.info("#OrderService.countToday# storeNO={},userId={},auth={}",
+	        		storeNo,userId,auth);
+		 try{
+			 long accountId = Long.parseLong(userId);
+			 int startTime = DateUtil.getTodayStartTime();
+			 int endTime = startTime + 60*60*24;
+			 Map<String, Double> map = bmOrderDao.countByNOAndTime(storeNo, startTime, endTime, accountId);
+			 return CommonResult.success("", map);
+		 }catch(Exception e){
+			 logger.error("#OrderService.countToday# storeNO={},userId={},auth={}",
+		        		storeNo,userId,auth,e);
+			 return CommonResult.defaultError("出错了");
+		 }
+	}
     
 
 }

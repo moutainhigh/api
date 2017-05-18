@@ -101,5 +101,10 @@ public interface TbOrderDao {
 	Integer countOrgDiscountPrice(@Param("storeNo")String storeNo,
 								  @Param("startTime") int startTime,
 								  @Param("endTime")int endTime);
+	
+	Map<String, Double> countByNOAndTime(@Param("storeNo")String storeNo,
+										  @Param("startTime") int startTime,
+										  @Param("endTime")int endTime,
+										  @Param("accountId")long accountId);
     
 }
