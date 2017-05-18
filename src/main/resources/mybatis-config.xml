@@ -31,6 +31,8 @@
         <typeAlias type="com.zhsj.api.bean.result.CountDiscount" alias="countDiscount"/>
         <typeAlias type="com.zhsj.api.bean.StoreBalanceDetailBean" alias="storeBalanceDetailBean"/>
         <typeAlias type="com.zhsj.api.bean.MinMaxBean" alias="minMaxBean"/>
-         <typeAlias type="com.zhsj.api.bean.StoreAccountSignBean" alias="storeAccountSignBean"/>
+        <typeAlias type="com.zhsj.api.bean.StoreAccountSignBean" alias="storeAccountSignBean"/>
+        <typeAlias type="com.zhsj.api.bean.ModuleBean" alias="moduleBean"/>
+        <typeAlias type="com.zhsj.api.bean.result.StoreCountResult" alias="storeCountResult"/>
     </typeAliases>
 </configuration>

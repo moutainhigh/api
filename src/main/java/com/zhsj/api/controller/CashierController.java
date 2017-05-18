@@ -1,6 +1,7 @@
 package com.zhsj.api.controller;
 
 import com.zhsj.api.service.MchAddService;
+import com.zhsj.api.service.ModuleService;
 import com.zhsj.api.service.OrderService;
 import com.zhsj.api.service.StoreAccountService;
 import com.zhsj.api.util.CommonResult;
@@ -24,6 +25,8 @@ public class CashierController {
     private StoreAccountService storeAccountService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ModuleService moduleService;
     
     @RequestMapping(value = "/sign", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
@@ -59,8 +62,25 @@ public class CashierController {
         if(StringUtils.isEmpty(storeNo) || StringUtils.isEmpty(os)){
         	return CommonResult.defaultError("输入信息有误");
         }
-        return  orderService.countToday(storeNo, userId, auth);
+        return  moduleService.getAppModule(storeNo, os, auth);
     }
    
+    @RequestMapping(value = "/countShift", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //交班统计
+    public Object countShift(String storeNo,String userId,String startTime,String endTime, String auth) {
+        logger.info("#CashierController.countShift# storeNO={},userId={},startTime={},endTime={},auth={}",
+        		storeNo,userId,startTime,endTime,auth);
+        if(StringUtils.isEmpty(storeNo) || StringUtils.isEmpty(userId)){
+        	return CommonResult.defaultError("输入信息有误");
+        }
+        if(StringUtils.isEmpty(startTime) || StringUtils.isEmpty(endTime)){
+        	return CommonResult.defaultError("时间信息有误");
+        }
+        long stime = Long.parseLong(startTime);
+        long etime = Long.parseLong(endTime);
+        
+        return  moduleService.getAppModule(storeNo, os, auth);
+    }
 
 }

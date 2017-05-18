@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 抽象拦截器，提供子类调用方法
@@ -25,16 +26,9 @@ public abstract class AbstractInterceptor extends HandlerInterceptorAdapter {
 	 * @param response
 	 * @param errorCode
 	 */
-//	protected void sendFailResponse(HttpServletResponse response, ErrorCode errorCode) {
-//		DataResponse result = new DataResponse(errorCode);
-//		recordKick2Ros(result);
-//
-//		String json = result.toJson().toJSONString();
-//		// 记录access日志
-//		AccessProcesser.postResultArgs(json, ClassUtils.getShortName(getClass())+".preHandle()", 0, result.getCode());
-//
-//		WebUtils.writeJson(response, json);
-//	}
+	protected void sendFailResponse(HttpServletResponse response,String json) {
+		WebUtils.writeJson(response, json);
+	}
 
 	/**
 	 * 跳转到error页面
