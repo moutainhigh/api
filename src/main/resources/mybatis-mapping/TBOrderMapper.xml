@@ -3,7 +3,8 @@
 <mapper namespace="com.zhsj.api.dao.TbOrderDao">
     <sql id="SELECT_FIELDS">
         id,order_id,plan_charge_amount,actual_charge_amount,status,discount_type,
-        discount_id,pay_type,pay_method,store_no,parent_store_no,org_id,user_id,ctime,utime,org_ids,sale_id
+        discount_id,pay_type,pay_method,store_no,parent_store_no,org_id,user_id,ctime,utime,org_ids,sale_id,
+        refund_no,refund_money,pay_channel
     </sql>
 
     <insert id="insertOrder" >
@@ -245,6 +246,12 @@
      	and ctime BETWEEN #{startTime} AND #{endTime} and status=1 and account_id = #{accountId}
      </select>
 
+     <select id="getByStatusAndCtime" resultType="orderBean">
+     	SELECT <include refid="SELECT_FIELDS"/>
+        FROM tb_order
+        WHERE status = #{status} and ctime between #{startTime} and #{endTime}
+     </select>
+        
      <select id="countStore" resultType="storeCountResult">
      	SELECT IFNULL(SUM(plan_charge_amount),0),IFNULL(SUM(actual_charge_amount),0),COUNT(1) 
      	FROM tb_order 

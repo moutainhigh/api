@@ -17,6 +17,9 @@ public class StorePayInfo {
     private String remark;
     private int ctime;
     private int utime;
+    private String appId;
+    private String subAppid;
+    private String mchId;
 
     public long getId() {
         return id;
@@ -121,4 +124,29 @@ public class StorePayInfo {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+	public String getAppId() {
+		return appId;
+	}
+
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
+
+	public String getSubAppid() {
+		return subAppid;
+	}
+
+	public void setSubAppid(String subAppid) {
+		this.subAppid = subAppid;
+	}
+
+	public String getMchId() {
+		return mchId;
+	}
+
+	public void setMchId(String mchId) {
+		this.mchId = mchId;
+	}
+    
 }

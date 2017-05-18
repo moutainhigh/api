@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBWeChatInfoDao">
+
+
+    <select id="getByAppId" resultType="weChatInfoBean" >
+        select app_key,name,mch_id,app_key,cert_path
+        FROM tb_wechat_info
+        WHERE app_id = #{appId}
+    </select>
+
+
+
+
+</mapper>

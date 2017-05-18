@@ -108,6 +108,10 @@ public interface TbOrderDao {
 										  @Param("endTime")int endTime,
 										  @Param("accountId")long accountId);
 
+	List<OrderBean> getByStatusAndCtime(@Param("status")int status,
+										@Param("startTime")int startTime,
+										@Param("endTime")int endTime);
+	
 	StoreCountResult countStore(@Param("storeNo")String storeNo,
 								@Param("parentStoreNo")String parentStoreNo,
 								  @Param("startTime") int startTime,

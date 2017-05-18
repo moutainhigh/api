@@ -17,9 +17,7 @@ pageEncoding="UTF-8"%>
     <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
 
 </head>
-<body>ff
-<zhsj:hasUrlPerm link="page/orderList1" auth="${auth}">fffdd</zhsj:hasUrlPerm>
-dd
+<body>
 <input value="${auth}" id="auth" name="auth" type="hidden">
    <div class="container">
           <section class="f1 clearfix">
