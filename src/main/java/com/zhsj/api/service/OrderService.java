@@ -33,6 +33,7 @@ public class OrderService {
     private PinganService pinganService;
     @Autowired
     private WeChatService weChatService;
+    @Autowired
     private TbOrderDao tbOrderDao;
     @Autowired
     private TbUserBindStoreDao tbUserBindStoreDao;
