@@ -1,0 +1,15 @@
+.swiper-container{
+   width: 7.8rem;
+    height:2.42rem;
+}
+.swiper-slide img{
+    width:7.8rem;
+    height:2.42rem;
+}
+.assistant-tit{
+
+    background: #eeeeee;
+}
+.buy{
+    color: #ccc;
+}

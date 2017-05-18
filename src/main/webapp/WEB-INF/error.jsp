@@ -24,6 +24,6 @@
   </style>
 </head>
 <body>
-<img src="./resource/img/404.png" alt="">
+<img src="../resource/img/404.png" alt="">
 </body>
 </html>

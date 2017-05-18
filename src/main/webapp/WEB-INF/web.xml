@@ -109,6 +109,13 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+  
+  <jsp-config>  
+    <taglib>  
+      <taglib-uri>http://www.zhsj.com/mytag</taglib-uri>  
+      <taglib-location>/WEB-INF/zhsj.tld</taglib-location>  
+    </taglib>  
+  </jsp-config>
 
 </web-app>
         

@@ -24,7 +24,10 @@
     <mvc:resources mapping="/resource/img/app/*.*" location="/WEB-INF/resource/img/app/" />
     <mvc:resources mapping="/resource/mobiscroll/css/*" location="/WEB-INF/resource/mobiscroll/css/"/>
     <mvc:resources mapping="/resource/mobiscroll/js/*" location="/WEB-INF/resource/mobiscroll/js/"/>
-
+    
+    <mvc:resources mapping="/resource/css/merchant/**" location="/WEB-INF/resource/css/merchant/"/>
+	<mvc:resources mapping="/resource/img/merchant/**" location="/WEB-INF/resource/img/merchant/" />
+	
     <mvc:resources mapping="/resource/css/**" location="/WEB-INF/resource/css/" />
     <mvc:resources mapping="/resource/css/mchAdd/**" location="/WEB-INF/resource/css/mchAdd/" />
     <mvc:resources mapping="/resource/img/mchAdd/**" location="/WEB-INF/resource/img/mchAdd/" />
@@ -80,7 +83,14 @@
             <mvc:mapping path="/manager/**" />
             <mvc:mapping path="/shop/**" />
             <mvc:mapping path="/discount/**" />
+            <mvc:mapping path="/module/**" />
+            <mvc:mapping path="/order/**" />
             <mvc:mapping path="/mchAdd/**" />
+            <mvc:mapping path="/merchant/**" />
+            <mvc:exclude-mapping path="/merchant/test"/>
+            <mvc:exclude-mapping path="/merchant/login" />
+            <mvc:exclude-mapping path="/merchant/index" />
+            <mvc:exclude-mapping path="/merchant/bindWeChat" />
             <mvc:exclude-mapping path="/manager/index" />
             <mvc:exclude-mapping path="/manager/login" />
             <mvc:exclude-mapping path="/manager/bindWeChat" />
@@ -89,9 +99,20 @@
             <mvc:exclude-mapping path="/shop/login" />
             <mvc:exclude-mapping path="/shop/bindWeChat" />
             <mvc:exclude-mapping path="/shop/transactionOrder" />
-             <mvc:exclude-mapping path="/shop/searchUserInfo" />
+            <mvc:exclude-mapping path="/shop/searchUserInfo" />
             <mvc:exclude-mapping path="/shop/test"/>
             <bean class="com.zhsj.api.interceptors.LoginInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+    
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/merchant/**" />
+            <mvc:exclude-mapping path="/merchant/test"/>
+            <mvc:exclude-mapping path="/merchant/index" />
+            <mvc:exclude-mapping path="/merchant/login" />
+            <mvc:exclude-mapping path="/merchant/bindWeChat" />
+            <bean class="com.zhsj.api.interceptors.AuthInterceptor" />
         </mvc:interceptor>
     </mvc:interceptors>
 

@@ -244,5 +244,29 @@
         FROM tb_order
         WHERE status = #{status} and ctime between #{startTime} and #{endTime}
      </select>
+        
+     <select id="countStore" resultType="storeCountResult">
+     	SELECT IFNULL(SUM(plan_charge_amount),0),IFNULL(SUM(actual_charge_amount),0),COUNT(1) 
+     	FROM tb_order 
+		WHERE ctime BETWEEN #{startTime} AND #{endTime} and status in (1,3) 
+		<if test="storeNo != null and storeNo != '' ">
+            store_No = #{storeNo} 
+        </if>
+        <if test="parentStoreNo != null and parentStoreNo != '' ">
+            parent_store_no = #{parentStoreNo} 
+        </if>
+     </select>
+     
+      <select id="countStoreRefund" resultType="java.lang.Integer">
+     	SELECT COUNT(1) 
+     	FROM tb_order 
+		WHERE ctime BETWEEN #{startTime} AND #{endTime} and status = 3 
+		<if test="storeNo != null and storeNo != '' ">
+            store_No = #{storeNo} 
+        </if>
+        <if test="parentStoreNo != null and parentStoreNo != '' ">
+            parent_store_no = #{parentStoreNo} 
+        </if>
+     </select>
      
 </mapper>

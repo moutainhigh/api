@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBModuleDao">
+	<sql id="SELECT_FIELDS">
+       id,url,parent_id,display_name,type,icon_url
+    </sql>
+
+    <select id="getByParentId" resultType="moduleBean">
+       SELECT <include refid="SELECT_FIELDS"/>
+       FROM tb_module
+       WHERE system_type = 1 AND parent_id = #{parentId} ORDER BY display_order
+    </select>
+
+	<select id="getByURI" resultType="moduleBean">
+       SELECT <include refid="SELECT_FIELDS"/>
+       FROM tb_module
+       WHERE system_type = 1 AND url = #{uri} limit 1;
+    </select>
+
+</mapper>

@@ -33,5 +33,7 @@
         <typeAlias type="com.zhsj.api.bean.MinMaxBean" alias="minMaxBean"/>
         <typeAlias type="com.zhsj.api.bean.WeChatInfoBean" alias="weChatInfoBean"/>
         <typeAlias type="com.zhsj.api.bean.OrderRefundBean" alias="orderRefundBean"/>
+        <typeAlias type="com.zhsj.api.bean.ModuleBean" alias="moduleBean"/>
+        <typeAlias type="com.zhsj.api.bean.result.StoreCountResult" alias="storeCountResult"/>
     </typeAliases>
 </configuration>
