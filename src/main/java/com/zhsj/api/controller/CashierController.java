@@ -80,7 +80,7 @@ public class CashierController {
         long stime = Long.parseLong(startTime);
         long etime = Long.parseLong(endTime);
         
-        return  moduleService.getAppModule(storeNo, os, auth);
+        return  orderService.countShift(storeNo, userId, stime, etime, auth);
     }
 
 }

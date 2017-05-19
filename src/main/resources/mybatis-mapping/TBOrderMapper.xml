@@ -239,7 +239,7 @@
      	and ctime BETWEEN #{startTime} AND #{endTime} and status=1
      </select>
      
-     <select id="countByNOAndTime" resultType="java.util.HashMap()">
+     <select id="countByNOAndTime" resultType="java.util.HashMap">
      	SELECT IFNULL(SUM(plan_charge_amount),0) planMoney,IFNULL(SUM(actual_charge_amount),0) actualMoney
 		FROM tb_order 
 		where store_No = #{storeNo} 
@@ -275,5 +275,7 @@
             parent_store_no = #{parentStoreNo} 
         </if>
      </select>
+     
+     
      
 </mapper>
