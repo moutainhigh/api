@@ -36,5 +36,6 @@
         <typeAlias type="com.zhsj.api.bean.OrderRefundBean" alias="orderRefundBean"/>
         <typeAlias type="com.zhsj.api.bean.ModuleBean" alias="moduleBean"/>
         <typeAlias type="com.zhsj.api.bean.result.StoreCountResult" alias="storeCountResult"/>
+        <typeAlias type="com.zhsj.api.bean.VersionInfo" alias="versionInfo"/>
     </typeAliases>
 </configuration>

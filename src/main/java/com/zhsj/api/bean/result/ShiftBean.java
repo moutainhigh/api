@@ -4,14 +4,15 @@ public class ShiftBean {
 	private String startTime;
 	private String endTime;
 	private double refundMoney; //退款
-	private int refundNum;
+	private long refundNum;
 	private double actualMoney;//实收
-	private int actualNum;
 	private double storeDisMoney;//商家优惠
-	private int storeDisNum;
+	private long storeDisNum;
 	private double orgDisMoney;//平台优惠
-	private int orgDisNum;
+	private long orgDisNum;
 	private double totalMoney;
+	private long totalNum;
+	private String name;
 	public String getStartTime() {
 		return startTime;
 	}
@@ -30,10 +31,10 @@ public class ShiftBean {
 	public void setRefundMoney(double refundMoney) {
 		this.refundMoney = refundMoney;
 	}
-	public int getRefundNum() {
+	public long getRefundNum() {
 		return refundNum;
 	}
-	public void setRefundNum(int refundNum) {
+	public void setRefundNum(long refundNum) {
 		this.refundNum = refundNum;
 	}
 	public double getActualMoney() {
@@ -42,22 +43,16 @@ public class ShiftBean {
 	public void setActualMoney(double actualMoney) {
 		this.actualMoney = actualMoney;
 	}
-	public int getActualNum() {
-		return actualNum;
-	}
-	public void setActualNum(int actualNum) {
-		this.actualNum = actualNum;
-	}
 	public double getStoreDisMoney() {
 		return storeDisMoney;
 	}
 	public void setStoreDisMoney(double storeDisMoney) {
 		this.storeDisMoney = storeDisMoney;
 	}
-	public int getStoreDisNum() {
+	public long getStoreDisNum() {
 		return storeDisNum;
 	}
-	public void setStoreDisNum(int storeDisNum) {
+	public void setStoreDisNum(long storeDisNum) {
 		this.storeDisNum = storeDisNum;
 	}
 	public double getOrgDisMoney() {
@@ -66,10 +61,10 @@ public class ShiftBean {
 	public void setOrgDisMoney(double orgDisMoney) {
 		this.orgDisMoney = orgDisMoney;
 	}
-	public int getOrgDisNum() {
+	public long getOrgDisNum() {
 		return orgDisNum;
 	}
-	public void setOrgDisNum(int orgDisNum) {
+	public void setOrgDisNum(long orgDisNum) {
 		this.orgDisNum = orgDisNum;
 	}
 	public double getTotalMoney() {
@@ -78,6 +73,16 @@ public class ShiftBean {
 	public void setTotalMoney(double totalMoney) {
 		this.totalMoney = totalMoney;
 	}
-	
-	
+	public long getTotalNum() {
+		return totalNum;
+	}
+	public void setTotalNum(long totalNum) {
+		this.totalNum = totalNum;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 }

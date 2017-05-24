@@ -1,12 +1,9 @@
 package com.zhsj.api.service;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
 import com.zhsj.api.bean.AccountBean;
 import com.zhsj.api.bean.LoginUser;
-import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.WeixinUserBean;
 import com.zhsj.api.dao.TBAccountDao;
-import com.zhsj.api.dao.TbOrderDao;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.Md5;
 import com.zhsj.api.util.login.LoginUserUtil;
@@ -16,8 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Created by lcg on 16/12/29.

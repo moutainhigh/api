@@ -7,6 +7,8 @@ public class StoreAccountSignBean {
 	private String lon;
 	private int status;
 	private int ctime;
+	private String stroeNo;
+	private String imei;
 	public long getId() {
 		return id;
 	}
@@ -42,6 +44,18 @@ public class StoreAccountSignBean {
 	}
 	public void setCtime(int ctime) {
 		this.ctime = ctime;
+	}
+	public String getStroeNo() {
+		return stroeNo;
+	}
+	public void setStroeNo(String stroeNo) {
+		this.stroeNo = stroeNo;
+	}
+	public String getImei() {
+		return imei;
+	}
+	public void setImei(String imei) {
+		this.imei = imei;
 	}
 	
 }

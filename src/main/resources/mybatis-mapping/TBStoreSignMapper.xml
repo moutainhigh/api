@@ -2,20 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhsj.api.dao.TBStoreSignDao">
     <sql id="SELECT_FIELDS">
-    	id,account_id,lat,lon,status,ctime
+    	id,account_id,lat,lon,status,ctime,store_no,imei
     </sql>
 	
-	<select id="getById" resultType="storeAccountSignBean">
+	<select id="getByStoreNo" resultType="storeAccountSignBean">
 		select <include refid="SELECT_FIELDS"/>
 		from tb_store_sign
-		where id = #{id}
+		where store_no = #{id}
 	</select>
 	
 	<insert id="insert">
 		insert into tb_store_sign
-		 (account_id,lat,lon,status,ctime)
+		 (account_id,lat,lon,status,ctime,store_no,imei)
 		values
-		 (#{accountId},#{lat},#{lon},#{status},unix_timestamp(now()))
+		 (#{accountId},#{lat},#{lon},#{status},unix_timestamp(now()),#{storeNo},#{imei})
 	</insert>
 	    
 </mapper>

@@ -4,7 +4,7 @@
     <sql id="SELECT_FIELDS">
         id,order_id,plan_charge_amount,actual_charge_amount,status,discount_type,
         discount_id,pay_type,pay_method,store_no,parent_store_no,org_id,user_id,ctime,utime,org_ids,sale_id,
-        refund_no,refund_money,pay_channel
+        refund_no,refund_money,pay_channel,account_id
     </sql>
 
     <insert id="insertOrder" >
@@ -239,11 +239,63 @@
      	and ctime BETWEEN #{startTime} AND #{endTime} and status=1
      </select>
      
-     <select id="countByNOAndTime" resultType="java.util.HashMap">
-     	SELECT IFNULL(SUM(plan_charge_amount),0) planMoney,IFNULL(SUM(actual_charge_amount),0) actualMoney
+     <select id="countByUserAndTime" resultType="java.util.HashMap">
+     	SELECT IFNULL(SUM(plan_charge_amount),0) planMoney,IFNULL(SUM(actual_charge_amount),0) actualMoney,
+     			count(1) count
 		FROM tb_order 
 		where store_No = #{storeNo} 
-     	and ctime BETWEEN #{startTime} AND #{endTime} and status=1 and account_id = #{accountId}
+     	and ctime BETWEEN #{startTime} AND #{endTime} and account_id = #{accountId}
+     	<choose>
+            <when test="statuses != null and statuses.size() > 0">
+                AND status IN
+                <foreach collection="statuses" item="st"
+                         open="(" separator="," close=")" >
+                    #{st}
+                </foreach>
+            </when>
+        </choose>
+     </select>
+     
+     <select id="countStoreDisByUserAndTime" resultType="java.util.HashMap">
+     	SELECT IFNULL(SUM(store_discount_price),0) storeDisSum,count(1) count
+		FROM tb_order 
+		where store_No = #{storeNo} 
+     	and ctime BETWEEN #{startTime} AND #{endTime} and account_id = #{accountId}
+     	and store_discount_price > 0
+     	<choose>
+            <when test="statuses != null and statuses.size() > 0">
+                AND status IN
+                <foreach collection="statuses" item="st"
+                         open="(" separator="," close=")" >
+                    #{st}
+                </foreach>
+            </when>
+        </choose>
+     </select>
+     
+     <select id="countOrgDisByUserAndTime" resultType="java.util.HashMap">
+     	SELECT IFNULL(SUM(org_discount_price),0) orgDisSum,count(1) count
+		FROM tb_order 
+		where store_No = #{storeNo} 
+     	and ctime BETWEEN #{startTime} AND #{endTime} and account_id = #{accountId}
+     	and org_discount_price > 0
+     	<choose>
+            <when test="statuses != null and statuses.size() > 0">
+                AND status IN
+                <foreach collection="statuses" item="st"
+                         open="(" separator="," close=")" >
+                    #{st}
+                </foreach>
+            </when>
+        </choose>
+     </select>
+     
+     <select id="countRefundByUserAndTime" resultType="java.util.HashMap">
+     	SELECT IFNULL(SUM(refund_money),0) refundMoney,count(1) count
+		FROM tb_order 
+		where store_No = #{storeNo} 
+     	and ctime BETWEEN #{startTime} AND #{endTime} and account_id = #{accountId}
+     	and status = 4
      </select>
 
      <select id="getByStatusAndCtime" resultType="orderBean">
@@ -275,7 +327,5 @@
             parent_store_no = #{parentStoreNo} 
         </if>
      </select>
-     
-     
      
 </mapper>

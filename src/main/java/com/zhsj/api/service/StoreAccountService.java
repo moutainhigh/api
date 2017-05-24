@@ -34,19 +34,21 @@ public class StoreAccountService {
 	@Autowired
 	private TBStoreBindAccountDao tbStoreBindAccountDao;
 	
-	public CommonResult signCashier(String account,String passwd,String lat,String lon,String auth){
-		logger.info("#StoreAccountService.signCashier# account={},passwd={},lat={},lon={},auth={}",
-				account,passwd,lat,lon,auth);
+	public CommonResult signCashier(String account,String passwd,String lat,String lon,String regId,String imei,String auth){
+		logger.info("#StoreAccountService.signCashier# account={},passwd={},lat={},lon={},regId={},imei={}auth={}",
+				account,passwd,lat,lon,regId,imei,auth);
 		try{
 			StoreAccountBean storeAccountBean =  tbStoreAccountDao.getByAccount(account);
 			if(storeAccountBean == null || !passwd.equals(storeAccountBean.getPassword())){
 				return CommonResult.defaultError("账号或密码不正确");
 			}
-			tbStoreAccountDao.updateSignStatus(storeAccountBean.getId(), 1);
-			tbStoreSignDao.insert(storeAccountBean.getId(), lat, lon, 1);
-			
 			String storeNo = tbStoreBindAccountDao.getStoreNoByAccountId(storeAccountBean.getId());
 			StoreBean storeBean = tbStoreDao.getStoreByNo(storeNo);
+			
+			tbStoreAccountDao.updateSignStatus(storeAccountBean.getId(),regId, 1);
+			tbStoreSignDao.insert(storeAccountBean.getId(), lat, lon, 1,storeNo,imei);
+			
+			
 			
 			Map<String,Object> map = new HashMap<String, Object>();
 			map.put("time", DateUtil.unixTime());
@@ -56,6 +58,25 @@ public class StoreAccountService {
 		}catch(Exception e){
 			logger.error("#StoreAccountService.signCashier# account={},passwd={},lat={},lon={},auth={}",
 					account,passwd,lat,lon,auth,e);
+			return CommonResult.defaultError("系统错误");
+		}
+	}	
+	
+	public CommonResult signOutCashier(String account,String lat,String lon,String regId,String imei,String auth){
+		logger.info("#StoreAccountService.signOutCashier# account={},lat={},lon={},regId={},imei={}auth={}",
+				account,lat,lon,regId,imei,auth);
+		try{
+			StoreAccountBean storeAccountBean =  tbStoreAccountDao.getByAccount(account);
+			if(storeAccountBean == null ){
+				return CommonResult.defaultError("账号不正确");
+			}
+			String storeNo = tbStoreBindAccountDao.getStoreNoByAccountId(storeAccountBean.getId());
+			tbStoreAccountDao.updateSignStatus(storeAccountBean.getId(),"", 2);
+			tbStoreSignDao.insert(storeAccountBean.getId(), lat, lon, 2,storeNo,imei);
+			return CommonResult.success("交班成功");
+		}catch(Exception e){
+			logger.error("#StoreAccountService.signOutCashier# account={},lat={},lon={},auth={}",
+					account,lat,lon,auth,e);
 			return CommonResult.defaultError("系统错误");
 		}
 	}	

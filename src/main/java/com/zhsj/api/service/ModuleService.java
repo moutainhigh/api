@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,10 +140,16 @@ public class ModuleService {
 		return result;
 	 }
 	 
-	 public CommonResult getAppModule(String storeNo,String os,String auth){
-		 logger.info("#ModuleService.getAppModule# storeNo={},os={},auth={}",storeNo,os,auth);
+	 public CommonResult getAppModule(String storeNo,String os,String rate,String auth,HttpServletRequest request){
+		 logger.info("#ModuleService.getAppModule# storeNo={},os={},rate={},auth={}",storeNo,os,rate,auth);
 		 try{
 			 List<ModuleBean> allModuleBeans = tbModuleDao.getByParentIdAndType(0, 2);
+			 String uri = request.getRequestURL().toString();
+			 uri = uri.replace(request.getRequestURI(), "")+ request.getContextPath();
+			 for(ModuleBean bean:allModuleBeans){
+				 bean.setIconUrl(uri+bean.getIconUrl());
+				 bean.setUrl(uri+bean.getUrl());
+			 }
 			 return CommonResult.success("", allModuleBeans);
 		 }catch (Exception e) {
 			 logger.error("#ModuleService.getAppModule# storeNo={},os={},auth={}",storeNo,os,auth,e);

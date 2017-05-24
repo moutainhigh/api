@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhsj.api.dao.TBStoreAccountDao">
+	<sql id="SELECT_FIELDS">
+		id,account,password,open_id,name,head_img,j_id
+	</sql>
 
     <select id="getByAccount" resultType="storeAccountBean">
         SELECT id,account,password,open_id,name,head_img
@@ -153,7 +156,25 @@
     
     <update id="updateSignStatus">
     	update tb_store_account
-    		set sign_status = #{signStatus}
+    		set sign_status = #{signStatus},j_id=#{regId}
     		where id=#{id}
     </update>
+    
+    <select id="getSignByIds" resultType="storeAccountBean">
+        SELECT <include refid="SELECT_FIELDS"/>
+        FROM tb_store_account
+        WHERE status=1 and valid = 1 and sign_status = #{signStatus}
+        <choose>
+            <when test="ids != null and ids.size() > 0">
+                AND id IN
+                <foreach collection="ids" item="id"
+                         open="(" separator="," close=")" >
+                    #{id}
+                </foreach>
+            </when>
+            <otherwise>
+                AND 1 = 0
+            </otherwise>
+        </choose>
+    </select>
 </mapper>
