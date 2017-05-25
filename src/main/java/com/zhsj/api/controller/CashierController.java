@@ -118,7 +118,7 @@ public class CashierController {
     
     @RequestMapping(value = "/createPayCode", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    //交班统计
+    //生成商家二维码
     public Object createPayCode(String storeNo,String userId,String price, String auth) {
         logger.info("#CashierController.createPayCode# storeNO={},userId={},price={},auth={}",
         		storeNo,userId,price,auth);
@@ -128,11 +128,7 @@ public class CashierController {
         if(StringUtils.isEmpty(price) ){
         	return CommonResult.defaultError("金额信息有误");
         }
-        
-        Map<String,String> map = new HashMap<>();
-        map.put("url", "http://wwt.bj37du.com/pay/scanCode?no="+storeNo+"&userId="+userId+"&price="+price);
-        map.put("code", userId+price);
-        return  CommonResult.success("",map);
+       return baseService.createPayCode(storeNo, userId, price, auth);
     }
     
     @RequestMapping(value = "/microPay", method = {RequestMethod.GET,RequestMethod.POST})
@@ -150,8 +146,7 @@ public class CashierController {
         if(StringUtils.isEmpty(authCode) ){
         	return CommonResult.defaultError("授权码不能为空");
         }
-        
-        return  CommonResult.success("","支付成功");
+        return  baseService.microPay(storeNo, userId, price, authCode, auth);
     }
     
     
@@ -175,7 +170,7 @@ public class CashierController {
         if(StringUtils.isEmpty(orderNo)){
         	return CommonResult.defaultError("订单号不存在");
         }
-        return  CommonResult.success("",jPushService.sendSuccessMsg(orderNo));
+        return  jPushService.sendSuccessMsg(orderNo);
     }
 
     @RequestMapping(value = "/signOut", method = {RequestMethod.GET,RequestMethod.POST})

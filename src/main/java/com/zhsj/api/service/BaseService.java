@@ -5,6 +5,7 @@ import com.sun.tools.classfile.InnerClasses_attribute.Info;
 import com.zhsj.api.bean.CityCodeBean;
 import com.zhsj.api.bean.BusinessTypeBean;
 import com.zhsj.api.bean.OrderBean;
+import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.VersionInfo;
 import com.zhsj.api.bean.jpush.PaySuccessBean;
 import com.zhsj.api.bean.result.CheckUpdateResult;
@@ -15,8 +16,10 @@ import com.zhsj.api.dao.TbOrderDao;
 import com.zhsj.api.dao.TbStoreDao;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.HttpClient;
+import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.SSLUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +46,12 @@ public class BaseService {
     private TBVersionInfoDao tbVersionInfoDao;
     @Autowired
     private JPushService jPushService;
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private StoreAccountService storeAccountService;
+    @Autowired
+    OrderService orderService;
 
     public List<CityCodeBean> getCityCode(String cityCode){
         logger.info("#BaseService.getCityCode# cityCode={}",cityCode);
@@ -109,7 +118,7 @@ public class BaseService {
     	logger.info("#BaseService.microPay# storeNo={},userId={},price={},authCode={},auth={}",
     			storeNo,userId,price,authCode,auth);
     	try {
-			String uri = "http://wwt.bj37du.com/pay/microPay";
+			String uri = MtConfig.getProperty("PAY_URL", "")+"microPay";
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("price", price);
 			map.put("accountId", userId);
@@ -121,12 +130,40 @@ public class BaseService {
 			if(commonResult.getCode() != 0){
 				return commonResult;
 			}
-			return jPushService.sendSuccessMsg(commonResult.getData().toString());
+			jPushService.sendSuccessMsg(commonResult.getData().toString());
+			OrderBean bean = orderService.getByOrderId(commonResult.getData().toString());
+			PaySuccessBean psBean = new PaySuccessBean().toBean(bean, "qrcode",uri);
+			return commonResult.success("", psBean);
     	} catch (Exception e) {
 			logger.error("#BaseService.microPay# storeNo={},userId={},price={},authCode={},auth={}",
 	    			storeNo,userId,price,authCode,auth,e);
 		}
     	return CommonResult.defaultError("系统异常");
+    }
+    
+    public CommonResult createPayCode(String storeNo,String userId,String price, String auth){
+    	logger.info("#BaseService.createPayCode# storeNo={},userId={},price={},auth={}",storeNo,userId,price,auth);
+    	try{
+    		StoreBean storeBean = storeService.getStoreByNO(storeNo);
+    		if(storeBean == null){
+    			return CommonResult.defaultError("商家编号不存在");
+    		}
+    		String no = storeAccountService.getStoreNo(Long.parseLong(userId));
+    		if(StringUtils.isEmpty(no)){
+    			return CommonResult.defaultError("登录用户错误");
+    		}
+    		if(!no.equals(storeBean.getStoreNo())){
+    			return CommonResult.defaultError("登录用户没有权限");
+    		}
+    		String uri = MtConfig.getProperty("PAY_URL", "");
+    		Map<String,String> map = new HashMap<>();
+	        map.put("url", uri+"scanCode?no="+storeNo+"&userId="+userId+"&price="+price);
+	        map.put("code", userId+price);
+	        return  CommonResult.success("",map);
+    	}catch (Exception e) {
+    		logger.error("#BaseService.createPayCode# storeNo={},userId={},price={},auth={}",storeNo,userId,price,auth,e);
+		}
+    	return CommonResult.defaultError("系统出错了");
     }
 
 

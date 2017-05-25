@@ -20,7 +20,7 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.jpush.PaySuccessBean;
@@ -138,7 +138,10 @@ public class JPushService {
         //得指明使用UTF-8编码，否则到API服务器XML的中文不能被成功识别
         StringEntity postEntity = new StringEntity(postData, "UTF-8");
         httpPost.addHeader("Content-Type", "application/json");
-        httpPost.addHeader("Authorization", "Basic "+Base64.encode("976bb4cdb7452b6003ff5d89:ecfcf4526cc0444be0ffb89e".getBytes("UTF-8")).toString());
+        String JG_APP_KEY = MtConfig.getProperty("JG_APP_KEY", "");
+        String JG_MASTER_SECRET = MtConfig.getProperty("JG_MASTER_SECRET", "");
+        
+        httpPost.addHeader("Authorization", "Basic "+Base64.encode((JG_APP_KEY+":"+JG_MASTER_SECRET).getBytes("UTF-8")).toString());
         httpPost.setEntity(postEntity);
         //设置请求器的配置
         httpPost.setConfig(requestConfig);
@@ -165,7 +168,7 @@ public class JPushService {
      * @return API回包的实际数据
      * @throws Exception
      */
-    private String sendGet(String url) throws Exception {
+    private String sendGet11(String url) throws Exception {
     	int socketTimeout = 10000; //连接超时时间，默认10秒
         int connectTimeout = 30000; //传输超时时间，默认30秒
     	CloseableHttpClient httpClient = HttpClients.custom().build();
@@ -179,7 +182,9 @@ public class JPushService {
 //        //得指明使用UTF-8编码，否则到API服务器XML的中文不能被成功识别
 //        StringEntity postEntity = new StringEntity(postData, "UTF-8");
         httpGet.addHeader("Content-Type", "application/json");
-        httpGet.addHeader("Authorization", "Basic "+Base64.encode("976bb4cdb7452b6003ff5d89:ecfcf4526cc0444be0ffb89e".getBytes("UTF-8")).toString());
+        String JG_APP_KEY = MtConfig.getProperty("JG_APP_KEY", "");
+        String JG_MASTER_SECRET = MtConfig.getProperty("JG_MASTER_SECRET", "");
+        httpGet.addHeader("Authorization", "Basic "+Base64.encode((JG_APP_KEY+":"+JG_MASTER_SECRET).getBytes("UTF-8")).toString());
         //设置请求器的配置
         httpGet.setConfig(requestConfig);
 
@@ -204,9 +209,11 @@ public class JPushService {
     }
     
     public static void main(String[] args) throws Exception {
-		new JPushService().sendSuccessMsg("2017020518333807cSN0f1846a10");
+//		new JPushService().sendSuccessMsg("2017020518333807cSN0f1846a10");
 //    	String url = "https://report.jpush.cn/v3/received?msg_ids=4269690627";
 //    	System.out.println(new JPushService().sendGet(url));
+    	String json = "{\"message\":{\"msg_content\":{\"nt\":\"你有一笔0.01元订单支付成功\",\"time\":\"2017-05-25 10:16\",\"cmd\":1,\"no\":\"10001170525369841513\",\"am\":\"0.01\",\"pt\":\"微信\",\"pm\":\"0.01\",\"st\":\"成功\",\"code\":\"671\",\"url\":\"http://wwt.bj37du.com/api/10001170525369841513\",\"qr\":\"qrcode\"}},\"platform\":\"all\",\"audience\":{\"registration_id\":[\"1a0018970a97f0cf8e0\"]},\"options\":{\"time_to_live\":1800}}";
+    	System.out.println(new JPushService().sendPost("https://api.jpush.cn/v3/push", json));
     	
 	}
     

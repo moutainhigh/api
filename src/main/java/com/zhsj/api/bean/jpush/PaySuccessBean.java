@@ -14,7 +14,7 @@ public class PaySuccessBean {
 	private String pm;//应收
 	private String url; //详情
 	private String st;
-	private String notice;
+	private String nt; //播放内容
 	private String code;
 	private String qr;//二维码
 
@@ -66,13 +66,12 @@ public class PaySuccessBean {
 	public void setSt(String st) {
 		this.st = st;
 	}
-	public String getNotice() {
-		return notice;
+	public String getNt() {
+		return nt;
 	}
-	public void setNotice(String notice) {
-		this.notice = notice;
+	public void setNt(String nt) {
+		this.nt = nt;
 	}
-	
 	public String getCode() {
 		return code;
 	}
@@ -101,6 +100,7 @@ public class PaySuccessBean {
 		pb.setSt(bean.getStatus()==1?"成功":"");
 		pb.setCode(bean.getAccountId()+""+((int)Arith.mul(bean.getPlanChargeAmount(),100)));
 		pb.setQr(qrcode);
+		pb.setNt("你有一笔"+bean.getPlanChargeAmount()+"元订单支付成功");
 		return pb;
 	}
 	

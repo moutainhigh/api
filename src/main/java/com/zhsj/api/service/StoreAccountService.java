@@ -81,4 +81,8 @@ public class StoreAccountService {
 		}
 	}	
 	
+	public String getStoreNo(long accountId){
+		return tbStoreBindAccountDao.getStoreNoByAccountId(accountId);
+	}
+	
 }
