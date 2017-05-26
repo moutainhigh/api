@@ -48,6 +48,9 @@ public class CashierController {
         if(StringUtils.isEmpty(account) || StringUtils.isEmpty(passwd)){
         	return CommonResult.defaultError("账号密码不能为空");
         }
+        if(StringUtils.isEmpty(lat) || StringUtils.isEmpty(lon)){
+        	return CommonResult.defaultError("位置信息不能为空");
+        }
         return  storeAccountService.signCashier(account, passwd, lat, lon,regId,imei, auth);
 
     }
@@ -182,6 +185,10 @@ public class CashierController {
         if(StringUtils.isEmpty(account)){
         	return CommonResult.defaultError("账号密码不能为空");
         }
+        if(StringUtils.isEmpty(lat) || StringUtils.isEmpty(lon)){
+        	return CommonResult.defaultError("位置信息不能为空");
+        }
+        
         return  storeAccountService.signOutCashier(account, lat, lon,regId,imei, auth);
 
     }

@@ -1,5 +1,6 @@
 package com.zhsj.api.service;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import com.zhsj.api.dao.TBStoreBindAccountDao;
 import com.zhsj.api.dao.TBStoreSignDao;
 import com.zhsj.api.dao.TbStoreDao;
 import com.zhsj.api.dao.TbStoreNoDao;
+import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.DateUtil;
 
@@ -38,6 +40,8 @@ public class StoreAccountService {
 		logger.info("#StoreAccountService.signCashier# account={},passwd={},lat={},lon={},regId={},imei={}auth={}",
 				account,passwd,lat,lon,regId,imei,auth);
 		try{
+			lat = Arith.div(Double.parseDouble(lat), 1.0,6)+"";
+			lon = Arith.div(Double.parseDouble(lon), 1.0,6)+"";
 			StoreAccountBean storeAccountBean =  tbStoreAccountDao.getByAccount(account);
 			if(storeAccountBean == null || !passwd.equals(storeAccountBean.getPassword())){
 				return CommonResult.defaultError("账号或密码不正确");
@@ -66,6 +70,9 @@ public class StoreAccountService {
 		logger.info("#StoreAccountService.signOutCashier# account={},lat={},lon={},regId={},imei={}auth={}",
 				account,lat,lon,regId,imei,auth);
 		try{
+			lat = Arith.div(Double.parseDouble(lat), 1.0,6)+"";
+			lon = Arith.div(Double.parseDouble(lon), 1.0,6)+"";
+			
 			StoreAccountBean storeAccountBean =  tbStoreAccountDao.getByAccount(account);
 			if(storeAccountBean == null ){
 				return CommonResult.defaultError("账号不正确");
