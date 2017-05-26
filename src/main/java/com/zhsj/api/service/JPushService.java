@@ -168,7 +168,7 @@ public class JPushService {
      * @return API回包的实际数据
      * @throws Exception
      */
-    private String sendGet11(String url) throws Exception {
+    private String sendGet(String url) throws Exception {
     	int socketTimeout = 10000; //连接超时时间，默认10秒
         int connectTimeout = 30000; //传输超时时间，默认30秒
     	CloseableHttpClient httpClient = HttpClients.custom().build();
@@ -210,10 +210,10 @@ public class JPushService {
     
     public static void main(String[] args) throws Exception {
 //		new JPushService().sendSuccessMsg("2017020518333807cSN0f1846a10");
-//    	String url = "https://report.jpush.cn/v3/received?msg_ids=4269690627";
-//    	System.out.println(new JPushService().sendGet(url));
-    	String json = "{\"message\":{\"msg_content\":{\"nt\":\"你有一笔0.01元订单支付成功\",\"time\":\"2017-05-25 10:16\",\"cmd\":1,\"no\":\"10001170525369841513\",\"am\":\"0.01\",\"pt\":\"微信\",\"pm\":\"0.01\",\"st\":\"成功\",\"code\":\"671\",\"url\":\"http://wwt.bj37du.com/api/10001170525369841513\",\"qr\":\"qrcode\"}},\"platform\":\"all\",\"audience\":{\"registration_id\":[\"1a0018970a97f0cf8e0\"]},\"options\":{\"time_to_live\":1800}}";
-    	System.out.println(new JPushService().sendPost("https://api.jpush.cn/v3/push", json));
+    	String url = "https://report.jpush.cn/v3/received?msg_ids=3671536070";
+    	System.out.println(new JPushService().sendGet(url));
+//    	String json = "{\"message\":{\"msg_content\":{\"nt\":\"你有一笔0.01元订单支付成功\",\"time\":\"2017-05-25 10:16\",\"cmd\":1,\"no\":\"10001170525369841513\",\"am\":\"0.01\",\"pt\":\"微信\",\"pm\":\"0.01\",\"st\":\"成功\",\"code\":\"671\",\"url\":\"http://wwt.bj37du.com/api/10001170525369841513\",\"qr\":\"qrcode\"}},\"platform\":\"all\",\"audience\":{\"registration_id\":[\"1a0018970a97f0cf8e0\"]},\"options\":{\"time_to_live\":1800}}";
+//    	System.out.println(new JPushService().sendPost("https://api.jpush.cn/v3/push", json));
     	
 	}
     

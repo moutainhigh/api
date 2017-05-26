@@ -130,7 +130,6 @@ public class BaseService {
 			if(commonResult.getCode() != 0){
 				return commonResult;
 			}
-			jPushService.sendSuccessMsg(commonResult.getData().toString());
 			OrderBean bean = orderService.getByOrderId(commonResult.getData().toString());
 			PaySuccessBean psBean = new PaySuccessBean().toBean(bean, "qrcode",uri);
 			return commonResult.success("", psBean);
