@@ -100,7 +100,7 @@ public class PaySuccessBean {
 		pb.setSt(bean.getStatus()==1?"成功":"");
 		pb.setCode(bean.getAccountId()+""+((int)Arith.mul(bean.getPlanChargeAmount(),100)));
 		pb.setQr(qrcode);
-		pb.setNt("你有一笔"+bean.getPlanChargeAmount()+"元订单支付成功");
+		pb.setNt(pb.getPt()+"收款"+bean.getPlanChargeAmount());
 		return pb;
 	}
 	

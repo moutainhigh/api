@@ -160,6 +160,12 @@
     		where id=#{id}
     </update>
     
+     <update id="initSignStatus">
+    	update tb_store_account
+    		set j_id=''
+    		where j_id=#{regId}
+    </update>
+    
     <select id="getSignByIds" resultType="storeAccountBean">
         SELECT <include refid="SELECT_FIELDS"/>
         FROM tb_store_account

@@ -62,14 +62,13 @@ public class JPushService {
     		List<String> jIds = new ArrayList<>();
     		for(StoreAccountBean accountBean:accountBeans){
     			if(StringUtils.isNotEmpty(accountBean.getjId())){
-    				jIds.add(accountBean.getjId());
+    				if(orderBean.getAccountId() <= 0){
+    					jIds.add(accountBean.getjId());
+    				}else if(orderBean.getAccountId() == accountBean.getId()){
+    					jIds.add(accountBean.getjId());
+    				}
     			}
     		}
-//    		List<String> jIds = new ArrayList<>();
-//    		jIds.add("18071adc033ca81f2b5");
-////    		jIds.add("140fe1da9e9a7c6187b");
-    		
-    		
     		if(CollectionUtils.isEmpty(jIds)){
     			return CommonResult.success("没有注册用户");
     		}
