@@ -26,6 +26,8 @@ public class OrderBean {
     private String refundNo;
     private double refundMoney;
     private int payChannel;
+    
+    private int accountId;
 
     public long getCtime() {
         return ctime;
@@ -211,5 +213,15 @@ public class OrderBean {
 				+ actualChargeAmount + ", status=" + status + ", storeNo="
 				+ storeNo + "]";
 	}
+    
+
+	public int getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(int accountId) {
+		this.accountId = accountId;
+	}
+    
     
 }
