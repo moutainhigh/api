@@ -92,7 +92,7 @@ public class CloudPrinter {
 	 * 1d2111 字体大小
 	 * 1b337f 行高
 	 */
-	public static final String  TITLESE_TTING = "1b61011b56021B2108";
+	public static final String  TITLESE_TTING = "1b61011B21081b5602";
 	/**
 	 * 设置内容格式
 	 * 1b6101 居中 
