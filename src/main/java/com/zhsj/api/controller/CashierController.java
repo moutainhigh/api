@@ -76,6 +76,9 @@ public class CashierController {
         if(StringUtils.isEmpty(storeNo) || StringUtils.isEmpty(os)){
         	return CommonResult.defaultError("输入信息有误");
         }
+        if(StringUtils.isEmpty(auth)){
+        	return CommonResult.defaultError("auth字段不能为空");
+        }
         return  moduleService.getAppModule(storeNo, os,rate, auth,request);
     }
    

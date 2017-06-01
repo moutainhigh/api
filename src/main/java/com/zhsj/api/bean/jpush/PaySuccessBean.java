@@ -96,11 +96,11 @@ public class PaySuccessBean {
 		pb.setPt("1".equals(bean.getPayMethod())?"微信":"支付宝");
 		pb.setPm(bean.getPlanChargeAmount()+"");
 		pb.setAm(bean.getActualChargeAmount()+"");
-		pb.setUrl(uri+bean.getOrderId());
+		pb.setUrl(uri+"shop/transactionOrder?id="+bean.getId());
 		pb.setSt(bean.getStatus()==1?"成功":"");
 		pb.setCode(bean.getAccountId()+""+((int)Arith.mul(bean.getPlanChargeAmount(),100)));
 		pb.setQr(qrcode);
-		pb.setNt(pb.getPt()+"收款"+bean.getPlanChargeAmount());
+		pb.setNt(pb.getPt()+"收款"+bean.getPlanChargeAmount()+"元");
 		return pb;
 	}
 	

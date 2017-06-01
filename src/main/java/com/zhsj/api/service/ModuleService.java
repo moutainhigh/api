@@ -1,5 +1,6 @@
 package com.zhsj.api.service;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -143,12 +144,14 @@ public class ModuleService {
 	 public CommonResult getAppModule(String storeNo,String os,String rate,String auth,HttpServletRequest request){
 		 logger.info("#ModuleService.getAppModule# storeNo={},os={},rate={},auth={}",storeNo,os,rate,auth);
 		 try{
+			 auth = URLDecoder.decode("1001%2C80%2Ctest3", "utf-8");
+			 String[] args = auth.split(",");
 			 List<ModuleBean> allModuleBeans = tbModuleDao.getByParentIdAndType(0, 2);
 			 String uri = request.getRequestURL().toString();
 			 uri = uri.replace(request.getRequestURI(), "")+ request.getContextPath();
 			 for(ModuleBean bean:allModuleBeans){
 				 bean.setIconUrl(uri+bean.getIconUrl());
-				 bean.setUrl(uri+bean.getUrl());
+				 bean.setUrl(uri+bean.getUrl()+"?storeNo="+args[0]+"&accountId="+args[1]);
 			 }
 			 return CommonResult.success("", allModuleBeans);
 		 }catch (Exception e) {
