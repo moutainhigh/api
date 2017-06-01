@@ -4,15 +4,22 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.zhsj.api.bean.OrderBean;
+import com.zhsj.api.util.Arith;
+import com.zhsj.api.util.DateUtil;
 
 import sun.misc.BASE64Encoder;
 
@@ -115,7 +122,73 @@ public class PrinterUtil {
 		return result;
 	}
 	
-	
+public static String request(String deviceId, String secertKey,OrderBean orderBean, String cashierName){
+	        //1、保存byte数组
+			ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+			//2、title设置格式
+			String tilteSetting = CloudPrinter.TITLESE_TTING;
+			byte[] titleSettingByte = PrinterUtil.hexStringToBytes(tilteSetting);
+			byteBuffer.put(titleSettingByte);
+			//3、title设置
+			String title = orderBean.getStoreName()+"\r\n\r\n";
+			byte[] titleByte;
+			try {
+				titleByte = title.getBytes(CloudPrinter.CHARSET);
+				byteBuffer.put(titleByte);
+			} catch (UnsupportedEncodingException e2) {
+				e2.printStackTrace();
+			}
+			//content 设置格式
+			String contentSetting = CloudPrinter.CONTENT_SETTING;
+			byte[] contentSettingByte = PrinterUtil.hexStringToBytes(contentSetting);
+			byteBuffer.put(contentSettingByte);
+//			//content 设置
+			StringBuffer contentBuffer = new StringBuffer();
+			String split = "-------------------------------\r\n";
+			String c_no = "单号:"+orderBean.getOrderId()+"\r\n"+split;
+			String payMethod  = "支付方式:"+("1".equals(orderBean.getPayMethod())?"微信":"支付宝")+"\r\n";
+			String plan = "应收金额:"+orderBean.getPlanChargeAmount()+"\r\n";
+			String discount = "抵扣金额:"+Arith.sub(orderBean.getPlanChargeAmount(), orderBean.getActualChargeAmount())+"\r\n";
+			String actual = "实际金额:"+orderBean.getActualChargeAmount()+"\r\n";
+			String ctime = "交易时间:"+DateUtil.getTime(orderBean.getCtime()*1000)+"\r\n";
+			contentBuffer.append(c_no).append(payMethod)
+			.append(plan).append(discount).append(actual)
+			.append(split).append(ctime);
+			if(StringUtils.isEmpty(cashierName)){
+				cashierName = "  --";
+			}
+			String cashier = "收银员:"+cashierName+"\r\n";
+			contentBuffer.append(split).append(cashier);
+			byte[] contentByte;
+			try {
+				contentByte = contentBuffer.toString().getBytes(CloudPrinter.CHARSET);
+				byteBuffer.put(contentByte);
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			// 设置二维码
+			byteBuffer.put(titleSettingByte);
+			String url = "http://www.zhihuishangjie.com/";
+			byte[] hexQR = PrinterUtil.getURLQRCode(url);
+			byteBuffer.put(hexQR);
+			//打印指令
+			byte[] goPrint = {0x0d,0x0a};
+			byteBuffer.put(goPrint);
+			//存放实际打印的byte
+			byte[] bs = new byte[byteBuffer.position()];
+			byteBuffer.flip();
+			byteBuffer.get(bs);
+			try {
+				String result = requestPrintPost(deviceId, secertKey, bs);
+				logger.info("#request# result = {}", result);
+				return result;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        return null;
+}	
 	
 	
 	

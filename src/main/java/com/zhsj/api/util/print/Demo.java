@@ -7,9 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.aspectj.weaver.ast.Var;
 
-import com.zhsj.api.util.print.libPrint.CloudPrinter;
 
 public class Demo {
 	/*
@@ -19,30 +17,82 @@ public class Demo {
 	 */
     static String url = "http://weixin.qq.com/r/lUyOlhXEYEgfrVH19xmH";
 	public static void main(String[] args) throws Exception{
-		String device_id = "1083";
-		String secertKey = "rego-yn-20150826";
+//		String device_id = "1083";
+//		String secertKey = "rego-yn-20150826";
+		String device_id = "6005";
+		String secertKey = "zlbz-cloud";
 //		System.err.println(PrinterUtil.queryState(device_id, secertKey));
 		
-		byte[] content = getContent();
-		int len = 0;
-		for(Byte b:content){
-			System.err.println(b);
-			len ++;
-		}
-		System.err.println("------------------------------");
-		System.err.println(len);
-//		System.err.println(len*8/1024);
+//		byte[] content = getContent();
+//		System.err.println("------------------------------");
 //		String result  =PrinterUtil.requestPrintPost(device_id, 
 //				secertKey, content );
 //		System.err.println(result);
 		
-//		String initial = CloudPrinter.PRINTER_INIT;
-//		byte[] initByte = PrinterUtil.hexStringToBytes(initial);
-//		String printInitial = PrinterUtil.requestPrintPost(device_id,secertKey, initByte);
-//		System.out.println("print01" + printInitial);
-//		getC(device_id,secertKey,"测试","2017-04-11",1000);
+		String initial = CloudPrinter.PRINTER_INIT;
+		byte[] initByte = PrinterUtil.hexStringToBytes(initial);
+		String printInitial = PrinterUtil.requestPrintPost(device_id,secertKey, initByte);
+		System.out.println("print01" + printInitial);
+		getC(device_id,secertKey,"测试","2017-04-11",1000);
 	}
 	
+	
+	public static byte[] getContent1(String storeName,String content,String time,String cashier) throws Exception{
+		//1、保存byte数组
+		ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+		//2、title设置格式
+		String tilteSetting = CloudPrinter.TITLESE_TTING;
+		byte[] titleSettingByte = PrinterUtil.hexStringToBytes(tilteSetting);
+		byteBuffer.put(titleSettingByte);
+		//3、title设置
+		String title = storeName+"\r\n\r\n";
+		byte[] titleByte = title.getBytes(CloudPrinter.CHARSET);
+		byteBuffer.put(titleByte);
+		//content 设置格式
+		String contentSetting = CloudPrinter.CONTENT_SETTING;
+		byte[] contentSettingByte = PrinterUtil.hexStringToBytes(contentSetting);
+		byteBuffer.put(contentSettingByte);
+		//content 设置
+		StringBuffer contentBuffer = new StringBuffer();
+		String c_no = "编号:OPENTM401668887\r\n";
+		String c_title = "标题:收银小票提醒\r\n";
+		String c_industry = "行业:IT科技-互联网|电子商务\r\n";
+		String c_example = "内容示例:您好,这是您的消费电子小票\r\n";
+		String c_store_name = "商店名称:小小花便利店\r\n";
+		String c_store_no = "单号:12845662645\r\n";
+		String c_pay_type = "支付方式:现金\r\n";
+		String c_sum = "合计:88元\r\n";
+		String c_date = "时间:2017年4月11日  12:12:56\r\n";
+		String c_thinks = "感谢您的惠顾!\r\n";
+		contentBuffer.append(c_no).append(c_title)
+		.append(c_industry).append(c_example).append(c_store_name)
+		.append(c_store_no).append(c_pay_type).append(c_sum).append(c_date).append(c_thinks);
+		byte[] contentByte = contentBuffer.toString().getBytes(CloudPrinter.CHARSET);
+		byteBuffer.put(contentByte);
+//		二维码
+		byteBuffer.put(titleSettingByte);
+		byte[] hexQR = PrinterUtil.getURLQRCode(url);
+		byteBuffer.put(hexQR);
+//		// 设置微信扫一扫可保存本券
+//		String tipSetting = CloudPrinter.COMPANY_TNAME_SETTING;
+//		byte[] tipSettingByte = PrinterUtil.hexStringToBytes(tipSetting);
+//		byteBuffer.put(tipSettingByte);
+//		// 字符串 微信扫一扫可保存本券
+//		String tip = CloudPrinter.SWEEP;
+//		byte[] contentHex = tip.getBytes(CloudPrinter.CHARSET);
+//		byteBuffer.put(contentHex);
+		//打印指令
+		byte[] goPrint = {0x0d,0x0a};
+		byteBuffer.put(goPrint);
+		//切刀指令
+		byte[] qdSetting = PrinterUtil.hexStringToBytes("1d560065");
+		byteBuffer.put(qdSetting);
+		//存放实际打印的byte
+		byte[] bs = new byte[byteBuffer.position()];
+		byteBuffer.flip();
+		byteBuffer.get(bs);
+		return bs;
+	}
 	
 	
 	public static byte[] getContent() throws Exception{
@@ -71,29 +121,30 @@ public class Demo {
 		String c_pay_type = "支付方式:现金\r\n";
 		String c_sum = "合计:88元\r\n";
 		String c_date = "时间:2017年4月11日  12:12:56\r\n";
-		String c_thinks = "感谢您的惠顾!";
+		String c_thinks = "感谢您的惠顾!\r\n";
 		contentBuffer.append(c_no).append(c_title)
 		.append(c_industry).append(c_example).append(c_store_name)
 		.append(c_store_no).append(c_pay_type).append(c_sum).append(c_date).append(c_thinks);
 		byte[] contentByte = contentBuffer.toString().getBytes(CloudPrinter.CHARSET);
 		byteBuffer.put(contentByte);
 //		二维码
+		byteBuffer.put(titleSettingByte);
 		byte[] hexQR = PrinterUtil.getURLQRCode(url);
 		byteBuffer.put(hexQR);
 //		// 设置微信扫一扫可保存本券
 //		String tipSetting = CloudPrinter.COMPANY_TNAME_SETTING;
 //		byte[] tipSettingByte = PrinterUtil.hexStringToBytes(tipSetting);
+//		byteBuffer.put(tipSettingByte);
 //		// 字符串 微信扫一扫可保存本券
 //		String tip = CloudPrinter.SWEEP;
 //		byte[] contentHex = tip.getBytes(CloudPrinter.CHARSET);
-//		byteBuffer.put(tipSettingByte);
 //		byteBuffer.put(contentHex);
 		//打印指令
 		byte[] goPrint = {0x0d,0x0a};
 		byteBuffer.put(goPrint);
 		//切刀指令
-//		byte[] qdSetting = PrinterUtil.hexStringToBytes("1d560065");
-//		byteBuffer.put(qdSetting);
+		byte[] qdSetting = PrinterUtil.hexStringToBytes("1d560065");
+		byteBuffer.put(qdSetting);
 		//存放实际打印的byte
 		byte[] bs = new byte[byteBuffer.position()];
 		byteBuffer.flip();

@@ -23,6 +23,8 @@ public class OrderBean {
     private String orgIds;
     private long saleId;
     private String discountIds;
+    
+    private int accountId;
 
     public long getCtime() {
         return ctime;
@@ -175,4 +177,14 @@ public class OrderBean {
     public void setDiscountIds(String discountIds) {
         this.discountIds = discountIds;
     }
+
+	public int getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(int accountId) {
+		this.accountId = accountId;
+	}
+    
+    
 }
