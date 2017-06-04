@@ -87,6 +87,7 @@
             <mvc:mapping path="/order/**" />
             <mvc:mapping path="/mchAdd/**" />
             <mvc:mapping path="/merchant/**" />
+            <mvc:mapping path="/printer/**" />
             <mvc:exclude-mapping path="/merchant/test"/>
             <mvc:exclude-mapping path="/merchant/login" />
             <mvc:exclude-mapping path="/merchant/index" />

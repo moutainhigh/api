@@ -9,11 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.zhsj.api.bean.LoginUser;
+import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.PrinterSecretBean;
+import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.StoreBindPrinterBean;
+import com.zhsj.api.bean.StoreSettingsBean;
 import com.zhsj.api.dao.TBPrinterSecretDao;
+import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindPrinterDao;
+import com.zhsj.api.dao.TBStoreSettingsDao;
+import com.zhsj.api.dao.TbOrderDao;
+import com.zhsj.api.dao.TbStoreDao;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.login.LoginUserUtil;
 import com.zhsj.api.util.print.CloudPrinter;
@@ -27,6 +35,15 @@ public class PrinterService {
 	private TBStoreBindPrinterDao tbStoreBindPrinterDao;
 	@Autowired
 	private TBPrinterSecretDao tbPrinterSecretDao;
+	@Autowired
+	private TbOrderDao tbOrderDao;
+	@Autowired
+	private TBStoreSettingsDao tbStoreSettingsDao;
+	@Autowired
+	private TbStoreDao tbStoreDao;
+	@Autowired
+	private TBStoreAccountDao tbStoreAccountDao;
+	
 	
 	
 	public Object addStoreBindPrinter(StoreBindPrinterBean storeBindPrinterBean){
@@ -137,6 +154,58 @@ public class PrinterService {
 			return false;
 		}
 		return true;
+	}
+	
+	
+	public CommonResult printByOrder(String orderId){
+		logger.info("#printByOrder# orderId = {}",orderId);
+		OrderBean orderBean = tbOrderDao.getByOrderId(orderId);
+		String storeNo = orderBean.getStoreNo();
+		StoreBean storeBean = tbStoreDao.getStoreByNo(storeNo);
+		orderBean.setStoreName(storeBean.getName());
+		StoreSettingsBean storeSettingsBean = tbStoreSettingsDao.getByStoreNo(storeNo);
+		if(storeSettingsBean == null){
+			return CommonResult.build(2, "没有关联云打印机");
+		}
+		if(storeSettingsBean.getCloudPrint() != 1){
+			return CommonResult.build(2, "没有关联云打印机");
+		}
+		StoreBindPrinterBean storeBindPrinterBean = tbStoreBindPrinterDao.getByStoreNo(storeNo);
+		if(storeBindPrinterBean  == null){
+			return CommonResult.build(2, "没有关联云打印机");
+		}
+		String deviceId = storeBindPrinterBean.getDeviceId();
+		String secretKey = storeBindPrinterBean.getSecretKey();
+		// 初始化打印机
+		String initial =  CloudPrinter.PRINTER_INIT;
+		byte[] initByte = PrinterUtil.hexStringToBytes(initial);
+		String printInitial = null;
+		try {
+			printInitial = PrinterUtil.requestPrintPost(deviceId, secretKey, initByte);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Map<String,Object> map = JSON.parseObject(printInitial, Map.class);
+		if(!"ok".equals(map.get("state"))){
+			logger.info("#printerByOrder# 打印机没有准备好");
+			return CommonResult.build(2, "打印机没有准备好");
+		}
+		long accountId = orderBean.getAccountId();
+		String cashierName = "";
+		if(accountId != 0){
+			StoreAccountBean storeAccountBean = tbStoreAccountDao.getById(accountId);
+			cashierName = storeAccountBean.getName();
+		}
+		//打印内容
+		String result = PrinterUtil.request(deviceId, secretKey, orderBean, cashierName);
+		logger.info("#printerByOrder# result = {}", result);
+		Map<String,Object> rsmap = JSON.parseObject(result, Map.class);
+		if(!"ok".equals(rsmap.get("state"))){
+			logger.info("#printerByOrder# 打印机出错了");
+			return CommonResult.build(2, "打印机出错了");
+		}
+		return CommonResult.success("打印完成");
 	}
 	
 }

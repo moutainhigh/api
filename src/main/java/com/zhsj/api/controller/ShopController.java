@@ -131,7 +131,7 @@ public class ShopController {
     public ModelAndView test() throws UnsupportedEncodingException {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./shop/index");
-        String auth = "o5pmesyob9P9Otj-jl-U3ETnArlY";
+        String auth = "123";
         modelAndView.addObject("auth", "21" + auth);
         return modelAndView;
     }

@@ -42,6 +42,8 @@ public class JPushService {
     private TBStoreBindAccountDao tbStoreBindAccountDao;
     @Autowired
     private TBStoreAccountDao tbStoreAccountDao;
+    @Autowired
+    private PrinterService printerService;
     
     public CommonResult sendSuccessMsg(String orderNo){
     	logger.info("#JPushService.sendSuccessMsg# orderNO={}",orderNo);
@@ -82,6 +84,8 @@ public class JPushService {
     			logger.info("json="+json);
     			logger.info("result="+result);
     		}
+    		printerService.printByOrder(orderNo);
+    		
     		return CommonResult.success("");
     	}catch (Exception e) {
     		logger.error("#JPushService.sendSuccessMsg# orderNO={}",orderNo,e);
@@ -113,7 +117,7 @@ public class JPushService {
     	jsonObject.put("message", mess);
     	
     	JSONObject options = new JSONObject();
-    	options.put("time_to_live", 30*60);
+    	options.put("time_to_live", 10*60);
     	jsonObject.put("options", options);
     	return jsonObject.toJSONString();
     }

@@ -1,6 +1,5 @@
 package com.zhsj.api.bean.jpush;
 
-import com.mysql.fabric.xmlrpc.base.Data;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.DateUtil;
@@ -17,6 +16,7 @@ public class PaySuccessBean {
 	private String nt; //播放内容
 	private String code;
 	private String qr;//二维码
+	private String dc;
 
 	public int getCmd() {
 		return cmd;
@@ -85,6 +85,13 @@ public class PaySuccessBean {
 	public void setQr(String qr) {
 		this.qr = qr;
 	}
+	
+	public String getDc() {
+		return dc;
+	}
+	public void setDc(String dc) {
+		this.dc = dc;
+	}
 	public PaySuccessBean toBean(OrderBean bean,String qrcode,String uri){
 		if(bean == null){
 			return null;
@@ -101,6 +108,7 @@ public class PaySuccessBean {
 		pb.setCode(bean.getAccountId()+""+((int)Arith.mul(bean.getPlanChargeAmount(),100)));
 		pb.setQr(qrcode);
 		pb.setNt(pb.getPt()+"收款"+bean.getPlanChargeAmount()+"元");
+		pb.setDc("优惠信息");
 		return pb;
 	}
 	

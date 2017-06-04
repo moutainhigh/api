@@ -52,4 +52,9 @@ public class PrinterController {
 				storeBindPrinterBean, auth);
 		return printerService.updateStorePrinter(storeBindPrinterBean);
 	}
+	@RequestMapping(value = "test")
+	@ResponseBody
+	public Object test(String orderId){
+		return printerService.printByOrder(orderId);
+	}
 }

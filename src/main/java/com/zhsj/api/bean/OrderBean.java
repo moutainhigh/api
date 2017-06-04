@@ -222,4 +222,9 @@ public class OrderBean {
 				+ storeNo + "]";
 	}
     
+	public void setAccountId(int accountId) {
+		this.accountId = accountId;
+	}
+    
+    
 }
