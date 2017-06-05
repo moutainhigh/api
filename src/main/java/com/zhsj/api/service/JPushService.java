@@ -110,7 +110,7 @@ public class JPushService {
 //    	noti.put("alert","Hello, JPush!333333333"+DateUtil.getCurrentTime());
 //    	jsonObject.put("notification",noti );
     	String uri = MtConfig.getProperty("API_URL", "");
-    	PaySuccessBean psBean = new PaySuccessBean().toBean(bean, "qrcode",uri);
+    	PaySuccessBean psBean = new PaySuccessBean().toBean(bean, "",uri);
     	
     	JSONObject mess = new JSONObject();
     	mess.put("msg_content",JSON.toJSON(psBean));
