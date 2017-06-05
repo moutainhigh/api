@@ -1,9 +1,13 @@
 package com.zhsj.api.service;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,7 @@ import com.zhsj.api.bean.ModuleBean;
 import com.zhsj.api.dao.TBModuleBindRoleDao;
 import com.zhsj.api.dao.TBModuleDao;
 import com.zhsj.api.dao.TBStoreAccountBindRoleDao;
+import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.login.LoginUserUtil;
 
 @Service
@@ -134,6 +139,25 @@ public class ModuleService {
 			 logger.error("#ModuleService.authByURI# uri={}",uri,e);
 		}
 		return result;
+	 }
+	 
+	 public CommonResult getAppModule(String storeNo,String os,String rate,String auth,HttpServletRequest request){
+		 logger.info("#ModuleService.getAppModule# storeNo={},os={},rate={},auth={}",storeNo,os,rate,auth);
+		 try{
+			 auth = URLDecoder.decode("1001%2C80%2Ctest3", "utf-8");
+			 String[] args = auth.split(",");
+			 List<ModuleBean> allModuleBeans = tbModuleDao.getByParentIdAndType(0, 2);
+			 String uri = request.getRequestURL().toString();
+			 uri = uri.replace(request.getRequestURI(), "")+ request.getContextPath();
+			 for(ModuleBean bean:allModuleBeans){
+				 bean.setIconUrl(uri+bean.getIconUrl());
+				 bean.setUrl(uri+bean.getUrl()+"?storeNo="+args[0]+"&accountId="+args[1]);
+			 }
+			 return CommonResult.success("", allModuleBeans);
+		 }catch (Exception e) {
+			 logger.error("#ModuleService.getAppModule# storeNo={},os={},auth={}",storeNo,os,auth,e);
+		}
+		return CommonResult.defaultError("出错了");
 	 }
 
 }

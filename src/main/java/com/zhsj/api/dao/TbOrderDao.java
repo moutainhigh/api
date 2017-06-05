@@ -103,9 +103,32 @@ public interface TbOrderDao {
 								  @Param("startTime") int startTime,
 								  @Param("endTime")int endTime);
 	
+	Map<String, Object> countByUserAndTime(@Param("storeNo")String storeNo,
+										  @Param("startTime") int startTime,
+										  @Param("endTime")int endTime,
+										  @Param("accountId")long accountId,
+										  @Param("statuses")List<Integer> statuses);
+	Map<String, Object> countRefundByUserAndTime(@Param("storeNo")String storeNo,
+												  @Param("startTime") int startTime,
+												  @Param("endTime")int endTime,
+												  @Param("accountId")long accountId);
+	
+	Map<String, Object> countStoreDisByUserAndTime(@Param("storeNo")String storeNo,
+													  @Param("startTime") int startTime,
+													  @Param("endTime")int endTime,
+													  @Param("accountId")long accountId,
+													  @Param("statuses")List<Integer> statuses);
+	Map<String, Object> countOrgDisByUserAndTime(@Param("storeNo")String storeNo,
+												  @Param("startTime") int startTime,
+												  @Param("endTime")int endTime,
+												  @Param("accountId")long accountId,
+												  @Param("statuses")List<Integer> statuses);
+	
+
 	List<OrderBean> getByStatusAndCtime(@Param("status")int status,
 										@Param("startTime")int startTime,
 										@Param("endTime")int endTime);
+	
 	StoreCountResult countStore(@Param("storeNo")String storeNo,
 								@Param("parentStoreNo")String parentStoreNo,
 								  @Param("startTime") int startTime,

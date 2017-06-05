@@ -26,8 +26,7 @@ public class OrderBean {
     private String refundNo;
     private double refundMoney;
     private int payChannel;
-    
-    private int accountId;
+    private long accountId;
 
     public long getCtime() {
         return ctime;
@@ -205,6 +204,15 @@ public class OrderBean {
 	public void setPayChannel(int payChannel) {
 		this.payChannel = payChannel;
 	}
+	
+
+	public long getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(long accountId) {
+		this.accountId = accountId;
+	}
 
 	@Override
 	public String toString() {
@@ -214,11 +222,6 @@ public class OrderBean {
 				+ storeNo + "]";
 	}
     
-
-	public int getAccountId() {
-		return accountId;
-	}
-
 	public void setAccountId(int accountId) {
 		this.accountId = accountId;
 	}

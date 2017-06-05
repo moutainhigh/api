@@ -16,5 +16,8 @@ public interface TBModuleDao {
     List<ModuleBean> getByParentId(@Param("parentId")long parentId);
     
     ModuleBean getByURI(@Param("uri")String uri);
+    
+    List<ModuleBean> getByParentIdAndType(@Param("parentId")long parentId,
+    									  @Param("type")int type);
 
 }

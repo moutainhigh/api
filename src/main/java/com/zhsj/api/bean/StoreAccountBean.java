@@ -13,6 +13,7 @@ public class StoreAccountBean{
     private String mobile;
     private String headImg;
     private int valid;
+    private String jId;
 
     public long getId() {
         return id;
@@ -76,6 +77,14 @@ public class StoreAccountBean{
 
 	public void setValid(int valid) {
 		this.valid = valid;
+	}
+
+	public String getjId() {
+		return jId;
+	}
+
+	public void setjId(String jId) {
+		this.jId = jId;
 	}
 
 
