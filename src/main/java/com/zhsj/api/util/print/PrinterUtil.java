@@ -168,10 +168,10 @@ public static String request(String deviceId, String secertKey,OrderBean orderBe
 				e1.printStackTrace();
 			}
 			// 设置二维码
-			byteBuffer.put(titleSettingByte);
-			String url = "http://www.zhihuishangjie.com/";
-			byte[] hexQR = PrinterUtil.getURLQRCode(url);
-			byteBuffer.put(hexQR);
+//			byteBuffer.put(titleSettingByte);
+//			String url = "http://www.zhihuishangjie.com/";
+//			byte[] hexQR = PrinterUtil.getURLQRCode(url);
+//			byteBuffer.put(hexQR);
 			//打印指令
 			byte[] goPrint = {0x0d,0x0a};
 			byteBuffer.put(goPrint);

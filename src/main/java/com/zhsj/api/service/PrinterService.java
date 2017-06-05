@@ -159,51 +159,51 @@ public class PrinterService {
 	
 	public CommonResult printByOrder(String orderId){
 		logger.info("#printByOrder# orderId = {}",orderId);
-		OrderBean orderBean = tbOrderDao.getByOrderId(orderId);
-		String storeNo = orderBean.getStoreNo();
-		StoreBean storeBean = tbStoreDao.getStoreByNo(storeNo);
-		orderBean.setStoreName(storeBean.getName());
-		StoreSettingsBean storeSettingsBean = tbStoreSettingsDao.getByStoreNo(storeNo);
-		if(storeSettingsBean == null){
-			return CommonResult.build(2, "没有关联云打印机");
-		}
-		if(storeSettingsBean.getCloudPrint() != 1){
-			return CommonResult.build(2, "没有关联云打印机");
-		}
-		StoreBindPrinterBean storeBindPrinterBean = tbStoreBindPrinterDao.getByStoreNo(storeNo);
-		if(storeBindPrinterBean  == null){
-			return CommonResult.build(2, "没有关联云打印机");
-		}
-		String deviceId = storeBindPrinterBean.getDeviceId();
-		String secretKey = storeBindPrinterBean.getSecretKey();
-		// 初始化打印机
-		String initial =  CloudPrinter.PRINTER_INIT;
-		byte[] initByte = PrinterUtil.hexStringToBytes(initial);
-		String printInitial = null;
 		try {
+			OrderBean orderBean = tbOrderDao.getByOrderId(orderId);
+			String storeNo = orderBean.getStoreNo();
+			StoreBean storeBean = tbStoreDao.getStoreByNo(storeNo);
+			orderBean.setStoreName(storeBean.getName());
+			StoreSettingsBean storeSettingsBean = tbStoreSettingsDao.getByStoreNo(storeNo);
+			if(storeSettingsBean == null){
+				return CommonResult.build(2, "没有关联云打印机");
+			}
+			if(storeSettingsBean.getCloudPrint() != 1){
+				return CommonResult.build(2, "没有关联云打印机");
+			}
+			StoreBindPrinterBean storeBindPrinterBean = tbStoreBindPrinterDao.getByStoreNo(storeNo);
+			if(storeBindPrinterBean  == null){
+				return CommonResult.build(2, "没有关联云打印机");
+			}
+			String deviceId = storeBindPrinterBean.getDeviceId();
+			String secretKey = storeBindPrinterBean.getSecretKey();
+			// 初始化打印机
+			String initial =  CloudPrinter.PRINTER_INIT;
+			byte[] initByte = PrinterUtil.hexStringToBytes(initial);
+			String printInitial = null;
 			printInitial = PrinterUtil.requestPrintPost(deviceId, secretKey, initByte);
+			Map<String,Object> map = JSON.parseObject(printInitial, Map.class);
+			if(!"ok".equals(map.get("state"))){
+				logger.info("#printerByOrder# 打印机没有准备好");
+				return CommonResult.build(2, "打印机没有准备好");
+			}
+			long accountId = orderBean.getAccountId();
+			String cashierName = "";
+			if(accountId != 0){
+				StoreAccountBean storeAccountBean = tbStoreAccountDao.getById(accountId);
+				cashierName = storeAccountBean.getName();
+			}
+			//打印内容
+			String result = PrinterUtil.request(deviceId, secretKey, orderBean, cashierName);
+			logger.info("#printerByOrder# result = {}", result);
+			Map<String,Object> rsmap = JSON.parseObject(result, Map.class);
+			if(!"ok".equals(rsmap.get("state"))){
+				logger.info("#printerByOrder# 打印机出错了");
+				return CommonResult.build(2, "打印机出错了");
+			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Map<String,Object> map = JSON.parseObject(printInitial, Map.class);
-		if(!"ok".equals(map.get("state"))){
-			logger.info("#printerByOrder# 打印机没有准备好");
-			return CommonResult.build(2, "打印机没有准备好");
-		}
-		long accountId = orderBean.getAccountId();
-		String cashierName = "";
-		if(accountId != 0){
-			StoreAccountBean storeAccountBean = tbStoreAccountDao.getById(accountId);
-			cashierName = storeAccountBean.getName();
-		}
-		//打印内容
-		String result = PrinterUtil.request(deviceId, secretKey, orderBean, cashierName);
-		logger.info("#printerByOrder# result = {}", result);
-		Map<String,Object> rsmap = JSON.parseObject(result, Map.class);
-		if(!"ok".equals(rsmap.get("state"))){
-			logger.info("#printerByOrder# 打印机出错了");
-			return CommonResult.build(2, "打印机出错了");
+			logger.error("#PrinterService.printByOrder# orderId={}",orderId,e);
+			return CommonResult.success("系统出错");
 		}
 		return CommonResult.success("打印完成");
 	}
