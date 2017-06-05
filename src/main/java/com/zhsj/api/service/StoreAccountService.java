@@ -43,12 +43,15 @@ public class StoreAccountService {
 			lat = Arith.div(Double.parseDouble(lat), 1.0,6)+"";
 			lon = Arith.div(Double.parseDouble(lon), 1.0,6)+"";
 			StoreAccountBean storeAccountBean =  tbStoreAccountDao.getByAccount(account);
-			if(StringUtils.isEmpty(storeAccountBean.getName())){
-				storeAccountBean.setName(storeAccountBean.getAccount());
-			}
+			
 			if(storeAccountBean == null || !passwd.equals(storeAccountBean.getPassword())){
 				return CommonResult.defaultError("账号或密码不正确");
 			}
+			
+			if(StringUtils.isEmpty(storeAccountBean.getName())){
+				storeAccountBean.setName(storeAccountBean.getAccount());
+			}
+			
 			String storeNo = tbStoreBindAccountDao.getStoreNoByAccountId(storeAccountBean.getId());
 			StoreBean storeBean = tbStoreDao.getStoreByNo(storeNo);
 			

@@ -133,7 +133,7 @@ public class BaseService {
 			OrderBean bean = orderService.getByOrderId(commonResult.getData().toString());
 			
 			String apiUri = MtConfig.getProperty("API_URL", "");
-			PaySuccessBean psBean = new PaySuccessBean().toBean(bean, "qrcode",apiUri);
+			PaySuccessBean psBean = new PaySuccessBean().toBean(bean, "",apiUri);
 			return commonResult.success("", psBean);
     	} catch (Exception e) {
 			logger.error("#BaseService.microPay# storeNo={},userId={},price={},authCode={},auth={}",

@@ -48,6 +48,8 @@ public class JPushService {
     public CommonResult sendSuccessMsg(String orderNo){
     	logger.info("#JPushService.sendSuccessMsg# orderNO={}",orderNo);
     	try{
+    		printerService.printByOrder(orderNo);
+    		
     		OrderBean orderBean = orderService.getByOrderId(orderNo);
     		if(orderBean == null){
     			return CommonResult.success("订单号不存在");
@@ -84,7 +86,6 @@ public class JPushService {
     			logger.info("json="+json);
     			logger.info("result="+result);
     		}
-    		printerService.printByOrder(orderNo);
     		
     		return CommonResult.success("");
     	}catch (Exception e) {
