@@ -542,4 +542,6 @@ public class ShopController {
     	return CommonResult.build(1, "您没有权限");
     }
     
+    
+    
 }
