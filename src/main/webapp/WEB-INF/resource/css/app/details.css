@@ -140,6 +140,7 @@ h2 >.business:not(:first-child){
     font-size:0.6rem;
     padding-left:0.2rem;
     text-decoration: line-through;
+    color:#666;
 }
 
 .list ul{

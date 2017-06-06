@@ -397,8 +397,8 @@ $('.tran_time .clearfix li').on("click",function(){
     					$("#scroller").empty();
     				}
     				for(var i=0,len=obj.length;i<len;i++){
-    					var time = new Date(obj[i].ctime*1000).Format("hh:mm:ss");
-    					var payName = "";
+    					var time = new Date(obj[i].ctime*1000).Format("yyyy-MM-dd hh:mm:ss");
+    					var t = time.split(" ");
     					   content += '<div class="list wepay-box">'
 	    						   +  '<ul class="clearfix" >'
 	    						   +  '        <li class="fl">';
@@ -408,7 +408,6 @@ $('.tran_time .clearfix li').on("click",function(){
 	    							   }else{
 	    								    content+= '<span><img src="../resource/img/app/order/wechat-gray.png"/> </span>';
 	    							   }
-	    				               payName = "微信";
 	    						   }else if(obj[i].payMethod == 2){
 	    							   if(obj[i].status !=3 ){
 	    							        content+= '<span><img src="../resource/img/app/order/pay-icon.png"/> </span>';
@@ -426,14 +425,14 @@ $('.tran_time .clearfix li').on("click",function(){
 	    						   }
 	    						   content +=  '</li>'
 	    						   +  '        <li class="fl">'
-	    						   +  '              <h2 class="time-user"><span class="type-font">'+payName+'</span>用户</h2>'
-	    						   +  '            <h3 class="pay-time">'+time+'</h3>'
+	    						   +  '              <h2 class="time-user"><span class="type-font">'+t[0]+'</span></h2>'
+	    						   +  '            <h3 class="pay-time">'+t[1]+'</h3>'
 	    						   +  '          </li>'
 	    						   +  '        <li class="fr">'
 	    						   +  '             <h2 class=" present-price">￥'+obj[i].actualChargeAmount+'</h2>'
 	    						   +  '             <h2 class="old-price">￥'+obj[i].planChargeAmount+'</h2>'
 	    						   +  '        </li>'
-	    						   +  '         <li class="fl business-cheap"><h2 class="business-num">'+obj[i].storeNo+'</h2><h2 >';
+	    						   +  '         <li class="fl business-cheap"><h2 class="business-num">No.'+obj[i].storeNo+'</h2><h2 >';
 	    						   if(obj[i].storeDiscountPrice != 0){
 	    						       content +=  '<span class="business">商家优惠</span>';
 	    						   }
