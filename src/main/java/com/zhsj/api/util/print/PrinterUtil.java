@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zhsj.api.bean.OrderBean;
+import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.DateUtil;
 
@@ -190,6 +191,64 @@ public static String request(String deviceId, String secertKey,OrderBean orderBe
 	        return null;
 }	
 	
+
+public static String requestByShift(String deviceId, String secertKey,ShiftBean shiftBean){
+    //1、保存byte数组
+	ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+	//2、title设置格式
+	//content 设置格式
+	String contentSetting = CloudPrinter.CONTENT_SETTING;
+	byte[] contentSettingByte = PrinterUtil.hexStringToBytes(contentSetting);
+	byteBuffer.put(contentSettingByte);
+//	//content 设置
+	StringBuffer contentBuffer = new StringBuffer();
+	String cashier = "收银员:"+shiftBean.getName()+"\r\n";
+	String split = "-------------------------------\r\n";
+	String startTime = "起始时间: "+shiftBean.getStartTime()+"\r\n";
+	String endTime  = "结束时间: "+shiftBean.getEndTime()+"\r\n";
+	String actualM = "支付金额: "+shiftBean.getActualMoney()+"\r\n";
+	String totalNum = "支付笔数: "+shiftBean.getTotalNum()+"\r\n";
+	String refundM = "退款金额: "+shiftBean.getRefundMoney()+"\r\n";
+	String refundNum = "退款笔数: "+shiftBean.getRefundNum()+"\r\n";
+	String orgDisMoney = "支付金额: "+shiftBean.getOrgDisMoney()+"\r\n";
+	String orgDisNum = "支付笔数: "+shiftBean.getOrgDisNum()+"\r\n";
+	String storeDisMoney = "退款金额: "+shiftBean.getStoreDisMoney()+"\r\n";
+	String storeDisNum = "退款笔数: "+shiftBean.getStoreDisNum()+"\r\n";
+	String money = "收款: "+shiftBean.getTotalMoney()+"\r\n";
+	contentBuffer.append(cashier).append(split).append(startTime).append(endTime)
+	.append(actualM).append(totalNum).append(refundM).append(refundNum).append(orgDisMoney)
+	.append(orgDisNum).append(storeDisMoney).append(storeDisNum).append(split).append(money);
+	contentBuffer.append(split).append(cashier);
+	byte[] contentByte;
+	try {
+		contentByte = contentBuffer.toString().getBytes(CloudPrinter.CHARSET);
+		byteBuffer.put(contentByte);
+	} catch (UnsupportedEncodingException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+	// 设置二维码
+//	byteBuffer.put(titleSettingByte);
+//	String url = "http://www.zhihuishangjie.com/";
+//	byte[] hexQR = PrinterUtil.getURLQRCode(url);
+//	byteBuffer.put(hexQR);
+	//打印指令
+	byte[] goPrint = {0x0d,0x0a};
+	byteBuffer.put(goPrint);
+	//存放实际打印的byte
+	byte[] bs = new byte[byteBuffer.position()];
+	byteBuffer.flip();
+	byteBuffer.get(bs);
+	try {
+		String result = requestPrintPost(deviceId, secertKey, bs);
+		logger.info("#request# result = {}", result);
+		return result;
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    return null;
+}	
 	
 	
 public static String requestPrintPost(String deviceId, String secertKey, byte[] content) throws Exception {
