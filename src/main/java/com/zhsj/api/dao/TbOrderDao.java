@@ -138,5 +138,11 @@ public interface TbOrderDao {
 						@Param("parentStoreNo")String parentStoreNo,
 						 @Param("startTime") int startTime,
 						  @Param("endTime")int endTime);
+	
+	
+    List<OrderBean> getListByParamMap(Map<String, Object> paramMap);
     
+    int getCountByParamMap(Map<String, Object> paramMap);
+	
+	
 }

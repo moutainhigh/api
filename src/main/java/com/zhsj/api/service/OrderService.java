@@ -14,6 +14,7 @@ import com.zhsj.api.dao.TbUserBindStoreDao;
 import com.zhsj.api.dao.TbUserDao;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.login.LoginUserUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -272,5 +273,32 @@ public class OrderService {
     	return bmOrderDao.getByStatusAndCtime(status, startTime, endTime);
     }
     
+    
+    public Object getOrderListByParam(String storeNo,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
+    	logger.info("#getOrderListByParam# storeNo = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
+    			storeNo, payMethod, startTime, endTime, status, page, pageSize);
+    	Map<String, Object> paramMap = new HashMap<String, Object>();
+    	paramMap.put("payMethod", payMethod);
+    	paramMap.put("startTime", startTime);
+    	paramMap.put("endTime", endTime);
+    	paramMap.put("status", status);
+    	paramMap.put("start", (page-1)*pageSize);
+    	paramMap.put("pageSize", pageSize);
+    	try {
+			paramMap.put("storeNo", storeNo);
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			List<OrderBean> list = bmOrderDao.getListByParamMap(paramMap);
+			resultMap.put("list", list);
+			if(page == 1){
+				int count = bmOrderDao.getCountByParamMap(paramMap);
+				resultMap.put("count", count);
+			}
+			return CommonResult.success("", resultMap);
+		} catch (Exception e) {
+			logger.error("#getOrderListByParam# storeNo = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
+	    			storeNo, payMethod, startTime, endTime, status, page, pageSize, e);
+			return CommonResult.defaultError("系统异常");
+		}
+    }
 }
 

@@ -36,4 +36,17 @@ public class StoreService {
     public void updatePrice(double price,String storeNo){
     	 tbStoreDao.updatePrice(price, storeNo);
     }
+    
+    public List<StoreBean> getListByStoreNo(String storeNo){
+    	logger.info("#getListByStoreNo# storeNo = {}" , storeNo);
+		try {
+			List<StoreBean>  storeBeans = tbStoreDao.getListByParentNo(storeNo);
+			StoreBean storeBean = tbStoreDao.getStoreByNo(storeNo);
+			storeBeans.add(0, storeBean);
+			return storeBeans;
+		} catch (Exception e) {
+			logger.error("#getListByStoreNo# storeNo = {}" , storeNo, e);
+			return null;
+		}
+    }
 }

@@ -27,6 +27,10 @@ public class OrderBean {
     private double refundMoney;
     private int payChannel;
     private long accountId;
+    
+    private double storeDiscountPrice;
+    private double orgDiscountPrice;
+    
 
     public long getCtime() {
         return ctime;
@@ -225,6 +229,24 @@ public class OrderBean {
 	public void setAccountId(int accountId) {
 		this.accountId = accountId;
 	}
+
+	public double getStoreDiscountPrice() {
+		return storeDiscountPrice;
+	}
+
+	public void setStoreDiscountPrice(double storeDiscountPrice) {
+		this.storeDiscountPrice = storeDiscountPrice;
+	}
+
+	public double getOrgDiscountPrice() {
+		return orgDiscountPrice;
+	}
+
+	public void setOrgDiscountPrice(double orgDiscountPrice) {
+		this.orgDiscountPrice = orgDiscountPrice;
+	}
     
+	
+	
     
 }

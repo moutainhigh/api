@@ -11,6 +11,7 @@ import com.zhsj.api.service.MchAddService;
 import com.zhsj.api.service.ModuleService;
 import com.zhsj.api.service.OrderService;
 import com.zhsj.api.service.StoreAccountService;
+import com.zhsj.api.service.StoreService;
 import com.zhsj.api.util.CommonResult;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +39,8 @@ public class CashierController {
     private BaseService baseService;
     @Autowired
     private JPushService jPushService;
+    @Autowired
+    private StoreService storeService;
     
     @RequestMapping(value = "/sign", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
@@ -194,5 +197,25 @@ public class CashierController {
         
         return  storeAccountService.signOutCashier(account, lat, lon,regId,imei, auth);
 
+    }
+    
+    @RequestMapping(value = "orderListPage")
+    public Object orderListPage(ModelAndView mv, String storeNo){
+    	logger.info("#orderListPage# storeNo ={}", storeNo);
+    	mv.addObject("storeList", storeService.getListByStoreNo(storeNo));
+    	mv.addObject("storeNo", storeNo);
+    	mv.setViewName("app/order");
+    	return mv;
+    }
+    
+    @RequestMapping(value = "orderList")
+    @ResponseBody
+    public Object orderList(String storeNo,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
+    	logger.info("#orderList# storeNo = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
+    			storeNo, payMethod, startTime, endTime, status, page, pageSize);
+    	if(StringUtils.isEmpty(storeNo)){
+    		return CommonResult.build(2, "门店编号有误");
+    	}
+    	return orderService.getOrderListByParam(storeNo, payMethod, startTime, endTime, status, page, pageSize);
     }
 }

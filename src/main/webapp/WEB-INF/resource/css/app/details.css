@@ -3,17 +3,13 @@
 }
 
 #wrapper {
-    position: absolute;
     z-index: 1;
-    top: 2rem;
-    bottom: 0;
-    left: 0;
+    margin-top: 2rem;
     width: 100%;
     overflow: hidden;
 }
 
 #scroller {
-    position: absolute;
     z-index: 1;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     width: 100%;
@@ -120,13 +116,18 @@
     padding-top:0.3rem;
 }
 .business{
-    font-size:0.55rem;
-    width:3.7rem;
-    height:1.05rem;
+    display: inline-block;
     text-align: center;
-    line-height:1.1rem;
+    line-height:.9rem;
+    font-size:.55rem;
+    padding:0 5px;
     background: #fe5762;
     color: #fff;
+    border-radius: 5px;
+}
+h2 >.business:not(:first-child){
+	margin-left:3px;
+	
 }
 .business-num{
     font-size:0.6rem;
@@ -151,7 +152,7 @@
     height:2.4rem;
 }
 .business-cheap{
-    padding-right:3.8rem;
+    margin-left:1rem;
 }
 .title-lists {
     display: none;
