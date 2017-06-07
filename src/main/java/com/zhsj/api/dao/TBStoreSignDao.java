@@ -1,5 +1,6 @@
 package com.zhsj.api.dao;
 
+import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.util.db.DS;
 import com.zhsj.api.util.db.DynamicDataSource;
 import org.apache.ibatis.annotations.Param;
@@ -15,5 +16,8 @@ public interface TBStoreSignDao {
 				@Param("status")int status,
 				@Param("storeNo")String storeNo,
 				@Param("imei")String imei);
+	
+	StoreAccountSignBean getLastStoreSign(@Param("accountId")long accountId,
+					 @Param("status")int status);
 	
 }

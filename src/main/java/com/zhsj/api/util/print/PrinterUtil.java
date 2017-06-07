@@ -157,7 +157,7 @@ public static String request(String deviceId, String secertKey,OrderBean orderBe
 			if(StringUtils.isEmpty(cashierName)){
 				cashierName = "  --";
 			}
-			String cashier = "收银员:"+cashierName+"\r\n";
+			String cashier = "收银员:"+cashierName+"\r\n\r\n\r\n";
 			contentBuffer.append(split).append(cashier);
 			byte[] contentByte;
 			try {
@@ -172,6 +172,8 @@ public static String request(String deviceId, String secertKey,OrderBean orderBe
 //			String url = "http://www.zhihuishangjie.com/";
 //			byte[] hexQR = PrinterUtil.getURLQRCode(url);
 //			byteBuffer.put(hexQR);
+			
+			
 			//打印指令
 			byte[] goPrint = {0x0d,0x0a};
 			byteBuffer.put(goPrint);

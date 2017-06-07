@@ -2,6 +2,8 @@ package com.zhsj.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -107,11 +109,8 @@ public class JPushService {
     	audience.put("registration_id", regArray);
     	jsonObject.put("audience", audience);
     	
-//    	JSONObject noti = new JSONObject();
-//    	noti.put("alert","Hello, JPush!333333333"+DateUtil.getCurrentTime());
-//    	jsonObject.put("notification",noti );
     	String uri = MtConfig.getProperty("API_URL", "");
-    	PaySuccessBean psBean = new PaySuccessBean().toBean(bean, "qrcode",uri);
+    	PaySuccessBean psBean = new PaySuccessBean().toBean(bean, "",uri);
     	
     	JSONObject mess = new JSONObject();
     	mess.put("msg_content",JSON.toJSON(psBean));
@@ -144,7 +143,6 @@ public class JPushService {
         httpPost.addHeader("Content-Type", "application/json");
         String JG_APP_KEY = MtConfig.getProperty("JG_APP_KEY", "");
         String JG_MASTER_SECRET = MtConfig.getProperty("JG_MASTER_SECRET", "");
-        
         httpPost.addHeader("Authorization", "Basic "+Base64.encode((JG_APP_KEY+":"+JG_MASTER_SECRET).getBytes("UTF-8")).toString());
         httpPost.setEntity(postEntity);
         //设置请求器的配置
@@ -178,22 +176,16 @@ public class JPushService {
     	CloseableHttpClient httpClient = HttpClients.custom().build();
     	//根据默认超时限制初始化requestConfig
     	RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socketTimeout).setConnectTimeout(connectTimeout).build();
-
         String result = null;
         HttpGet httpGet = new HttpGet(url);
-        
-//        HttpPost httpPost = new HttpPost(url);
-//        //得指明使用UTF-8编码，否则到API服务器XML的中文不能被成功识别
-//        StringEntity postEntity = new StringEntity(postData, "UTF-8");
         httpGet.addHeader("Content-Type", "application/json");
         String JG_APP_KEY = MtConfig.getProperty("JG_APP_KEY", "");
         String JG_MASTER_SECRET = MtConfig.getProperty("JG_MASTER_SECRET", "");
         httpGet.addHeader("Authorization", "Basic "+Base64.encode((JG_APP_KEY+":"+JG_MASTER_SECRET).getBytes("UTF-8")).toString());
+      
         //设置请求器的配置
         httpGet.setConfig(requestConfig);
-
         logger.info("executing request" + httpGet.getRequestLine());
-
         try {
             HttpResponse response = httpClient.execute(httpGet);
             HttpEntity entity = response.getEntity();
@@ -213,11 +205,14 @@ public class JPushService {
     }
     
     public static void main(String[] args) throws Exception {
-//		new JPushService().sendSuccessMsg("2017020518333807cSN0f1846a10");
-    	String url = "https://report.jpush.cn/v3/received?msg_ids=3671536070";
+//		new JPushService().sendSuccessMsg("18071adc033cab91e3e");
+    	
+//    	String json = "{\"message\":{\"msg_content\":{\"nt\":\"你有一笔0.01元订单支付成功\",\"time\":\"2017-05-25 10:16\",\"cmd\":1,\"no\":\"10001170525369841513\",\"am\":\"0.01\",\"pt\":\"微信\",\"pm\":\"0.01\",\"st\":\"成功\",\"code\":\"671\",\"url\":\"http://wwt.bj37du.com/api/10001170525369841513\",\"qr\":\"qrcode\"}},\"platform\":\"all\",\"audience\":{\"registration_id\":[\"18071adc033cab91e3e\"]},\"options\":{\"time_to_live\":1800}}";
+//    	String resultString = new JPushService().sendPost("https://api.jpush.cn/v3/push", json);
+//    	Map<String, String> map = JSON.parseObject(resultString, Map.class);
+//    	System.out.println(map.get("msg_id"));
+    	String url = "https://report.jpush.cn/v3/received?msg_ids="+"63050394971325769";
     	System.out.println(new JPushService().sendGet(url));
-//    	String json = "{\"message\":{\"msg_content\":{\"nt\":\"你有一笔0.01元订单支付成功\",\"time\":\"2017-05-25 10:16\",\"cmd\":1,\"no\":\"10001170525369841513\",\"am\":\"0.01\",\"pt\":\"微信\",\"pm\":\"0.01\",\"st\":\"成功\",\"code\":\"671\",\"url\":\"http://wwt.bj37du.com/api/10001170525369841513\",\"qr\":\"qrcode\"}},\"platform\":\"all\",\"audience\":{\"registration_id\":[\"1a0018970a97f0cf8e0\"]},\"options\":{\"time_to_live\":1800}}";
-//    	System.out.println(new JPushService().sendPost("https://api.jpush.cn/v3/push", json));
     	
 	}
     

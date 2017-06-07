@@ -18,4 +18,10 @@
 		 (#{accountId},#{lat},#{lon},#{status},unix_timestamp(now()),#{storeNo},#{imei})
 	</insert>
 	    
+	<select id="getLastStoreSign" resultType="storeAccountSignBean">
+		SELECT <include refid="SELECT_FIELDS"/> 
+		FROM tb_store_sign 
+		WHERE account_id = #{accountId} AND STATUS = #{status} 
+		ORDER BY id LIMIT 1
+	</select>
 </mapper>

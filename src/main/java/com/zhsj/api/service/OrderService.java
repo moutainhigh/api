@@ -3,6 +3,7 @@ package com.zhsj.api.service;
 import com.zhsj.api.bean.LoginUser;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.StoreAccountBean;
+import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
@@ -10,6 +11,7 @@ import com.zhsj.api.dao.TbOrderDao;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.dao.TBStoreAccountDao;
+import com.zhsj.api.dao.TBStoreSignDao;
 import com.zhsj.api.dao.TbUserBindStoreDao;
 import com.zhsj.api.dao.TbUserDao;
 import com.zhsj.api.util.DateUtil;
@@ -47,6 +49,8 @@ public class OrderService {
     private TbUserBindStoreDao tbUserBindStoreDao;
     @Autowired
     private TBStoreAccountDao tbStoreAccountDao;
+    @Autowired
+    private TBStoreSignDao tbStoreSignDao;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -81,6 +85,10 @@ public class OrderService {
 			 long accountId = Long.parseLong(userId);
 			 int startTime = DateUtil.getTodayStartTime();
 			 int endTime = startTime + 60*60*24;
+			 StoreAccountSignBean storeAccountSignBean = tbStoreSignDao.getLastStoreSign(accountId, 1);
+			 if(storeAccountSignBean != null){
+				 startTime = storeAccountSignBean.getCtime();
+			 }
 			 List<Integer> statuses = new ArrayList<>();
 			 statuses.add(1);
 			 statuses.add(3);
@@ -236,6 +244,9 @@ public class OrderService {
     			 return CommonResult.defaultError("用户信息出错");
     		 }
     		 bean.setName(storeAccountBean.getName());
+    		 if(StringUtils.isEmpty(storeAccountBean.getName())){
+    			 bean.setName(storeAccountBean.getAccount());
+    		 }
     		 
 			 List<Integer> statuses = new ArrayList<>();
 			 statuses.add(1);

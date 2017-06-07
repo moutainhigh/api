@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 @DynamicDataSource(DS.DB_MANAGE)
 public interface TBVersionInfoDao {
 
-	VersionInfo getByVersion(@Param("version")String version);
+	VersionInfo getByVersion(@Param("version")String version,
+							 @Param("os")String os);
 
 
 }

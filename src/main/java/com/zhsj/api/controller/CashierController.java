@@ -5,11 +5,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.service.BaseService;
 import com.zhsj.api.service.JPushService;
 import com.zhsj.api.service.MchAddService;
 import com.zhsj.api.service.ModuleService;
 import com.zhsj.api.service.OrderService;
+import com.zhsj.api.service.PrinterService;
+import com.zhsj.api.service.ShopService;
 import com.zhsj.api.service.StoreAccountService;
 import com.zhsj.api.util.CommonResult;
 
@@ -38,6 +41,10 @@ public class CashierController {
     private BaseService baseService;
     @Autowired
     private JPushService jPushService;
+    @Autowired
+    private ShopService shopService;
+    @Autowired
+    private PrinterService printerService;
     
     @RequestMapping(value = "/sign", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
@@ -102,7 +109,7 @@ public class CashierController {
     
     @RequestMapping(value = "/sentShiftMsg", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    //交班统计
+    //交班统计打印
     public Object sentShiftMsg(String storeNo,String userId,String startTime,String endTime,String type, String auth) {
         logger.info("#CashierController.countShift# storeNO={},userId={},startTime={},endTime={},type={},auth={}",
         		storeNo,userId,startTime,endTime,type,auth);
@@ -118,7 +125,7 @@ public class CashierController {
         int stime = Integer.parseInt(startTime);
         int etime = Integer.parseInt(endTime);
         
-        return  CommonResult.success("");
+        return  printerService.sentShiftMsg(storeNo, userId, stime, etime, type, auth);
     }
     
     
@@ -158,19 +165,19 @@ public class CashierController {
     
     @RequestMapping(value = "/checkUpdate", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    //主扫支付
-    public Object checkUpdate(String version,String auth) {
-        logger.info("#CashierController.checkUpdate# version={},auth={}",version,auth);
+    //版本更新
+    public Object checkUpdate(String version,String os,String auth) {
+        logger.info("#CashierController.checkUpdate# version={},os={},auth={}",version,os,auth);
         if(StringUtils.isEmpty(version)){
         	return CommonResult.defaultError("版本号不能为空");
         }
         Map<String,Object> map = new HashMap<String, Object>();
-        return  baseService.checkUpdate(version, auth);
+        return  baseService.checkUpdate(version,os, auth);
     }
     
     @RequestMapping(value = "/sendMessage", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    //极光推送
+    //极光推送+云打印
     public Object sendMessage(String orderNo) {
         logger.info("#CashierController.sendMessage# orderNo={}",orderNo);
         if(StringUtils.isEmpty(orderNo)){
@@ -181,7 +188,7 @@ public class CashierController {
 
     @RequestMapping(value = "/signOut", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    //新建商户页
+    //退出
     public Object signOut(String account,String lat,String lon,String regId,String imei,String auth) {
         logger.info("#CashierController.signOut# account={},lat={},lon={},regId={},imei={},auth={}",
         		account,lat,lon,regId,imei,auth);
@@ -194,5 +201,21 @@ public class CashierController {
         
         return  storeAccountService.signOutCashier(account, lat, lon,regId,imei, auth);
 
+    }
+    
+    @RequestMapping(value = "/orderDetail", method = RequestMethod.GET)
+    @ResponseBody
+    //订间详情
+    public ModelAndView orderDetail(long id) throws Exception {
+        logger.info("#CashierController.orderDetail# id={}",id);
+        ModelAndView modelAndView = new ModelAndView();
+        OrderBean orderBean = shopService.getOrderDetail(id);
+        if(orderBean == null){
+            modelAndView.setViewName("error");
+            return modelAndView;
+        }
+        modelAndView.setViewName("./cashier/orderDetail");
+        modelAndView.addObject("order", orderBean);
+        return modelAndView;
     }
 }

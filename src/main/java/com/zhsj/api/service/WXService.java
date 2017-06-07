@@ -9,8 +9,10 @@ import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.WeixinUserBean;
 import com.zhsj.api.bean.result.QueryTransfers;
+import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.Transfers;
 import com.zhsj.api.dao.*;
+import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.HttpsRequest;
@@ -367,8 +369,109 @@ public class WXService {
         }
     }
 
+    //交班统计
+    public void sendStoreThift(String storeNo,ShiftBean bean){
+        logger.info("#WXService.sendStoreThift# storeNo={}",storeNo);
+        try {
+            String storeThift = MtConfig.getProperty("STORE_SHIFT_MESSAGE", "");
+            if(StringUtils.isEmpty(storeThift)){
+            	 logger.info("#WXService.sendStoreThift# storeNo={} msg={}",storeNo,"没有模板消息");
+                 return;
+            }
+            StoreBean storeBean = tbStoreDao.getStoreByNo(storeNo);
+            if(storeBean == null || StringUtils.isEmpty(storeBean.getAppId())){
+                logger.info("#WXService.sendStoreThift# fail appId is null storeNo={}",storeNo);
+                return;
+            }
+            
+            List<Long> accountIdList = tbStoreBindAccountDao.getAccountIdByStoreNo(storeNo);
+            if(CollectionUtils.isEmpty(accountIdList)){
+                return;
+            }
+            String roleId = MtConfig.getProperty("STORE_MANAGER_ROLE", "");
+            List<Long> idList = new ArrayList<>();
+            List<Long> managerIdList = tbStoreAccountBindRoleDao.filterAccountIdByRole(Long.parseLong(roleId),accountIdList);
+            if(!CollectionUtils.isEmpty(managerIdList)){
+            	idList.addAll(managerIdList);
+            }
+            if(CollectionUtils.isEmpty(idList)){
+            	return;
+            }
+            List<String> openIdList = tbStoreAccountDao.getOpenIdByAccountId(idList);
+            if(CollectionUtils.isEmpty(openIdList)){
+                return;
+            }
+            String appId = storeBean.getAppId();
+            
+            String openIds = "";
+            for(String openId:openIdList){
+                if(StringUtils.isEmpty(openId)){
+                    continue;
+                }
+                openIds += openId+",";
+            }
+//            +"\\n提现方式：微信钱包"
+            storeThift = storeThift.replace("_first", " \"value\": \"收银员汇总数据提醒\"");
+            storeThift = storeThift.replace("_keyword1","\"value\": \" "+ bean.getName() + "收银员数据汇总\"");
+            storeThift = storeThift.replace("_keyword2","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\"");
+            String startT = bean.getStartTime().substring(11);
+            String endT = bean.getEndTime().substring(11);
+            String _remark = "\"value\": \""+"当班时间："+startT+"-"+endT+
+            					"\\n 收银总金额："+bean.getTotalMoney()+
+            					"\\n 收银总笔数： "+bean.getTotalNum()+
+            					"\\n 退款总金额："+bean.getRefundMoney()+
+            					"\\n 退款总笔数："+bean.getRefundNum()+
+            					"\\n平台减免金额："+bean.getOrgDisMoney()+
+            					"\\n平台减免笔数："+bean.getOrgDisNum()+
+            					"\\n商户减免金额："+bean.getStoreDisMoney()+
+            					"\\n商户减免笔数："+bean.getStoreDisNum()+
+            					"\"";
+            storeThift = storeThift.replace("_remark",_remark);
+            
+            String url = MtConfig.getProperty("OPEN_URL", "")+ "/sendMessage";
+          	 Map<String, String> parameters = new HashMap();
+          	 parameters.put("appId", storeBean.getAppId());
+          	 parameters.put("openIds", openIds);
+          	 parameters.put("message", storeThift);
+          	 parameters.put("url", "");
+          	 String result = HttpClient.sendGet(url, parameters);
+             logger.info("#WXService.sendStoreThift# result storeNo={},result={}",storeNo,result);
+        }catch (Exception e){
+            logger.error("#WXService.sendStoreThift# storeNo={}",storeNo,e);
+        }
+    }
     
     public static void main(String[] args) throws Exception {
+    	ShiftBean bean = new ShiftBean();
+    	bean.setStartTime(DateUtil.getCurrentTimeHaveHR().substring(11));
+    	bean.setEndTime(DateUtil.getCurrentTimeHaveHR().substring(11));
+    	bean.setTotalMoney(322);
+//    	new WXService().sendStoreThift("1001", bean);
+    	String storeThift = MtConfig.getProperty("STORE_SHIFT_MESSAGE", "");
+    	storeThift = storeThift.replace("_first", " \"value\": \"\"");
+        storeThift = storeThift.replace("_keyword1","\"value\": \" "+ bean.getName() + "收银员数据汇总\"");
+        storeThift = storeThift.replace("_keyword2","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\"");
+        storeThift = storeThift.replace("_keyword3","\"value\": \""+bean.getStartTime()+"-"+bean.getEndTime()+"\"");
+        String _remark = "\"value\": \""+"当班时间："+bean.getStartTime()+"-"+bean.getEndTime()+
+        					"\\n收银总金额："+bean.getTotalMoney()+
+        					"\\n收银总笔数： "+bean.getTotalNum()+
+        					"\\n退款总金额："+bean.getRefundMoney()+
+        					"\\n退款总笔数："+bean.getRefundNum()+
+        					"\\n平台减免金额："+bean.getOrgDisMoney()+
+        					"\\n平台减免笔数："+bean.getOrgDisNum()+
+        					"\\n商户减免金额："+bean.getStoreDisMoney()+
+        					"\\n商户减免笔数："+bean.getStoreDisNum()+
+        					"\"";
+        storeThift = storeThift.replace("_remark",_remark);
+        
+        String url = MtConfig.getProperty("OPEN_URL", "")+ "/sendMessage";
+      	 Map<String, String> parameters = new HashMap();
+      	 parameters.put("appId", "wx79bd044fd98536f4");
+      	 parameters.put("openIds", "o5pmes_cN1AMrFptmwpDaNj6DXkI");
+      	 parameters.put("message", storeThift);
+      	 parameters.put("url", "");
+      	 String result = HttpClient.sendGet(url, parameters);
+      	 System.out.println(result);
     }
 
 }

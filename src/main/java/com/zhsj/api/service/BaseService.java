@@ -88,12 +88,12 @@ public class BaseService {
     	return index;
     }
 
-    public CommonResult checkUpdate(String version,String auth){
-    	logger.info("#BaseService.checkUpdate# version={},auth={}",version,auth);
+    public CommonResult checkUpdate(String version,String os,String auth){
+    	logger.info("#BaseService.checkUpdate# version={},os={},auth={}",version,os,auth);
     	CheckUpdateResult result = new CheckUpdateResult();
     	result.setVersion(version);
     	try{
-    		VersionInfo versionInfo = tbVersionInfoDao.getByVersion(version);
+    		VersionInfo versionInfo = tbVersionInfoDao.getByVersion(version,os);
     		if(versionInfo == null){
     			return CommonResult.defaultError("版本号不存在");
     		}

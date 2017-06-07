@@ -244,7 +244,7 @@
      			count(1) count
 		FROM tb_order 
 		where store_No = #{storeNo} 
-     	and ctime BETWEEN #{startTime} AND #{endTime} and account_id = #{accountId}
+     	and ctime BETWEEN #{startTime} AND #{endTime} and ( account_id = #{accountId} or account_id = 0 )
      	<choose>
             <when test="statuses != null and statuses.size() > 0">
                 AND status IN
@@ -260,7 +260,7 @@
      	SELECT IFNULL(SUM(store_discount_price),0) storeDisSum,count(1) count
 		FROM tb_order 
 		where store_No = #{storeNo} 
-     	and ctime BETWEEN #{startTime} AND #{endTime} and account_id = #{accountId}
+     	and ctime BETWEEN #{startTime} AND #{endTime} and ( account_id = #{accountId} or account_id = 0)
      	and store_discount_price > 0
      	<choose>
             <when test="statuses != null and statuses.size() > 0">
@@ -277,7 +277,7 @@
      	SELECT IFNULL(SUM(org_discount_price),0) orgDisSum,count(1) count
 		FROM tb_order 
 		where store_No = #{storeNo} 
-     	and ctime BETWEEN #{startTime} AND #{endTime} and account_id = #{accountId}
+     	and ctime BETWEEN #{startTime} AND #{endTime} and ( account_id = #{accountId} or account_id = 0 )
      	and org_discount_price > 0
      	<choose>
             <when test="statuses != null and statuses.size() > 0">
@@ -294,7 +294,7 @@
      	SELECT IFNULL(SUM(refund_money),0) refundMoney,count(1) count
 		FROM tb_order 
 		where store_No = #{storeNo} 
-     	and ctime BETWEEN #{startTime} AND #{endTime} and account_id = #{accountId}
+     	and ctime BETWEEN #{startTime} AND #{endTime} and ( account_id = #{accountId} or account_id = 0 )
      	and status = 4
      </select>
 

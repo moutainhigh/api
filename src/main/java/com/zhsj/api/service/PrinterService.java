@@ -1,8 +1,11 @@
 package com.zhsj.api.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.StoreBindPrinterBean;
 import com.zhsj.api.bean.StoreSettingsBean;
+import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.dao.TBPrinterSecretDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindPrinterDao;
@@ -23,6 +27,7 @@ import com.zhsj.api.dao.TBStoreSettingsDao;
 import com.zhsj.api.dao.TbOrderDao;
 import com.zhsj.api.dao.TbStoreDao;
 import com.zhsj.api.util.CommonResult;
+import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.login.LoginUserUtil;
 import com.zhsj.api.util.print.CloudPrinter;
 import com.zhsj.api.util.print.PrinterUtil;
@@ -43,6 +48,8 @@ public class PrinterService {
 	private TbStoreDao tbStoreDao;
 	@Autowired
 	private TBStoreAccountDao tbStoreAccountDao;
+	@Autowired
+	private WXService wxService;
 	
 	
 	
@@ -206,6 +213,73 @@ public class PrinterService {
 			return CommonResult.success("系统出错");
 		}
 		return CommonResult.success("打印完成");
+	}
+	
+	public CommonResult sentShiftMsg(String storeNo,String userId,int startTime,int endTime,String type, String auth){
+		logger.info("#CashierController.countShift# storeNO={},userId={},startTime={},endTime={},type={},auth={}",
+        		storeNo,userId,startTime,endTime,type,auth);
+		try{
+			ShiftBean bean = new ShiftBean();
+	   		bean.setStartTime(DateUtil.getTime(((long)startTime)*1000));
+	   		 bean.setEndTime(DateUtil.getTime(((long)endTime)*1000));
+	   		 
+	   		 long accountId = Long.parseLong(userId);
+	   		 StoreAccountBean storeAccountBean = tbStoreAccountDao.getById(accountId);
+	   		 if(storeAccountBean == null){
+	   			 return CommonResult.defaultError("用户信息出错");
+	   		 }
+	   		 bean.setName(storeAccountBean.getName());
+	   		 if(StringUtils.isEmpty(storeAccountBean.getName())){
+	   			 bean.setName(storeAccountBean.getAccount());
+	   		 }
+   		 
+			 List<Integer> statuses = new ArrayList<>();
+			 statuses.add(1);
+			 statuses.add(3);
+			 statuses.add(4);
+			 statuses.add(5);
+			 Map<String, Object> countMap = tbOrderDao.countByUserAndTime(storeNo, startTime, endTime, accountId,statuses);
+			 Map<String, Object> refundMap = tbOrderDao.countRefundByUserAndTime(storeNo, startTime, endTime, accountId);
+			 Map<String, Object> storeMap = tbOrderDao.countStoreDisByUserAndTime(storeNo, startTime, endTime, accountId, statuses);
+			 Map<String, Object> orgMap = tbOrderDao.countOrgDisByUserAndTime(storeNo, startTime, endTime, accountId,statuses);
+
+			 bean.setRefundMoney(((BigDecimal)refundMap.get("refundMoney")).doubleValue());
+			 bean.setRefundNum((Long)refundMap.get("count"));
+			 bean.setStoreDisNum((Long)storeMap.get("count"));
+			 bean.setStoreDisMoney(((BigDecimal)storeMap.get("storeDisSum")).doubleValue());
+			 bean.setOrgDisNum((Long)orgMap.get("count"));
+			 bean.setOrgDisMoney(((BigDecimal)orgMap.get("orgDisSum")).doubleValue());
+			 
+			 bean.setTotalNum((Long)countMap.get("count"));
+			 bean.setTotalMoney(((BigDecimal)countMap.get("planMoney")).doubleValue());
+			 
+			 bean.setActualMoney(((BigDecimal)countMap.get("actualMoney")).subtract((BigDecimal)refundMap.get("refundMoney")).doubleValue());
+
+			if("1".equals(type)){
+				//模板消息
+				wxService.sendStoreThift(storeNo, bean);
+			}else if("2".equals(type)){
+				//云打印
+				return printShiftMsg(storeNo,bean);
+			}
+		}catch (Exception e) {
+			logger.error("#CashierController.countShift# storeNO={},userId={},startTime={},endTime={},type={},auth={}",
+	        		storeNo,userId,startTime,endTime,type,auth,e);
+			return CommonResult.defaultError("系统出错");
+		}
+		return CommonResult.success("");
+	}
+	
+	private CommonResult printShiftMsg(String storeNo,ShiftBean bean){
+		StoreSettingsBean storeSettingsBean = tbStoreSettingsDao.getByStoreNo(storeNo);
+		if(storeSettingsBean == null || storeSettingsBean.getCloudPrint() != 1){
+			return CommonResult.defaultError("没有配置云打印机");
+		}
+		StoreBindPrinterBean storeBindPrinterBean = tbStoreBindPrinterDao.getByStoreNo(storeNo);
+		if(storeBindPrinterBean == null){
+			return CommonResult.defaultError("没有配置云打印机");
+		}
+		return CommonResult.success("打印成功");
 	}
 	
 }
