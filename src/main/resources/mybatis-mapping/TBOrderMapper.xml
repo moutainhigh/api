@@ -328,4 +328,47 @@
         </if>
      </select>
      
+     
+     <select id="getListByParamMap" resultType="orderBean">
+        SELECT 
+        id,order_id orderId,plan_charge_amount planChargeAmount,actual_charge_amount actualChargeAmount,status,pay_type payType,pay_method payMethod,store_no storeNo, ctime,
+        store_discount_price storeDiscountPrice,org_discount_price orgDiscountPrice
+        FROM tb_order
+        <where>
+            ctime between #{startTime} and #{endTime}
+            <if test="storeNo != -1">
+              and (store_no = #{storeNo} or parent_store_no = #{storeNo})
+            </if>
+            <if test="status != -1">
+               and status = #{status}
+            </if>
+            <if test="status == -1">
+               and status in (1,3,4,5)
+            </if>
+            <if test="payMethod != -1">
+               and pay_method = #{payMethod}
+            </if>
+            order by ctime desc limit #{start},#{pageSize}
+        </where>
+     </select>
+     
+     <select id="getCountByParamMap" resultType="Integer">
+          select count(1) from tb_order
+          <where>
+            ctime between #{startTime} and #{endTime}
+            <if test="storeNo != -1">
+              and (store_no = #{storeNo} or parent_store_no = #{storeNo})
+            </if>
+            <if test="status != -1">
+               and status = #{status}
+            </if>
+            <if test="status == -1">
+               and status in (1,3,4,5)
+            </if>
+            <if test="payMethod != -1">
+               and pay_method = #{payMethod}
+            </if>
+        </where>
+     </select>
+     
 </mapper>

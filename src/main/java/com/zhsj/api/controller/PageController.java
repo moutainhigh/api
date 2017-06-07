@@ -86,4 +86,9 @@ public class PageController {
 	public String signInfo(){
 		return "shop/signInfo";
 	}
+	
+	@RequestMapping(value = "appOrder")
+	public String appOrder(){
+		return "app/order";
+	}
 }
