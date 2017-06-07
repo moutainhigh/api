@@ -300,5 +300,22 @@ public class OrderService {
 			return CommonResult.defaultError("系统异常");
 		}
     }
+    
+    
+    public Object serachByOrderIdOrTransId(String storeNo, String orderId, String transId){
+    	logger.info("#serachByOrderIdOrTransId# storeNo = {}, orderId = {}, transId = {}", storeNo, orderId, transId);
+    	try {
+			OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, orderId, transId);
+			return CommonResult.success("", bean);
+		} catch (Exception e) {
+			logger.error("#serachByOrderIdOrTransId# storeNo = {}, orderId = {}, transId = {}", storeNo, orderId, transId, e);
+			return CommonResult.defaultError("系统异常");
+		}
+    }
+    
+    public Object appRefund(String orderNo,double price,int userId){
+    	
+    	return null;
+    }
 }
 

@@ -371,4 +371,19 @@
         </where>
      </select>
      
+     <select id="getByOrderIdOrTransId" resultType="orderBean">
+          select  id,order_id orderId,plan_charge_amount planChargeAmount,actual_charge_amount actualChargeAmount,status,pay_type payType,pay_method payMethod
+          from tb_order
+          <where>
+             store_no = #{storeNo}
+             <if test="orderId != '' and orderId != null">
+                order_id = #{orderId}
+             </if>
+             <if test="transId != '' and transId != null">
+                transaction_id = #{transId}
+             </if>
+          </where>
+     </select>
+     
+     
 </mapper>

@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -217,5 +218,35 @@ public class CashierController {
     		return CommonResult.build(2, "门店编号有误");
     	}
     	return orderService.getOrderListByParam(storeNo, payMethod, startTime, endTime, status, page, pageSize);
+    }
+    
+    @RequestMapping(value = "refundPage")
+    @ResponseBody
+    public Object refundPage(String storeNo,String userId,ModelAndView mv){
+    	logger.info("#refund# storeNo={},userId={}", storeNo, userId);
+    	if(StringUtils.isEmpty(storeNo) && StringUtils.isEmpty(userId)){
+    		return CommonResult.build(2, "参数有误");
+    	}
+    	mv.addObject("storeNo", storeNo);
+    	mv.addObject("userId", userId);
+    	mv.setViewName("app/refund");
+    	return mv;
+    }
+    
+    @RequestMapping(value = "serach")
+    @ResponseBody
+    public Object serach(String storeNo, String orderId,String transId){
+    	logger.info("#serach# storeNo = {}, orderId = {}, transId = {}", storeNo, orderId, transId);
+    	if(StringUtils.isEmpty(orderId) && StringUtils.isEmpty(transId)){
+    		return CommonResult.build(2, "参数不能为空");
+    	}
+    	return orderService.serachByOrderIdOrTransId(storeNo, orderId, transId);
+    }
+    
+    @RequestMapping(value = "refund")
+    @ResponseBody
+    public Object refund(String orderNo,double price,int userId){
+    	logger.info("#refund# orderNo = {}, price = {}, userId = {}", orderNo, price, userId);
+    	return null;
     }
 }
