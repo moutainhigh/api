@@ -158,7 +158,7 @@ public static String request(String deviceId, String secertKey,OrderBean orderBe
 			if(StringUtils.isEmpty(cashierName)){
 				cashierName = "  --";
 			}
-			String cashier = "收银员:"+cashierName+"\r\n\r\n\r\n";
+			String cashier = "收银员:"+cashierName+"\r\n";
 			contentBuffer.append(split).append(cashier);
 			byte[] contentByte;
 			try {
@@ -168,13 +168,35 @@ public static String request(String deviceId, String secertKey,OrderBean orderBe
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			// 设置二维码
-//			byteBuffer.put(titleSettingByte);
-//			String url = "http://www.zhihuishangjie.com/";
-//			byte[] hexQR = PrinterUtil.getURLQRCode(url);
-//			byteBuffer.put(hexQR);
-			
-			
+			//
+			if("1110674255".equals(orderBean.getStoreNo())){
+				// 设置二维码
+				byteBuffer.put(titleSettingByte);
+				String url = "http://weixin.qq.com/q/02Qe2INmmTcN11cWWohr4f";
+				byte[] hexQR = PrinterUtil.getURLQRCode(url);
+				byteBuffer.put(hexQR);
+				//底部内容
+				String bottomSetting = CloudPrinter.BOTTOM_TTING;
+				byte[] bottomSettingByte = PrinterUtil.hexStringToBytes(bottomSetting);
+				byteBuffer.put(bottomSettingByte);
+				StringBuffer bottomContent = new StringBuffer();
+				bottomContent.append("扫一扫领红包\r\n");
+				bottomContent.append("消费可以抵现还可以转赠闺蜜哦\r\n");
+				try {
+					byteBuffer.put(bottomContent.toString().getBytes(CloudPrinter.CHARSET));
+				} catch (UnsupportedEncodingException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			//换行
+			byteBuffer.put(contentSettingByte);
+			try {
+				byteBuffer.put("\r\n\r\n\r\n".toString().getBytes(CloudPrinter.CHARSET));
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			//打印指令
 			byte[] goPrint = {0x0d,0x0a};
 			byteBuffer.put(goPrint);
@@ -216,11 +238,10 @@ public static String requestByShift(String deviceId, String secertKey,ShiftBean 
 	String orgDisNum = "支付笔数: "+shiftBean.getOrgDisNum()+"\r\n";
 	String storeDisMoney = "退款金额: "+shiftBean.getStoreDisMoney()+"\r\n";
 	String storeDisNum = "退款笔数: "+shiftBean.getStoreDisNum()+"\r\n";
-	String money = "收款: "+shiftBean.getTotalMoney()+"\r\n";
+	String money = "收款: "+shiftBean.getTotalMoney()+"\r\n\r\n\r\n";
 	contentBuffer.append(cashier).append(split).append(startTime).append(endTime)
 	.append(actualM).append(totalNum).append(refundM).append(refundNum).append(orgDisMoney)
 	.append(orgDisNum).append(storeDisMoney).append(storeDisNum).append(split).append(money);
-	contentBuffer.append(split).append(cashier);
 	byte[] contentByte;
 	try {
 		contentByte = contentBuffer.toString().getBytes(CloudPrinter.CHARSET);

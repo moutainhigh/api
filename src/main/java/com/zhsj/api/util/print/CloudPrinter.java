@@ -93,6 +93,7 @@ public class CloudPrinter {
 	 * 1b337f 行高
 	 */
 	public static final String  TITLESE_TTING = "1b61011B21081b5602";
+	public static final String  BOTTOM_TTING = "1b61011b56011B2100";
 	/**
 	 * 设置内容格式
 	 * 1b6101 居中 

@@ -69,6 +69,7 @@
              margin-top:1.35rem;
              background:#EEE;
              position:relative;
+             display:none;
           }
           .refund_order .tips{
             position:absolute;
@@ -138,7 +139,7 @@
 			     <div class="row">
 			         <label>订单号:</label>
 			         <div class="row_ipt">
-			             <input type="tel" id="orderId" placeholder="输入退款的订单号">
+			             <input type="tel" id="orderId" placeholder="输入退款的订单号" autofocus="autofocus">
 			         </div>
 			     </div>   
 			     <div class="row">
@@ -158,20 +159,21 @@
 	               <i></i>
 	             </div>
 	             <div class="redund_detail">
+	                <input type="hidden" id="oid">
 	                <div class="row">
 	                   <label>
-	                       <img alt="" src="../resource/img/app/order/wechat-ico.png">
+	                       <img alt="" src="../resource/img/app/order/wechat-ico.png" id="logo">
 	                   </label>
 	                   <div class="row_ipt details">
-	                       <div><span class="color">￥2.0</span><del>￥1.0</del><span id="status">退款中</span></div>
-	                       <div><span class="color">2017-10-10 10:16:15</span></div>
+	                       <div><span class="color">￥<span id="am"></span></span><del>￥<span id="pm"></span></del><span id="status">退款中</span></div>
+	                       <div><span class="color" id="ctime">2017-10-10 10:16:15</span></div>
                        </div>
 	                </div>
 	                
 	                <div class="row">
 	                   <label>退款金额:</label>
 	                   <div class="row_ipt">
-				             <input type="number" id="ctime" value="1" >
+				             <input type="number" id="money" value="" >
 				         </div>
 	                </div>
 	                <div class="row serach">
@@ -183,20 +185,104 @@
   </body>
 </html>
 <script type="text/javascript">
+Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+        "y+": this.getYear(),
+        "M+": this.getMonth() + 1, //月份
+        "d+": this.getDate(), //日
+        "h+": this.getHours(), //小时
+        "m+": this.getMinutes(), //分
+        "s+": this.getSeconds(), //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds() //毫秒
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+};
    $(function(){
 	   $("#serach").on("click",function(){
 		   var data = {
 				 orderId:$("#orderId").val(),
-		         transId:$("#transId").val()
+		         transId:$("#transId").val(),
+		         storeNo:$("#storeNo").val()
 		   };
-		   $.post("",data,function(result){
+		   if(data.orderId == "" && data.transId == ""){
+			   alert("请填写订单号或者交易号");
+			   return;
+		   }
+		   $.post("./serach",data,function(result){
+			   console.log(result);
 			   if(result.code == 0){
-				   
+				   var obj = result.data;
+				   if(obj.payMethod == 2){
+					   $("#logo").attr("src","../resource/img/app/order/pay-icon.png");
+				   }else if(obj.payMethod == 3){
+					   $("#logo").attr("src","../resource/img/app/order/unionPay-icon.png");
+				   }
+				   $("#am").text(obj.actualChargeAmount);
+				   $("#pm").text(obj.planChargeAmount);
+				   $("#status").text(getStatus(obj.status));
+				   $("#ctime").text(new Date(obj.ctime*1000).Format("yyyy-MM-dd hh:mm:ss"));
+				   $("#money").val(obj.actualChargeAmount);
+				   $("#oid").val(obj.id);
+				   $(".refund_order").slideDown("slow");
 			   }else{
 				   alert(result.msg);
 			   }
 			   
 		   });
 	   });
+	   
+	   
+	   $("#refund").on("click",function(){
+		   var data = {
+				 id:$("#oid").val(),
+				 price:$("#money").val(),
+				 userId:$("#userId").val()
+		   };
+		   if(data.price <= 0 || data.price > $("#am").text() ){
+			   alert("退款金额有误");
+			   return;
+		   }
+		   $.post("./refund",data,function(result){
+			   console.log(result);
+			   alert(result.msg);
+			   if(result.code == 0){
+				   
+			   }else{
+				   
+			   }
+		   });
+	   });
+	   
    });
+   
+   function getStatus(sta){
+		    var state = "";
+			switch (sta) {
+			case 0:
+				state = "支付中";
+				break;
+			case 1:
+				state = "支付成功";
+				break;
+			case 2:
+				state = "支付失败";
+				break;
+			case 3:
+				state = "退款中";
+				break;
+			case 4:
+				state = "退款成功";
+				break;
+			case 5:
+				state = "退款失败";
+				break;
+			}
+			return state;
+	  };
+   
+   
 </script>

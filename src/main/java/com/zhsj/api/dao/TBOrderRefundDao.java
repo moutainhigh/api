@@ -18,4 +18,7 @@ public interface TBOrderRefundDao {
 	int updateStatusByNo(@Param("reOrderNo")String reOrderNo,
 					@Param("status")int status);
     
+	int insert(OrderRefundBean orderRefundBean);
+	
+	OrderRefundBean getByRefundNo(@Param("refundNo")String refundNo);
 }

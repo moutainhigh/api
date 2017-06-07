@@ -2,6 +2,7 @@ package com.zhsj.api.service;
 
 import com.zhsj.api.bean.LoginUser;
 import com.zhsj.api.bean.OrderBean;
+import com.zhsj.api.bean.OrderRefundBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.bean.StoreBean;
@@ -10,6 +11,7 @@ import com.zhsj.api.bean.result.StoreCountResult;
 import com.zhsj.api.dao.TbOrderDao;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
+import com.zhsj.api.dao.TBOrderRefundDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreSignDao;
 import com.zhsj.api.dao.TbUserBindStoreDao;
@@ -52,6 +54,8 @@ public class OrderService {
     private TBStoreAccountDao tbStoreAccountDao;
     @Autowired
     private TBStoreSignDao tbStoreSignDao;
+    @Autowired
+    private TBOrderRefundDao tbOrderRefundDao;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -324,9 +328,82 @@ public class OrderService {
 		}
     }
     
-    public Object appRefund(String orderNo,double price,int userId){
-    	
-    	return null;
+    public Object appRefund(long id,double price,int userId){
+    	logger.info("#appRefund# id={}, price={},userId={}", id, price, userId);
+    	try {
+			OrderBean orderBean = bmOrderDao.getById(id);
+			String refundNo = "re"+orderBean.getOrderId();
+			OrderRefundBean orderRefund = tbOrderRefundDao.getByRefundNo(refundNo);
+			if(orderRefund != null){
+				return CommonResult.build(2, orderBean.getStatus() == 3?"该订单正在处理中":"该订单已经处理完成");
+			}
+			if(price > orderBean.getActualChargeAmount()){
+				return CommonResult.build(2, "退款金额不能大于实付金额");
+			}
+			if(orderBean.getStatus() == 1){
+				OrderRefundBean orderRefundBean = new OrderRefundBean();
+				orderRefundBean.setRefundNo(refundNo);
+				orderRefundBean.setRefundMoney(price);
+				orderRefundBean.setSubmitUserId(userId);
+				int reCode = tbOrderRefundDao.insert(orderRefundBean);
+				if(reCode != 1){
+					logger.info("#appRefund# 添加orderRefundBean出错了");
+					return CommonResult.build(2, "系统异常");
+				}
+				int code = tbOrderDao.updateOrderRefundById(orderBean.getId(), refundNo, price);
+				if(code != 1){
+					logger.info("#appRefund# 更新order出错了");
+					return CommonResult.build(2, "系统异常");
+				}
+				CommonResult commonResult = refundMoney(orderBean.getOrderId(),price,userId);
+				if(commonResult.getCode() == 0){
+					CommonResult commonResult2 = searchRefund(orderBean.getOrderId());
+					if(commonResult2.getCode() == 0 && "SUCCESS".equals(commonResult2.getData())){
+						int sCode = tbOrderDao.updateStatusById(orderBean.getId(), 4);
+						if(sCode != 1){
+							logger.info("#appRefund# 退款成功。更新order状态失败");
+							return CommonResult.build(2, "系统异常");
+						}
+						int reSCode = tbOrderRefundDao.updateStatusByNo(refundNo, 5);
+						if(reSCode != 1){
+							logger.info("#appRefund# 退款成功。更新orderRefund状态失败");
+							return CommonResult.build(2, "系统异常");
+						}
+						return CommonResult.success("退款成功");
+					}else{
+						int rCode = tbOrderRefundDao.updateStatusByNo(refundNo, 2);
+						if(rCode != 1){
+							logger.info("#appRefund# 退款中。更新OrderRefund状态失败");
+							return CommonResult.build(2, "系统异常");
+						}
+						return CommonResult.success("退款中");
+					}
+				}else{
+					int failCode = tbOrderDao.updateStatusById(orderBean.getId(),5);
+					if(failCode != 1){
+						logger.info("#appRefund# 退款失败 。更新order状态失败");
+						return CommonResult.build(2, "系统异常");
+					}
+					int reFailCode = tbOrderRefundDao.updateStatusByNo(refundNo, 3);
+					if(reFailCode != 1){
+						logger.info("#appRefund# 退款失败 。 更新refundorder状态失败");
+						return CommonResult.build(2, "系统异常");
+					}
+					return CommonResult.success("退款失败");
+				}
+			}else if(orderBean.getStatus() == 3){
+				return CommonResult.build(2, "该订单正在退款中");
+			}else if(orderBean.getStatus() == 4){
+				return CommonResult.build(2, "该订单已经退款成功");
+			}else if(orderBean.getStatus() == 5){
+				return CommonResult.build(2, "该订单已经退款失败");
+			}else{
+				return CommonResult.build(2, "该订单出错了");
+			}
+		} catch (Exception e) {
+			logger.error("#appRefund# id={}, price={},userId={}", id, price, userId, e);
+			return CommonResult.defaultError("系统异常");
+		}
     }
 }
 

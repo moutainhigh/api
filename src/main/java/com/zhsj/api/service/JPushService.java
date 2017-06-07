@@ -1,12 +1,10 @@
 package com.zhsj.api.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -20,14 +18,11 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.sun.istack.internal.FinalArrayList;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.StoreAccountBean;

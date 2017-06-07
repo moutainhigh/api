@@ -227,6 +227,9 @@ public class CashierController {
     @RequestMapping(value = "orderListPage")
     public Object orderListPage(ModelAndView mv, String storeNo){
     	logger.info("#orderListPage# storeNo ={}", storeNo);
+    	if(StringUtils.isEmpty(storeNo)){
+    		return CommonResult.build(2, "门店编号有误");
+    	}
     	mv.addObject("storeList", storeService.getListByStoreNo(storeNo));
     	mv.addObject("storeNo", storeNo);
     	mv.setViewName("app/order");
@@ -269,8 +272,11 @@ public class CashierController {
     
     @RequestMapping(value = "refund")
     @ResponseBody
-    public Object refund(String orderNo,double price,int userId){
-    	logger.info("#refund# orderNo = {}, price = {}, userId = {}", orderNo, price, userId);
-    	return null;
+    public Object refund(long id,double price,int userId){
+    	logger.info("#refund# id = {}, price = {}, userId = {}", id, price, userId);
+    	if(price <= 0){
+    		return CommonResult.build(2, "退款金额有误");
+    	}
+    	return orderService.appRefund(id, price, userId);
     }
 }
