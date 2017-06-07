@@ -145,4 +145,8 @@ public interface TbOrderDao {
     int getCountByParamMap(Map<String, Object> paramMap);
 	
 	OrderBean getByOrderIdOrTransId(@Param("storeNo")String storeNo,@Param("orderId")String orderId, @Param("transId")String transId);
+	
+	int updateOrderRefundById(@Param("id")long id,@Param("refundNo")String refundNo,@Param("refundMoney")double refundMoney);
+	
+	int updateStatusById(@Param("id")long id, @Param("status")int status);
 }

@@ -368,7 +368,7 @@ $('.tran_time .clearfix li').on("click",function(){
 })(mui,$);
 
   function getStatus(sta){
-	  String state = "";
+	    var state = "";
 		switch (sta) {
 		case 0:
 			state = "支付中";

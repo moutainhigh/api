@@ -18,4 +18,18 @@
     	where refund_no=#{reOrderNo}
     </update>
 
+    <insert id="insert" keyProperty="id">
+       insert into tb_order_refund (
+          refund_no, refund_money, submit_user_id, submit_ctime, status, utime, ctime
+       ) values (
+          #{refundNo}, #{refundMoney}, #{submitUserId}, unix_timestamp(now()),1, unix_timestamp(now()),unix_timestamp(now())
+       )
+    </insert> 
+    
+    <select id="getByRefundNo" resultType="com.zhsj.api.bean.OrderRefundBean">
+       select <include refid="SELECT_FIELDS"/>
+    	from tb_order_refund
+    	where refund_no = #{refundNo}
+    </select>
+    
 </mapper>

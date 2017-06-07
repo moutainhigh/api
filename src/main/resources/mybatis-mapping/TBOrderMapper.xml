@@ -372,18 +372,35 @@
      </select>
      
      <select id="getByOrderIdOrTransId" resultType="orderBean">
-          select  id,order_id orderId,plan_charge_amount planChargeAmount,actual_charge_amount actualChargeAmount,status,pay_type payType,pay_method payMethod
+          select  id,order_id orderId,plan_charge_amount planChargeAmount,actual_charge_amount actualChargeAmount,status,pay_type payType,pay_method payMethod,ctime
           from tb_order
           <where>
              store_no = #{storeNo}
              <if test="orderId != '' and orderId != null">
-                order_id = #{orderId}
+               and order_id = #{orderId}
              </if>
              <if test="transId != '' and transId != null">
-                transaction_id = #{transId}
+               and transaction_id = #{transId}
              </if>
           </where>
      </select>
      
+     <update id="updateOrderRefundById">
+        update tb_order
+        set status = 3,
+        refund_no = #{refundNo},
+        refund_money = #{refundMoney},
+        utime = unix_timestamp(now())
+        <where>
+          id = #{id}
+        </where>
+     </update>
      
+     
+     <update id="updateStatusById">
+        update tb_order
+        set status = #{status},
+        utime = unix_timestamp(now())
+        where id = #{id}
+     </update>
 </mapper>
