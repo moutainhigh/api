@@ -8,7 +8,7 @@
     <select id="getByVersion" resultType="versionInfo" >
         select <include refid="SELECT_FIELDS"/>
         FROM tb_version_info
-        WHERE version = #{version} and os=#{os} valid = 1
+        WHERE version = #{version} and os=#{os} and valid = 1
     </select>
 
 

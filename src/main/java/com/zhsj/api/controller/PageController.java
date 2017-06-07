@@ -91,4 +91,10 @@ public class PageController {
 	public String appOrder(){
 		return "app/order";
 	}
+	
+	@RequestMapping(value = "refund")
+	public String refund(){
+		return "app/refund";
+		
+	}
 }

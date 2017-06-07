@@ -171,29 +171,13 @@ public class PrinterService {
 			String storeNo = orderBean.getStoreNo();
 			StoreBean storeBean = tbStoreDao.getStoreByNo(storeNo);
 			orderBean.setStoreName(storeBean.getName());
-			StoreSettingsBean storeSettingsBean = tbStoreSettingsDao.getByStoreNo(storeNo);
-			if(storeSettingsBean == null){
-				return CommonResult.build(2, "没有关联云打印机");
+			CommonResult commonResult = verifyPrinter(storeNo);
+			if(commonResult.getCode() == 2){
+				return CommonResult.build(2, commonResult.getMsg());
 			}
-			if(storeSettingsBean.getCloudPrint() != 1){
-				return CommonResult.build(2, "没有关联云打印机");
-			}
-			StoreBindPrinterBean storeBindPrinterBean = tbStoreBindPrinterDao.getByStoreNo(storeNo);
-			if(storeBindPrinterBean  == null){
-				return CommonResult.build(2, "没有关联云打印机");
-			}
+			StoreBindPrinterBean storeBindPrinterBean = (StoreBindPrinterBean) commonResult.getData();
 			String deviceId = storeBindPrinterBean.getDeviceId();
 			String secretKey = storeBindPrinterBean.getSecretKey();
-			// 初始化打印机
-			String initial =  CloudPrinter.PRINTER_INIT;
-			byte[] initByte = PrinterUtil.hexStringToBytes(initial);
-			String printInitial = null;
-			printInitial = PrinterUtil.requestPrintPost(deviceId, secretKey, initByte);
-			Map<String,Object> map = JSON.parseObject(printInitial, Map.class);
-			if(!"ok".equals(map.get("state"))){
-				logger.info("#printerByOrder# 打印机没有准备好");
-				return CommonResult.build(2, "打印机没有准备好");
-			}
 			long accountId = orderBean.getAccountId();
 			String cashierName = "";
 			if(accountId != 0){
@@ -208,11 +192,11 @@ public class PrinterService {
 				logger.info("#printerByOrder# 打印机出错了");
 				return CommonResult.build(2, "打印机出错了");
 			}
+			return CommonResult.success("打印完成");
 		} catch (Exception e) {
 			logger.error("#PrinterService.printByOrder# orderId={}",orderId,e);
 			return CommonResult.success("系统出错");
 		}
-		return CommonResult.success("打印完成");
 	}
 	
 	public CommonResult sentShiftMsg(String storeNo,String userId,int startTime,int endTime,String type, String auth){
@@ -260,7 +244,7 @@ public class PrinterService {
 				wxService.sendStoreThift(storeNo, bean);
 			}else if("2".equals(type)){
 				//云打印
-				return printShiftMsg(storeNo,bean);
+				return printerByShift(storeNo,bean);
 			}
 		}catch (Exception e) {
 			logger.error("#CashierController.countShift# storeNO={},userId={},startTime={},endTime={},type={},auth={}",
@@ -270,16 +254,62 @@ public class PrinterService {
 		return CommonResult.success("");
 	}
 	
-	private CommonResult printShiftMsg(String storeNo,ShiftBean bean){
+	private CommonResult verifyPrinter(String storeNo){
 		StoreSettingsBean storeSettingsBean = tbStoreSettingsDao.getByStoreNo(storeNo);
-		if(storeSettingsBean == null || storeSettingsBean.getCloudPrint() != 1){
-			return CommonResult.defaultError("没有配置云打印机");
+		if(storeSettingsBean == null){
+			return CommonResult.build(2, "没有关联云打印机");
+		}
+		if(storeSettingsBean.getCloudPrint() != 1){
+			return CommonResult.build(2, "没有关联云打印机");
 		}
 		StoreBindPrinterBean storeBindPrinterBean = tbStoreBindPrinterDao.getByStoreNo(storeNo);
-		if(storeBindPrinterBean == null){
-			return CommonResult.defaultError("没有配置云打印机");
+		if(storeBindPrinterBean  == null){
+			return CommonResult.build(2, "没有关联云打印机");
 		}
-		return CommonResult.success("打印成功");
+		String deviceId = storeBindPrinterBean.getDeviceId();
+		String secretKey = storeBindPrinterBean.getSecretKey();
+		// 初始化打印机
+		String initial =  CloudPrinter.PRINTER_INIT;
+		byte[] initByte = PrinterUtil.hexStringToBytes(initial);
+		String printInitial = null;
+		try {
+			printInitial = PrinterUtil.requestPrintPost(deviceId, secretKey, initByte);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Map<String,Object> map = JSON.parseObject(printInitial, Map.class);
+		if(!"ok".equals(map.get("state"))){
+			logger.info("#printerByOrder# 打印机没有准备好");
+			return CommonResult.build(2, "打印机没有准备好");
+		}
+		return CommonResult.success("", storeBindPrinterBean);
+	}
+	
+	
+	public CommonResult printerByShift(String storeNo,ShiftBean shiftBean){
+		logger.info("#printerByShift# storeNo = {}", storeNo);
+		try {
+			CommonResult commonResult = verifyPrinter(storeNo);
+			if(commonResult.getCode() == 2){
+				return CommonResult.build(2, commonResult.getMsg());
+			}
+			StoreBindPrinterBean storeBindPrinterBean = (StoreBindPrinterBean) commonResult.getData();
+			String deviceId = storeBindPrinterBean.getDeviceId();
+			String secretKey = storeBindPrinterBean.getSecretKey();
+			//打印内容
+			String result = PrinterUtil.requestByShift(deviceId, secretKey, shiftBean);
+			logger.info("#printerByShift# result = {}", result);
+			Map<String,Object> rsmap = JSON.parseObject(result, Map.class);
+			if(!"ok".equals(rsmap.get("state"))){
+				logger.info("#printerByShift# 打印机出错了");
+				return CommonResult.build(2, "打印机出错了");
+			}
+		    return CommonResult.success("打印完成");
+		} catch (Exception e) {
+			logger.error("#printerByShift# storeNo = {}", storeNo,e);
+			return CommonResult.success("系统出错");
+		}
 	}
 	
 }

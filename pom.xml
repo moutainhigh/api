@@ -78,6 +78,11 @@
 	    <artifactId>spring-context-support</artifactId>
 	    <version>${spring.version}</version>
 	</dependency>
+	<dependency>
+	    <groupId>org.springframework.retry</groupId>
+	    <artifactId>spring-retry</artifactId>
+	    <version>1.1.2.RELEASE</version>
+	</dependency>
     <!-- mybatis 包 -->
     <dependency>
       <groupId>org.mybatis</groupId>

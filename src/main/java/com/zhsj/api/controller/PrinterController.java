@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zhsj.api.bean.StoreBindPrinterBean;
+import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.service.PrinterService;
 
 @Controller
@@ -56,5 +57,25 @@ public class PrinterController {
 	@ResponseBody
 	public Object test(String orderId){
 		return printerService.printByOrder(orderId);
+	}
+	
+	@RequestMapping(value = "ts")
+	@ResponseBody
+	public Object testShift(String storeNo){
+		storeNo = "10001";
+		ShiftBean shiftBean = new ShiftBean();
+		shiftBean.setActualMoney(10.00);
+		shiftBean.setStartTime("2017-06-05 17:26:30");
+		shiftBean.setEndTime("2017-06-16 12:30:56");
+		shiftBean.setName("hctym");
+		shiftBean.setOrgDisMoney(0.00);
+		shiftBean.setOrgDisNum(0);
+		shiftBean.setStoreDisMoney(0.00);
+		shiftBean.setStoreDisNum(0);
+		shiftBean.setRefundMoney(1.00);
+		shiftBean.setRefundNum(1);
+		shiftBean.setTotalMoney(10.00);
+		shiftBean.setTotalNum(10);
+		return printerService.printerByShift(storeNo, shiftBean);
 	}
 }

@@ -1,6 +1,9 @@
 package com.zhsj.api.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,17 +20,22 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.istack.internal.FinalArrayList;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.jpush.PaySuccessBean;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindAccountDao;
+import com.zhsj.api.exception.ApiException;
+import com.zhsj.api.retry.SimpleRetryTemplate;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.MtConfig;
 
@@ -46,6 +54,8 @@ public class JPushService {
     private TBStoreAccountDao tbStoreAccountDao;
     @Autowired
     private PrinterService printerService;
+    
+    private Map<Integer,String> JPUSH_MSG =  Collections.synchronizedMap(new HashMap<Integer,String>());
     
     public CommonResult sendSuccessMsg(String orderNo){
     	logger.info("#JPushService.sendSuccessMsg# orderNO={}",orderNo);
@@ -85,8 +95,10 @@ public class JPushService {
     			List<String> regIds = jIds.subList(i * maxSize,  Math.min(totalSize, (i + 1) * maxSize));
     			String json = toSuccessMsg(orderBean, regIds);
     			String result = sendPost("https://api.jpush.cn/v3/push", json);
-    			logger.info("json="+json);
     			logger.info("result="+result);
+    			Map<String, String> map = JSON.parseObject(result, Map.class);
+    			JPUSH_MSG.put((int)orderBean.getId(), map.get("msg_id"));
+    			sendJPushMsg((int)orderBean.getId(),json);
     		}
     		
     		return CommonResult.success("");
@@ -118,6 +130,7 @@ public class JPushService {
     	
     	JSONObject options = new JSONObject();
     	options.put("time_to_live", 10*60);
+    	options.put("sendno", bean.getId());
     	jsonObject.put("options", options);
     	return jsonObject.toJSONString();
     }
@@ -204,16 +217,52 @@ public class JPushService {
 
     }
     
+    private void sendJPushMsg(final int sendNo,final String json) throws Exception{
+    	Integer num = new SimpleRetryTemplate<Integer>() {
+			@Override
+			public Integer invoke() throws Exception {
+				String msg_id = JPUSH_MSG.get(sendNo);
+				String url = "https://report.jpush.cn/v3/received?msg_ids="+msg_id;
+				String result = new JPushService().sendGet(url);
+    	    	JSONArray jsonArray = JSON.parseArray(result);
+    	    	for(int i=0;i<jsonArray.size();i++){
+    	    		String jmsg = jsonArray.get(i).toString();
+    	    		Map<String, Object> getMap = JSON.parseObject(jmsg,Map.class);
+    	    		if(getMap.get("android_received") == null && getMap.get("ios_msg_received")==null){
+    	    			logger.info("json="+json);
+    					result = sendPost("https://api.jpush.cn/v3/push", json);
+    	    			logger.info("result="+result);
+    	    			Map<String, String> map = JSON.parseObject(result, Map.class);
+    	    			JPUSH_MSG.put(sendNo, map.get("msg_id"));
+    	    			throw new ApiException(1002, "极光推送失败");
+    	    		}
+    	    	}
+				return 0;
+			}
+		}.withDefaultTimeoutPolicy().executeWithRetry(15000L);
+    }
+    
     public static void main(String[] args) throws Exception {
 //		new JPushService().sendSuccessMsg("18071adc033cab91e3e");
     	
-//    	String json = "{\"message\":{\"msg_content\":{\"nt\":\"你有一笔0.01元订单支付成功\",\"time\":\"2017-05-25 10:16\",\"cmd\":1,\"no\":\"10001170525369841513\",\"am\":\"0.01\",\"pt\":\"微信\",\"pm\":\"0.01\",\"st\":\"成功\",\"code\":\"671\",\"url\":\"http://wwt.bj37du.com/api/10001170525369841513\",\"qr\":\"qrcode\"}},\"platform\":\"all\",\"audience\":{\"registration_id\":[\"18071adc033cab91e3e\"]},\"options\":{\"time_to_live\":1800}}";
-//    	String resultString = new JPushService().sendPost("https://api.jpush.cn/v3/push", json);
-//    	Map<String, String> map = JSON.parseObject(resultString, Map.class);
-//    	System.out.println(map.get("msg_id"));
-    	String url = "https://report.jpush.cn/v3/received?msg_ids="+"63050394971325769";
-    	System.out.println(new JPushService().sendGet(url));
-    	
+    	String json = "{\"message\":{\"msg_content\":{\"nt\":\"你有一笔0.01元订单支付成功\",\"time\":\"2017-05-25 10:16\",\"cmd\":1,\"no\":\"10001170525369841513\",\"am\":\"0.01\",\"pt\":\"微信\",\"pm\":\"0.01\",\"st\":\"成功\",\"code\":\"671\",\"url\":\"http://wwt.bj37du.com/api/10001170525369841513\",\"qr\":\"qrcode\"}},\"platform\":\"all\",\"audience\":{\"registration_id\":[\"18071adc033cab91e3e\"]},\"options\":{\"time_to_live\":1800,\"sendno\":\"33eee\"}}";
+    	String resultString = new JPushService().sendPost("https://api.jpush.cn/v3/push", json);
+    	System.out.println(resultString);
+    	Map<String, String> map = JSON.parseObject(resultString, Map.class);
+    	System.out.println(map.get("msg_id"));
+    	String url = "https://report.jpush.cn/v3/received?msg_ids="+"24769798092499038";
+    	String result = new JPushService().sendGet(url);
+    	JSONArray jsonArray = JSON.parseArray(result);
+    	for(int i=0;i<jsonArray.size();i++){
+    		String jmsg = jsonArray.get(i).toString();
+    		Map<String, Object> getMap = JSON.parseObject(jmsg,Map.class);
+    		if(getMap.get("android_received") == null && getMap.get("ios_msg_received")==null){
+    			throw new ApiException(1002, "极光推送失败");
+    		}else{
+    			System.out.print(result);
+    		}
+    	}
+		
 	}
     
     

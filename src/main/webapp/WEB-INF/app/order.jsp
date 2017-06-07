@@ -366,6 +366,31 @@ $('.tran_time .clearfix li').on("click",function(){
         }, false);
     });
 })(mui,$);
+
+  function getStatus(sta){
+	  var state = "";
+		switch (sta) {
+		case 0:
+			state = "支付中";
+			break;
+		case 1:
+			state = "支付成功";
+			break;
+		case 2:
+			state = "支付失败";
+			break;
+		case 3:
+			state = "退款中";
+			break;
+		case 4:
+			state = "退款成功";
+			break;
+		case 5:
+			state = "退款失败";
+			break;
+		}
+		return state;
+  }
     	   function order(page){
     			   var date = new Date();
     			   date = date.Format("yyyy/MM/dd");
@@ -432,7 +457,7 @@ $('.tran_time .clearfix li').on("click",function(){
 	    						   +  '             <h2 class=" present-price">￥'+obj[i].actualChargeAmount+'</h2>'
 	    						   +  '             <h2 class="old-price">￥'+obj[i].planChargeAmount+'</h2>'
 	    						   +  '        </li>'
-	    						   +  '         <li class="fl business-cheap"><h2 class="business-num">No.'+obj[i].storeNo+'</h2><h2 >';
+	    						   +  '         <li class="fl business-cheap"><h2 class="business-num">'+getStatus(obj[i].status)+'</h2><h2 >';
 	    						   if(obj[i].storeDiscountPrice != 0){
 	    						       content +=  '<span class="business">商家优惠</span>';
 	    						   }

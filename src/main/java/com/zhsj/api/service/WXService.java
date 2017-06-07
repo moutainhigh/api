@@ -411,8 +411,8 @@ public class WXService {
                 openIds += openId+",";
             }
 //            +"\\n提现方式：微信钱包"
-            storeThift = storeThift.replace("_first", " \"value\": \"收银员汇总数据提醒\"");
-            storeThift = storeThift.replace("_keyword1","\"value\": \" "+ bean.getName() + "收银员数据汇总\"");
+            storeThift = storeThift.replace("_first", " \"value\": \"\"");
+            storeThift = storeThift.replace("_keyword1","\"value\": \" "+ bean.getName() + " 收银数据汇总\"");
             storeThift = storeThift.replace("_keyword2","\"value\": \""+DateUtil.getCurrentTimeHaveHR()+"\"");
             String startT = bean.getStartTime().substring(11);
             String endT = bean.getEndTime().substring(11);
