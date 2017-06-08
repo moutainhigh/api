@@ -225,13 +225,13 @@ public class CashierController {
     
     @RequestMapping(value = "refundPage")
     @ResponseBody
-    public Object refundPage(String storeNo,String userId,ModelAndView mv){
-    	logger.info("#refund# storeNo={},userId={}", storeNo, userId);
-    	if(StringUtils.isEmpty(storeNo) && StringUtils.isEmpty(userId)){
+    public Object refundPage(String storeNo,String accountId,ModelAndView mv){
+    	logger.info("#refund# storeNo={},accountId={}", storeNo, accountId);
+    	if(StringUtils.isEmpty(storeNo) && StringUtils.isEmpty(accountId)){
     		return CommonResult.build(2, "参数有误");
     	}
     	mv.addObject("storeNo", storeNo);
-    	mv.addObject("userId", userId);
+    	mv.addObject("accountId", accountId);
     	mv.setViewName("app/refund");
     	return mv;
     }
@@ -248,11 +248,11 @@ public class CashierController {
     
     @RequestMapping(value = "refund")
     @ResponseBody
-    public Object refund(long id,double price,int userId){
-    	logger.info("#refund# id = {}, price = {}, userId = {}", id, price, userId);
+    public Object refund(long id,double price,int accountId){
+    	logger.info("#refund# id = {}, price = {}, accountId = {}", id, price, accountId);
     	if(price <= 0){
     		return CommonResult.build(2, "退款金额有误");
     	}
-    	return orderService.appRefund(id, price, userId);
+    	return orderService.appRefund(id, price, accountId);
     }
 }

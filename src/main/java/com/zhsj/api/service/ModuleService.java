@@ -144,7 +144,7 @@ public class ModuleService {
 	 public CommonResult getAppModule(String storeNo,String os,String rate,String auth,HttpServletRequest request){
 		 logger.info("#ModuleService.getAppModule# storeNo={},os={},rate={},auth={}",storeNo,os,rate,auth);
 		 try{
-			 auth = URLDecoder.decode("1001%2C80%2Ctest3", "utf-8");
+			 auth = URLDecoder.decode(auth, "utf-8");
 			 String[] args = auth.split(",");
 			 List<ModuleBean> allModuleBeans = tbModuleDao.getByParentIdAndType(0, 2);
 			 String uri = request.getRequestURL().toString();
