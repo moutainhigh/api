@@ -176,7 +176,7 @@
 			         </div>
 			     </div>   
 			     <div class="row">
-			         <label>交易号:</label>
+			         <label>商户单号:</label>
 			         <div class="row_ipt">
 			             <input type="tel" id="transId" placeholder="输入退款的交易号">
 			         </div>

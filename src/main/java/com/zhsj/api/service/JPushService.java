@@ -27,6 +27,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.jpush.PaySuccessBean;
+import com.zhsj.api.bean.jpush.RefundBean;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindAccountDao;
 import com.zhsj.api.exception.ApiException;
@@ -103,6 +104,55 @@ public class JPushService {
     	return CommonResult.defaultError("系统出错");
     	
     }
+    
+    
+    public CommonResult sendRefundMsg(String orderNo,long accountId){
+    	logger.info("#JPushService.sendRefundMsg# orderNO={}",orderNo);
+    	try{
+//    		printerService.printByOrder(orderNo);
+    		
+    		OrderBean orderBean = orderService.getByOrderId(orderNo);
+    		if(orderBean == null){
+    			return CommonResult.success("订单号不存在");
+    		}
+    		List<Long> accountIdsList = tbStoreBindAccountDao.getAccountIdByStoreNo(orderBean.getStoreNo());
+    		if(CollectionUtils.isEmpty(accountIdsList)){
+    			return CommonResult.success("没有用户");
+    		}
+    		
+    		List<StoreAccountBean> accountBeans = tbStoreAccountDao.getSignByIds(accountIdsList,1);
+    		if(CollectionUtils.isEmpty(accountBeans)){
+    			return CommonResult.success("没有签到用户");
+    		}
+    		List<String> jIds = new ArrayList<>();
+    		for(StoreAccountBean accountBean:accountBeans){
+    			if(accountBean.getId() == accountId){
+    				jIds.add(accountBean.getjId());
+    			}
+    		}
+    		if(CollectionUtils.isEmpty(jIds)){
+    			return CommonResult.success("没有注册用户");
+    		}
+    		int maxSize = 100;
+    		int totalSize = jIds.size();
+    		int totalPage = totalSize / maxSize + ((totalSize % maxSize) == 0 ? 0 : 1);
+    		for (int i = 0; i < totalPage; i++) {
+    			List<String> regIds = jIds.subList(i * maxSize,  Math.min(totalSize, (i + 1) * maxSize));
+    			String json = toRefundMsg(orderBean, regIds);
+    			String result = sendPost("https://api.jpush.cn/v3/push", json);
+    			logger.info("result="+result);
+//    			Map<String, String> map = JSON.parseObject(result, Map.class);
+//    			JPUSH_MSG.put((int)orderBean.getId(), map.get("msg_id"));
+//    			sendJPushMsg((int)orderBean.getId(),json);
+    		}
+    		
+    		return CommonResult.success("");
+    	}catch (Exception e) {
+    		logger.error("#JPushService.sendSuccessMsg# orderNO={}",orderNo,e);
+		}
+    	return CommonResult.defaultError("系统出错");
+    	
+    }
 
     
     private String toSuccessMsg(OrderBean bean,List<String> regIds){
@@ -125,6 +175,30 @@ public class JPushService {
     	
     	JSONObject options = new JSONObject();
     	options.put("time_to_live", 10*60);
+    	options.put("sendno", bean.getId());
+    	jsonObject.put("options", options);
+    	return jsonObject.toJSONString();
+    }
+    
+    private String toRefundMsg(OrderBean bean,List<String> regIds){
+    	
+    	JSONObject jsonObject = new JSONObject();
+    	jsonObject.put("platform", "all");
+    	
+    	JSONArray regArray = new JSONArray();
+    	regArray.addAll(regIds);
+    	JSONObject audience = new JSONObject();
+    	audience.put("registration_id", regArray);
+    	jsonObject.put("audience", audience);
+    	
+    	RefundBean psBean = new RefundBean().toBean(bean);
+    	
+    	JSONObject mess = new JSONObject();
+    	mess.put("msg_content",JSON.toJSON(psBean));
+    	jsonObject.put("message", mess);
+    	
+    	JSONObject options = new JSONObject();
+    	options.put("time_to_live", 60*60);
     	options.put("sendno", bean.getId());
     	jsonObject.put("options", options);
     	return jsonObject.toJSONString();
