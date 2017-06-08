@@ -392,6 +392,7 @@ $('.tran_time .clearfix li').on("click",function(){
 		return state;
   }
     	   function order(page){
+    		   console.log(page);
     			   var date = new Date();
     			   date = date.Format("yyyy/MM/dd");
     		   if(startTime == undefined || startTime == 0){
@@ -414,11 +415,11 @@ $('.tran_time .clearfix li').on("click",function(){
 //     		return;
     		$.post("./orderList",data,function(result){
     			if(result.code == 0){
-//     				console.log(result);
     				var obj = result.data.list;
     				var content = "";
     				if(page == 1){
     					totalPage = Math.round(result.data.count/10);
+    					document.body.scrollTop = 0;
     					$("#scroller").empty();
     				}
     				for(var i=0,len=obj.length;i<len;i++){
@@ -470,7 +471,6 @@ $('.tran_time .clearfix li').on("click",function(){
 	    						   +  '  </div>';
     					
     				}
-    				page++;
     				$("#scroller").append(content);
     			}else{
     				alert(result.msg);
@@ -484,8 +484,8 @@ $('.tran_time .clearfix li').on("click",function(){
     	   function load(){
     	   	     if(page <= totalPage){
     	   			   if(document.body.scrollTop >= document.body.scrollHeight - window.innerHeight-30){
-    	   				   page++;
     	   				   order(page);
+    	   				   page++;
     	   			   }
     	   		  }
     	   	}

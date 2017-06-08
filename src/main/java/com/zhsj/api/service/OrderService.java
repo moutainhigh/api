@@ -321,6 +321,17 @@ public class OrderService {
     	logger.info("#serachByOrderIdOrTransId# storeNo = {}, orderId = {}, transId = {}", storeNo, orderId, transId);
     	try {
 			OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, orderId, transId);
+			if(bean == null){
+				return CommonResult.build(2, "订单号不存在");
+			}
+			if(bean.getStatus() == 3){
+				return CommonResult.success("该订单已经在处理中");
+			}else if(bean.getStatus() == 4){
+				return CommonResult.success("该订单退款成功");
+			}else if(bean.getStatus() == 5){
+				return CommonResult.success("该订单退款失败");
+			}
+			
 			return CommonResult.success("", bean);
 		} catch (Exception e) {
 			logger.error("#serachByOrderIdOrTransId# storeNo = {}, orderId = {}, transId = {}", storeNo, orderId, transId, e);
@@ -328,8 +339,8 @@ public class OrderService {
 		}
     }
     
-    public Object appRefund(long id,double price,int userId){
-    	logger.info("#appRefund# id={}, price={},userId={}", id, price, userId);
+    public Object appRefund(long id,double price,int accountId){
+    	logger.info("#appRefund# id={}, price={},accountId={}", id, price, accountId);
     	try {
 			OrderBean orderBean = bmOrderDao.getById(id);
 			String refundNo = "re"+orderBean.getOrderId();
@@ -344,7 +355,7 @@ public class OrderService {
 				OrderRefundBean orderRefundBean = new OrderRefundBean();
 				orderRefundBean.setRefundNo(refundNo);
 				orderRefundBean.setRefundMoney(price);
-				orderRefundBean.setSubmitUserId(userId);
+				orderRefundBean.setSubmitUserId(accountId);
 				int reCode = tbOrderRefundDao.insert(orderRefundBean);
 				if(reCode != 1){
 					logger.info("#appRefund# 添加orderRefundBean出错了");
@@ -355,7 +366,7 @@ public class OrderService {
 					logger.info("#appRefund# 更新order出错了");
 					return CommonResult.build(2, "系统异常");
 				}
-				CommonResult commonResult = refundMoney(orderBean.getOrderId(),price,userId);
+				CommonResult commonResult = refundMoney(orderBean.getOrderId(),price,accountId);
 				if(commonResult.getCode() == 0){
 					CommonResult commonResult2 = searchRefund(orderBean.getOrderId());
 					if(commonResult2.getCode() == 0 && "SUCCESS".equals(commonResult2.getData())){
@@ -401,7 +412,7 @@ public class OrderService {
 				return CommonResult.build(2, "该订单出错了");
 			}
 		} catch (Exception e) {
-			logger.error("#appRefund# id={}, price={},userId={}", id, price, userId, e);
+			logger.error("#appRefund# id={}, price={},accountId={}", id, price, accountId, e);
 			return CommonResult.defaultError("系统异常");
 		}
     }
