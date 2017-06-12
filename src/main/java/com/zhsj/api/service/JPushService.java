@@ -195,6 +195,7 @@ public class JPushService {
     	options.put("sendno", bean.getId());
     	String apns_production = MtConfig.getProperty("JG_IOS_APNS_PRODUCTION", "fasle");
     	options.put("apns_production", "true".equals(apns_production)?true:false);
+    	options.put("apns_collapse_id", bean.getOrderId());
     	jsonObject.put("options", options);
     	return jsonObject.toJSONString();
     }
