@@ -39,7 +39,7 @@
 			     <div class="row">
 			         <label>商户单号:</label>
 			         <div class="row_ipt">
-			             <input type="tel" id="orderId" placeholder="输入退款的订单号"  onkeypress="javascript:return false" onfocus="cur_focus(this)" value="10001170608382451285" >
+			             <input type="tel" id="orderId" placeholder="输入退款的订单号"  onkeypress="javascript:return false" onfocus="cur_focus(this)" value="" >
 			         </div>
 			     </div>   
 			     <div class="row tt">
