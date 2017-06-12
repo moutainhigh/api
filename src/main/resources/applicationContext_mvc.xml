@@ -17,7 +17,9 @@
     <mvc:resources mapping="/*.txt" location="/" />
     <mvc:resources mapping="/*.html" location="/" />
     <mvc:resources mapping="/resource/js/*.js" location="/WEB-INF/resource/js/" />
+    <mvc:resources mapping="/resource/js/app/*.js" location="/WEB-INF/resource/js/app/" />
     <mvc:resources mapping="/resource/css/pay/*.css" location="/WEB-INF/resource/css/pay/" />
+    <mvc:resources mapping="/resource/css/app/*.css" location="/WEB-INF/resource/css/app/" />
     <mvc:resources mapping="/resource/css/manager/*.css" location="/WEB-INF/resource/css/manager/" />
     <mvc:resources mapping="/resource/css/manager/admin/*.css" location="/WEB-INF/resource/css/manager/admin/" />
     <mvc:resources mapping="/resource/img/*.*" location="/WEB-INF/resource/img/" />
