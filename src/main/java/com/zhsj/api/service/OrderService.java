@@ -56,6 +56,8 @@ public class OrderService {
     private TBStoreSignDao tbStoreSignDao;
     @Autowired
     private TBOrderRefundDao tbOrderRefundDao;
+    @Autowired
+    private JPushService jPushService;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -368,6 +370,7 @@ public class OrderService {
 				}
 				CommonResult commonResult = refundMoney(orderBean.getOrderId(),price,accountId);
 				if(commonResult.getCode() == 0){
+					jPushService.sendRefundMsg(orderBean.getOrderId(),accountId);
 					CommonResult commonResult2 = searchRefund(orderBean.getOrderId());
 					if(commonResult2.getCode() == 0 && "SUCCESS".equals(commonResult2.getData())){
 						int sCode = tbOrderDao.updateStatusById(orderBean.getId(), 4);
