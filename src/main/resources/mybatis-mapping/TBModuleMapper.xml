@@ -8,7 +8,7 @@
     <select id="getByParentId" resultType="moduleBean">
        SELECT <include refid="SELECT_FIELDS"/>
        FROM tb_module
-       WHERE system_type = 1 AND parent_id = #{parentId} ORDER BY display_order
+       WHERE system_type = 1 AND parent_id = #{parentId} and valid=1 ORDER BY display_order
     </select>
 
 	<select id="getByURI" resultType="moduleBean">
@@ -20,7 +20,7 @@
     <select id="getByParentIdAndType" resultType="moduleBean">
        SELECT <include refid="SELECT_FIELDS"/>
        FROM tb_module
-       WHERE system_type = #{type} AND parent_id = #{parentId} ORDER BY display_order
+       WHERE system_type = #{type} AND parent_id = #{parentId} and valid=1 ORDER BY display_order
     </select>
 
 </mapper>

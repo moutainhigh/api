@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.zhsj.api.constants.ResultStatus;
 import com.zhsj.api.service.ShopService;
 import com.zhsj.api.util.CommonResult;
+import com.zhsj.api.util.DesUtils;
 import com.zhsj.api.util.Md5;
 
 @Controller
@@ -61,7 +62,10 @@ public class MerchantController {
             }else {
                 modelAndView.setViewName("./merchant/index");
                 String openId = result.get(ResultStatus.RESULT_VALUE);
-                modelAndView.addObject("auth", "21"+openId);
+                String storeNo = result.get(ResultStatus.RESULT_STORE_NO);
+                String userId = result.get(ResultStatus.RESULT_USER_ID);
+                DesUtils des = new DesUtils();//自定义密钥   
+                modelAndView.addObject("auth", "31"+des.encrypt(storeNo+","+userId+",2,"+openId));
             }
         }catch (Exception e){
             logger.error("#MerchantController.login# code={},state={}#", code, state, e);
@@ -85,37 +89,44 @@ public class MerchantController {
     
     @RequestMapping(value = "/test" , method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public ModelAndView test() throws UnsupportedEncodingException {
+    public ModelAndView test() throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./merchant/index");
-        String auth = "o5pmeswWjKwmkawHwlIiWuJMnTsM";
-        modelAndView.addObject("auth", "21" + auth);
+        String auth = "o5pmes_cN1AMrFptmwpDaNj6DXkI";
+        DesUtils des = new DesUtils();//自定义密钥   
+        modelAndView.addObject("auth", "31"+des.encrypt(22+","+22+",2,"+auth));
         return modelAndView;
     }
     
     @RequestMapping(value = "/store" , method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public ModelAndView store(String auth) throws UnsupportedEncodingException {
+    public ModelAndView store(int id,int type,String auth) throws UnsupportedEncodingException {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./merchant/store");
+        modelAndView.addObject("storeId", id);
+        modelAndView.addObject("type", type);
         modelAndView.addObject("auth", auth);
         return modelAndView;
     }
     
     @RequestMapping(value = "/assistant" , method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public ModelAndView assistant(String auth) throws UnsupportedEncodingException {
+    public ModelAndView assistant(int id,int type,String auth) throws UnsupportedEncodingException {
     	 ModelAndView modelAndView = new ModelAndView();
          modelAndView.setViewName("./merchant/assistant");
+         modelAndView.addObject("assistantId", id);
+         modelAndView.addObject("type", type);
          modelAndView.addObject("auth", auth);
          return modelAndView;
     }
     
     @RequestMapping(value = "/mine" , method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public ModelAndView mine(String auth) throws UnsupportedEncodingException {
+    public ModelAndView mine(int id,int type,String auth) throws UnsupportedEncodingException {
     	 ModelAndView modelAndView = new ModelAndView();
          modelAndView.setViewName("./merchant/mine");
+         modelAndView.addObject("mineId", id);
+         modelAndView.addObject("type", type);
          modelAndView.addObject("auth", auth);
          return modelAndView;
     }

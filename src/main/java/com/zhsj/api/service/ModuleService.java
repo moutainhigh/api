@@ -100,7 +100,8 @@ public class ModuleService {
 				 
 				 List<ModuleBean> beanList = new ArrayList<>();
 				 for(ModuleBean be:beans){
-					 if(!moduleIds.contains(be.getId())){
+					 Integer moduleId = (int)be.getId();
+					 if(!moduleIds.contains(moduleId)){
 						 be.setUrl("");
 					 }
 					 beanList.add(be);

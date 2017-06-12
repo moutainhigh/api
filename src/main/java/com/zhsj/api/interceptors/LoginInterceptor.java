@@ -5,6 +5,8 @@ import com.zhsj.api.bean.LoginUser;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.service.AccountService;
 import com.zhsj.api.service.ShopService;
+import com.zhsj.api.service.StoreAccountService;
+import com.zhsj.api.util.DesUtils;
 import com.zhsj.api.util.login.LoginUserUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +31,9 @@ public class LoginInterceptor extends AbstractInterceptor {
     private AccountService accountService;
     @Autowired
     ShopService shopService;
+    @Autowired
+    private StoreAccountService storeAccountService;
+    
 
 
 
@@ -56,8 +61,7 @@ public class LoginInterceptor extends AbstractInterceptor {
             loginUser.setOpenId(accountBean.getOpenId());
             loginUser.setType(1);
             LoginUserUtil.setBmLoginUser(loginUser);
-        }
-        if("21".equals(type)){
+        }else if("21".equals(type)){
             //为openID,商家
             String openId = auth.substring(2);
             StoreAccountBean storeAccountBean = shopService.getStoreAccountByOpenId(openId);
@@ -73,6 +77,30 @@ public class LoginInterceptor extends AbstractInterceptor {
             loginUser.setHeadImg(storeAccountBean.getHeadImg());
             loginUser.setType(2);
             LoginUserUtil.setBmLoginUser(loginUser);
+        }else if("31".equals(type)){
+        	 DesUtils des = new DesUtils();//自定义密钥   
+        	String str = auth.substring(2);
+        	String[] args = des.decrypt(str).split(",");
+        	if(args.length < 4){
+        		return false;
+        	}
+        	if("2".equals(args[2])){
+        		 StoreAccountBean storeAccountBean = shopService.getStoreAccountByOpenId(args[3]);
+                 if (storeAccountBean == null){
+                     return false;
+                 }
+                 LoginUser loginUser = new LoginUser();
+                 loginUser.setPassword(storeAccountBean.getPassword());
+                 loginUser.setId(storeAccountBean.getId());
+                 loginUser.setAccount(storeAccountBean.getAccount());
+                 loginUser.setName(storeAccountBean.getName());
+                 loginUser.setOpenId(storeAccountBean.getOpenId());
+                 loginUser.setHeadImg(storeAccountBean.getHeadImg());
+                 loginUser.setType(2);
+                 LoginUserUtil.setBmLoginUser(loginUser);
+        	}
+        }else{
+        	return false;
         }
         return true;
     }

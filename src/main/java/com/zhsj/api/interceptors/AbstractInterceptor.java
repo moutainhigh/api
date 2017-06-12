@@ -35,16 +35,13 @@ public abstract class AbstractInterceptor extends HandlerInterceptorAdapter {
 	 * @param response
 	 * @param errorCode
 	 */
-//	protected void sendFailResponsePage(HttpServletResponse response, ErrorCode errorCode) {
-//		DataResponse result = new DataResponse(errorCode);
-//		recordKick2Ros(result);
-//
-//		String html = buildErrorPage(result.getCode(), result.getMsg());
-//		// 记录access日志
+	protected void sendFailResponsePage(HttpServletResponse response, int code, String msg) {
+		String html = buildErrorPage(code, msg);
+		// 记录access日志
 //    	AccessProcesser.postResultArgs(html, ClassUtils.getShortName(getClass())+"preHandle()", 0, result.getCode());
-//
-//    	WebUtils.writeHtml(response, html);
-//	}
+
+    	WebUtils.writeHtml(response, html);
+	}
 
 	/**
 	 * 构造错误提示页面

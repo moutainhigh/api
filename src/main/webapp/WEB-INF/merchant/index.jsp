@@ -82,7 +82,7 @@
 	            	$.each(data.data,function(index,value){
 	            		var imgUrl = value.iconUrl;
 	            		imgUrl += "-line.png";
-	            		_html+="<li class=\"fl\" onclick=\"loadSecondMenu("+value.id+",'"+value.url+"',this)\">";
+	            		_html+="<li class=\"fl\" onclick=\"loadSecondMenu("+value.id+","+value.type+",'"+value.url+"',this)\">";
 	            		_html+="<p class=\"foot-button\"><img  src=\"../resource/img/merchant/"+imgUrl+"\" \/><\/p>";
 	            		_html+="<span class=\"foot-name mine-color \">"+value.displayName+"</span>";
 	            		_html+="<\/li>"
@@ -95,9 +95,9 @@
 	        });
 	}
 	
-	function loadSecondMenu(id,url,obj){
+	function loadSecondMenu(id,type,url,obj){
 		if(url == ""){
-			jalert.show("您没有权限,请联系管理员开通!!");
+			jalert.show("您没有权限,请联系相关人员开通!!");
 			return;
 		}
 		$('.fl span').removeClass('mine-small-bg');
@@ -109,22 +109,34 @@
 		var imgUrl = $(obj).find("img").attr("src").replace("-line.png","-green.png");;
 		$(obj).find("img").attr("src",imgUrl);
 		$(".tab-shop").hide();
-		 if(url == "/api/merchant/store"){
+		 if(url == "/merchant/store"){
 			 $("#_storeShow").html("");
 			$("#_storeShow").show();
-			$("#_storeShow").load("./store?auth="+_auth);
+			$("#_storeShow").load("./store?id="+id+"&type="+type+"&auth="+_auth);
 		}
-		if(url == "/api/merchant/assistant"){
-			 $("#_assistantShow").html("");
+		if(url == "/merchant/assistant"){
+			$("#_assistantShow").html("");
 			$("#_assistantShow").show();
-			$("#_assistantShow").load("./assistant?auth="+_auth);
+			$("#_assistantShow").load("./assistant?id="+id+"&type="+type+"&auth="+_auth);
 		}
-		if(url == "/api/merchant/mine"){
+		if(url == "/merchant/mine"){
 			 $("#_mineShow").html("");
 			$("#_mineShow").show();
-			$("#_mineShow").load("./mine?auth="+_auth);
+			$("#_mineShow").load("./mine?id="+id+"&type="+type+"&auth="+_auth);
 		} 
 		
+	}
+	
+	function openWindows(type,url){
+		if(type == 99){
+			jalert.show("正在建设中,请稍等一段时间!!");
+			return;
+		}
+		if("" == url){
+			jalert.show("您没有权限,请联系相关人员开通!!");
+			return;
+		}
+		alert(url);
 	}
 </script>
 

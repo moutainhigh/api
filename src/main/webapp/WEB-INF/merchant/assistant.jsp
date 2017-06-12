@@ -4,6 +4,8 @@
 <head>
 </head>
 <body style="padding-bottom: 2.6rem;">
+<input id="_assistantId" value="${assistantId}" type="hidden"/>
+<input id="_type" value="${type}" type="hidden"/>
             <div class="top" style=" width: 100%; height: 5px;background:#EEE ">
             </div>
                             <!--轮播图start-->
@@ -39,14 +41,14 @@
 })(window,document)
 
 $(function(){
-	loadAssModule(31);
+	loadAssModule($("#_assistantId").val());
 })
 function loadAssModule(id){
 	 $.post("../module/getById",{"id":id,"auth":_auth},function(data){
            if(data.code == 0){
-           	$.each(data.data,function(index,value){
-           		var _html ="";
-	            	 _html = "<h1><span class=\"shop-tit\"></span><i class=\"shop-title\">"+value.title.displayName+"<\/i><\/h1>";
+        	   var _html ="";
+	           	$.each(data.data,function(index,value){
+	            	 _html += "<h1><span class=\"shop-tit\"></span><i class=\"shop-title\">"+value.title.displayName+"<\/i><\/h1>";
 	            	 $.each(value.module,function(idx,module){
 	            		if(idx%3 == 0){
 	            			_html+=" <div class=\"shop-icon clearfix\">";
@@ -54,7 +56,7 @@ function loadAssModule(id){
 	            				_html+="<\/div>";
 	            			}
 	            		}
-	            		_html+="<div class=\"shop-con shop-border fl\">";
+	            		_html+="<div class=\"shop-con shop-border fl\" onclick=openWindows("+module.type+",'"+module.url+"')>";
 	            		_html+=" <p><img src=\"../resource/img/merchant/"+module.iconUrl+".png\"\/> <\/p>";
 	            		_html+="<h2>"+module.displayName+"<\/h2>";
 	            		_html+="<\/div>";
@@ -62,9 +64,8 @@ function loadAssModule(id){
 	            	if(value.module%3 != 0){
 	            		_html+="<\/div>";
 	            	}
-	            	$("#_assModule").html(_html+_html+_html);
-           	}); 
-           	
+	           	}); 
+	           	$("#_assModule").html(_html);
            }else{
                 jalert.show(data.msg);
            }

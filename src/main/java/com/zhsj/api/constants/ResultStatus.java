@@ -6,6 +6,8 @@ package com.zhsj.api.constants;
 public class ResultStatus {
     public final static String RESULT_KEY = "result"; //返回KEY
     public final static String RESULT_VALUE = "value"; //返回value
+    public final static String RESULT_STORE_NO = "storeNO"; //返回value
+    public final static String RESULT_USER_ID = "userId"; //返回value
 
     public final static String RESULT_ERROR = "ERROR"; //失败
     public final static String NO_REGISTER = "no_register"; //没有注册

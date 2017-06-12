@@ -36,74 +36,12 @@
 	         <!--以背景条位分割线，可重复的内容end-->
 	        <!--以背景条位分割线，可重复的内容start-->
 	         <ul class="mine-list">
-	             <li class="clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-phone.png"/> </span><span class="mine-manager fl">客服经理</span><a class=" fr"><img src="../resource/img/merchant/right.png"/> </a>
-	             </li>
 	             <li class="mine-list-no clearfix">
 	                 <span class="fl"><img src="../resource/img/merchant/my-tel.png"/> </span><span class="mine-list-tit fl">客服热线</span><a class=" fr"><img src="../resource/img/merchant/right.png"/> </a>
 	             </li>
 	
 	         </ul>
 	          <p class="mine-bg"></p>
-	         <!--以背景条位分割线，可重复的内容end-->
-	        <!--以背景条位分割线，可重复的内容start-->
-	         <ul class="mine-list">
-	             <li class="clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-phone.png"/> </span><span class="mine-manager fl">客服经理</span><a class=" fr"><img src="../resource/img/merchant/right.png"/> </a>
-	             </li>
-	             <li class="mine-list-no clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-tel.png"/> </span><span class="mine-list-tit fl">客服热线</span><a class=" fr"><img src="../resource/img/merchant/right.png"/> </a>
-	             </li>
-	
-	         </ul>
-	          <p class="mine-bg"></p>
-	         <!--以背景条位分割线，可重复的内容end-->
-	        <!--以背景条位分割线，可重复的内容start-->
-	         <ul class="mine-list">
-	             <li class="clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-phone.png"/> </span><span class="mine-manager fl">客服经理</span><a class=" fr"><img src="../resource/img/merchant/right.png"/> </a>
-	             </li>
-	             <li class="mine-list-no clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-tel.png"/> </span><span class="mine-list-tit fl">客服热线</span><a class=" fr"><img src="../resource/img/merchant/right.png"/> </a>
-	             </li>
-	
-	         </ul>
-	          <p class="mine-bg"></p>
-	         <!--以背景条位分割线，可重复的内容end-->
-	        <!--以背景条位分割线，可重复的内容start-->
-	         <ul class="mine-list">
-	             <li class="clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-phone.png"/> </span><span class="mine-manager fl">客服经理</span><a class=" fr"><img src="../resource/img/merchant/right.png"/> </a>
-	             </li>
-	             <li class="mine-list-no clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-tel.png"/> </span><span class="mine-list-tit fl">客服热线</span><a class=" fr"><img src="../resource/img/merchant/right.png"/> </a>
-	             </li>
-	
-	         </ul>
-	          <p class="mine-bg"></p>
-	         <!--以背景条位分割线，可重复的内容end-->
-	        <!--以背景条位分割线，可重复的内容start-->
-	         <ul class="mine-list">
-	             <li class="clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-phone.png"/> </span><span class="mine-manager fl">客服经理</span><a class=" fr"><img src="../resource/img/merchant/right.png"/> </a>
-	             </li>
-	             <li class="mine-list-no clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-tel.png"/> </span><span class="mine-list-tit fl">客服热线</span><a class=" fr"><img src="../resource/img/merchant/right.png"/> </a>
-	             </li>
-	
-	         </ul>
-	          <p class="mine-bg"></p>
-	         <!--以背景条位分割线，可重复的内容end-->
-	        <!--以背景条位分割线，可重复的内容start-->
-	         <ul class="mine-list">
-	             <li class="clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-phone.png"/> </span><span class="mine-manager fl">客服经理</span><a class=" fr"><img src="../resource/img/merchant/right.png"/> </a>
-	             </li>
-	             <li class="mine-list-no clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-tel.png"/> </span><span class="mine-list-tit fl">客服热线</span><a class=" fr"><img src="../resource/img/merchant/right.png"/> </a>
-	             </li>
-	
-	         </ul>
 	         <!--以背景条位分割线，可重复的内容end-->
 	     </div>
      </div>

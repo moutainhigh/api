@@ -69,6 +69,9 @@ public class ShopService {
                 resultMap.put(ResultStatus.RESULT_VALUE,openId);
                 return resultMap;
             }
+            String storeNo = tbStoreBindAccountDao.getStoreNoByAccountId(storeAccountBean.getId());
+            resultMap.put(ResultStatus.RESULT_STORE_NO, storeNo);
+            resultMap.put(ResultStatus.RESULT_USER_ID, storeAccountBean.getId()+"");
             resultMap.put(ResultStatus.RESULT_KEY,ResultStatus.RESULT_SUCCESS);
             resultMap.put(ResultStatus.RESULT_VALUE,openId);
         }catch (Exception e){

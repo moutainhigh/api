@@ -15,6 +15,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.aspectj.weaver.ast.Var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,9 @@ import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindAccountDao;
 import com.zhsj.api.exception.ApiException;
 import com.zhsj.api.retry.SimpleRetryTemplate;
+import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
+import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.MtConfig;
 
 
@@ -156,26 +159,42 @@ public class JPushService {
 
     
     private String toSuccessMsg(OrderBean bean,List<String> regIds){
+    	String uri = MtConfig.getProperty("API_URL", "");
+    	PaySuccessBean psBean = new PaySuccessBean().toBean(bean, "",uri);
     	
     	JSONObject jsonObject = new JSONObject();
-    	jsonObject.put("platform", "all");
+    	jsonObject.put("platform", "all");//推送平台
     	
+    	//推送设备
     	JSONArray regArray = new JSONArray();
     	regArray.addAll(regIds);
     	JSONObject audience = new JSONObject();
     	audience.put("registration_id", regArray);
     	jsonObject.put("audience", audience);
     	
-    	String uri = MtConfig.getProperty("API_URL", "");
-    	PaySuccessBean psBean = new PaySuccessBean().toBean(bean, "",uri);
+    	//ios以通知下发消息
+    	JSONObject iosJson = new JSONObject();
+    	iosJson.put("alert", psBean.getNt());
+    	iosJson.put("content-available", "true");
+    	JSONObject dataJson = new JSONObject();
+    	dataJson.put("data", JSON.toJSON(psBean));
+    	iosJson.put("extras", dataJson);
     	
+    	JSONObject ios = new JSONObject();
+    	ios.put("ios", iosJson);
+    	jsonObject.put("notification", ios);
+    	
+    	//自定义消息
     	JSONObject mess = new JSONObject();
     	mess.put("msg_content",JSON.toJSON(psBean));
     	jsonObject.put("message", mess);
     	
+    	//可选项
     	JSONObject options = new JSONObject();
     	options.put("time_to_live", 10*60);
     	options.put("sendno", bean.getId());
+    	String apns_production = MtConfig.getProperty("JG_IOS_APNS_PRODUCTION", "fasle");
+    	options.put("apns_production", "true".equals(apns_production)?true:false);
     	jsonObject.put("options", options);
     	return jsonObject.toJSONString();
     }
@@ -313,14 +332,30 @@ public class JPushService {
     
     public static void main(String[] args) throws Exception {
 //		new JPushService().sendSuccessMsg("18071adc033cab91e3e");
+    	List list = new ArrayList<>();
+    	list.add("18071adc033cab91e3e");
+    	list.add("1a1018970a90b635897");
     	
-    	String json = "{\"message\":{\"msg_content\":{\"nt\":\"你有一笔0.01元订单支付成功\",\"time\":\"2017-05-25 10:16\",\"cmd\":1,\"no\":\"10001170525369841513\",\"am\":\"0.01\",\"pt\":\"微信\",\"pm\":\"0.01\",\"st\":\"成功\",\"code\":\"671\",\"url\":\"http://wwt.bj37du.com/api/10001170525369841513\",\"qr\":\"qrcode\"}},\"platform\":\"all\",\"audience\":{\"registration_id\":[\"18071adc033cab91e3e\"]},\"options\":{\"time_to_live\":1800,\"sendno\":\"33eee\"}}";
+    	OrderBean orderBean = new OrderBean();
+    	orderBean.setId(1);
+    	orderBean.setOrderId("121225");
+    	orderBean.setCtime(1497234339);
+    	orderBean.setPayMethod("1");
+    	orderBean.setActualChargeAmount(0.01);
+    	orderBean.setPlanChargeAmount(0.01);
+    	orderBean.setStatus(1);
+    	
+    	String json = new JPushService().toSuccessMsg(orderBean, list);
+    	System.out.println(json);
+//		String result = sendPost("https://api.jpush.cn/v3/push", json);
+//    	String json = "{\"message\":{\"msg_content\":{\"nt\":\"你有一笔0.01元订单支付成功\",\"time\":\"2017-05-25 10:16\",\"cmd\":1,\"no\":\"10001170525369841513\",\"am\":\"0.01\",\"pt\":\"微信\",\"pm\":\"0.01\",\"st\":\"成功\",\"code\":\"671\",\"url\":\"http://wwt.bj37du.com/api/10001170525369841513\",\"qr\":\"qrcode\"}},\"platform\":\"all\",\"audience\":{\"registration_id\":[\"18071adc033cab91e3e\"]},\"options\":{\"time_to_live\":1800,\"sendno\":\"33\"}}";
     	String resultString = new JPushService().sendPost("https://api.jpush.cn/v3/push", json);
     	System.out.println(resultString);
     	Map<String, String> map = JSON.parseObject(resultString, Map.class);
     	System.out.println(map.get("msg_id"));
-    	String url = "https://report.jpush.cn/v3/received?msg_ids="+"24769798092499038";
+    	String url = "https://report.jpush.cn/v3/received?msg_ids="+map.get("msg_id");
     	String result = new JPushService().sendGet(url);
+    	System.out.println(result);
     	JSONArray jsonArray = JSON.parseArray(result);
     	for(int i=0;i<jsonArray.size();i++){
     		String jmsg = jsonArray.get(i).toString();
