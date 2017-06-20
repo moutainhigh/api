@@ -180,9 +180,15 @@ public class JPushService {
     	dataJson.put("data", JSON.toJSON(psBean));
     	iosJson.put("extras", dataJson);
     	
-    	JSONObject ios = new JSONObject();
-    	ios.put("ios", iosJson);
-    	jsonObject.put("notification", ios);
+    	JSONObject notification = new JSONObject();
+    	notification.put("ios", iosJson);
+    	
+    	if("1110674590".equals(bean.getStoreNo())){
+    		JSONObject androidJson = new JSONObject();
+    		androidJson.put("alert", psBean.getNt());
+    		notification.put("android", androidJson);
+    	}
+    	jsonObject.put("notification", notification);
     	
     	//自定义消息
     	JSONObject mess = new JSONObject();
@@ -335,16 +341,17 @@ public class JPushService {
 //		new JPushService().sendSuccessMsg("18071adc033cab91e3e");
     	List list = new ArrayList<>();
     	list.add("18071adc033cab91e3e");
-    	list.add("1a1018970a90b635897");
+//    	list.add("1a1018970a90b635897");
     	
     	OrderBean orderBean = new OrderBean();
     	orderBean.setId(1);
-    	orderBean.setOrderId("121225");
+    	orderBean.setOrderId("1212251");
     	orderBean.setCtime(1497234339);
     	orderBean.setPayMethod("1");
     	orderBean.setActualChargeAmount(0.01);
     	orderBean.setPlanChargeAmount(0.01);
     	orderBean.setStatus(1);
+    	orderBean.setStoreNo("1110674590");
     	
     	String json = new JPushService().toSuccessMsg(orderBean, list);
     	System.out.println(json);
