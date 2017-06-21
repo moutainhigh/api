@@ -121,7 +121,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
             'line-height' : kh + "px"
         });
         //默认focus对象。
-	    var cur_focus_obj = $("#transId");
+	    var cur_focus_obj = $("#money");
 	    function cur_focus(obj){
 	    	cur_focus_obj = $(obj);
 	    	document.activeElement.blur();
