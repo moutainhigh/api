@@ -33,14 +33,15 @@ nav p{
 }
 .company-label-one, .company-label-two{
     display: inline-block;
-    padding: 0.15rem;
+    padding: .1rem;
     border-radius: 3px;
     background: #5f58fe;
     font-size: 0.6rem;
     color: #fff;
-    line-height: .8rem;
-    height: .8rem;
-    vertical-align: top;
+    line-height: .6rem;
+    height: .6rem;
+    vertical-align: text-bottom;
+    font-weight:bold;
 }
 h3 .company-label-two{
     background: #eb793b;
@@ -55,11 +56,13 @@ ul li{
 }
 
 .company-name{
-    font-size:0.9rem;
+    font-size:0.8rem;
     padding-right:0.4rem;
+    font-weight:bold;
 }
 .fl p{
     padding-top:0.3rem;
+    color:#666;
 }
 li p{
 	font-size:0.75rem;

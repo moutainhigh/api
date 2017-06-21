@@ -4,13 +4,13 @@
 }
 .people-label span{
     display: inline-block;
-    padding: 0.15rem;
+    padding: .1rem .15rem;
     border-radius: 3px;
     font-size: 0.6rem;
     color: #fff;
     line-height: .8rem;
     height: .8rem;
-    vertical-align: top;
+    vertical-align: .13rem;
 }
 .people-label{
     padding-top:0.2rem;
