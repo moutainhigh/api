@@ -332,12 +332,15 @@
      <select id="getListByParamMap" resultType="orderBean">
         SELECT 
         id,order_id orderId,plan_charge_amount planChargeAmount,actual_charge_amount actualChargeAmount,status,pay_type payType,pay_method payMethod,store_no storeNo, ctime,
-        store_discount_price storeDiscountPrice,org_discount_price orgDiscountPrice
+        store_discount_price storeDiscountPrice,org_discount_price orgDiscountPrice,refund_money refundMoney
         FROM tb_order
         <where>
             ctime between #{startTime} and #{endTime}
-            <if test="storeNo != -1">
-              and (store_no = #{storeNo} or parent_store_no = #{storeNo})
+            <if test="isAll == 0">
+               and store_no = #{storeNo} 
+            </if>
+            <if test="isAll == 1">
+               and (store_no = #{storeNo} or parent_store_no = #{storeNo})
             </if>
             <if test="status != -1">
                and status = #{status}
@@ -347,6 +350,9 @@
             </if>
             <if test="payMethod != -1">
                and pay_method = #{payMethod}
+            </if>
+            <if test="payChannel != -1">
+               and pay_channel = #{payChannel}
             </if>
             order by ctime desc limit #{start},#{pageSize}
         </where>
@@ -356,8 +362,11 @@
           select count(1) from tb_order
           <where>
             ctime between #{startTime} and #{endTime}
-            <if test="storeNo != -1">
-              and (store_no = #{storeNo} or parent_store_no = #{storeNo})
+            <if test="isAll == 0">
+               and store_no = #{storeNo} 
+            </if>
+            <if test="isAll == 1">
+               and (store_no = #{storeNo} or parent_store_no = #{storeNo})
             </if>
             <if test="status != -1">
                and status = #{status}
@@ -368,6 +377,60 @@
             <if test="payMethod != -1">
                and pay_method = #{payMethod}
             </if>
+            <if test="payChannel != -1">
+               and pay_channel = #{payChannel}
+            </if>
+        </where>
+     </select>
+     
+     <select id="getOrderStaByParamMap" resultType="com.zhsj.api.bean.result.OrderSta">
+         select count(1) as count, ifnull(sum(plan_charge_amount), 0) pm, ifnull(sum(actual_charge_amount), 0) am from tb_order
+         <where>
+            ctime between #{startTime} and #{endTime}
+            <if test="isAll == 0">
+               and store_no = #{storeNo} 
+            </if>
+            <if test="isAll == 1">
+               and (store_no = #{storeNo} or parent_store_no = #{storeNo})
+            </if>
+            <if test="status != -1">
+               and status = #{status}
+            </if>
+            <if test="status == -1">
+               and status in (1,3,4,5)
+            </if>
+            <if test="payMethod != -1">
+               and pay_method = #{payMethod}
+            </if>
+            <if test="payChannel != -1">
+               and pay_channel = #{payChannel}
+            </if>
+        </where>
+     </select>
+     
+     
+     <select id="getRefundStaByParamMap" resultType="com.zhsj.api.bean.result.RefundSta">
+         select count(1) as refundCount, ifnull(sum(refund_money), 0) refundMoney from tb_order
+         <where>
+            ctime between #{startTime} and #{endTime}
+            <if test="isAll == 0">
+               and store_no = #{storeNo} 
+            </if>
+            <if test="isAll == 1">
+               and (store_no = #{storeNo} or parent_store_no = #{storeNo})
+            </if>
+            <if test="status > -1 and status != 4">
+               and status = -1
+           </if>
+           <if test="status == -1 or status == 4">
+               and status = 4
+           </if>
+            <if test="payMethod != -1">
+               and pay_method = #{payMethod}
+            </if>
+            <if test="payChannel != -1">
+               and pay_channel = #{payChannel}
+            </if>
         </where>
      </select>
      
@@ -375,13 +438,16 @@
           select  id,order_id orderId,plan_charge_amount planChargeAmount,actual_charge_amount actualChargeAmount,status,pay_type payType,pay_method payMethod,ctime
           from tb_order
           <where>
-             store_no = #{storeNo} and status in (1,3,4,5)
-             <if test="orderId != '' and orderId != null">
-               and order_id = #{orderId}
-             </if>
-             <if test="transId != '' and transId != null">
-               and transaction_id = #{transId}
-             </if>
+                 status in (1,3,4,5)
+	             and store_no in <foreach collection="storeNos" item="storeNo" open="(" separator="," close=")">
+	                  #{storeNo}
+	             </foreach>
+	             <if test="orderId != '' and orderId != null">
+	               and order_id = #{orderId}
+	             </if>
+	             <if test="transId != '' and transId != null">
+	               and transaction_id = #{transId}
+	             </if>
           </where>
      </select>
      
@@ -403,4 +469,48 @@
         utime = unix_timestamp(now())
         where id = #{id}
      </update>
+     
+     
+     <select id="getTodayOrderSta" resultType="com.zhsj.api.bean.result.OrderSta">
+        select count(1) count, ifnull(sum(plan_charge_amount),0) pm, ifnull(sum(actual_charge_amount), 0) am, 
+           ifnull(sum(store_discount_price), 0) storeDiscount, ifnull(sum(org_discount_price), 0) orgDiscount
+           from tb_order
+           <where>
+              ctime between #{startTime} and #{endTime} 
+              and (store_no = #{storeNo} or parent_store_no = #{storeNo})
+              and status in (1,3,4,5)
+           </where>
+     
+     </select>
+     
+     
+     <select id="getTodayRefundSta" resultType="com.zhsj.api.bean.result.RefundSta">
+        select count(1) refundCount, ifnull(sum(refund_money), 0) refundMoney
+        from tb_order
+        <where>
+	        ctime between #{startTime} and #{endTime} 
+	        and (store_no = #{storeNo} or parent_store_no = #{storeNo})
+	        and status = 4
+        </where>
+     </select>
+     
+     <select id="getByTodayStoreSta" resultType="com.zhsj.api.bean.result.StoreSta">
+        select count(1) transCount, ifnull(sum(actual_charge_amount), 0) transSumMoney from tb_order
+        <where>
+            ctime between #{startTime} and #{endTime} 
+            and store_no = #{storeNo}
+            and status in (1,3,4,5)
+        </where>
+     </select>
+     
+     <select id="getTodayRefundMoney" resultType="Double">
+        select ifnull(sum(refund_money), 0) from tb_order
+        <where>
+            ctime between #{startTime} and #{endTime} 
+	        and store_no = #{storeNo} 
+	        and status = 4
+        </where>
+     
+     </select>
+     
 </mapper>

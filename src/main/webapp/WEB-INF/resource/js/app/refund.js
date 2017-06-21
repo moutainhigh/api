@@ -136,7 +136,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
         
         $(".wwt_num").on("touchstart",function(){
         	var btntext = $(this).text();
-        	if(btntext / 1){
+        	if(btntext / 1){	
         		clickkey(btntext);
         	}else{
         		if (cur_focus_obj.val() != '0' && btntext == "0") {

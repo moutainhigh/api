@@ -1,0 +1,97 @@
+nav h3 img{
+    width: 0.525rem;
+    height: 0.95rem;
+    vertical-align: middle;
+}
+nav h3 span{
+    position: relative;
+    left:0.8rem;
+}
+nav h3 {
+    text-align: center;
+    line-height: 2.2rem;
+    font-size:1rem;
+    border-bottom: 0.025rem solid #ccc;
+}
+nav p{
+    line-height:1.8rem;
+    border-bottom: 0.025rem solid #ccc;
+    font-size:.9rem;
+    padding:0 0.6rem;
+}
+.store-number{
+    padding-right:0.4rem;
+}
+.store-number img{
+    width:1.15rem;
+    height:1.15rem;
+    vertical-align: sub;
+}
+.middle-label {
+	line-height: 1.3rem;
+    height: 1.3rem;
+}
+.company-label-one, .company-label-two{
+    display: inline-block;
+    padding: 0.15rem;
+    border-radius: 3px;
+    background: #5f58fe;
+    font-size: 0.6rem;
+    color: #fff;
+    line-height: .8rem;
+    height: .8rem;
+    vertical-align: top;
+}
+h3 .company-label-two{
+    background: #eb793b;
+}
+ul li{
+
+    padding:0.6rem 0.6rem;
+    background: #fff;
+    border-bottom:0.025rem solid #ccc;
+    margin-bottom:0.6rem;
+
+}
+
+.company-name{
+    font-size:0.9rem;
+    padding-right:0.4rem;
+}
+.fl p{
+    padding-top:0.3rem;
+}
+li p{
+	font-size:0.75rem;
+}
+.middle{
+    background: #d9d9d9;
+}
+.middle ul{
+    background: #f4f4f4;
+    padding:0.3rem 0rem 0rem;
+}
+.store-detail{
+    line-height:3.45rem;
+}
+.store-detail img{
+    width: 0.525rem;
+    height: 0.95rem;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.btn{
+	text-align:center;
+	margin-top:2rem;
+	
+}
+.btn button{
+    width:5.2rem;
+    height:1.8rem;
+    background: #5871eb;
+    color: #fff;
+    border:none;
+    font-size:0.9rem;
+    border-radius:5px;
+}

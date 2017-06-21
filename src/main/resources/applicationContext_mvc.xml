@@ -18,6 +18,7 @@
     <mvc:resources mapping="/*.html" location="/" />
     <mvc:resources mapping="/resource/js/*.js" location="/WEB-INF/resource/js/" />
     <mvc:resources mapping="/resource/js/app/*.js" location="/WEB-INF/resource/js/app/" />
+    <mvc:resources mapping="/resource/js/storeManage/*.js" location="/WEB-INF/resource/js/storeManage/" />
     <mvc:resources mapping="/resource/css/pay/*.css" location="/WEB-INF/resource/css/pay/" />
     <mvc:resources mapping="/resource/css/app/*.css" location="/WEB-INF/resource/css/app/" />
     <mvc:resources mapping="/resource/css/manager/*.css" location="/WEB-INF/resource/css/manager/" />
@@ -25,6 +26,7 @@
     <mvc:resources mapping="/resource/img/*.*" location="/WEB-INF/resource/img/" />
     <mvc:resources mapping="/resource/img/app/*.*" location="/WEB-INF/resource/img/app/" />
     <mvc:resources mapping="/resource/img/app/order/*.*" location="/WEB-INF/resource/img/app/order/" />
+    <mvc:resources mapping="/resource/img/app/store/*.*" location="/WEB-INF/resource/img/app/store/" />
     <mvc:resources mapping="/resource/mobiscroll/css/*" location="/WEB-INF/resource/mobiscroll/css/"/>
     <mvc:resources mapping="/resource/mobiscroll/js/*" location="/WEB-INF/resource/mobiscroll/js/"/>
     
@@ -90,6 +92,7 @@
             <mvc:mapping path="/order/**" />
             <mvc:mapping path="/mchAdd/**" />
             <mvc:mapping path="/merchant/**" />
+            <mvc:mapping path="/storeManage/**"/>
 <!--             <mvc:mapping path="/printer/**" /> -->
             <mvc:exclude-mapping path="/merchant/test"/>
             <mvc:exclude-mapping path="/merchant/login" />
@@ -105,6 +108,14 @@
             <mvc:exclude-mapping path="/shop/transactionOrder" />
             <mvc:exclude-mapping path="/shop/searchUserInfo" />
             <mvc:exclude-mapping path="/shop/test"/>
+            <mvc:exclude-mapping path="/storeManage/serach" />
+            <mvc:exclude-mapping path="/storeManage/refund"/>
+            <mvc:exclude-mapping path="/storeManage/orderList" />
+            <mvc:exclude-mapping path="/storeManage/toMarketAccount"/>
+            <mvc:exclude-mapping path="/storeManage/getMemberStaByDay"/>
+            <mvc:exclude-mapping path="/storeManage/getMoneyStaByDay" />
+            <mvc:exclude-mapping path="/storeManage/getCountStaByDay"/>
+            <mvc:exclude-mapping path="/storeManage/getStoreStaByDay" />
             <bean class="com.zhsj.api.interceptors.LoginInterceptor" />
         </mvc:interceptor>
     </mvc:interceptors>
@@ -112,6 +123,7 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/merchant/**" />
+            <mvc:mapping path="/storeManage/toMarketAccount" />
             <mvc:exclude-mapping path="/merchant/test"/>
             <mvc:exclude-mapping path="/merchant/index" />
             <mvc:exclude-mapping path="/merchant/login" />

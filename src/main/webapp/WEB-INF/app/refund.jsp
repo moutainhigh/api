@@ -33,13 +33,13 @@
 			     <div class="row">
 			         <label>交易号:</label>
 			         <div class="row_ipt">
-			             <input type="tel" id="transId" placeholder="输入退款的交易号" onkeypress="javascript:return false" onfocus="cur_focus(this)"  >
+			             <input type="tel" id="transId" placeholder="输入退款的交易号"  onclick="cur_focus(this);" autofocus="autofocus">
 			         </div>
 			     </div>   
 			     <div class="row">
 			         <label>商户单号:</label>
 			         <div class="row_ipt">
-			             <input type="tel" id="orderId" placeholder="输入退款的订单号"  onkeypress="javascript:return false" onfocus="cur_focus(this)" value="" >
+			             <input type="tel" id="orderId" placeholder="输入退款的订单号"  onfocus="cur_focus(this);" >
 			         </div>
 			     </div>   
 			     <div class="row tt">
@@ -66,7 +66,7 @@
 	                <div class="row">
 	                   <label>退款金额:</label>
 	                   <div class="row_ipt refund_ipt">
-				             <input type="number" id="money" value="" onkeypress="javascript:return false" onfocus="cur_focus(this)"  >
+				             <input type="number" id="money" value="" onfocus="cur_focus(this);">
 				         </div>
 		              <div class="refund-w">
 					         <span id="refund">退&nbsp;款</span>

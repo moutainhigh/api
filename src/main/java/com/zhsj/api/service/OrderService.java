@@ -1,11 +1,12 @@
 package com.zhsj.api.service;
 
-import com.zhsj.api.bean.LoginUser;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.OrderRefundBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.bean.StoreBean;
+import com.zhsj.api.bean.result.OrderSta;
+import com.zhsj.api.bean.result.RefundSta;
 import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
 import com.zhsj.api.dao.TbOrderDao;
@@ -14,8 +15,8 @@ import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.dao.TBOrderRefundDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreSignDao;
+import com.zhsj.api.dao.TbStoreDao;
 import com.zhsj.api.dao.TbUserBindStoreDao;
-import com.zhsj.api.dao.TbUserDao;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.login.LoginUserUtil;
 
@@ -58,6 +59,8 @@ public class OrderService {
     private TBOrderRefundDao tbOrderRefundDao;
     @Autowired
     private JPushService jPushService;
+    @Autowired
+    private TbStoreDao tbStoreDao;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -291,10 +294,11 @@ public class OrderService {
     }
     
     
-    public Object getOrderListByParam(String storeNo,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
-    	logger.info("#getOrderListByParam# storeNo = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
-    			storeNo, payMethod, startTime, endTime, status, page, pageSize);
+    public Object getOrderListByParam(String storeNo,int payChannel,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
+    	logger.info("#getOrderListByParam# storeNo = {}, payChanel = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
+    			storeNo, payChannel,payMethod, startTime, endTime, status, page, pageSize);
     	Map<String, Object> paramMap = new HashMap<String, Object>();
+    	paramMap.put("payChannel", payChannel);
     	paramMap.put("payMethod", payMethod);
     	paramMap.put("startTime", startTime);
     	paramMap.put("endTime", endTime);
@@ -302,6 +306,11 @@ public class OrderService {
     	paramMap.put("start", (page-1)*pageSize);
     	paramMap.put("pageSize", pageSize);
     	try {
+    		paramMap.put("isAll","-1".equals(storeNo)?1:0);
+    		if("-1".equals(storeNo)){
+    			StoreBean storeBean = LoginUserUtil.getStore();
+    			storeNo = storeBean.getStoreNo();
+    		}
 			paramMap.put("storeNo", storeNo);
 			Map<String, Object> resultMap = new HashMap<String, Object>();
 			List<OrderBean> list = bmOrderDao.getListByParamMap(paramMap);
@@ -309,6 +318,10 @@ public class OrderService {
 			if(page == 1){
 				int count = bmOrderDao.getCountByParamMap(paramMap);
 				resultMap.put("count", count);
+				OrderSta orderSta = bmOrderDao.getOrderStaByParamMap(paramMap);
+				RefundSta refundSta = bmOrderDao.getRefundStaByParamMap(paramMap);
+				orderSta.setAm(Arith.sub(orderSta.getAm(), refundSta.getRefundMoney()));
+				resultMap.put("orderSta", orderSta);
 			}
 			return CommonResult.success("", resultMap);
 		} catch (Exception e) {
@@ -322,7 +335,13 @@ public class OrderService {
     public Object serachByOrderIdOrTransId(String storeNo, String orderId, String transId){
     	logger.info("#serachByOrderIdOrTransId# storeNo = {}, orderId = {}, transId = {}", storeNo, orderId, transId);
     	try {
-			OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, orderId, transId);
+    		List<StoreBean> storeBeans = tbStoreDao.getListByParentNo(storeNo);
+    		List<String> storeNos = new ArrayList<String>();
+    		for(StoreBean sb:storeBeans){
+    			storeNos.add(sb.getStoreNo());
+    		}
+    		storeNos.add(storeNo);
+			OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNos, orderId, transId);
 			if(bean == null){
 				return CommonResult.build(2, "订单号不存在");
 			}
@@ -418,6 +437,26 @@ public class OrderService {
 			logger.error("#appRefund# id={}, price={},accountId={}", id, price, accountId, e);
 			return CommonResult.defaultError("系统异常");
 		}
+    }
+    
+    
+    public Map<String, Object> getTodaySta(){
+    	logger.info("#getTodaySta#");
+    	try {
+			StoreBean storeBean = LoginUserUtil.getStore();
+			String storeNo = storeBean.getStoreNo();
+			int startTime = DateUtil.getTodayStartTime();
+			int endTime = startTime+24*60*60-1;
+			OrderSta orderSta = bmOrderDao.getTodayOrderSta(storeNo, startTime, endTime);
+			RefundSta refundSta = bmOrderDao.getTodayRefundSta(storeNo, startTime, endTime);
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap.put("orderSta", orderSta);
+			resultMap.put("refundSta", refundSta);
+			return resultMap;
+		} catch (Exception e) {
+			logger.error("#getTodaySta#", e);
+		}
+    	return null;
     }
 }
 

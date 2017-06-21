@@ -18,7 +18,7 @@ $(function(){
                 $('#startTime').css({
                     "font-size":".8em",
                     "line-height":"2.5"
-                })
+                });
             }
         }
     },option));
@@ -80,7 +80,7 @@ $(function(){
             var pspan = $($(".wwt-storelist").find("p")[i]);
             if(pspan.attr("class").indexOf("wwt-selectStore") > -1){
                 count++;
-                storeList.push(pspan.attr("data-id"))
+                storeList.push(pspan.attr("data-id"));
             }
         }
         if(count == len){
@@ -94,7 +94,7 @@ $(function(){
         }
         e.stopPropagation();
 //        console.log(storeList);
-    })
+    });
     //选择门店
     $(".wwt-storelist").find("p").on("click",function(e){
     	if($(this).attr("id") == "_all"){
@@ -113,7 +113,7 @@ $(function(){
     	}
     	
         e.stopPropagation();
-    })
+    });
     //定义优惠类型type
     var type = 0,
         reduceList = [];//优惠列表
@@ -130,7 +130,7 @@ $(function(){
             type = index+1;
         }
         reduceList = [];
-    })
+    });
 
     //添加规则
     $("#add").on("click",function(){
@@ -140,7 +140,7 @@ $(function(){
             jalert.show('请选择一个优惠规则');
             return false;
         }else{
-            var checkbox = $("<input>").attr("type","checkbox").attr("class","delete")
+            var checkbox = $("<input>").attr("type","checkbox").attr("class","delete");
             checkbox.on("click",function(){
                 $(this).parent().remove();
             });
@@ -169,7 +169,7 @@ $(function(){
             }
             $("#newRules").append($("<p>").append(checkbox).append(s));
         }
-    })
+    });
     //确定按钮
     $("#confirm").on("click",function(){
         //alert('确定');
@@ -193,7 +193,7 @@ $(function(){
             return false;
         }
         reduceList = [];//清空
-        var rulesp = $("#newRules").find("p")
+        var rulesp = $("#newRules").find("p");
         len = rulesp.length;
         for(var i = 0;i<len;i++){
             var inputs = $(rulesp[i]).find("input[type=number]");
@@ -201,17 +201,17 @@ $(function(){
             var reduce = {
                 type:type,//规则类型1、立减2、随机减3、折扣
                 rule:[]//满多少。(数组p1、满多少p2、第一个参数限制p3、第二个参数限制)
-            }
+            };
             for(var j =0,inputLen = inputs.length;j<inputLen;j++){
                 if($(inputs[j]).val() == ''){
                     jalert.show('请填写完整');
                     reduceList = [];
                     return false;
                 }else{
-                    reduce.rule[j] = $(inputs[j]).val()
+                    reduce.rule[j] = $(inputs[j]).val();
                 }
             }
-            reduceList.push(reduce)
+            reduceList.push(reduce);
         }
         if(reduceList.length == 0){
             jalert.show("请添加优惠规则");
@@ -248,7 +248,7 @@ $(function(){
         	}else{
         		jalert.show(obj.msg);
         	}
-         })
+         });
 
-    })
-})
+    });
+});

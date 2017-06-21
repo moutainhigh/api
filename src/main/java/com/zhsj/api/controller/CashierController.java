@@ -238,13 +238,13 @@ public class CashierController {
     
     @RequestMapping(value = "orderList")
     @ResponseBody
-    public Object orderList(String storeNo,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
-    	logger.info("#orderList# storeNo = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
-    			storeNo, payMethod, startTime, endTime, status, page, pageSize);
+    public Object orderList(String storeNo,int payChannel,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
+    	logger.info("#orderList# storeNo = {}, payChannel = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
+    			storeNo, payChannel, payMethod, startTime, endTime, status, page, pageSize);
     	if(StringUtils.isEmpty(storeNo)){
     		return CommonResult.build(2, "门店编号有误");
     	}
-    	return orderService.getOrderListByParam(storeNo, payMethod, startTime, endTime, status, page, pageSize);
+    	return orderService.getOrderListByParam(storeNo, payChannel,payMethod, startTime, endTime, status, page, pageSize);
     }
     
     @RequestMapping(value = "refundPage")

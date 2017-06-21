@@ -31,6 +31,10 @@ public interface TBStoreAccountDao {
 
     List<StoreAccountBean> getListByIds(@Param("ids")List<Long> ids);
     
+    List<StoreAccountBean> getListByIdsAndRoleId(@Param("ids")List<Long> ids,@Param("roleId")int roleId);
+    
+    List<StoreAccountBean> getListByIds2(@Param("ids")List<Long> ids);
+    
     List<StoreAccountBean> getSaListByIds(@Param("ids")List<Long> ids);
 
     int updatePassword(@Param("account")String account,
@@ -54,5 +58,9 @@ public interface TBStoreAccountDao {
     									@Param("signStatus")int signStatus);
     
     int initSignStatus(@Param("regId")String regId);
-
+    
+    int updateStatus(@Param("status")int status,@Param("id")long id);
+    
+    int updateValid(@Param("id")long id);
+    
 }

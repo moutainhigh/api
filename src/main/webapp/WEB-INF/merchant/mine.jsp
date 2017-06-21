@@ -7,16 +7,23 @@
          <div id="_indexModule" style="overflow-y: auto;overflow-x:hidden;  width: 100%;">
 	         <div class="mine-title">
 	             <p><img src="../resource/img/merchant/mine-tit.png"/> </p>
-	             <h3>智慧上街测试门店</h3>
-	             <h4>12345678</h4>
+	             <h3>${storeName }</h3>
+	             <h4>${account }</h4>
 	         </div>
 	         <!--以背景条位分割线，可重复的内容start-->
 	         <ul class="mine-list" >
-	             <li class="clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-number.png"/> </span><span class="mine-list-tit fl">营销账户</span><strong class="fr">￥0.0<a><img src="../resource/img/merchant/right.png"/> </a></strong>
+	             <li class="clearfix" id="marketAccount">
+	                 <span class="fl">
+	                      <img src="../resource/img/merchant/my-number.png"/> 
+	                 </span>
+	                 <span class="mine-list-tit fl">营销账户</span>
+	                 <strong class="fr">
+	                    <span>￥${price }</span>&nbsp;&nbsp;
+	                    <i></i>
+	                 </strong>
 	             </li>
-	             <li class="mine-list-no clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-write.png"/> </span><span class="mine-list-tit fl">签约</span><a class="mine-sign fr"><img src="../resource/img/merchant/right.png"/> </a>
+	             <li class="mine-list-no clearfix" id="signInfo">
+	                 <span class="fl"><img src="../resource/img/merchant/my-write.png"/> </span><span class="mine-list-tit fl">签约</span><strong class="fr"><i class="icon"></i></strong>
 	             </li>
 	
 	         </ul>
@@ -24,11 +31,11 @@
 	        <!--以背景条位分割线，可重复的内容end-->
 	         <!--以背景条位分割线，可重复的内容start-->
 	         <ul class="mine-list">
-	             <li class="clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-set.png"/> </span><span class="mine-list-tit fl">设置</span><a class="mine-sign fr"><img src="../resource/img/merchant/right.png"/> </a>
+	             <li class="clearfix" id="setting">
+	                 <span class="fl"><img src="../resource/img/merchant/my-set.png"/> </span><span class="mine-list-tit fl">设置</span><strong class="fr"><i class="icon"></i></strong>
 	             </li>
 	             <li class="mine-list-no clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-about.png"/> </span><span class="mine-list-tit fl">关于</span><a class="mine-sign fr"><img src="../resource/img/merchant/right.png"/> </a>
+	                 <span class="fl"><img src="../resource/img/merchant/my-about.png"/> </span><span class="mine-list-tit fl">关于</span><strong class="fr"><i class="icon"></i></strong>
 	             </li>
 	
 	         </ul>
@@ -37,7 +44,12 @@
 	        <!--以背景条位分割线，可重复的内容start-->
 	         <ul class="mine-list">
 	             <li class="mine-list-no clearfix">
-	                 <span class="fl"><img src="../resource/img/merchant/my-tel.png"/> </span><span class="mine-list-tit fl">客服热线</span><a class=" fr"><img src="../resource/img/merchant/right.png"/> </a>
+	                 <span class="fl">
+	                 <img src="../resource/img/merchant/my-tel.png"/> </span>
+	                 <span class="mine-list-tit fl">客服热线</span>
+	                 <strong class="fr">
+	                     <a href="tel:400-661-0003">400-661-0003</a>
+	                 </strong>
 	             </li>
 	
 	         </ul>
@@ -56,5 +68,27 @@
     }
     change();
     win.addEventListener('resize',change,false);
-})(window,document)
+})(window,document);
+
+      $("#marketAccount").click(function(){
+    	  $.post("../storeManage/toMarketAccount",{
+    		  authURI:"marketAccount",
+    		  type:0
+    	  },function(result){
+    		  if(result.code == 0){
+    			  location.href = "../shop/toAccountBalancePage?auth="+_auth;
+    		  }else{
+    			  jalert.show(result.msg);
+    		  }
+    	  });
+      });
+      
+      
+      $("#signInfo").click(function(){
+    	  location.href = "../shop/signInfo?auth="+_auth;
+      });
+      $("#setting").click(function(){
+    	  location.href = "../storeManage/toSetting?auth="+_auth;
+      });
+
     </script>

@@ -1,0 +1,34 @@
+.people-img img{
+    width:3rem;
+    height:3rem;
+}
+.people-label span{
+    display: inline-block;
+    padding: 0.15rem;
+    border-radius: 3px;
+    font-size: 0.6rem;
+    color: #fff;
+    line-height: .8rem;
+    height: .8rem;
+    vertical-align: top;
+}
+.people-label{
+    padding-top:0.2rem;
+   line-height: 1.3rem;
+    height: 1.3rem;
+}
+.people-label-one{
+    background: #5f58fe;
+}
+.people-name{
+    font-size:0.9rem;
+}
+.people-label-two{
+    background: #ff7400;
+}
+.people-label-three{
+    background: #ff4040;
+}
+.people-number{
+    padding-top:0.5rem;
+}

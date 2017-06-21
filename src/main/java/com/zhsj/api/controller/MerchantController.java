@@ -3,7 +3,9 @@ package com.zhsj.api.controller;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +14,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.zhsj.api.bean.LoginUser;
+import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.constants.ResultStatus;
+import com.zhsj.api.service.OrderService;
 import com.zhsj.api.service.ShopService;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.DesUtils;
 import com.zhsj.api.util.Md5;
+import com.zhsj.api.util.login.LoginUserUtil;
 
 @Controller
 @RequestMapping("/merchant")
@@ -25,6 +32,8 @@ public class MerchantController {
 	
 	@Autowired
 	ShopService shopService;
+	@Autowired
+	OrderService orderService;
 	
 	
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
@@ -92,7 +101,7 @@ public class MerchantController {
     public ModelAndView test() throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./merchant/index");
-        String auth = "o5pmes_cN1AMrFptmwpDaNj6DXkI";
+        String auth = "o5pmesyob9P9Otj-jl-U3ETnArlY";
         DesUtils des = new DesUtils();//自定义密钥   
         modelAndView.addObject("auth", "31"+des.encrypt(22+","+22+",2,"+auth));
         return modelAndView;
@@ -103,9 +112,9 @@ public class MerchantController {
     public ModelAndView store(int id,int type,String auth) throws UnsupportedEncodingException {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./merchant/store");
+        modelAndView.addObject("map", orderService.getTodaySta());
         modelAndView.addObject("storeId", id);
         modelAndView.addObject("type", type);
-        modelAndView.addObject("auth", auth);
         return modelAndView;
     }
     
@@ -116,7 +125,6 @@ public class MerchantController {
          modelAndView.setViewName("./merchant/assistant");
          modelAndView.addObject("assistantId", id);
          modelAndView.addObject("type", type);
-         modelAndView.addObject("auth", auth);
          return modelAndView;
     }
     
@@ -126,8 +134,12 @@ public class MerchantController {
     	 ModelAndView modelAndView = new ModelAndView();
          modelAndView.setViewName("./merchant/mine");
          modelAndView.addObject("mineId", id);
+         LoginUser loginUser = LoginUserUtil.getLoginUser();
+         StoreBean storeBean = LoginUserUtil.getStore();
+         modelAndView.addObject("storeName", storeBean.getName());
+         modelAndView.addObject("account", loginUser.getAccount());
+         modelAndView.addObject("price", shopService.getPrice());
          modelAndView.addObject("type", type);
-         modelAndView.addObject("auth", auth);
          return modelAndView;
     }
 }

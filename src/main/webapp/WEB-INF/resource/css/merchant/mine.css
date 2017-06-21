@@ -20,7 +20,6 @@
 
 }
 .mine-list li{
-    line-height: 0.6rem;
     padding-top:0.2rem;
     border-bottom:0.01rem solid #ccc;
     padding-bottom:0.2rem;
@@ -38,17 +37,30 @@
 .mine-list li span{
     font-size:0.28rem;
     display: inline-block;
+ 	line-height:0.4rem;
 }
 .mine-list li strong{
-    font-size:0.26rem;
+	font-size: 0.28rem;
     display: inline-block;
-
-
-
+    line-height: 0.4rem;
+}
+.mine-list li strong i{
+    display: inline-block;
+	width:6px;
+	height:12px;
+	background:url("../../../resource/img/merchant/right.png") no-repeat right center;
+	vertical-align:middle;
+}
+.mine-list li strong .icon{
+	height:20px;
+}
+.mine-list li strong img{
+	vertical-align:middle;
 }
 .mine-list li a{
-    display:inline-block;
     font-size:0.28rem;
+    border-bottom: 1px solid #4585e8;
+    color: #666;
 }
 .mine-sign{
     padding-left:4.4rem;
@@ -71,11 +83,14 @@
     height:20px;
 
 }
-.mine-list li a{
-    padding-left:0.3rem;
-}
 .mine-list li a img{
     width:6px;
     height:12px;
     vertical-align:middle ;
+}
+.mine-list-tit strong{
+	line-height:0.42rem;
+}
+.mine-list-tit strong img{
+	vertical-align:middle;
 }
