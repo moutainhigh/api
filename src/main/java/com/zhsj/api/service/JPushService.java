@@ -174,8 +174,9 @@ public class JPushService {
     	
     	//ios以通知下发消息
     	JSONObject iosJson = new JSONObject();
-    	iosJson.put("alert", psBean.getNt());
-    	iosJson.put("content-available", "true");
+//    	iosJson.put("alert", psBean.getNt());
+    	iosJson.put("alert", "");
+    	iosJson.put("content-available", true);
     	JSONObject dataJson = new JSONObject();
     	dataJson.put("data", JSON.toJSON(psBean));
     	iosJson.put("extras", dataJson);
@@ -201,7 +202,7 @@ public class JPushService {
     	options.put("sendno", bean.getId());
     	String apns_production = MtConfig.getProperty("JG_IOS_APNS_PRODUCTION", "fasle");
     	options.put("apns_production", "true".equals(apns_production)?true:false);
-    	options.put("apns_collapse_id", bean.getOrderId());
+//    	options.put("apns_collapse_id", bean.getOrderId());
     	jsonObject.put("options", options);
     	return jsonObject.toJSONString();
     }
@@ -340,16 +341,20 @@ public class JPushService {
     public static void main(String[] args) throws Exception {
 //		new JPushService().sendSuccessMsg("18071adc033cab91e3e");
     	List list = new ArrayList<>();
+//    	list.add("191e35f7e07307e7858");
+//    	list.add("191e35f7e073dd9e2f3");
     	list.add("18071adc033cab91e3e");
-//    	list.add("1a1018970a90b635897");
+    	list.add("140fe1da9e9a73f88cc");
+    	list.add("191e35f7e073064cff9");
+    	
     	
     	OrderBean orderBean = new OrderBean();
     	orderBean.setId(1);
-    	orderBean.setOrderId("1212251");
+    	orderBean.setOrderId("5");
     	orderBean.setCtime(1497234339);
     	orderBean.setPayMethod("1");
-    	orderBean.setActualChargeAmount(0.01);
-    	orderBean.setPlanChargeAmount(0.01);
+    	orderBean.setActualChargeAmount(0.04);
+    	orderBean.setPlanChargeAmount(0.03);
     	orderBean.setStatus(1);
     	orderBean.setStoreNo("1110674590");
     	
@@ -360,7 +365,7 @@ public class JPushService {
     	String resultString = new JPushService().sendPost("https://api.jpush.cn/v3/push", json);
     	System.out.println(resultString);
     	Map<String, String> map = JSON.parseObject(resultString, Map.class);
-    	System.out.println(map.get("msg_id"));
+//    	System.out.println(map.get("msg_id"));
     	String url = "https://report.jpush.cn/v3/received?msg_ids="+map.get("msg_id");
     	String result = new JPushService().sendGet(url);
     	System.out.println(result);

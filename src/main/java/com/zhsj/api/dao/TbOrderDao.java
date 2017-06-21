@@ -124,7 +124,14 @@ public interface TbOrderDao {
 												  @Param("accountId")long accountId,
 												  @Param("statuses")List<Integer> statuses);
 	
-
+	Map<String, Object> countByUserTimeMethod(@Param("storeNo")String storeNo,
+			  @Param("startTime") int startTime,
+			  @Param("endTime")int endTime,
+			  @Param("accountId")long accountId,
+			  @Param("statuses")List<Integer> statuses,
+			  @Param("payMethod")String payMethod);
+	
+	
 	List<OrderBean> getByStatusAndCtime(@Param("status")int status,
 										@Param("startTime")int startTime,
 										@Param("endTime")int endTime);

@@ -297,6 +297,26 @@
      	and ctime BETWEEN #{startTime} AND #{endTime} and ( account_id = #{accountId} or account_id = 0 )
      	and status = 4
      </select>
+     
+     <select id="countByUserTimeMethod" resultType="java.util.HashMap">
+     	SELECT SUM(plan_charge_amount) planMoney,SUM(actual_charge_amount) actualMoney,
+		       SUM(store_discount_price) storeDisMoney,
+		       SUM(org_discount_price) orgDisMoney,
+		       SUM(IF(STATUS = 4,refund_money,0)) refundMoney
+		FROM tb_order 
+		where store_No = #{storeNo} 
+     	and ctime BETWEEN #{startTime} AND #{endTime} and ( account_id = #{accountId} or account_id = 0 )
+     	<choose>
+            <when test="statuses != null and statuses.size() > 0">
+                AND status IN
+                <foreach collection="statuses" item="st"
+                         open="(" separator="," close=")" >
+                    #{st} 
+                </foreach>
+            </when>
+        </choose> 
+        and pay_method = #{payMethod}
+     </select>
 
      <select id="getByStatusAndCtime" resultType="orderBean">
      	SELECT <include refid="SELECT_FIELDS"/>

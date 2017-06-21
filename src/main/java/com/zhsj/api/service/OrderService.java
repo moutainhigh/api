@@ -264,7 +264,11 @@ public class OrderService {
 			 Map<String, Object> refundMap = tbOrderDao.countRefundByUserAndTime(storeNo, startTime, endTime, accountId);
 			 Map<String, Object> storeMap = tbOrderDao.countStoreDisByUserAndTime(storeNo, startTime, endTime, accountId, statuses);
 			 Map<String, Object> orgMap = tbOrderDao.countOrgDisByUserAndTime(storeNo, startTime, endTime, accountId,statuses);
-
+			 
+			 Map<String, Object> wxMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "1");
+			 Map<String, Object> aliMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "2");
+			 Map<String, Object> unMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "3");
+			 
 			 bean.setRefundMoney(((BigDecimal)refundMap.get("refundMoney")).doubleValue());
 			 bean.setRefundNum((Long)refundMap.get("count"));
 			 bean.setStoreDisNum((Long)storeMap.get("count"));
@@ -277,6 +281,40 @@ public class OrderService {
 			 
 			 bean.setActualMoney(((BigDecimal)countMap.get("actualMoney")).subtract((BigDecimal)refundMap.get("refundMoney")).doubleValue());
 
+			 if(wxMap == null){
+				 bean.setDisplayWX(0);
+			 }else{
+				 bean.setDisplayWX(1);
+				 bean.setActualMoneyWX(wxMap.get("planMoney") == null?0:((BigDecimal)wxMap.get("planMoney")).doubleValue());
+				 bean.setActualMoneyWX(wxMap.get("actualMoney") == null?0:((BigDecimal)wxMap.get("actualMoney")).doubleValue());
+				 bean.setActualMoneyWX(wxMap.get("storeDisMoney") == null?0:((BigDecimal)wxMap.get("storeDisMoney")).doubleValue());
+				 bean.setActualMoneyWX(wxMap.get("orgDisMoney") == null?0:((BigDecimal)wxMap.get("orgDisMoney")).doubleValue());
+				 bean.setActualMoneyWX(wxMap.get("refundMoney") == null?0:((BigDecimal)wxMap.get("refundMoney")).doubleValue());
+			 }
+			
+			 if(aliMap == null){
+				 bean.setDisplayAli(0);
+			 }else{
+				 bean.setDisplayAli(1);
+				 bean.setActualMoneyAli(aliMap.get("planMoney") == null?0:((BigDecimal)aliMap.get("planMoney")).doubleValue());
+				 bean.setActualMoneyAli(aliMap.get("actualMoney") == null?0:((BigDecimal)aliMap.get("actualMoney")).doubleValue());
+				 bean.setActualMoneyAli(aliMap.get("storeDisMoney") == null?0:((BigDecimal)aliMap.get("storeDisMoney")).doubleValue());
+				 bean.setActualMoneyAli(aliMap.get("orgDisMoney") == null?0:((BigDecimal)aliMap.get("orgDisMoney")).doubleValue());
+				 bean.setActualMoneyAli(aliMap.get("refundMoney") == null?0:((BigDecimal)aliMap.get("refundMoney")).doubleValue());
+			 }
+			 
+			 if(unMap == null){
+				 bean.setDisplayUCard(0);
+			 }else{
+				 bean.setDisplayWX(1);
+				 bean.setActualMoneyUCard(unMap.get("planMoney") == null?0:((BigDecimal)unMap.get("planMoney")).doubleValue());
+				 bean.setActualMoneyUCard(unMap.get("actualMoney") == null?0:((BigDecimal)unMap.get("actualMoney")).doubleValue());
+				 bean.setActualMoneyUCard(unMap.get("storeDisMoney") == null?0:((BigDecimal)unMap.get("storeDisMoney")).doubleValue());
+				 bean.setActualMoneyUCard(unMap.get("orgDisMoney") == null?0:((BigDecimal)unMap.get("orgDisMoney")).doubleValue());
+				 bean.setActualMoneyUCard(unMap.get("refundMoney") == null?0:((BigDecimal)unMap.get("refundMoney")).doubleValue());
+
+			 }
+			 
 			 return CommonResult.success("", bean);
     	 }catch (Exception e) {
     		 logger.error("#OrderService.countShift# storeNO={},userId={},startTime={},endTime={},auth={}",
