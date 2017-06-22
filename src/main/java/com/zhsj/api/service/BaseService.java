@@ -97,14 +97,14 @@ public class BaseService {
     		if(versionInfo == null){
     			return CommonResult.defaultError("版本号不存在");
     		}
+    		result.setDownLoadUrl(versionInfo.getNewUrl());
+    		result.setNewVersion(versionInfo.getNewVersion());
     		if(version.equals(versionInfo.getNewVersion())){
     			result.setIsUpdate(0);
     			return CommonResult.success("", result);
     		}
     		result.setIsUpdate(1);
     		result.setIsForce(versionInfo.getIsForce());
-    		result.setDownLoadUrl(versionInfo.getNewUrl());
-    		result.setNewVersion(versionInfo.getNewVersion());
     		return CommonResult.success("", result);
     		
     	}catch (Exception e) {
