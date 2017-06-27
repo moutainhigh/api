@@ -337,7 +337,7 @@ public class CashierController {
         return orderService.updateOrderStatus(userId, storeNo, orderNo, cashierTradeNo, status, auth);
     }
     
-    @RequestMapping(value = "/updateOrderStatus", method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "/refundUnionpay", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     //更新订单状态
     public Object refundUnionpay(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth) {

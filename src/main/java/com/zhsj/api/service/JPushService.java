@@ -347,17 +347,17 @@ public class JPushService {
 //    	list.add("191e35f7e07307e7858");
 //    	list.add("191e35f7e073dd9e2f3");
     	list.add("18071adc033cab91e3e");
-    	list.add("140fe1da9e9a73f88cc");
-    	list.add("191e35f7e073064cff9");
+//    	list.add("140fe1da9e9a73f88cc");
+//    	list.add("191e35f7e073064cff9");
     	
     	
     	OrderBean orderBean = new OrderBean();
     	orderBean.setId(1);
-    	orderBean.setOrderId("5");
+    	orderBean.setOrderId("15");
     	orderBean.setCtime(1497234339);
     	orderBean.setPayMethod("1");
     	orderBean.setActualChargeAmount(0.04);
-    	orderBean.setPlanChargeAmount(0.03);
+    	orderBean.setPlanChargeAmount(0.12);
     	orderBean.setStatus(1);
     	orderBean.setStoreNo("1110674590");
     	
