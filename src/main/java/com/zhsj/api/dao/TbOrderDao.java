@@ -23,6 +23,12 @@ public interface TbOrderDao {
 
     int updateOrderByOrderId(@Param("status") int status,
                              @Param("orderId") String orderId);
+    
+    int updateByAccount(@Param("status") int status,
+    					@Param("preStatus")int preStatus,
+            			@Param("orderId") String orderId,
+            			@Param("accountId")long accountId,
+            			@Param("transactionId")String transactionId);
 
     int updateOrderByOrderIdIde(@Param("status") int status,
                              @Param("preStatus") int prestatus,

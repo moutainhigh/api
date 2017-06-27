@@ -1,14 +1,15 @@
 package com.zhsj.api.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
+import javax.servlet.http.HttpServletResponse;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.service.BaseService;
 import com.zhsj.api.service.JPushService;
-import com.zhsj.api.service.MchAddService;
 import com.zhsj.api.service.ModuleService;
 import com.zhsj.api.service.OrderService;
 import com.zhsj.api.service.PrinterService;
@@ -16,13 +17,12 @@ import com.zhsj.api.service.ShopService;
 import com.zhsj.api.service.StoreAccountService;
 import com.zhsj.api.service.StoreService;
 import com.zhsj.api.util.CommonResult;
-
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -52,7 +52,7 @@ public class CashierController {
     
     @RequestMapping(value = "/sign", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    //新建商户页
+    //登录
     public Object sign(String account,String passwd,String lat,String lon,String regId,String imei,String auth) {
         logger.info("#CashierController.sign# account={},passwd={},lat={},lon={},regId={},imei={},auth={}",
         		account,passwd,lat,lon,regId,imei,auth);
@@ -279,4 +279,78 @@ public class CashierController {
     	}
     	return orderService.appRefund(id, price, accountId);
     }
+    
+    @RequestMapping(value = "/savePreOrder", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //保存定单
+    public Object savePreOrder(String userId,String storeNo,int planAmount,int actualmount,int payType,int payMethod,int channel,String auth) {
+        logger.info("#CashierController.savePreOrder# userId={},storeNo,palnAmount={},actualAmount={},payType={},payMethod={},channel={},auth={}",
+        											userId,storeNo,planAmount,actualmount,payType,payMethod,channel,auth);
+        if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(storeNo) || StringUtils.isEmpty(auth)){
+        	return CommonResult.defaultError("参数不正确,证检查");
+        }
+        if(actualmount <=0 || planAmount <= 0 || payMethod <=0 || payMethod <=0){
+        	return CommonResult.defaultError("参数不正确,证检查");
+        }
+        return  orderService.savePreOrder(userId, storeNo, planAmount, actualmount, payType, payMethod, channel, auth);
+    }
+    
+    @RequestMapping(value = "/callback", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //保存定单
+    public void callback(HttpServletRequest request, HttpServletResponse response) {
+    	InputStream is= null;     
+    	String contentStr="";     
+    	PrintWriter pw = null;
+		try {
+			pw = response.getWriter();
+			is = request.getInputStream();       
+            contentStr= IOUtils.toString(is, "utf-8");
+            logger.info("#CashierController.callback# contentstr={}",contentStr);
+		} catch (IOException e) {
+			logger.error("#CashierController.callback# e={}",e.getMessage(),e );
+		}finally{
+		    pw.flush();
+		    pw.close();
+		    if(is !=null){
+		    	try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		    }
+		}
+    }
+    
+    @RequestMapping(value = "/updateOrderStatus", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //更新订单状态
+    public Object updateOrderStatus(String userId,String storeNo,String orderNo,String cashierTradeNo,int status,String auth) {
+        logger.info("#CashierController.savePreOrder# userId={},storeNo={},orderNo={},cashierTradeNo={},status={},auth={}",
+        											userId,storeNo,orderNo,cashierTradeNo,status,auth);
+        if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(storeNo) || StringUtils.isEmpty(auth)){
+        	return CommonResult.defaultError("参数不正确,证检查");
+        }
+        if(StringUtils.isEmpty(cashierTradeNo) || status < 0){
+        	return CommonResult.defaultError("参数不正确,证检查");
+        }
+        return orderService.updateOrderStatus(userId, storeNo, orderNo, cashierTradeNo, status, auth);
+    }
+    
+    @RequestMapping(value = "/updateOrderStatus", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //更新订单状态
+    public Object refundUnionpay(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth) {
+        logger.info("#CashierController.refundUnionpay# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
+        											userId,storeNo,orderNo,cashierTradeNo,auth);
+        if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(auth) || StringUtils.isEmpty(storeNo)){
+        	return CommonResult.defaultError("参数不正确,证检查");
+        }
+        if(StringUtils.isEmpty(cashierTradeNo) && StringUtils.isEmpty(orderNo)){
+        	return CommonResult.defaultError("订单号与交易号不能全为空");
+        }
+        return orderService.refundUnionpay(userId, storeNo,orderNo, cashierTradeNo, auth);
+    }
+    
+    
 }

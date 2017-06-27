@@ -8,12 +8,16 @@ import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
+import com.zhsj.api.constants.StroeRole;
 import com.zhsj.api.dao.TbOrderDao;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
+import com.zhsj.api.util.MtConfig;
+import com.zhsj.api.util.StoreUtils;
 import com.zhsj.api.dao.TBOrderRefundDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreSignDao;
+import com.zhsj.api.dao.TbStoreBindOrgDao;
 import com.zhsj.api.dao.TbUserBindStoreDao;
 import com.zhsj.api.dao.TbUserDao;
 import com.zhsj.api.util.DateUtil;
@@ -58,6 +62,10 @@ public class OrderService {
     private TBOrderRefundDao tbOrderRefundDao;
     @Autowired
     private JPushService jPushService;
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private TbStoreBindOrgDao tbStoreBindOrgDao;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -456,6 +464,121 @@ public class OrderService {
 			logger.error("#appRefund# id={}, price={},accountId={}", id, price, accountId, e);
 			return CommonResult.defaultError("系统异常");
 		}
+    }
+    
+    public CommonResult savePreOrder(String userId,String storeNo,int planAmount,int actualmount,int payType,int payMethod,int channel,String auth){
+    	logger.info("#OrderService.savePreOrder# userId={},storeNo,palnAmount={},actualAmount={},payType={},payMethod={},channel={},auth={}",
+        											userId,storeNo,planAmount,actualmount,payType,payMethod,channel,auth);
+    	try{
+    		StoreBean storeBean = storeService.getStoreByNO(storeNo);
+    		if(storeBean == null){
+    			return CommonResult.defaultError("商家不存在");
+    		}
+    		Long orgId = tbStoreBindOrgDao.getOrgIdByStoreNO(storeNo);
+    		String orderNo = StoreUtils.getOrderNO(storeNo);
+    		//保存定单
+			OrderBean orderBean = new OrderBean();
+			orderBean.setOrderId(orderNo);
+			orderBean.setActualChargeAmount(Arith.sub(actualmount, 100.00));
+			orderBean.setPlanChargeAmount(Arith.sub(planAmount, 100.00));
+			orderBean.setStatus(0);
+			orderBean.setDiscountType(0);
+			orderBean.setDiscountId(0);
+			orderBean.setPayType(payType);
+			orderBean.setPayMethod(String.valueOf(payMethod));
+			orderBean.setStoreNo(storeNo);
+			if(StringUtils.isEmpty(storeBean.getParentNo()) || "0".equals(storeBean.getParentNo())){
+				orderBean.setParentStoreNo(storeBean.getStoreNo());
+			}else {
+				orderBean.setParentStoreNo(storeBean.getParentNo());
+			}
+			orderBean.setOrgId(orgId);
+			orderBean.setUserId(0);
+			orderBean.setOrgIds(storeBean.getOrgIds());
+			orderBean.setSaleId(storeBean.getSaleId());
+
+			orderBean.setStoreDiscountPrice(0.0);
+			orderBean.setOrgDiscountPrice(0.0);
+			orderBean.setDiscountDetail("");
+			
+			orderBean.setAccountId(Long.parseLong(userId));
+			orderBean.setPayChannel(channel);
+			int num = tbOrderDao.insertOrder(orderBean);
+			if(num >=1){
+				Map<String, String> data = new HashMap<>();
+				data.put("orderNo", orderNo);
+				data.put("callback", MtConfig.getProperty("UNIONPAY_CALLBACK", ""));
+				data.put("actualAmount", actualmount+"");
+				return CommonResult.success("", data);
+			}else{
+				logger.error("#OrderService.savePreOrder# msg={},userId={},storeNo={},actualAmount={}","保存订单失败",userId,storeNo,actualmount);
+				return CommonResult.defaultError("保存订单失败");
+			}
+    	}catch(Exception e){
+    		logger.error("#OrderService.savePreOrder# userId={},storeNo={},palnAmount={},actualAmount={},payType={},payMethod={},channel={},auth={}",
+					userId,storeNo,planAmount,actualmount,payType,payMethod,channel,auth,e);
+    		return CommonResult.defaultError("系统出错");
+    	}
+    	
+    }
+    
+    public CommonResult updateOrderStatus(String userId,String storeNo,String orderNo,String cashierTradeNo,int status,String auth) {
+        logger.info("#OrderService.savePreOrder# userId={},storeNo={},orderNo={},cashierTradeNo={},status={},auth={}",
+        											userId,storeNo,orderNo,cashierTradeNo,status,auth);
+        try{
+        	StoreBean storeBean = storeService.getStoreByNO(storeNo);
+    		if(storeBean == null){
+    			return CommonResult.defaultError("商家不存在");
+    		}
+    		int num = tbOrderDao.updateByAccount(status, 0, orderNo, Long.parseLong(userId), cashierTradeNo);
+    		if(num > 0){
+    			return CommonResult.success("更新成功");
+    		}
+    		
+    		OrderBean orderBean = tbOrderDao.getByOrderId(orderNo);
+    		if(orderBean.getStatus() == status){
+    			return CommonResult.success("更新成功");
+    		}
+    		return CommonResult.success("更新失败");
+        }catch (Exception e) {
+        	logger.error("#OrderService.savePreOrder# userId={},storeNo={},orderNo={},cashierTradeNo={},status={},auth={}",
+					userId,storeNo,orderNo,cashierTradeNo,status,auth,e);
+		}
+        return CommonResult.defaultError("系统异常");
+    }
+    
+    public CommonResult refundUnionpay(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth){
+    	 logger.info("#OrderService.refundUnionpay# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
+					userId,storeNo,orderNo,cashierTradeNo,auth);
+    	 try{
+    		OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, orderNo, cashierTradeNo);
+ 			if(bean == null){
+ 				return CommonResult.build(2, "订单号不存在");
+ 			}
+ 			if(bean.getStatus() == 3){
+ 				return CommonResult.success("该订单已经在处理中");
+ 			}else if(bean.getStatus() == 4){
+ 				return CommonResult.success("该订单退款成功");
+ 			}else if(bean.getStatus() == 5){
+ 				return CommonResult.success("该订单退款失败");
+ 			}
+ 			
+ 			//保存定单信息
+ 			OrderRefundBean orderRefundBean = new OrderRefundBean();
+			orderRefundBean.setRefundNo("pre"+orderNo);
+			orderRefundBean.setRefundMoney(0.0);
+			orderRefundBean.setSubmitUserId(Long.parseLong(userId));
+			int reCode = tbOrderRefundDao.insert(orderRefundBean);
+			if(reCode != 1){
+				logger.info("#appRefund# 添加orderRefundBean出错了");
+				return CommonResult.build(2, "系统异常");
+			}
+			return CommonResult.success("", bean.getTransactionId());
+    	 }catch (Exception e) {
+    		 logger.error("#OrderService.refundUnionpay# userId={},orderNo={},cashierTradeNo={},auth={}",
+ 					userId,orderNo,cashierTradeNo,auth,e);
+		}
+    	return CommonResult.defaultError("系统异常");
     }
 }
 
