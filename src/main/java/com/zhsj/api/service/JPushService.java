@@ -174,9 +174,12 @@ public class JPushService {
     	
     	//ios以通知下发消息
     	JSONObject iosJson = new JSONObject();
-//    	iosJson.put("alert", psBean.getNt());
-    	iosJson.put("alert", "");
-    	iosJson.put("content-available", true);
+    	iosJson.put("alert", psBean.getNt());
+//    	iosJson.put("content-available", true);
+    	iosJson.put("badge", 1);
+    	iosJson.put("sound", "default");
+    	iosJson.put("mutable-content", true);
+
     	JSONObject dataJson = new JSONObject();
     	dataJson.put("data", JSON.toJSON(psBean));
     	iosJson.put("extras", dataJson);
@@ -202,7 +205,7 @@ public class JPushService {
     	options.put("sendno", bean.getId());
     	String apns_production = MtConfig.getProperty("JG_IOS_APNS_PRODUCTION", "fasle");
     	options.put("apns_production", "true".equals(apns_production)?true:false);
-//    	options.put("apns_collapse_id", bean.getOrderId());
+    	options.put("apns_collapse_id", bean.getOrderId());
     	jsonObject.put("options", options);
     	return jsonObject.toJSONString();
     }
@@ -335,7 +338,7 @@ public class JPushService {
     	    	}
 				return 0;
 			}
-		}.withDefaultTimeoutPolicy().executeWithRetry(15000L);
+		}.withDefaultTimeoutPolicy().executeWithRetry(30000L);
     }
     
     public static void main(String[] args) throws Exception {
