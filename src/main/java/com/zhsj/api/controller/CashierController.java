@@ -352,5 +352,20 @@ public class CashierController {
         return orderService.refundUnionpay(userId, storeNo,orderNo, cashierTradeNo, auth);
     }
     
+    @RequestMapping(value = "/refundSuccess", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //更新订单状态
+    public Object refundSuccess(String userId,String storeNo,String cashierTradeNo,String auth) {
+        logger.info("#CashierController.refundSuccess# userId={},storeNo={},cashierTradeNo={},auth={}",
+        											userId,storeNo,cashierTradeNo,auth);
+        if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(storeNo) || StringUtils.isEmpty(auth)){
+        	return CommonResult.defaultError("参数不正确,证检查");
+        }
+        if(StringUtils.isEmpty(cashierTradeNo) ){
+        	return CommonResult.defaultError("参数不正确,证检查");
+        }
+        return orderService.refundSuccess(userId, storeNo, cashierTradeNo, auth);
+    }
+    
     
 }
