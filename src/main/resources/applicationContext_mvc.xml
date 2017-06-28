@@ -111,11 +111,6 @@
             <mvc:exclude-mapping path="/storeManage/serach" />
             <mvc:exclude-mapping path="/storeManage/refund"/>
             <mvc:exclude-mapping path="/storeManage/orderList" />
-            <mvc:exclude-mapping path="/storeManage/toMarketAccount"/>
-            <mvc:exclude-mapping path="/storeManage/getMemberStaByDay"/>
-            <mvc:exclude-mapping path="/storeManage/getMoneyStaByDay" />
-            <mvc:exclude-mapping path="/storeManage/getCountStaByDay"/>
-            <mvc:exclude-mapping path="/storeManage/getStoreStaByDay" />
             <bean class="com.zhsj.api.interceptors.LoginInterceptor" />
         </mvc:interceptor>
     </mvc:interceptors>

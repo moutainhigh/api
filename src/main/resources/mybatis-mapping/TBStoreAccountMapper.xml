@@ -107,6 +107,7 @@
                 AND 1 = 0
             </otherwise>
         </choose>
+        order by status desc,ctime asc
     </select>
     
     

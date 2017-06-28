@@ -82,6 +82,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 <body>
 <section>
+    <input type="hidden" id="auth" value="${auth }">
     <div class="member-add">
         <h3 class="member-tit">今日新增会员人数（人）</h3>
         <p class="member-tail">${memberMap['addCount'] }</p>
@@ -121,7 +122,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    	loadDay(_val);
 	    });
    });
-
+   var auth = $("#auth").val();
     var myChart = echarts.init(document.getElementById('main'));
     myChart.setOption({
         title : {
@@ -164,6 +165,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function loadDay(day){
     	myChart.showLoading();
 	    $.get("./getMemberStaByDay",{
+	    	auth:auth,
 	    	day:day
 	    }).done(function(result){
 	    	console.log(result);

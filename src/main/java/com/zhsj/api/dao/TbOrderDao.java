@@ -92,6 +92,8 @@ public interface TbOrderDao {
 	CountMember getByStoreNoAndUserId(@Param("storeNo")String storeNo,
 			                              @Param("userId")long userId);
 	
+	double getSumMoneyByStoreNoAndUserId(@Param("storeNo")String storeNo, @Param("userId")long userId);
+	
 	List<CountMember> getByStoreNoAndMoney(@Param("storeNo")String storeNo,
 			@Param("actualChargeAmount1")Double actualChargeAmount1,
 			@Param("actualChargeAmount2")Double actualChargeAmount2);

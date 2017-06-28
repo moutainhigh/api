@@ -6,9 +6,9 @@
          </div>
          <div id="_indexModule" style="overflow-y: auto;overflow-x:hidden;  width: 100%;">
 	         <div class="mine-title">
-	             <p><img src="../resource/img/merchant/mine-tit.png"/> </p>
-	             <h3>${storeName }</h3>
-	             <h4>${account }</h4>
+	             <p><img src="${store.shopLogo }" onerror="javascript:this.src='../resource/img/merchant/mine-tit.png'"/> </p>
+	             <h3>${account }</h3>
+	             <h4>${store.name }</h4>
 	         </div>
 	         <!--以背景条位分割线，可重复的内容start-->
 	         <ul class="mine-list" >
@@ -72,6 +72,7 @@
 
       $("#marketAccount").click(function(){
     	  $.post("../storeManage/toMarketAccount",{
+    		  auth:_auth,
     		  authURI:"marketAccount",
     		  type:0
     	  },function(result){

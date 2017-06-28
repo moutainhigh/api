@@ -12,10 +12,10 @@
     padding-left:0.2rem;
     display:inline-block;
     width:70%;
-    border-bottom:1px solid #CCC;
+    border-bottom:1px solid #EEE;
     height:100%;	
-    padding:.1rem 0;
-    vertical-align: .2rem;
+    /*padding:.1rem 0;
+    vertical-align: .2rem;*/
 }
 .add-content input{
     width:100%;
@@ -23,8 +23,8 @@
     font-size:.85rem;
     color: #666;
     background: #FFF;
-    vertical-align:top;
-    padding:.1rem 0;
+   /* vertical-align:top; 
+    padding:.1rem 0;*/
 }
 input[type=checkbox]{
 	width:1rem;

@@ -129,7 +129,7 @@ public class StoreManageController {
     	return mv;
     }
     @RequestMapping(value = "toMarketAccount")
-	public Object toMarketAccount( String auth){
+	public Object toMarketAccount(String auth){
 		logger.info("#toMarketAccount#");
 		return CommonResult.success("","../shop/toAccountBalancePage");
 	}  
@@ -148,13 +148,14 @@ public class StoreManageController {
     @RequestMapping(value = "memberConsume")
     public Object memberConsume(ModelAndView mv, String auth){
     	logger.info("#memberConsume#");
+    	mv.addObject("auth", auth);
     	mv.addObject("memberMap", storeService.getMemberStaByDay(1));
     	mv.setViewName("storeManage/manage/member_consume");
     	return mv;
     }
     
     @RequestMapping(value = "getMemberStaByDay")
-    public Object getMemberStaByDay(int day){
+    public Object getMemberStaByDay(int day, String auth){
     	logger.info("#getMemberStaByDay# day = {}", day);
     	return CommonResult.success("", storeService.getMemberStaByDay(day));
     }
@@ -171,6 +172,7 @@ public class StoreManageController {
     @RequestMapping(value = "transaction")
     public Object transaction(ModelAndView mv, String auth){
     	logger.info("transaction");
+    	mv.addObject("auth", auth);
     	mv.addObject("orderSta", storeService.getTodaySta());
     	mv.addObject("childStoreCount", storeService.getChildStoreCount());
     	mv.setViewName("storeManage/manage/transaction-analysis");
@@ -178,19 +180,19 @@ public class StoreManageController {
     }
     
     @RequestMapping(value = "getMoneyStaByDay")
-    public Object getMoneyStaByDay(int day){
+    public Object getMoneyStaByDay(int day, String auth){
     	logger.info("#getMoneyStaByDay# day = {}", day);
     	return CommonResult.success("", storeService.getMoneyStaByDay(day));
     }
     
     @RequestMapping(value = "getCountStaByDay")
-    public Object getCountStaByDay(int day){
+    public Object getCountStaByDay(int day, String auth){
     	logger.info("#getCountStaByDay# day = {}", day);
     	return CommonResult.success("",  storeService.getCountStaByDay(day));
     }
     
     @RequestMapping(value = "getStoreStaByDay")
-    public Object getStoreStaByDay(int day){
+    public Object getStoreStaByDay(int day, String auth){
     	logger.info("#getStoreStaByDay# day = {}", day);
     	return CommonResult.success("", storeService.getStoreStaByDay(day));
     }

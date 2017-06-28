@@ -73,6 +73,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 <body>
 <section>
+<input type="hidden" id="auth" value="${auth }">
     <div class="member-add">
         <h3 class="member-tit">今日交易金额（元）</h3>
         <p class="member-tail">${orderSta.am }</p>
@@ -144,6 +145,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
 </section>
 <script>
+    var auth = $("#auth").val();
     var store;
     if(${childStoreCount} == 0){
     	$("#more_store").remove();
@@ -187,6 +189,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         function loadStoreByDay(day){
         	store.showLoading();
         	$.post("./getStoreStaByDay",{
+        		auth:auth,
         		day:day
         	}).done(function(result){
         		console.log(result);
@@ -297,6 +300,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function loadMoneyByDay(day){
     	money.showLoading();
     	$.post("./getMoneyStaByDay",{
+    		auth:auth,
     		day:day
     	}).done(function(result){
     		money.hideLoading();
@@ -342,6 +346,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function loadCountByDay(day){
     	count.showLoading();
     	$.post("./getCountStaByDay",{
+    		auth:auth,
     		day:day
     	}).done(function(result){
    			count.hideLoading();

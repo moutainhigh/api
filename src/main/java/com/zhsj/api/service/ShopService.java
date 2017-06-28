@@ -381,6 +381,8 @@ public class ShopService {
 	    	List<UserBindStoreBean> ubsbBeans = tbUserBindStoreDao.getListByStoreNo(storeNo, startTime, endTime);
 	        for(UserBindStoreBean usBean : ubsbBeans){
 	        	CountMember cm = orderDao.getByStoreNoAndUserId(storeNo, usBean.getUserId());
+	        	double sum = orderDao.getSumMoneyByStoreNoAndUserId(storeNo, usBean.getUserId());
+	        	cm.setSum(sum);
 	        	UserBean userBean = tbUserDao.getUserById(usBean.getUserId());
 	        	cm.setHeadImg(userBean.getHeadImg());
 	        	cm.setNick(userBean.getNickName());
@@ -408,7 +410,8 @@ public class ShopService {
 	    			cMember.setNick(userBean.getNickName());
 	    			CountMember cm = orderDao.getByStoreNoAndUserId(storeNo, cMember.getUserId());
 	    			cMember.setCount(cm.getCount());
-	    			cMember.setSum(cm.getSum() == null?0:cm.getSum());
+	    			double sum = orderDao.getSumMoneyByStoreNoAndUserId(storeNo, cMember.getUserId());
+	    			cMember.setSum(sum);
 	    			UserBindStoreBean userStore = tbUserBindStoreDao.getByStoreAndUser(cMember.getUserId(), storeNo);
 	    			if(userStore != null){
 		    			cMember.setTime(userStore.getUtime());
@@ -429,7 +432,8 @@ public class ShopService {
 	    			tMember.setNick(userBean.getNickName());
 	    			CountMember cm = orderDao.getByStoreNoAndUserId(storeNo, tMember.getUserId());
 	    			tMember.setCount(cm.getCount());
-	    			tMember.setSum(cm.getSum() == null?0:cm.getSum());
+	    			double sum = orderDao.getSumMoneyByStoreNoAndUserId(storeNo, tMember.getUserId());
+	    			tMember.setSum(sum);
 	    			UserBindStoreBean userStore = tbUserBindStoreDao.getByStoreAndUser(tMember.getUserId(), storeNo);
 	    			if(userStore != null){
 		    			tMember.setTime(userStore.getUtime());

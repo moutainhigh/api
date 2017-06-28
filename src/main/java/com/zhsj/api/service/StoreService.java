@@ -239,7 +239,7 @@ public class StoreService {
     		}
     		if(status == 0){//更新状态
     			int sta = storeAccountBean.getStatus() == 1?0:1;
-    			if(storeAccountBeans != null && storeAccountBeans.size() == 1 && sta == 0){
+    			if(storeAccountBeans != null && storeAccountBeans.size() == 1 && saRoleIds.contains(Integer.valueOf(MtConfig.getProperty("STORE_MANAGER_ROLE", ""))) && sta == 0){
     				return CommonResult.build(2, "更新状态失败,最后一个了");
     			}
     			int sCode = tbStoreAccountDao.updateStatus(sta, accountId);

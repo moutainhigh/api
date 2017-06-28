@@ -101,7 +101,7 @@ public class MerchantController {
     public ModelAndView test() throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./merchant/index");
-        String auth = "o5pmesyob9P9Otj-jl-U3ETnArlY";
+        String auth = "o5pmes_cN1AMrFptmwpDaNj6DXkI";
         DesUtils des = new DesUtils();//自定义密钥   
         modelAndView.addObject("auth", "31"+des.encrypt(22+","+22+",2,"+auth));
         return modelAndView;
@@ -136,7 +136,7 @@ public class MerchantController {
          modelAndView.addObject("mineId", id);
          LoginUser loginUser = LoginUserUtil.getLoginUser();
          StoreBean storeBean = LoginUserUtil.getStore();
-         modelAndView.addObject("storeName", storeBean.getName());
+         modelAndView.addObject("store", storeBean);
          modelAndView.addObject("account", loginUser.getAccount());
          modelAndView.addObject("price", shopService.getPrice());
          modelAndView.addObject("type", type);

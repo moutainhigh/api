@@ -42,14 +42,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <img src="../resource/img/app/store/store-number.png"/>
                 </span>
                 <span class="fl">门店数</span>
-                <span class="fr">${storeStaList.size() }个</span>
+                <span class="fr">${storeStaList.size() }</span>
             </p>
         </nav>
         <div class="middle">
             <ul>
                     <c:forEach items="${storeStaList }" var="storeSta" varStatus="status">
 						   
-								  <li class="clearfix" onclick="toUserList('${storeSta.storeNo}')">
+								  <li class="clearfix strore_manager" onclick="toUserList('${storeSta.storeNo}')">
                                         <div class="fl">
 					                        <h3 class="middle-label ">
 					                            <strong class="company-name">${storeSta.name }</strong>
@@ -66,8 +66,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					                                 </c:choose>
                                                 </span>
 					                        </h3>
-					                        <p class="">交易笔数:${storeSta.transCount }</p>
-					                        <p class="">交易流水:￥${storeSta.transSumMoney }</p>
+					                        <p class="img-small">
+					                        <img alt="" src="../resource/img/app/store/small-trans-number.png"> 
+					                                       交易笔数:${storeSta.transCount }</p>
+					                        <p class="img-small">
+					                        <img alt="" src="../resource/img/app/store/small-trans-money.png"> 
+					                        交易流水:￥${storeSta.transSumMoney }</p>
 					                    </div>
 					                    <p class="fr store-detail">
 					                        <img src="../resource/img/app/store/le-symbol-gray.png"/>

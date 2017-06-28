@@ -1,7 +1,7 @@
 nav h3 img{
-    width: 0.525rem;
+    width: 0.5rem;
     height: 0.95rem;
-    vertical-align: middle;
+    vertical-align: text-bottom;
 }
 nav h3 span{
     position: relative;
@@ -10,53 +10,53 @@ nav h3 span{
 nav h3 {
     text-align: center;
     line-height: 2.2rem;
-    font-size:1rem;
+    font-size:.9rem;
     border-bottom: 0.025rem solid #ccc;
+    color:#FFF;
+    background:#1c313e;
+    
 }
 nav p{
     line-height:1.8rem;
     border-bottom: 0.025rem solid #ccc;
-    font-size:.9rem;
+    font-size:.6rem;
     padding:0 0.6rem;
+    color:#BBB;
 }
 .store-number{
     padding-right:0.4rem;
 }
 .store-number img{
-    width:1.15rem;
-    height:1.15rem;
-    vertical-align: sub;
-}
-.middle-label {
-	line-height: 1.3rem;
-    height: 1.3rem;
+    width: .8rem;
+    height: .8rem;
+    vertical-align: -.2rem;
 }
 .company-label-one, .company-label-two{
     display: inline-block;
-    padding: .1rem;
+    padding: .2rem;
     border-radius: 3px;
-    background: #5f58fe;
+    background: #eb793b;
     font-size: 0.6rem;
     color: #fff;
     line-height: .6rem;
     height: .6rem;
-    vertical-align: text-bottom;
+    vertical-align: .1rem;
     font-weight:bold;
 }
 h3 .company-label-two{
-    background: #eb793b;
+    background: #feb558;
 }
 ul li{
-
-    padding:0.6rem 0.6rem;
+    padding:.2rem .6rem;
     background: #fff;
-    border-bottom:0.025rem solid #ccc;
-    margin-bottom:0.6rem;
-
+    border-bottom:1px solid #ccc;
+}
+.strore_manager{
+	padding:.6rem !important;
 }
 
 .company-name{
-    font-size:0.8rem;
+    font-size: 1rem;
     padding-right:0.4rem;
     font-weight:bold;
 }
@@ -64,8 +64,12 @@ ul li{
     padding-top:0.3rem;
     color:#666;
 }
+.img-small img{
+	vertical-align: bottom;
+    width: .6rem;
+}
 li p{
-	font-size:0.75rem;
+	font-size:0.6rem;
 }
 .middle{
     background: #d9d9d9;
@@ -75,7 +79,7 @@ li p{
     padding:0.3rem 0rem 0rem;
 }
 .store-detail{
-    line-height:3.45rem;
+    line-height:2.45rem;
 }
 .store-detail img{
     width: 0.525rem;
@@ -87,12 +91,12 @@ li p{
 .btn{
 	text-align:center;
 	margin-top:2rem;
-	
+	margin-bottom:1rem;
 }
 .btn button{
     width:5.2rem;
     height:1.8rem;
-    background: #5871eb;
+    background: #feb558;
     color: #fff;
     border:none;
     font-size:0.9rem;

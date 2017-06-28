@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  */
 public class LoginUserUtil {
     private static final Logger logger = LoggerFactory.getLogger(LoginUserUtil.class);
-    private static final ThreadLocal<LoginUser> BM_LOGIN_USER_THREAD_LOCAL = new ThreadLocal();
+    private static final ThreadLocal<LoginUser> BM_LOGIN_USER_THREAD_LOCAL = new ThreadLocal<LoginUser>();
 
     public LoginUserUtil() {
     }

@@ -49,7 +49,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		                       </strong>
 		                    </h3>
 		                </div>
-		                <div class="fl" style="margin-left:.3rem;">
+		                <div class="fl" style="margin-left:1rem;">
 		                    <p class="people-label">
 		                        <strong class="people-name">${account.name }</strong>
 		                        <c:forEach items="${account.roleList }" var="role">
