@@ -590,19 +590,19 @@ public class OrderService {
  				return CommonResult.build(2, "订单不存在");
  			}
         	OrderRefundBean orderRefundBean = new OrderRefundBean();
-			orderRefundBean.setRefundNo(refundNo);
-			orderRefundBean.setRefundMoney(price);
-			orderRefundBean.setSubmitUserId(accountId);
+//			orderRefundBean.setRefundNo(refundNo);
+//			orderRefundBean.setRefundMoney(price);
+//			orderRefundBean.setSubmitUserId(accountId);
 			int reCode = tbOrderRefundDao.insert(orderRefundBean);
 			if(reCode != 1){
 				logger.info("#appRefund# 添加orderRefundBean出错了");
 				return CommonResult.build(2, "系统异常");
 			}
-			int code = tbOrderDao.updateOrderRefundById(orderBean.getId(), refundNo, price);
-			if(code != 1){
-				logger.info("#appRefund# 更新order出错了");
-				return CommonResult.build(2, "系统异常");
-			}
+//			int code = tbOrderDao.updateOrderRefundById(orderBean.getId(), refundNo, price);
+//			if(code != 1){
+//				logger.info("#appRefund# 更新order出错了");
+//				return CommonResult.build(2, "系统异常");
+//			}
         	
         	
         }catch (Exception e) {
