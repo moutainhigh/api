@@ -24,6 +24,7 @@ public interface TBOrderRefundDao {
 	
 	int updateStatusAndOrderNo(@Param("reOrderNo")String reOrderNo,
 							   @Param("preOrderNo")String preOrderNo,
-							   @Param("status")int status);
+							   @Param("status")int status,
+							   @Param("refundMoney")double refundMoney);
 
 }

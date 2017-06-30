@@ -32,4 +32,10 @@
     	where refund_no = #{refundNo}
     </select>
     
+     <update id="updateStatusAndOrderNo">
+    	update tb_order_refund
+    	set status = #{status} ,refund_no=#{reOrderNo},refund_money=#{refundMoney}
+    	where refund_no=#{preOrderNo} and status=1
+    </update>
+    
 </mapper>

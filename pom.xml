@@ -220,6 +220,11 @@
       <artifactId>httpclient</artifactId>
       <version>4.3.5</version>
     </dependency>
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpmime</artifactId>
+        <version>4.3.6</version>
+    </dependency>
     
      <dependency>
       <groupId>junit</groupId>
@@ -248,6 +253,15 @@
 	    <version>2.0</version>
 	    <scope>provided</scope>
 	</dependency>
+	
+	<!-- 旺pos依赖jar -->
+	 <dependency>
+          <groupId>com.wangpos</groupId>
+          <artifactId>wopensdk</artifactId>
+          <version>1.0</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/src/main/lib/wopensdk-1.0.jar</systemPath>
+      </dependency>
 	
   </dependencies>
 

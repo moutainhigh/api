@@ -433,7 +433,7 @@
      
      <update id="updateByAccount">
         update tb_order
-        set status = #{status},transaction_id=#{transactionId}
+        set status = #{status},transaction_id=#{transactionId},
         utime = unix_timestamp(now())
         where status = #{preStatus} and order_id = #{orderId} and account_id = #{accountId}
      </update>

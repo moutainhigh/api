@@ -298,6 +298,7 @@ public class OrderService {
 				 bean.setStoreDisMoneyWX(wxMap.get("storeDisMoney") == null?0:((BigDecimal)wxMap.get("storeDisMoney")).doubleValue());
 				 bean.setOrgDisMoneyWX(wxMap.get("orgDisMoney") == null?0:((BigDecimal)wxMap.get("orgDisMoney")).doubleValue());
 				 bean.setRefundWX(wxMap.get("refundMoney") == null?0:((BigDecimal)wxMap.get("refundMoney")).doubleValue());
+				 bean.setActualMoneyWX(Arith.sub(bean.getActualMoneyWX(), bean.getRefundWX()));
 			 }
 			
 			 if(aliMap == null){
@@ -309,6 +310,7 @@ public class OrderService {
 				 bean.setStoreDisMoneyAli(aliMap.get("storeDisMoney") == null?0:((BigDecimal)aliMap.get("storeDisMoney")).doubleValue());
 				 bean.setOrgDisMoneyAli(aliMap.get("orgDisMoney") == null?0:((BigDecimal)aliMap.get("orgDisMoney")).doubleValue());
 				 bean.setRefundAli(aliMap.get("refundMoney") == null?0:((BigDecimal)aliMap.get("refundMoney")).doubleValue());
+				 bean.setActualMoneyAli(Arith.sub(bean.getActualMoneyAli(), bean.getRefundAli()));
 			 }
 			 
 			 if(unMap == null){
@@ -320,7 +322,7 @@ public class OrderService {
 				 bean.setStoreDisMoneyUCard(unMap.get("storeDisMoney") == null?0:((BigDecimal)unMap.get("storeDisMoney")).doubleValue());
 				 bean.setOrgDisMoneyUCard(unMap.get("orgDisMoney") == null?0:((BigDecimal)unMap.get("orgDisMoney")).doubleValue());
 				 bean.setRefundUCard(unMap.get("refundMoney") == null?0:((BigDecimal)unMap.get("refundMoney")).doubleValue());
-
+				 bean.setActualMoneyUCard(Arith.sub(bean.getActualMoneyUCard(), bean.getRefundUCard()));
 			 }
 			 
 			 return CommonResult.success("", bean);
@@ -479,8 +481,8 @@ public class OrderService {
     		//保存定单
 			OrderBean orderBean = new OrderBean();
 			orderBean.setOrderId(orderNo);
-			orderBean.setActualChargeAmount(Arith.sub(actualmount, 100.00));
-			orderBean.setPlanChargeAmount(Arith.sub(planAmount, 100.00));
+			orderBean.setActualChargeAmount(Arith.mul(actualmount, 100.00));
+			orderBean.setPlanChargeAmount(Arith.mul(planAmount, 100.00));
 			orderBean.setStatus(0);
 			orderBean.setDiscountType(0);
 			orderBean.setDiscountId(0);
@@ -566,7 +568,7 @@ public class OrderService {
  			//保存定单信息
  			OrderRefundBean orderRefundBean = new OrderRefundBean();
 			orderRefundBean.setRefundNo("pre"+orderNo);
-			orderRefundBean.setRefundMoney(0.0);
+			orderRefundBean.setRefundMoney(bean.getActualChargeAmount());
 			orderRefundBean.setSubmitUserId(Long.parseLong(userId));
 			int reCode = tbOrderRefundDao.insert(orderRefundBean);
 			if(reCode != 1){
@@ -589,22 +591,17 @@ public class OrderService {
         	if(bean == null){
  				return CommonResult.build(2, "订单不存在");
  			}
-        	OrderRefundBean orderRefundBean = new OrderRefundBean();
-//			orderRefundBean.setRefundNo(refundNo);
-//			orderRefundBean.setRefundMoney(price);
-//			orderRefundBean.setSubmitUserId(accountId);
-			int reCode = tbOrderRefundDao.insert(orderRefundBean);
+        	int reCode = tbOrderRefundDao.updateStatusAndOrderNo("re"+bean.getOrderId(), "pre"+bean.getOrderId(), 5, bean.getActualChargeAmount());
 			if(reCode != 1){
-				logger.info("#appRefund# 添加orderRefundBean出错了");
+				logger.info("#OrderService.refundSuccess# 更新orderRefundBean出错了");
 				return CommonResult.build(2, "系统异常");
 			}
-//			int code = tbOrderDao.updateOrderRefundById(orderBean.getId(), refundNo, price);
-//			if(code != 1){
-//				logger.info("#appRefund# 更新order出错了");
-//				return CommonResult.build(2, "系统异常");
-//			}
-        	
-        	
+			int code = tbOrderDao.updateStatusById(bean.getId(), 4);
+			if(code != 1){
+				logger.info("#OrderService.refundSuccess#  更新order出错了");
+				return CommonResult.build(2, "系统异常");
+			}
+			return CommonResult.success("");
         }catch (Exception e) {
         	logger.error("#OrderService.refundSuccess# userId={},storeNo={},cashierTradeNo={},auth={}",
     				userId,storeNo,cashierTradeNo,auth,e);
