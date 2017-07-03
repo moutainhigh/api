@@ -481,8 +481,8 @@ public class OrderService {
     		//保存定单
 			OrderBean orderBean = new OrderBean();
 			orderBean.setOrderId(orderNo);
-			orderBean.setActualChargeAmount(Arith.mul(actualmount, 100.00));
-			orderBean.setPlanChargeAmount(Arith.mul(planAmount, 100.00));
+			orderBean.setActualChargeAmount(Arith.div(actualmount, 100.00));
+			orderBean.setPlanChargeAmount(Arith.div(planAmount, 100.00));
 			orderBean.setStatus(0);
 			orderBean.setDiscountType(0);
 			orderBean.setDiscountId(0);
@@ -525,7 +525,7 @@ public class OrderService {
     }
     
     public CommonResult updateOrderStatus(String userId,String storeNo,String orderNo,String cashierTradeNo,int status,String auth) {
-        logger.info("#OrderService.savePreOrder# userId={},storeNo={},orderNo={},cashierTradeNo={},status={},auth={}",
+        logger.info("#OrderService.updateOrderStatus# userId={},storeNo={},orderNo={},cashierTradeNo={},status={},auth={}",
         											userId,storeNo,orderNo,cashierTradeNo,status,auth);
         try{
         	StoreBean storeBean = storeService.getStoreByNO(storeNo);
@@ -543,7 +543,7 @@ public class OrderService {
     		}
     		return CommonResult.success("更新失败");
         }catch (Exception e) {
-        	logger.error("#OrderService.savePreOrder# userId={},storeNo={},orderNo={},cashierTradeNo={},status={},auth={}",
+        	logger.error("#OrderService.updateOrderStatus# userId={},storeNo={},orderNo={},cashierTradeNo={},status={},auth={}",
 					userId,storeNo,orderNo,cashierTradeNo,status,auth,e);
 		}
         return CommonResult.defaultError("系统异常");

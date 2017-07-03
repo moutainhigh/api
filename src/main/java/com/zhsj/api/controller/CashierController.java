@@ -326,7 +326,7 @@ public class CashierController {
     @ResponseBody
     //更新订单状态
     public Object updateOrderStatus(String userId,String storeNo,String orderNo,String cashierTradeNo,int status,String auth) {
-        logger.info("#CashierController.savePreOrder# userId={},storeNo={},orderNo={},cashierTradeNo={},status={},auth={}",
+        logger.info("#CashierController.updateOrderStatus# userId={},storeNo={},orderNo={},cashierTradeNo={},status={},auth={}",
         											userId,storeNo,orderNo,cashierTradeNo,status,auth);
         if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(storeNo) || StringUtils.isEmpty(auth)){
         	return CommonResult.defaultError("参数不正确,证检查");
