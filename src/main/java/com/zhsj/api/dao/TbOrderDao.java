@@ -165,7 +165,8 @@ public interface TbOrderDao {
 	
 	int updateStatusAndMoney(@Param("id")long id, 
 							 @Param("status")int status,
-							 @Param("refundMoney")double refundMoney );
+							 @Param("refundMoney")double refundMoney,
+							 @Param("refundNo") String refundNo);
 	
 	int updateStatus(@Param("id")long id, 
 			 		@Param("status")int status,

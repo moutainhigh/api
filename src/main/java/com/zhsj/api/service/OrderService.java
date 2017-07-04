@@ -634,7 +634,7 @@ public class OrderService {
 				logger.info("#OrderService.refundSuccess# 更新orderRefundBean出错了");
 				return CommonResult.build(2, "系统异常");
 			}
-			int code = tbOrderDao.updateStatusAndMoney(bean.getId(), 4,bean.getActualChargeAmount());
+			int code = tbOrderDao.updateStatusAndMoney(bean.getId(), 4,bean.getActualChargeAmount(),"re"+bean.getOrderId());
 			if(code != 1){
 				logger.info("#OrderService.refundSuccess#  更新order出错了");
 				return CommonResult.build(2, "系统异常");
