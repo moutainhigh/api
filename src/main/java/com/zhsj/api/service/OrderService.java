@@ -364,6 +364,9 @@ public class OrderService {
     	logger.info("#appRefund# id={}, price={},accountId={}", id, price, accountId);
     	try {
 			OrderBean orderBean = bmOrderDao.getById(id);
+			if("3".equals(orderBean.getPayMethod())){
+				return CommonResult.build(2, "不支持银联卡退款");
+			}
 			String refundNo = "re"+orderBean.getOrderId();
 			OrderRefundBean orderRefund = tbOrderRefundDao.getByRefundNo(refundNo);
 			if(orderRefund != null){

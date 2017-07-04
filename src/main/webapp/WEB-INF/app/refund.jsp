@@ -11,6 +11,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="../resource/css/app/refund.css" rel="stylesheet" type="text/css">
     <script src="../resource/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
     <script type="text/javascript">
     (function(win,doc){
         function change(){
