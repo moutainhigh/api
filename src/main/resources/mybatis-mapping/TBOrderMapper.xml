@@ -432,7 +432,7 @@
      
      <update id="updateStatusAndMoney">
         update tb_order
-        set status = #{status},refund_money=#{refundMoney},refund_no=#{refundNo}
+        set status = #{status},refund_money=#{refundMoney},refund_no=#{refundNo},
         utime = unix_timestamp(now())
         where id = #{id}
      </update>
