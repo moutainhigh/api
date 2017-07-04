@@ -305,8 +305,8 @@ public class CashierController {
 		try {
 			pw = response.getWriter();
 			is = request.getInputStream();       
-            contentStr= IOUtils.toString(is, "utf-8");
-            logger.info("#CashierController.callback# contentstr={}",contentStr);
+			contentStr= IOUtils.toString(is, "utf-8");
+            orderService.callbackWPOS(contentStr);
 		} catch (IOException e) {
 			logger.error("#CashierController.callback# e={}",e.getMessage(),e );
 		}finally{
@@ -339,7 +339,7 @@ public class CashierController {
     
     @RequestMapping(value = "/refundUnionpay", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    //更新订单状态
+    //发起退款
     public Object refundUnionpay(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth) {
         logger.info("#CashierController.refundUnionpay# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
         											userId,storeNo,orderNo,cashierTradeNo,auth);

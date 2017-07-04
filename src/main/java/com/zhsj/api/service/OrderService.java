@@ -1,11 +1,13 @@
 package com.zhsj.api.service;
 
 import com.zhsj.api.bean.LoginUser;
+import com.zhsj.api.bean.ModuleBean;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.OrderRefundBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.bean.StoreBean;
+import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
 import com.zhsj.api.constants.StroeRole;
@@ -14,10 +16,13 @@ import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.StoreUtils;
+import com.zhsj.api.dao.TBModuleBindRoleDao;
 import com.zhsj.api.dao.TBOrderRefundDao;
+import com.zhsj.api.dao.TBStoreAccountBindRoleDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreSignDao;
 import com.zhsj.api.dao.TbStoreBindOrgDao;
+import com.zhsj.api.dao.TbStoreDao;
 import com.zhsj.api.dao.TbUserBindStoreDao;
 import com.zhsj.api.dao.TbUserDao;
 import com.zhsj.api.util.DateUtil;
@@ -28,8 +33,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +74,14 @@ public class OrderService {
     private StoreService storeService;
     @Autowired
     private TbStoreBindOrgDao tbStoreBindOrgDao;
+    @Autowired
+    private TBStoreAccountBindRoleDao tbStoreAccountBindRoleDao;
+    @Autowired
+    private TBModuleBindRoleDao tbModuleBindRoleDao;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private TbStoreDao tbStoreDao;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -553,6 +569,24 @@ public class OrderService {
     	 logger.info("#OrderService.refundUnionpay# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
 					userId,storeNo,orderNo,cashierTradeNo,auth);
     	 try{
+    		 auth = URLDecoder.decode(auth, "utf-8");
+			 String[] args = auth.split(",");
+			 
+			 List<Integer> moduleIds = new ArrayList<>();
+			 List<Integer> roleIds = tbStoreAccountBindRoleDao.getRoleIdByAccountId(Long.parseLong(args[1]));
+			 if(!CollectionUtils.isEmpty(roleIds)){
+				 moduleIds = tbModuleBindRoleDao.getModuleIdByRoleIds(roleIds);
+				 moduleIds = CollectionUtils.isEmpty(moduleIds)?new ArrayList<Integer>():moduleIds;
+			 }
+			 
+			 int refundRole = Integer.parseInt(MtConfig.getProperty("STORE_REFUND_ROLE", "0"));
+			 if(!moduleIds.contains(refundRole)){
+				return CommonResult.build(2, "没有权限操作");
+			 }
+    		 
+			if(cashierTradeNo.startsWith("09")){
+				cashierTradeNo = cashierTradeNo.substring(2);
+			} 
     		OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, orderNo, cashierTradeNo);
  			if(bean == null){
  				return CommonResult.build(2, "订单号不存在");
@@ -567,13 +601,17 @@ public class OrderService {
  			
  			//保存定单信息
  			OrderRefundBean orderRefundBean = new OrderRefundBean();
-			orderRefundBean.setRefundNo("pre"+orderNo);
+			orderRefundBean.setRefundNo("pre"+bean.getOrderId());
 			orderRefundBean.setRefundMoney(bean.getActualChargeAmount());
 			orderRefundBean.setSubmitUserId(Long.parseLong(userId));
-			int reCode = tbOrderRefundDao.insert(orderRefundBean);
-			if(reCode != 1){
-				logger.info("#appRefund# 添加orderRefundBean出错了");
-				return CommonResult.build(2, "系统异常");
+			
+			OrderRefundBean refundBean = tbOrderRefundDao.getByRefundNo("pre"+bean.getOrderId());
+			if(refundBean == null){
+				int reCode = tbOrderRefundDao.insert(orderRefundBean);
+				if(reCode != 1){
+					logger.info("#appRefund# 添加orderRefundBean出错了");
+					return CommonResult.build(2, "系统异常");
+				}
 			}
 			return CommonResult.success("", bean.getTransactionId());
     	 }catch (Exception e) {
@@ -596,7 +634,7 @@ public class OrderService {
 				logger.info("#OrderService.refundSuccess# 更新orderRefundBean出错了");
 				return CommonResult.build(2, "系统异常");
 			}
-			int code = tbOrderDao.updateStatusById(bean.getId(), 4);
+			int code = tbOrderDao.updateStatusAndMoney(bean.getId(), 4,bean.getActualChargeAmount());
 			if(code != 1){
 				logger.info("#OrderService.refundSuccess#  更新order出错了");
 				return CommonResult.build(2, "系统异常");
@@ -608,5 +646,40 @@ public class OrderService {
         }
         return CommonResult.defaultError("系统异常");
     }
+    
+    public boolean callbackWPOS(String content){
+    	boolean flag = false;
+    	logger.info("#OrderService.callbackWPOS# content={}",content);
+    	try{
+    		Map<String,String> map = new HashMap<>();
+    		String[] args = content.split("&");
+    		for(int i = 0;i<args.length;i++){
+    			map.put(args[i].split("=")[0], URLDecoder.decode(args[i].split("=")[1]));
+    		}
+    		if("PAY".equals(map.get("trade_status"))){
+    			String orderNo = map.get("out_trade_no");
+    			String transactionId = map.get("cashier_trade_no");
+    			String buyer = map.get("buyer");
+    			
+    			OrderBean bean = tbOrderDao.getByOrderId(orderNo);
+    			StoreBean storeBean = tbStoreDao.getStoreByNo(bean.getStoreNo());
+    			//添加用户
+    			UserBean userBean = userService.saveStoreUser(buyer,3,storeBean.getStoreNo(),storeBean.getParentNo(),"",0);
+    			//更新表信息
+    			int num = tbOrderDao.updateStatus(bean.getId(), 1, 0, transactionId, userBean.getId());
+    			if(num <=0){
+    				tbOrderDao.updateUser(bean.getId(), transactionId, userBean.getId());
+    			}
+    			flag = true;
+    		}
+    	}catch (Exception e) {
+    		logger.error("#OrderService.callbackWPOS# content={}",content,e);
+		}
+    	return flag;
+    }
+    
+    public static void main(String[] args) {
+		new OrderService().callbackWPOS("");
+	}
 }
 

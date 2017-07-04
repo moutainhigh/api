@@ -162,4 +162,18 @@ public interface TbOrderDao {
 	int updateOrderRefundById(@Param("id")long id,@Param("refundNo")String refundNo,@Param("refundMoney")double refundMoney);
 	
 	int updateStatusById(@Param("id")long id, @Param("status")int status);
+	
+	int updateStatusAndMoney(@Param("id")long id, 
+							 @Param("status")int status,
+							 @Param("refundMoney")double refundMoney );
+	
+	int updateStatus(@Param("id")long id, 
+			 		@Param("status")int status,
+			 		@Param("preStatus")int preStatus,
+			 		@Param("transactionId")String transactionId,
+			 		@Param("userId")long userId);
+	
+	int updateUser(@Param("id")long id, 
+			 		@Param("transactionId")String transactionId,
+			 		@Param("userId")long userId);
 }

@@ -13,8 +13,6 @@ import org.springframework.stereotype.Component;
 @DynamicDataSource(DS.DB_FLOW)
 public interface TBOrderRefundDao {
 	
-	List<OrderRefundBean> getByNo(@Param("orderNo")String orderNo);
-	
 	int updateStatusByNo(@Param("reOrderNo")String reOrderNo,
 					@Param("status")int status);
     
@@ -26,5 +24,8 @@ public interface TBOrderRefundDao {
 							   @Param("preOrderNo")String preOrderNo,
 							   @Param("status")int status,
 							   @Param("refundMoney")double refundMoney);
+	
+	List<OrderRefundBean> getPreRefund(@Param("startTime") int startTime,
+									   @Param("endTime")int endTime);
 
 }
