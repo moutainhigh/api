@@ -259,8 +259,6 @@
           <groupId>com.wangpos</groupId>
           <artifactId>wopensdk</artifactId>
           <version>1.0</version>
-          <scope>system</scope>
-          <systemPath>${project.basedir}/src/main/lib/wopensdk-1.0.jar</systemPath>
       </dependency>
 	
   </dependencies>
