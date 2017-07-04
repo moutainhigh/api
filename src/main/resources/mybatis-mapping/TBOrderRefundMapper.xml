@@ -35,7 +35,7 @@
     <select id="getPreRefund" resultType="com.zhsj.api.bean.OrderRefundBean">
        select <include refid="SELECT_FIELDS"/>
     	from tb_order_refund
-    	where WHERE refund_no LIKE "pre%" AND ctime BETWEEN #{startTime} AND #{endTime}
+    	WHERE refund_no LIKE "pre%" AND ctime BETWEEN #{startTime} AND #{endTime}
     </select>
     
     
