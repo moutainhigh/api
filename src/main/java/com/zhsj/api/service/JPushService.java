@@ -95,9 +95,9 @@ public class JPushService {
     			String json = toSuccessMsg(orderBean, regIds);
     			String result = sendPost("https://api.jpush.cn/v3/push", json);
     			logger.info("result="+result);
-    			Map<String, String> map = JSON.parseObject(result, Map.class);
-    			JPUSH_MSG.put((int)orderBean.getId(), map.get("msg_id"));
-    			sendJPushMsg((int)orderBean.getId(),json);
+//    			Map<String, String> map = JSON.parseObject(result, Map.class);
+//    			JPUSH_MSG.put((int)orderBean.getId(), map.get("msg_id"));
+//    			sendJPushMsg((int)orderBean.getId(),json);
     		}
     		
     		return CommonResult.success("");
@@ -316,7 +316,7 @@ public class JPushService {
 
     }
     
-    private void sendJPushMsg(final int sendNo,final String json) throws Exception{
+    private void sendJPushMsg1(final int sendNo,final String json) throws Exception{
     	Integer num = new SimpleRetryTemplate<Integer>() {
 			@Override
 			public Integer invoke() throws Exception {
