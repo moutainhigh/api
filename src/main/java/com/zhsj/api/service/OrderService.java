@@ -579,7 +579,7 @@ public class OrderService {
 				 moduleIds = CollectionUtils.isEmpty(moduleIds)?new ArrayList<Integer>():moduleIds;
 			 }
 			 
-			 int refundRole = Integer.parseInt(MtConfig.getProperty("STORE_REFUND_ROLE", "0"));
+			 int refundRole = Integer.parseInt(MtConfig.getProperty("STORE_REFUND_MODULE_ID", "0"));
 			 if(!moduleIds.contains(refundRole)){
 				return CommonResult.build(2, "没有权限操作");
 			 }
