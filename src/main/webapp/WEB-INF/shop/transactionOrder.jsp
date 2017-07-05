@@ -106,10 +106,16 @@ pageEncoding="UTF-8"%>
         var price = "￥"+parseFloat(${order.planChargeAmount} - ${order.actualChargeAmount}).toFixed(2);
         var time = ${order.ctime*1000};
         var status = ${order.status};
-        var payMethod = ${order.payMethod}==1?"微信支付":"支付宝支付";
+        var payMethod = ${order.payMethod};
+        if(payMethod == 1){
+        	 $("#payMethod").text("微信支付");
+        }else if(payMethod == 2){
+        	 $("#payMethod").text("支付宝支付");
+        }else if(payMethod == 3){
+        	 $("#payMethod").text("银联卡支付");
+        }
         var storeName =  '${order.storeName}';
         $("#_ctime").text(new Date(time).Format("yyyy-MM-dd hh:mm:ss"));
-        $("#payMethod").text(payMethod);
         $("#discountPrice").text(price);
         $("#storeName").text(storeName);
         if(status == 1){

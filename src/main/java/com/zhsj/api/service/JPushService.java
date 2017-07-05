@@ -316,7 +316,7 @@ public class JPushService {
 
     }
     
-    private void sendJPushMsg1(final int sendNo,final String json) throws Exception{
+    private void sendJPushMsg(final int sendNo,final String json) throws Exception{
     	Integer num = new SimpleRetryTemplate<Integer>() {
 			@Override
 			public Integer invoke() throws Exception {

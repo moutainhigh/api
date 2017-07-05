@@ -282,8 +282,10 @@ pageEncoding="UTF-8"%>
                     $(this).children('span').removeClass('con-noselect').addClass('con-select');
                 }else if(index == 1){//微信
                     $(this).children('span').removeClass('con-noselect').addClass('selectWeChat');
-                }else{//支付宝
+                }else if(index == 2){//支付宝
                     $(this).children('span').removeClass('con-noselect').addClass('selectAli');
+                }else{
+                	$(this).children('span').removeClass('con-noselect').addClass('selectAli');
                 }
             });
             //交易时间
@@ -324,6 +326,8 @@ pageEncoding="UTF-8"%>
                             paySelect = 1;
                         }else if(i == 2){//支付宝
                             paySelect = 2;
+                        }else if(i == 3){//银联卡
+                        	paySelect = 3;
                         }
                         break;
                     }
@@ -466,6 +470,11 @@ pageEncoding="UTF-8"%>
                                        <span class="con-noselect">支付宝</span>
                                    </li>
                                </ul>
+                               <ul class="clearfix" style="padding-top:10px">
+                               		<li>
+                                       <span class="con-noselect">银联卡</span>
+                                   </li>
+                                </ul>
                            </div>
                      </div>
                      <div class="wwt-find-row common-mg clearfix" id="transactionDate">
@@ -661,8 +670,10 @@ pageEncoding="UTF-8"%>
                         html+="<span class=\"item normalpay\" >";
                         if(beanObj[i].payMethod == 1){
                             html+="<img src=\"../resource/img/app/weixinzhifu.png\">";
-                        }else{
+                        }else if(beanObj[i].payMethod == 2){
                             html+="<img src=\"../resource/img/app/zhifubao.png\">";
+                        }else{
+                        	 html+="<img src=\"../resource/img/app/unionPay-icon.png\">";
                         }
                     }
                     html+=" <div class=\"cont\">";
@@ -670,7 +681,14 @@ pageEncoding="UTF-8"%>
                     if(beanObj[i].status == 3){
                         html+=" <span>全部退款</span>";
                     }else{
-                        html+="<span>收款码收款</span>";
+                    	if(beanObj[i].payChannel==1){
+                    		html+="<span>收款码收款</span>";
+                    	}else if(beanObj[i].payChannel== 2 || beanObj[i].payChannel==3){
+                    		html+="<span>设备收款</span>";
+                    	}else if(beanObj[i].payChannel==4){
+                    		html+="<span>银联刷卡</span>";
+                    	}
+                        
                         if(beanObj[i].planChargeAmount - beanObj[i].actualChargeAmount > 0){
                             html+="<span>立减</span>";
                             html+="<span><del>￥"+parseFloat(beanObj[i].planChargeAmount - beanObj[i].actualChargeAmount).toFixed(2)+"</del></span>";
