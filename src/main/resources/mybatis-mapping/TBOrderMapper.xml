@@ -165,7 +165,7 @@
     <select id="getCountByMoney" resultType="java.lang.Integer">
       select count(distinct(user_id)) from tb_order
       <where>
-         store_no = #{storeNo}
+         store_no = #{storeNo} and user_id > 0
          <if test="actualChargeAmount1 != null">
             and actual_charge_amount >= #{actualChargeAmount1}
          </if>
@@ -177,7 +177,7 @@
     
     <select id="getCountByTime" resultType="java.lang.Integer">
        select count(1) from (
-          select count(1) from tb_order where  store_no = #{storeNo}
+          select count(1) from tb_order where  store_no = #{storeNo} and user_id > 0
           GROUP BY user_id having  
           <if test="time ==1">
              count(user_id) = 1

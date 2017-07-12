@@ -133,7 +133,7 @@ pageEncoding="UTF-8"%>
 
     function loadUserInfo(userId){
         $.post("./searchUserInfo",{"userId":userId,"auth":auth},function(obj){
-            if(obj.code == 0){
+            if(obj.code == 0 && obj.data){
                 $("#userName").text(obj.data.nickName);
             }
         })

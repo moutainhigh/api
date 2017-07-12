@@ -322,6 +322,33 @@ public class CashierController {
 		}
     }
     
+    @RequestMapping(value = "/callbackFY", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //保存定单
+    public void callbackFY(HttpServletRequest request, HttpServletResponse response) {
+    	InputStream is= null;     
+    	String contentStr="";     
+    	PrintWriter pw = null;
+		try {
+			pw = response.getWriter();
+			is = request.getInputStream();       
+			contentStr= IOUtils.toString(is, "utf-8");
+            logger.info("#callbackFY# content={}",contentStr);
+		} catch (IOException e) {
+			logger.error("#CashierController.callback# e={}",e.getMessage(),e );
+		}finally{
+		    pw.flush();
+		    pw.close();
+		    if(is !=null){
+		    	try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		    }
+		}
+    }
+    
     @RequestMapping(value = "/updateOrderStatus", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     //更新订单状态
@@ -352,6 +379,21 @@ public class CashierController {
         return orderService.refundUnionpay(userId, storeNo,orderNo, cashierTradeNo, auth);
     }
     
+    @RequestMapping(value = "/refundUP", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //发起退款
+    public Object refundUP(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth) {
+        logger.info("#CashierController.refundUP# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
+        											userId,storeNo,orderNo,cashierTradeNo,auth);
+        if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(auth) || StringUtils.isEmpty(storeNo)){
+        	return CommonResult.defaultError("参数不正确,证检查");
+        }
+        if(StringUtils.isEmpty(cashierTradeNo) && StringUtils.isEmpty(orderNo)){
+        	return CommonResult.defaultError("订单号与交易号不能全为空");
+        }
+        return orderService.refundUnionpay(userId, storeNo,orderNo, cashierTradeNo, auth);
+    }
+    
     @RequestMapping(value = "/refundSuccess", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     //更新订单状态
@@ -364,7 +406,22 @@ public class CashierController {
         if(StringUtils.isEmpty(cashierTradeNo) ){
         	return CommonResult.defaultError("参数不正确,证检查");
         }
-        return orderService.refundSuccess(userId, storeNo, cashierTradeNo, auth);
+        return orderService.refundSuccess(userId, storeNo, "",cashierTradeNo, auth);
+    }
+    
+    @RequestMapping(value = "/refundUPSuccess", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //更新订单状态
+    public Object refundUPSuccess(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth) {
+        logger.info("#CashierController.refundSuccess# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
+        											userId,storeNo,orderNo,cashierTradeNo,auth);
+        if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(storeNo) || StringUtils.isEmpty(auth)){
+        	return CommonResult.defaultError("参数不正确,证检查");
+        }
+        if(StringUtils.isEmpty(cashierTradeNo) && StringUtils.isEmpty(orderNo)){
+        	return CommonResult.defaultError("参数不正确,证检查");
+        }
+        return orderService.refundSuccess(userId, storeNo, orderNo,cashierTradeNo, auth);
     }
     
     

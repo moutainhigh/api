@@ -72,7 +72,7 @@ public class RefundMoneyWPOS {
     			if("REFUND".equals((String)dataMap.get("trade_status"))){
     				String cashierTradeNo = (String)dataMap.get("cashier_trade_no");
     				OrderBean orderBean = orderService.getByOrderId(orderNo);
-    				orderService.refundSuccess("-1", orderBean.getStoreNo(), cashierTradeNo, "");
+    				orderService.refundSuccess("-1", orderBean.getStoreNo(),orderBean.getOrderId(), cashierTradeNo, "");
     			}
     		}
 

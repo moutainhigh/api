@@ -82,6 +82,8 @@ public class OrderService {
     private UserService userService;
     @Autowired
     private TbStoreDao tbStoreDao;
+    @Autowired
+    private FuyouService fuyouService;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -173,6 +175,10 @@ public class OrderService {
 					//中信接口
 					result = pinganService.refundMoney(orderBean,price,userId);
 					break;
+				case 5:
+					//中信接口
+					result = fuyouService.refundMoney(orderBean,price,userId);
+					break;
 				default:
 					logger.info("#OrderService.refundMoney# orderNo={},price={},msg={}",orderNo,price,"支付方式不支持");
 					return CommonResult.defaultError("支付方式不支持");
@@ -219,6 +225,10 @@ public class OrderService {
 				case 4:
 					//中信接口
 					result = pinganService.searchRefund(orderBean);
+					break;
+				case 5:
+					//富友接口
+					result = fuyouService.searchRefund(orderBean);
 					break;
 				default:
 					logger.info("#OrderService.searchRefund# orderNo={},msg={}",orderNo,"支付方式不支持");
@@ -511,7 +521,7 @@ public class OrderService {
 				orderBean.setParentStoreNo(storeBean.getParentNo());
 			}
 			orderBean.setOrgId(orgId);
-			orderBean.setUserId(0);
+			orderBean.setUserId(-1);
 			orderBean.setOrgIds(storeBean.getOrgIds());
 			orderBean.setSaleId(storeBean.getSaleId());
 
@@ -621,11 +631,70 @@ public class OrderService {
     	return CommonResult.defaultError("系统异常");
     }
     
-    public CommonResult refundSuccess(String userId,String storeNo,String cashierTradeNo,String auth) {
-        logger.info("#OrderService.refundSuccess# userId={},storeNo={},cashierTradeNo={},auth={}",
-				userId,storeNo,cashierTradeNo,auth);
+    public CommonResult refundUP(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth){
+   	 logger.info("#OrderService.refundUP# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
+					userId,storeNo,orderNo,cashierTradeNo,auth);
+   	 try{
+   		 auth = URLDecoder.decode(auth, "utf-8");
+			 String[] args = auth.split(",");
+			 
+			 List<Integer> moduleIds = new ArrayList<>();
+			 List<Integer> roleIds = tbStoreAccountBindRoleDao.getRoleIdByAccountId(Long.parseLong(args[1]));
+			 if(!CollectionUtils.isEmpty(roleIds)){
+				 moduleIds = tbModuleBindRoleDao.getModuleIdByRoleIds(roleIds);
+				 moduleIds = CollectionUtils.isEmpty(moduleIds)?new ArrayList<Integer>():moduleIds;
+			 }
+			 
+			 int refundRole = Integer.parseInt(MtConfig.getProperty("STORE_REFUND_MODULE_ID", "0"));
+			 if(!moduleIds.contains(refundRole)){
+				return CommonResult.build(2, "没有权限操作");
+			 }
+   		 
+			if(cashierTradeNo.startsWith("09")){
+				cashierTradeNo = cashierTradeNo.substring(2);
+			} 
+			OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, orderNo, cashierTradeNo);
+			if(bean == null){
+				return CommonResult.build(2, "订单号不存在");
+			}
+			if(bean.getStatus() == 3){
+				return CommonResult.success("该订单已经在处理中");
+			}else if(bean.getStatus() == 4){
+				return CommonResult.success("该订单退款成功");
+			}else if(bean.getStatus() == 5){
+				return CommonResult.success("该订单退款失败");
+			}
+			
+			//保存定单信息
+			OrderRefundBean orderRefundBean = new OrderRefundBean();
+			orderRefundBean.setRefundNo("pre"+bean.getOrderId());
+			orderRefundBean.setRefundMoney(bean.getActualChargeAmount());
+			orderRefundBean.setSubmitUserId(Long.parseLong(userId));
+			
+			OrderRefundBean refundBean = tbOrderRefundDao.getByRefundNo("pre"+bean.getOrderId());
+			if(refundBean == null){
+				int reCode = tbOrderRefundDao.insert(orderRefundBean);
+				if(reCode != 1){
+					logger.info("#appRefund# 添加orderRefundBean出错了");
+					return CommonResult.build(2, "系统异常");
+				}
+			}
+			Map<String,String> map = new HashMap<>();
+			map.put("orderNo", bean.getOrderId());
+			map.put("transactionId", bean.getTransactionId());
+			return CommonResult.success("", bean.getTransactionId());
+   	 }catch (Exception e) {
+   		 logger.error("#OrderService.refundUnionpay# userId={},orderNo={},cashierTradeNo={},auth={}",
+					userId,orderNo,cashierTradeNo,auth,e);
+		}
+   	return CommonResult.defaultError("系统异常");
+   }
+    
+    public CommonResult refundSuccess(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth) {
+        logger.info("#OrderService.refundSuccess# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
+				userId,storeNo,orderNo,cashierTradeNo,auth);
         try{
-        	OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, "", cashierTradeNo);
+        	OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, orderNo, cashierTradeNo);
         	if(bean == null){
  				return CommonResult.build(2, "订单不存在");
  			}
@@ -659,17 +728,17 @@ public class OrderService {
     		if("PAY".equals(map.get("trade_status"))){
     			String orderNo = map.get("out_trade_no");
     			String transactionId = map.get("cashier_trade_no");
-    			String buyer = map.get("buyer");
+//    			String buyer = map.get("buyer");
     			
     			OrderBean bean = tbOrderDao.getByOrderId(orderNo);
     			StoreBean storeBean = tbStoreDao.getStoreByNo(bean.getStoreNo());
     			//添加用户
-    			UserBean userBean = userService.saveStoreUser(buyer,3,storeBean.getStoreNo(),storeBean.getParentNo(),"",0);
+//    			UserBean userBean = userService.saveStoreUser(buyer,3,storeBean.getStoreNo(),storeBean.getParentNo(),"",0);
     			//更新表信息
-    			int num = tbOrderDao.updateStatus(bean.getId(), 1, 0, transactionId, userBean.getId());
-    			if(num <=0){
-    				tbOrderDao.updateUser(bean.getId(), transactionId, userBean.getId());
-    			}
+    			int num = tbOrderDao.updateStatus(bean.getId(), 1, 0, transactionId, -1);
+//    			if(num <=0){
+//    				tbOrderDao.updateUser(bean.getId(), transactionId, -1);
+//    			}
     			flag = true;
     		}
     	}catch (Exception e) {

@@ -389,6 +389,9 @@ public class ShopService {
 	        for(UserBindStoreBean usBean : ubsbBeans){
 	        	CountMember cm = orderDao.getByStoreNoAndUserId(storeNo, usBean.getUserId());
 	        	UserBean userBean = tbUserDao.getUserById(usBean.getUserId());
+	        	if(userBean == null){
+	        		continue;
+	        	}
 	        	cm.setHeadImg(userBean.getHeadImg());
 	        	cm.setNick(userBean.getNickName());
 	        	cm.setTime(usBean.getUtime());
@@ -410,12 +413,21 @@ public class ShopService {
     		List<CountMember> mList = orderDao.getByStoreNoAndMoney(storeNo, money1, money2);
     		for(CountMember cMember:mList){
     			UserBean userBean = tbUserDao.getUserById(cMember.getUserId());
+    			if(userBean == null){
+	        		continue;
+	        	}
     			cMember.setHeadImg(userBean.getHeadImg());
     			cMember.setNick(userBean.getNickName());
     			CountMember cm = orderDao.getByStoreNoAndUserId(storeNo, cMember.getUserId());
+    			if(cm == null){
+	        		continue;
+	        	}
     			cMember.setCount(cm.getCount());
     			cMember.setSum(cm.getSum());
     			UserBindStoreBean userStore = tbUserBindStoreDao.getByStoreAndUser(cMember.getUserId(), storeNo);
+    			if(userStore == null){
+	        		continue;
+	        	}
     			cMember.setTime(userStore.getUtime());
     			cMember.setUserType(userStore.getUserType());
     		}
@@ -425,12 +437,21 @@ public class ShopService {
     		List<CountMember> timeList = orderDao.getByStoreNoAndTime(storeNo, number);
     		for(CountMember tMember:timeList){
     			UserBean userBean = tbUserDao.getUserById(tMember.getUserId());
+    			if(userBean == null){
+    				continue;
+    			}
     			tMember.setHeadImg(userBean.getHeadImg());
     			tMember.setNick(userBean.getNickName());
     			CountMember cm = orderDao.getByStoreNoAndUserId(storeNo, tMember.getUserId());
+    			if(cm == null){
+	        		continue;
+	        	}
     			tMember.setCount(cm.getCount());
     			tMember.setSum(cm.getSum());
     			UserBindStoreBean userStore = tbUserBindStoreDao.getByStoreAndUser(tMember.getUserId(), storeNo);
+    			if(userStore == null){
+	        		continue;
+	        	}
     			tMember.setTime(userStore.getUtime());
     			tMember.setUserType(userStore.getUserType());
     		}
