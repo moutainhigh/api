@@ -575,7 +575,7 @@ public class OrderService {
         return CommonResult.defaultError("系统异常");
     }
     
-    public CommonResult refundUnionpay(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth){
+    public CommonResult refundUnionpay(String userId,String storeNo,int type,String orderNo,String cashierTradeNo,String auth){
     	 logger.info("#OrderService.refundUnionpay# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
 					userId,storeNo,orderNo,cashierTradeNo,auth);
     	 try{
@@ -593,11 +593,13 @@ public class OrderService {
 			 if(!moduleIds.contains(refundRole)){
 				return CommonResult.build(2, "没有权限操作");
 			 }
-    		 
-			if(cashierTradeNo.startsWith("09")){
-				cashierTradeNo = cashierTradeNo.substring(2);
-			} 
-    		OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, orderNo, cashierTradeNo);
+    		 if(type == 1){
+    			 if(cashierTradeNo.startsWith("09")){
+					cashierTradeNo = cashierTradeNo.substring(2);
+				} 
+    		 }
+			
+    		OrderBean bean = bmOrderDao.getByTypeOrderIdOrTransId(storeNo, orderNo, cashierTradeNo,type);
  			if(bean == null){
  				return CommonResult.build(2, "订单号不存在");
  			}
@@ -609,7 +611,7 @@ public class OrderService {
  				return CommonResult.success("该订单退款失败");
  			}
  			
- 			//保存定单信息
+ 			//保存定单信息ss
  			OrderRefundBean orderRefundBean = new OrderRefundBean();
 			orderRefundBean.setRefundNo("pre"+bean.getOrderId());
 			orderRefundBean.setRefundMoney(bean.getActualChargeAmount());

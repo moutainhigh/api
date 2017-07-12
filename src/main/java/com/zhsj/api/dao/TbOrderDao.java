@@ -159,6 +159,11 @@ public interface TbOrderDao {
 	
 	OrderBean getByOrderIdOrTransId(@Param("storeNo")String storeNo,@Param("orderId")String orderId, @Param("transId")String transId);
 	
+	OrderBean getByTypeOrderIdOrTransId(@Param("storeNo")String storeNo,
+										@Param("orderId")String orderId, 
+										@Param("transId")String transId,
+										@Param("payType")int payType);
+	
 	int updateOrderRefundById(@Param("id")long id,@Param("refundNo")String refundNo,@Param("refundMoney")double refundMoney);
 	
 	int updateStatusById(@Param("id")long id, @Param("status")int status);

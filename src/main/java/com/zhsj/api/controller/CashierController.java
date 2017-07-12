@@ -376,22 +376,22 @@ public class CashierController {
         if(StringUtils.isEmpty(cashierTradeNo) && StringUtils.isEmpty(orderNo)){
         	return CommonResult.defaultError("订单号与交易号不能全为空");
         }
-        return orderService.refundUnionpay(userId, storeNo,orderNo, cashierTradeNo, auth);
+        return orderService.refundUnionpay(userId, storeNo,5,orderNo, cashierTradeNo, auth);
     }
     
     @RequestMapping(value = "/refundUP", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     //发起退款
-    public Object refundUP(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth) {
-        logger.info("#CashierController.refundUP# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
-        											userId,storeNo,orderNo,cashierTradeNo,auth);
+    public Object refundUP(String userId,String storeNo,int type,String orderNo,String cashierTradeNo,String auth) {
+        logger.info("#CashierController.refundUP# userId={},storeNo={},type={},orderNo={},cashierTradeNo={},auth={}",
+        											userId,storeNo,type,orderNo,cashierTradeNo,auth);
         if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(auth) || StringUtils.isEmpty(storeNo)){
         	return CommonResult.defaultError("参数不正确,证检查");
         }
         if(StringUtils.isEmpty(cashierTradeNo) && StringUtils.isEmpty(orderNo)){
         	return CommonResult.defaultError("订单号与交易号不能全为空");
         }
-        return orderService.refundUnionpay(userId, storeNo,orderNo, cashierTradeNo, auth);
+        return orderService.refundUnionpay(userId, storeNo,type,orderNo, cashierTradeNo, auth);
     }
     
     @RequestMapping(value = "/refundSuccess", method = {RequestMethod.GET,RequestMethod.POST})
