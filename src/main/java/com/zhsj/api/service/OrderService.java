@@ -722,8 +722,9 @@ public class OrderService {
 			}
 			Map<String,String> map = new HashMap<>();
 			map.put("orderNo", bean.getOrderId());
+			map.put("amount",String.valueOf((int)(Arith.mul(bean.getActualChargeAmount(),100))));
 			map.put("transactionId", bean.getTransactionId());
-			return CommonResult.success("", bean.getTransactionId());
+			return CommonResult.success("",map);
    	 }catch (Exception e) {
    		 logger.error("#OrderService.refundUnionpay# userId={},orderNo={},cashierTradeNo={},auth={}",
 					userId,orderNo,cashierTradeNo,auth,e);
@@ -737,7 +738,7 @@ public class OrderService {
         try{
         	List<String> storeNoList = new ArrayList<>();
         	storeNoList.add(storeNo);
-        	OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNoList, "", cashierTradeNo);
+        	OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNoList, orderNo, cashierTradeNo);
         	if(bean == null){
  				return CommonResult.build(2, "订单不存在");
  			}
@@ -783,6 +784,32 @@ public class OrderService {
 //    				tbOrderDao.updateUser(bean.getId(), transactionId, -1);
 //    			}
     			flag = true;
+    		}
+    	}catch (Exception e) {
+    		logger.error("#OrderService.callbackWPOS# content={}",content,e);
+		}
+    	return flag;
+    }
+    
+    public boolean callbackFY(String content){
+    	boolean flag = false;
+    	logger.info("#OrderService.callbackFY# content={}",content);
+    	try{
+    		Map<String,String> map = JSON.parseObject(content,Map.class);
+    		String terminal_id = map.get("terminal_id");
+    		String terminal_trace = map.get("terminal_trace");
+    		String total_fee = map.get("total_fee");
+    		String pay_type = map.get("pay_type");
+    		String pay_status = map.get("pay_status");
+    		if(!"3".equals(pay_type)){
+    			return true;
+    		}
+    		if("1".equals(pay_status)){
+    			//成功
+    			
+    		}else if("3".equals(pay_status)){
+    			//取消
+    			
     		}
     	}catch (Exception e) {
     		logger.error("#OrderService.callbackWPOS# content={}",content,e);

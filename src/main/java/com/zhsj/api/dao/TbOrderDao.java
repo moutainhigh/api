@@ -196,6 +196,11 @@ public interface TbOrderDao {
 			 		@Param("transactionId")String transactionId,
 			 		@Param("userId")long userId);
 	
+	int updateStatusByTransacionId(@Param("status")int status,
+							 		@Param("preStatus")int preStatus,
+							 		@Param("transactionId")String transactionId,
+							 		@Param("totalFee")double totalFee);
+	
 	int updateUser(@Param("id")long id, 
 			 		@Param("transactionId")String transactionId,
 			 		@Param("userId")long userId);
