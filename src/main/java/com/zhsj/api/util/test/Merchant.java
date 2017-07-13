@@ -16,11 +16,12 @@ public class Merchant
 		 * 
 		 * 使用前请先修改StaticConfig中的证书路径配置
 		 */
-//		StaticConfig.REQ_URL = "https://115.28.58.174:6789/merSettled.do";
-		//商户入驻
-		mersettled();
+		StaticConfig.REQ_URL = "https://115.28.58.174:6789/merSettled.do";
+		StaticConfig.REQ_URL = "https://115.28.58.174:6789/updateMerchantByPaykey.do";
+//		//商户入驻
+//		mersettled();
 		//商户信息修改
-//		updateMerchantByPaykey();
+		updateMerchantByPaykey();
 	}
 	
 	public static void mersettled() {
@@ -73,10 +74,10 @@ public class Merchant
 	
 	public static void updateMerchantByPaykey() {
 		Map<String, String> reqData = new HashMap<String, String>();
-		reqData.put("paykey", "3eb3bf9ba2994b57929fc2193c1dc4e7"); //修改商户的paykey
+		reqData.put("paykey", "0c4cc6f9c3de47d1ab4c5b72ebf68b03"); //修改商户的paykey
         reqData.put("agent_no", "95272016121410000062");//代理商编号
-        reqData.put("wx_rate", "0.25"); //微信费率
-        reqData.put("ali_rate", "0.25");//支付宝费率
+        reqData.put("wx_rate", "0.35"); //微信费率
+        reqData.put("ali_rate", "0.35");//支付宝费率
         reqData.put("settlement_type", "T1");//商户结算周期
 	try
 	{

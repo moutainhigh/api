@@ -150,11 +150,23 @@ public class ModuleService {
 			 List<ModuleBean> allModuleBeans = tbModuleDao.getByParentIdAndType(0, 2);
 			 String uri = request.getRequestURL().toString();
 			 uri = uri.replace(request.getRequestURI(), "")+ request.getContextPath();
+			 
+			 List<Integer> moduleIds = new ArrayList<>();
+			 List<Integer> roleIds = tbStoreAccountBindRoleDao.getRoleIdByAccountId(Long.parseLong(args[1]));
+			 if(!CollectionUtils.isEmpty(roleIds)){
+				 moduleIds = tbModuleBindRoleDao.getModuleIdByRoleIds(roleIds);
+				 moduleIds = CollectionUtils.isEmpty(moduleIds)?new ArrayList<Integer>():moduleIds;
+			 }
+			 List<ModuleBean> resultList = new ArrayList<>();
 			 for(ModuleBean bean:allModuleBeans){
+				 if(!moduleIds.contains((int)bean.getId())){
+					continue;
+				 }
 				 bean.setIconUrl(uri+bean.getIconUrl());
 				 bean.setUrl(uri+bean.getUrl()+"?storeNo="+args[0]+"&accountId="+args[1]);
+				 resultList.add(bean);
 			 }
-			 return CommonResult.success("", allModuleBeans);
+			 return CommonResult.success("", resultList);
 		 }catch (Exception e) {
 			 logger.error("#ModuleService.getAppModule# storeNo={},os={},auth={}",storeNo,os,auth,e);
 		}

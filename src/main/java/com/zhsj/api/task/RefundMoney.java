@@ -1,6 +1,5 @@
 package com.zhsj.api.task;
 
-import java.math.BigDecimal;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,16 +8,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import com.zhsj.api.bean.MinMaxBean;
 import com.zhsj.api.bean.OrderBean;
-import com.zhsj.api.bean.OrderRefundBean;
-import com.zhsj.api.bean.StoreBalanceDetailBean;
-import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.dao.TBOrderRefundDao;
-import com.zhsj.api.dao.TBStoreBalanceDetailsDao;
 import com.zhsj.api.service.OrderService;
-import com.zhsj.api.service.StoreService;
-import com.zhsj.api.service.WXService;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.DateUtil;
 

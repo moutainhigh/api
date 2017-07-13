@@ -28,8 +28,11 @@ public class OrderBean {
     private int payChannel;
     private long accountId;
     
+    private String discountDetail;
     private double storeDiscountPrice;
     private double orgDiscountPrice;
+    
+    private String transactionId;
     
 
     public long getCtime() {
@@ -244,6 +247,22 @@ public class OrderBean {
 
 	public void setOrgDiscountPrice(double orgDiscountPrice) {
 		this.orgDiscountPrice = orgDiscountPrice;
+	}
+
+	public String getDiscountDetail() {
+		return discountDetail;
+	}
+
+	public void setDiscountDetail(String discountDetail) {
+		this.discountDetail = discountDetail;
+	}
+
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
     
 	

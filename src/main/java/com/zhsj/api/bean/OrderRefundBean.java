@@ -78,5 +78,11 @@ public class OrderRefundBean {
 	public void setCtime(int ctime) {
 		this.ctime = ctime;
 	}
+	@Override
+	public String toString() {
+		return "OrderRefundBean [id=" + id + ", refundNo=" + refundNo
+				+ ", status=" + status + ", ctime=" + ctime + "]";
+	}
+	
 	
 }
