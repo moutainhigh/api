@@ -3,6 +3,7 @@ package com.zhsj.api.controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -333,6 +334,8 @@ public class CashierController {
 			pw = response.getWriter();
 			is = request.getInputStream();       
 			contentStr= IOUtils.toString(is, "utf-8");
+			contentStr = URLDecoder.decode(contentStr, "GBK");
+	        contentStr = contentStr.replace("req=", "");
             logger.info("#callbackFY# content={}",contentStr);
 		} catch (IOException e) {
 			logger.error("#CashierController.callback# e={}",e.getMessage(),e );
