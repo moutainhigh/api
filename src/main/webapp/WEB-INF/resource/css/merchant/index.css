@@ -23,17 +23,17 @@
 .today-money{
     width:48%;
     height:1.62rem;
-    background: #6ebcce;
+    background: #62bdff;
     text-align: center;
-
+    color: #FFF;
 }
 .today-money h3{
-    font-size:12px;
-    padding-top:0.44rem;
-    padding-bottom:0.2rem;
+    font-size: .28rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.2rem;
 }
 .today-money p{
-    font-size:12px;
+   font-size: .45rem;
 }
 .receivables{
     margin-top:0.2rem;
@@ -44,7 +44,8 @@
     background: #FFFFFF;
 }
 .trade{
-    margin-top:0.2rem;
+	padding: 10px 0;
+    background: #FFF;
 }
 .trade-number{
     background: #FFFFFF;
@@ -53,15 +54,17 @@
     height:1.2rem;
 }
 .trade-number h2{
-    font-size:0.24rem;
-    padding-top:0.28rem;
-    padding-bottom:0.1rem;
+    font-size: .24rem;
+    padding-top: .12rem;
+    padding-bottom: .1rem;
+    color: #AAA;
 }
 .trade-number p{
-    font-size:0.2rem;
+    font-size: .35rem;
 }
 .trade-border{
-    border-right:0.01rem solid #ccc;
+    border-right:1px solid #ccc;
+    padding:
 }
 .shop-manager h1{
     font-size:0.28rem;
@@ -101,11 +104,11 @@
 
 }
 .shop-con h2{
-    padding-bottom:0.6rem;
-
+    padding-bottom: 0.6rem;
+    color: #434343;
 }
-.shop-border{
-    border-right:0.01rem solid #ccc;
+.shop-border:not(:nth-child(3n)){
+    border-right:1px solid #ccc;
 }
 .shop-manager .shop-border-no{
     border-top:none;

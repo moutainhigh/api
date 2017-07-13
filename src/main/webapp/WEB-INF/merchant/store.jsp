@@ -11,30 +11,30 @@
             <div class="middle" style="overflow-y: auto; width: 100%;">
                 <div class="receivables clearfix">
                     <div class="today-money fl">
-                        <h3>今日应收金额:</h3>
-                        <p>0.00元</p>
+                        <h3>今日应收</h3>
+                        <p>${map['orderSta'].pm }</p>
                     </div>
-                    <div class="today-money fr" style="background: #ffad5c;">
-                        <h3>今日实收金额:</h3>
-                        <p>0.00元</p>
+                    <div class="today-money fr" style="background: #6ebcce;">
+                        <h3>今日实收</h3>
+                        <p>${map['orderSta'].am - map['refundSta'].refundMoney }</p>
                     </div>
                 </div>
                 <div class="trade clearfix">
                     <div class="trade-number trade-border fl">
                         <h2>减免金额</h2>
-                        <p>0</p>
+                        <p>${map['orderSta'].orgDiscount + map['orderSta'].storeDiscount }</p>
                     </div>
                     <div class="trade-number trade-border  fl">
                         <h2>交易笔数</h2>
-                        <p>0</p>
+                        <p>${map['orderSta'].count }</p>
                     </div>
                     <div class="trade-number trade-border  fl">
                         <h2>退款金额</h2>
-                        <p>0</p>
+                        <p>${map['refundSta'].refundMoney }</p>
                     </div>
                     <div class="trade-number  fl">
                         <h2>退款笔数</h2>
-                        <p>0</p>
+                        <p>${map['refundSta'].refundCount }</p>
                     </div>
                 </div>
                 <div class="shop-manager" id="_indexModule">

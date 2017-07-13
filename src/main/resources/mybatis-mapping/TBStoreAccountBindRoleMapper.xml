@@ -39,5 +39,21 @@
         FROM tb_store_account_bind_role
         WHERE account_id=#{accountId}
     </select>
-
+    
+    <insert id="insertList">
+       insert into tb_store_account_bind_role (
+         account_id,role_id,valid,utime,ctime
+       ) values <foreach collection="sabrbs" item="sabrb" separator=",">
+          (#{sabrb.accountId}, #{sabrb.roleId}, 1, unix_timestamp(now()), unix_timestamp(now()))
+       </foreach>
+    </insert>
+    
+    <delete id="deleteAll">
+      delete from tb_store_account_bind_role
+      where account_id = #{accountId} and role_id in 
+      <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+         #{roleId}
+      </foreach>
+    </delete>
+    
 </mapper>

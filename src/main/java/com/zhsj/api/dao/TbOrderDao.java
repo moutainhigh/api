@@ -4,7 +4,10 @@ package com.zhsj.api.dao;
 import com.zhsj.api.bean.result.CountDealBean;
 import com.zhsj.api.bean.result.CountDiscount;
 import com.zhsj.api.bean.result.CountMember;
+import com.zhsj.api.bean.result.RefundSta;
+import com.zhsj.api.bean.result.OrderSta;
 import com.zhsj.api.bean.result.StoreCountResult;
+import com.zhsj.api.bean.result.StoreSta;
 import com.zhsj.api.util.db.DynamicDataSource;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.util.db.DS;
@@ -95,6 +98,8 @@ public interface TbOrderDao {
 	CountMember getByStoreNoAndUserId(@Param("storeNo")String storeNo,
 			                              @Param("userId")long userId);
 	
+	double getSumMoneyByStoreNoAndUserId(@Param("storeNo")String storeNo, @Param("userId")long userId);
+	
 	List<CountMember> getByStoreNoAndMoney(@Param("storeNo")String storeNo,
 			@Param("actualChargeAmount1")Double actualChargeAmount1,
 			@Param("actualChargeAmount2")Double actualChargeAmount2);
@@ -156,8 +161,12 @@ public interface TbOrderDao {
     List<OrderBean> getListByParamMap(Map<String, Object> paramMap);
     
     int getCountByParamMap(Map<String, Object> paramMap);
+    
+    OrderSta getOrderStaByParamMap(Map<String, Object> paramMap);
+    
+    RefundSta getRefundStaByParamMap(Map<String, Object> paramMap);
 	
-	OrderBean getByOrderIdOrTransId(@Param("storeNo")String storeNo,@Param("orderId")String orderId, @Param("transId")String transId);
+	OrderBean getByOrderIdOrTransId(@Param("storeNos")List<String> storeNos, @Param("orderId")String orderId, @Param("transId")String transId);
 	
 	OrderBean getByTypeOrderIdOrTransId(@Param("storeNo")String storeNo,
 										@Param("orderId")String orderId, 
@@ -167,7 +176,15 @@ public interface TbOrderDao {
 	int updateOrderRefundById(@Param("id")long id,@Param("refundNo")String refundNo,@Param("refundMoney")double refundMoney);
 	
 	int updateStatusById(@Param("id")long id, @Param("status")int status);
+
+	OrderSta getTodayOrderSta(@Param("storeNo")String storeNo, @Param("startTime")int startTime, @Param("endTime")int endTime);
+
+	RefundSta getTodayRefundSta(@Param("storeNo")String storeNo, @Param("startTime")int startTime, @Param("endTime")int endTime);
 	
+    StoreSta getByTodayStoreSta(@Param("storeNo")String storeNo, @Param("startTime")int startTime, @Param("endTime")int endTime);
+    
+    double getTodayRefundMoney(@Param("storeNo")String storeNo, @Param("startTime")int startTime, @Param("endTime")int endTime);
+    
 	int updateStatusAndMoney(@Param("id")long id, 
 							 @Param("status")int status,
 							 @Param("refundMoney")double refundMoney,

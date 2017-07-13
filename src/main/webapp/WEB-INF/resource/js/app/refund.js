@@ -15,6 +15,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
     return fmt;
 };
    $(function(){
+	   var pm = 1;
 	   $("#serach").on("click",function(){
 		   var data = {
 				 orderId:$.trim($("#orderId").val()),
@@ -36,6 +37,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
 					   }else if(obj.payMethod == 3){
 					       $("#logo").attr("src","../resource/img/app/order/unionPay-ico.png");
 					   }
+					   pm = obj.payMethod;
 					   $("#am").text(obj.actualChargeAmount);
 					   $("#pm").text(obj.planChargeAmount);
 					   $("#status").text(getStatus(obj.status));
@@ -59,6 +61,10 @@ Date.prototype.Format = function (fmt) { //author: meizz
 	   
 	   
 	   $("#refund").on("click",function(){
+		   if(pm == 3){
+			   jalert.show("不支持银联卡退款");
+			   return;
+		   }
 		   var data = {
 				 id:$("#oid").val(),
 				 price:$("#money").val(),
@@ -136,7 +142,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
         
         $(".wwt_num").on("touchstart",function(){
         	var btntext = $(this).text();
-        	if(btntext / 1){
+        	if(btntext / 1){	
         		clickkey(btntext);
         	}else{
         		if (cur_focus_obj.val() != '0' && btntext == "0") {

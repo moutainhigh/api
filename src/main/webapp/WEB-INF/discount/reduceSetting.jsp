@@ -407,27 +407,27 @@ pageEncoding="UTF-8"%>
                         <p class="lj">
                             <input type="checkbox" class="radio no" readonly>
                             <span class="fm">满</span>
-                            <input type="text" value="XXX" readonly>
+                            <input type="text" value="XXX" readonly disabled>
                             <span>元，立减</span>
-                            <input type="text" value="XX" readonly>
+                            <input type="text" value="XX" readonly disabled>
                             <span>元</span>
                         </p>
                         <p class="sj">
                               <input type="checkbox" class="radio no" readonly>
                               <span class="fm">满</span>
-                              <input type="text" value="XXX" readonly>
+                              <input type="text" value="XXX" readonly disabled>
                               <span>元，随机减</span>
-                              <input type="text" value="XX" readonly>
+                              <input type="text" value="XX" readonly disabled>
                               <span>至</span>
-                              <input type="text" value="XX" readonly>
+                              <input type="text" value="XX" readonly disabled>
                               <span>元</span>
                         </p>
                         <p class="zk">
                               <input type="checkbox" class="radio no" readonly>
                               <span class="fm">满</span>
-                              <input type="text" value="XXX" readonly>
+                              <input type="text" value="XXX" readonly disabled>
                               <span>元，</span>
-                              <input type="text" value="XX" readonly>
+                              <input type="text" value="XX" readonly disabled>
                               <span>折</span>
                         </p>
                   </div>

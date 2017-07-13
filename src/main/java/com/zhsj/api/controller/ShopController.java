@@ -16,7 +16,6 @@ import com.zhsj.api.service.MinshengService;
 import com.zhsj.api.service.WXService;
 import com.zhsj.api.util.login.LoginUserUtil;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,7 +130,7 @@ public class ShopController {
     public ModelAndView test() throws UnsupportedEncodingException {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./shop/index");
-        String auth = "123";
+        String auth = "o5pmesyob9P9Otj-jl-U3ETnArlY";
         modelAndView.addObject("auth", "21" + auth);
         return modelAndView;
     }

@@ -24,12 +24,12 @@ pageEncoding="UTF-8"%>
     <section class="f">
         <div class="p-group">
             <p >
-                <span class="span-label">旧密码</span>
+                <label class="span-label">旧密码</label>
                 <span class="span-result"><input type="password" id="password" placeholder="请输入就密码"></span>
                 <span class="forget">忘记密码?</span>
             </p>
             <p >
-                <span class="span-label">新密码</span>
+                <label class="span-label">新密码</label>
                 <span class="span-result"><input type="password" id="newPassword" placeholder="请输入新密码"></span>
             </p>
         </div>

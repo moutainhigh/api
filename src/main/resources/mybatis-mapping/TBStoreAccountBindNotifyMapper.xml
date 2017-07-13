@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBStoreAccountBindNotifyDao">
+
+
+      <insert id="insertList">
+         insert into tb_store_account_bind_notify (
+           account_id, notify_id, valid, ctime
+         ) values <foreach collection="sabnbs" separator="," item="sabn">
+           (#{sabn.accountId}, #{sabn.notifyId}, 1, unix_timestamp(now()))
+         </foreach>
+      </insert>
+      
+      <delete id="deleteList">
+         delete from tb_store_account_bind_notify
+         where account_id = #{accountId} 
+         and notify_id in 
+          <foreach collection="notifyIds" item="notifyId" open="(" separator="," close=")">
+              #{notifyId}
+          </foreach>
+      </delete>
+      
+      <select id="getNotifyIdByAccountId" resultType="Integer">
+          select notify_id from tb_store_account_bind_notify
+          where account_id = #{accountId} and valid = 1
+      </select>
+      
+</mapper>

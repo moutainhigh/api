@@ -1,5 +1,8 @@
 package com.zhsj.api.bean;
 
+import java.util.List;
+
+
 
 /**
  * Created by lcg on 17/1/24.
@@ -12,9 +15,14 @@ public class StoreAccountBean{
     private String name;
     private String mobile;
     private String headImg;
+    private int status;
     private int valid;
     private String jId;
 
+    //@Transient
+    private List<RoleBean> roleList;
+    
+    
     public long getId() {
         return id;
     }
@@ -87,5 +95,22 @@ public class StoreAccountBean{
 		this.jId = jId;
 	}
 
+	public List<RoleBean> getRoleList() {
+		return roleList;
+	}
 
+	public void setRoleList(List<RoleBean> roleList) {
+		this.roleList = roleList;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+    
+	
+    
 }

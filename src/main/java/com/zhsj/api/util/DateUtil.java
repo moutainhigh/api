@@ -77,7 +77,20 @@ public class DateUtil
 			return null;
 		}
 	}
-
+    
+	
+	public static String getYMD(long date){
+		try 
+		{
+			String stringTime = new SimpleDateFormat("yyyy/MM/dd").format(new Date(date));
+			return stringTime;
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
 	
 	public static String getDateFormat(String format)
 	{

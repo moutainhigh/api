@@ -1,0 +1,38 @@
+.people-img img{
+    width:3rem;
+    height:3rem;
+    border-radius:50%;
+}
+.people-label span{
+    display: inline-block;
+    padding: .2rem;
+    border-radius: 3px;
+    font-size: 0.6rem;
+    color: #fff;
+    line-height: .6rem;
+    height: .6rem;
+    vertical-align: .2rem;
+    font-weight: bold;
+}
+.people-label{
+    padding-top: 0.2rem;
+    line-height: 1.3rem;
+    height: 1.3rem;
+}
+.people-label-one{
+    background: #eb793b;
+}
+.people-name{
+    font-size: 1rem;
+    padding-right: 0.4rem;
+    font-weight: bold;
+}
+.people-label-two{
+    background: #ff7400;
+}
+.people-label-three{
+    background: #feb558;
+}
+.people-number{
+    padding-top:0.5rem;
+}

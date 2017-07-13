@@ -1,8 +1,10 @@
 package com.zhsj.api.dao;
 
 
+import com.zhsj.api.bean.StoreAccountBindRoleBean;
 import com.zhsj.api.util.db.DS;
 import com.zhsj.api.util.db.DynamicDataSource;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
@@ -20,5 +22,7 @@ public interface TBStoreAccountBindRoleDao {
 
     List<Integer> getRoleIdByAccountId(@Param("accountId")long accountId);
 
-
+    int insertList(@Param("sabrbs")List<StoreAccountBindRoleBean> storeAccountBindRoleBeans);
+    
+    int deleteAll(@Param("roleIds")List<Integer> roleIds, @Param("accountId")long accountId);
 }

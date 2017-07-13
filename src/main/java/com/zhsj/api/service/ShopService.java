@@ -1,6 +1,6 @@
 package com.zhsj.api.service;
 
-import com.alibaba.fastjson.JSONObject;
+import com.sun.org.apache.regexp.internal.recompile;
 import com.zhsj.api.bean.*;
 import com.zhsj.api.bean.result.CountDealBean;
 import com.zhsj.api.bean.result.CountMember;
@@ -308,11 +308,8 @@ public class ShopService {
     
     public Object getMemberData(){
     	int startTime = DateUtil.getTodayStartTime();//今日开始时间
-    	int endTime = startTime + 86400;//今日结束时间
+    	int endTime = startTime + 24*60*60-1;//今日结束时间
     	StoreBean storeBean = LoginUserUtil.getStore();
-//        if(storeBean == null){
-//            return CommonResult.build(1,"系统错误");
-//        }
         String storeNo = storeBean.getStoreNo();
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("storeNo", storeNo);
@@ -331,7 +328,7 @@ public class ShopService {
         int late1 = tbUserBindStoreDao.countByStoreNo(storeNo, threeDay, currentTime);
         //2、7天购买过
         int sevenDay = currentTime - 7 * 86400;
-        int late2 = tbUserBindStoreDao.countByStoreNo(storeNo, sevenDay, threeDay);
+        int late2 = tbUserBindStoreDao.countByStoreNo(storeNo, sevenDay, threeDay+1);
         //3、7天以上没来过
         int thDay = currentTime - 30 * 86400;
         int late3 = tbUserBindStoreDao.countByStoreNo(storeNo, thDay, sevenDay);
@@ -382,12 +379,14 @@ public class ShopService {
 	    		endTime = currentTime - 7* 86400;
 	    	}else if(number == 4){
 //	          1412870400   初始化默认时间为2014/10/10
-	    		startTime = currentTime - 1412870400;
-	    		endTime = currentTime - 7* 86400;
+	    		startTime = 1412870400;
+	    		endTime = currentTime - 30* 86400;
 	    	}
 	    	List<UserBindStoreBean> ubsbBeans = tbUserBindStoreDao.getListByStoreNo(storeNo, startTime, endTime);
 	        for(UserBindStoreBean usBean : ubsbBeans){
 	        	CountMember cm = orderDao.getByStoreNoAndUserId(storeNo, usBean.getUserId());
+	        	double sum = orderDao.getSumMoneyByStoreNoAndUserId(storeNo, usBean.getUserId());
+	        	cm.setSum(sum);
 	        	UserBean userBean = tbUserDao.getUserById(usBean.getUserId());
 	        	if(userBean == null){
 	        		continue;
@@ -412,48 +411,48 @@ public class ShopService {
     		}
     		List<CountMember> mList = orderDao.getByStoreNoAndMoney(storeNo, money1, money2);
     		for(CountMember cMember:mList){
-    			UserBean userBean = tbUserDao.getUserById(cMember.getUserId());
-    			if(userBean == null){
-	        		continue;
-	        	}
-    			cMember.setHeadImg(userBean.getHeadImg());
-    			cMember.setNick(userBean.getNickName());
-    			CountMember cm = orderDao.getByStoreNoAndUserId(storeNo, cMember.getUserId());
-    			if(cm == null){
-	        		continue;
-	        	}
-    			cMember.setCount(cm.getCount());
-    			cMember.setSum(cm.getSum());
-    			UserBindStoreBean userStore = tbUserBindStoreDao.getByStoreAndUser(cMember.getUserId(), storeNo);
-    			if(userStore == null){
-	        		continue;
-	        	}
-    			cMember.setTime(userStore.getUtime());
-    			cMember.setUserType(userStore.getUserType());
+    			if(cMember.getUserId() > 0){
+	    			UserBean userBean = tbUserDao.getUserById(cMember.getUserId());
+	    			if(userBean == null){
+	    				continue;
+	    			}
+	    			cMember.setHeadImg(userBean.getHeadImg());
+	    			cMember.setNick(userBean.getNickName());
+	    			CountMember cm = orderDao.getByStoreNoAndUserId(storeNo, cMember.getUserId());
+	    			cMember.setCount(cm.getCount());
+	    			double sum = orderDao.getSumMoneyByStoreNoAndUserId(storeNo, cMember.getUserId());
+	    			cMember.setSum(sum);
+	    			UserBindStoreBean userStore = tbUserBindStoreDao.getByStoreAndUser(cMember.getUserId(), storeNo);
+	    			if(userStore != null){
+		    			cMember.setTime(userStore.getUtime());
+		    			cMember.setUserType(userStore.getUserType());
+	    			}else{
+	    				cMember.setUserType(1);
+	    			}
+    			}
     		}
     		Collections.sort(mList);
     		return mList;
     	}else if("time".equals(type)){
     		List<CountMember> timeList = orderDao.getByStoreNoAndTime(storeNo, number);
     		for(CountMember tMember:timeList){
-    			UserBean userBean = tbUserDao.getUserById(tMember.getUserId());
-    			if(userBean == null){
-    				continue;
+    			if(tMember.getUserId() != 0){
+	    			UserBean userBean = tbUserDao.getUserById(tMember.getUserId());
+	    			if(userBean == null){
+	    				continue;
+	    			}
+	    			tMember.setHeadImg(userBean.getHeadImg());
+	    			tMember.setNick(userBean.getNickName());
+	    			CountMember cm = orderDao.getByStoreNoAndUserId(storeNo, tMember.getUserId());
+	    			tMember.setCount(cm.getCount());
+	    			double sum = orderDao.getSumMoneyByStoreNoAndUserId(storeNo, tMember.getUserId());
+	    			tMember.setSum(sum);
+	    			UserBindStoreBean userStore = tbUserBindStoreDao.getByStoreAndUser(tMember.getUserId(), storeNo);
+	    			if(userStore != null){
+		    			tMember.setTime(userStore.getUtime());
+		    			tMember.setUserType(userStore.getUserType());
+	    			}
     			}
-    			tMember.setHeadImg(userBean.getHeadImg());
-    			tMember.setNick(userBean.getNickName());
-    			CountMember cm = orderDao.getByStoreNoAndUserId(storeNo, tMember.getUserId());
-    			if(cm == null){
-	        		continue;
-	        	}
-    			tMember.setCount(cm.getCount());
-    			tMember.setSum(cm.getSum());
-    			UserBindStoreBean userStore = tbUserBindStoreDao.getByStoreAndUser(tMember.getUserId(), storeNo);
-    			if(userStore == null){
-	        		continue;
-	        	}
-    			tMember.setTime(userStore.getUtime());
-    			tMember.setUserType(userStore.getUserType());
     		}
     		Collections.sort(timeList);
     		return timeList;

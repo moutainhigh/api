@@ -117,4 +117,10 @@
     	where store_no = #{info.storeNo}
     </update>
     
+    
+    <select id="getChildStoreCountByStoreNo" resultType="Integer">
+      select count(1) from tb_store where parent_no = #{storeNo} and status = 1 and valid = 1
+    </select> 
+    
+    
 </mapper>

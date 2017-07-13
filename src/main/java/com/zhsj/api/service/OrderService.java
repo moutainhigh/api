@@ -8,6 +8,8 @@ import com.zhsj.api.bean.OrderRefundBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.bean.StoreBean;
+import com.zhsj.api.bean.result.OrderSta;
+import com.zhsj.api.bean.result.RefundSta;
 import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
@@ -25,17 +27,14 @@ import com.zhsj.api.dao.TBStoreSignDao;
 import com.zhsj.api.dao.TbStoreBindOrgDao;
 import com.zhsj.api.dao.TbStoreDao;
 import com.zhsj.api.dao.TbUserBindStoreDao;
-import com.zhsj.api.dao.TbUserDao;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.login.LoginUserUtil;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -366,10 +365,11 @@ public class OrderService {
     }
     
     
-    public Object getOrderListByParam(String storeNo,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
-    	logger.info("#getOrderListByParam# storeNo = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
-    			storeNo, payMethod, startTime, endTime, status, page, pageSize);
+    public Object getOrderListByParam(String storeNo,int payChannel,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
+    	logger.info("#getOrderListByParam# storeNo = {}, payChanel = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
+    			storeNo, payChannel,payMethod, startTime, endTime, status, page, pageSize);
     	Map<String, Object> paramMap = new HashMap<String, Object>();
+    	paramMap.put("payChannel", payChannel);
     	paramMap.put("payMethod", payMethod);
     	paramMap.put("startTime", startTime);
     	paramMap.put("endTime", endTime);
@@ -377,6 +377,11 @@ public class OrderService {
     	paramMap.put("start", (page-1)*pageSize);
     	paramMap.put("pageSize", pageSize);
     	try {
+    		paramMap.put("isAll","-1".equals(storeNo)?1:0);
+    		if("-1".equals(storeNo)){
+    			StoreBean storeBean = LoginUserUtil.getStore();
+    			storeNo = storeBean.getStoreNo();
+    		}
 			paramMap.put("storeNo", storeNo);
 			Map<String, Object> resultMap = new HashMap<String, Object>();
 			List<OrderBean> list = bmOrderDao.getListByParamMap(paramMap);
@@ -384,6 +389,10 @@ public class OrderService {
 			if(page == 1){
 				int count = bmOrderDao.getCountByParamMap(paramMap);
 				resultMap.put("count", count);
+				OrderSta orderSta = bmOrderDao.getOrderStaByParamMap(paramMap);
+				RefundSta refundSta = bmOrderDao.getRefundStaByParamMap(paramMap);
+				orderSta.setAm(Arith.sub(orderSta.getAm(), refundSta.getRefundMoney()));
+				resultMap.put("orderSta", orderSta);
 			}
 			return CommonResult.success("", resultMap);
 		} catch (Exception e) {
@@ -397,7 +406,13 @@ public class OrderService {
     public Object serachByOrderIdOrTransId(String storeNo, String orderId, String transId){
     	logger.info("#serachByOrderIdOrTransId# storeNo = {}, orderId = {}, transId = {}", storeNo, orderId, transId);
     	try {
-			OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, orderId, transId);
+    		List<StoreBean> storeBeans = tbStoreDao.getListByParentNo(storeNo);
+    		List<String> storeNos = new ArrayList<String>();
+    		for(StoreBean sb:storeBeans){
+    			storeNos.add(sb.getStoreNo());
+    		}
+    		storeNos.add(storeNo);
+			OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNos, orderId, transId);
 			if(bean == null){
 				return CommonResult.build(2, "订单号不存在");
 			}
@@ -420,6 +435,9 @@ public class OrderService {
     	logger.info("#appRefund# id={}, price={},accountId={}", id, price, accountId);
     	try {
 			OrderBean orderBean = bmOrderDao.getById(id);
+			if("3".equals(orderBean.getPayMethod())){
+				return CommonResult.build(2, "不支持银联卡退款");
+			}
 			String refundNo = "re"+orderBean.getOrderId();
 			OrderRefundBean orderRefund = tbOrderRefundDao.getByRefundNo(refundNo);
 			if(orderRefund != null){
@@ -495,6 +513,26 @@ public class OrderService {
 		}
     }
     
+    
+    public Map<String, Object> getTodaySta(){
+    	logger.info("#getTodaySta#");
+    	try {
+			StoreBean storeBean = LoginUserUtil.getStore();
+			String storeNo = storeBean.getStoreNo();
+			int startTime = DateUtil.getTodayStartTime();
+			int endTime = startTime+24*60*60-1;
+			OrderSta orderSta = bmOrderDao.getTodayOrderSta(storeNo, startTime, endTime);
+			RefundSta refundSta = bmOrderDao.getTodayRefundSta(storeNo, startTime, endTime);
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap.put("orderSta", orderSta);
+			resultMap.put("refundSta", refundSta);
+			return resultMap;
+		} catch (Exception e) {
+			logger.error("#getTodaySta#", e);
+		}
+    	return null;
+	}
+
     public CommonResult savePreOrder(String userId,String storeNo,int planAmount,int actualmount,int payType,int payMethod,int channel,String auth){
     	logger.info("#OrderService.savePreOrder# userId={},storeNo,palnAmount={},actualAmount={},payType={},payMethod={},channel={},auth={}",
         											userId,storeNo,planAmount,actualmount,payType,payMethod,channel,auth);
@@ -634,9 +672,9 @@ public class OrderService {
     	return CommonResult.defaultError("系统异常");
     }
     
-    public CommonResult refundUP(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth){
-   	 logger.info("#OrderService.refundUP# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
-					userId,storeNo,orderNo,cashierTradeNo,auth);
+    public CommonResult refundUP(String userId,String storeNo,int type,String orderNo,String cashierTradeNo,String auth){
+   	 logger.info("#OrderService.refundUP# userId={},storeNo={},type={},orderNo={},cashierTradeNo={},auth={}",
+					userId,storeNo,type,orderNo,cashierTradeNo,auth);
    	 try{
    		 auth = URLDecoder.decode(auth, "utf-8");
 			 String[] args = auth.split(",");
@@ -656,7 +694,7 @@ public class OrderService {
 			if(cashierTradeNo.startsWith("09")){
 				cashierTradeNo = cashierTradeNo.substring(2);
 			} 
-			OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, orderNo, cashierTradeNo);
+			OrderBean bean = bmOrderDao.getByTypeOrderIdOrTransId(storeNo, orderNo, cashierTradeNo,type);
 			if(bean == null){
 				return CommonResult.build(2, "订单号不存在");
 			}
@@ -697,7 +735,9 @@ public class OrderService {
         logger.info("#OrderService.refundSuccess# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
 				userId,storeNo,orderNo,cashierTradeNo,auth);
         try{
-        	OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, orderNo, cashierTradeNo);
+        	List<String> storeNoList = new ArrayList<>();
+        	storeNoList.add(storeNo);
+        	OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNoList, "", cashierTradeNo);
         	if(bean == null){
  				return CommonResult.build(2, "订单不存在");
  			}
