@@ -346,7 +346,7 @@ public class JPushService {
     	List list = new ArrayList<>();
 //    	list.add("191e35f7e07307e7858");
 //    	list.add("191e35f7e073dd9e2f3");
-    	list.add("18071adc033cab91e3e");
+    	list.add("190e35f7e072e5546d4");
 //    	list.add("140fe1da9e9a73f88cc");
 //    	list.add("191e35f7e073064cff9");
     	
