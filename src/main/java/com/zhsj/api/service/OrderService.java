@@ -28,14 +28,12 @@ import com.zhsj.api.dao.TbStoreDao;
 import com.zhsj.api.dao.TbUserBindStoreDao;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.login.LoginUserUtil;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -523,7 +521,8 @@ public class OrderService {
 			logger.error("#getTodaySta#", e);
 		}
     	return null;
-    }
+	}
+
     public CommonResult savePreOrder(String userId,String storeNo,int planAmount,int actualmount,int payType,int payMethod,int channel,String auth){
     	logger.info("#OrderService.savePreOrder# userId={},storeNo,palnAmount={},actualAmount={},payType={},payMethod={},channel={},auth={}",
         											userId,storeNo,planAmount,actualmount,payType,payMethod,channel,auth);
@@ -627,7 +626,9 @@ public class OrderService {
 			if(cashierTradeNo.startsWith("09")){
 				cashierTradeNo = cashierTradeNo.substring(2);
 			} 
-    		OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, orderNo, cashierTradeNo);
+			List<String> storeNoList = new ArrayList<>();
+        	storeNoList.add(storeNo);
+    		OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNoList, orderNo, cashierTradeNo);
  			if(bean == null){
  				return CommonResult.build(2, "订单号不存在");
  			}
@@ -665,7 +666,9 @@ public class OrderService {
         logger.info("#OrderService.refundSuccess# userId={},storeNo={},cashierTradeNo={},auth={}",
 				userId,storeNo,cashierTradeNo,auth);
         try{
-        	OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, "", cashierTradeNo);
+        	List<String> storeNoList = new ArrayList<>();
+        	storeNoList.add(storeNo);
+        	OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNoList, "", cashierTradeNo);
         	if(bean == null){
  				return CommonResult.build(2, "订单不存在");
  			}
@@ -729,5 +732,6 @@ public class OrderService {
     	bigd = bigd.setScale(2,BigDecimal.ROUND_HALF_UP);
     	return bigd.doubleValue();
     }
+    
 }
 

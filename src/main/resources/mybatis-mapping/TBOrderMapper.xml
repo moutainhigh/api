@@ -503,7 +503,6 @@
         where id = #{id}
      </update>
      
-     
      <select id="getTodayOrderSta" resultType="com.zhsj.api.bean.result.OrderSta">
         select count(1) count, ifnull(sum(plan_charge_amount),0) pm, ifnull(sum(actual_charge_amount), 0) am, 
            ifnull(sum(store_discount_price), 0) storeDiscount, ifnull(sum(org_discount_price), 0) orgDiscount
@@ -575,4 +574,32 @@
      	
 	
      
+     <update id="updateStatusAndMoney">
+        update tb_order
+        set status = #{status},refund_money=#{refundMoney},refund_no=#{refundNo},
+        utime = unix_timestamp(now())
+        where id = #{id}
+     </update>
+     
+     
+     <update id="updateByAccount">
+        update tb_order
+        set status = #{status},transaction_id=#{transactionId},
+        utime = unix_timestamp(now())
+        where status = #{preStatus} and order_id = #{orderId} and account_id = #{accountId}
+     </update>
+     
+      <update id="updateStatus">
+        update tb_order
+        set status = #{status},transaction_id=#{transactionId},user_id=#{userId},
+        utime = unix_timestamp(now())
+        where status = #{preStatus} and id = #{id} 
+     </update>
+      <update id="updateUser">
+        update tb_order
+        set transaction_id=#{transactionId},user_id=#{userId},
+        utime = unix_timestamp(now())
+        where id = #{id} 
+     </update>
+	
 </mapper>

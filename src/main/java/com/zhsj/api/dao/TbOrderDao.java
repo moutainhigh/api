@@ -180,8 +180,6 @@ public interface TbOrderDao {
     
     double getTodayRefundMoney(@Param("storeNo")String storeNo, @Param("startTime")int startTime, @Param("endTime")int endTime);
     
-    
-	
 	int updateStatusAndMoney(@Param("id")long id, 
 							 @Param("status")int status,
 							 @Param("refundMoney")double refundMoney,

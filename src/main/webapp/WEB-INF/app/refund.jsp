@@ -34,21 +34,13 @@
 			     <div class="row">
 			         <label>交易号:</label>
 			         <div class="row_ipt">
-<<<<<<< HEAD
-			             <input type="tel" id="transId" placeholder="输入退款的交易号"  onclick="cur_focus(this);" autofocus="autofocus">
-=======
 			             <input type="tel" id="transId" placeholder="输入退款的交易号">
->>>>>>> master
 			         </div>
 			     </div>   
 			     <div class="row">
 			         <label>商户单号:</label>
 			         <div class="row_ipt">
-<<<<<<< HEAD
-			             <input type="tel" id="orderId" placeholder="输入退款的订单号"  onfocus="cur_focus(this);" >
-=======
 			             <input type="tel" id="orderId" placeholder="输入退款的订单号">
->>>>>>> master
 			         </div>
 			     </div>   
 			     <div class="row tt">
