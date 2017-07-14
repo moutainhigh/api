@@ -185,7 +185,16 @@ public class PrinterService {
 				cashierName = storeAccountBean.getName();
 			}
 			//打印内容
-			String result = PrinterUtil.request(deviceId, secretKey, orderBean, cashierName);
+//			String result = PrinterUtil.request(deviceId, secretKey, orderBean, cashierName);
+			String result = "";
+			// 初始化打印机
+			String initial =  CloudPrinter.PRINTER_INIT;
+			byte[] initByte = PrinterUtil.hexStringToBytes(initial);
+			String printInitial = PrinterUtil.requestPrintPost(deviceId, secretKey, initByte);
+			Map<String,Object> map = JSON.parseObject(printInitial, Map.class);
+			if("ok".equals(map.get("state"))){
+				 result = PrinterUtil.request(deviceId, secretKey, orderBean, cashierName);
+			}
 			logger.info("#printerByOrder# result = {}", result);
 			Map<String,Object> rsmap = JSON.parseObject(result, Map.class);
 			if(!"ok".equals(rsmap.get("state"))){

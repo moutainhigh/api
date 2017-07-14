@@ -526,6 +526,7 @@ public class OrderService {
 			Map<String, Object> resultMap = new HashMap<String, Object>();
 			resultMap.put("orderSta", orderSta);
 			resultMap.put("refundSta", refundSta);
+			resultMap.put("am", Arith.sub(orderSta.getAm(), refundSta.getRefundMoney()));
 			return resultMap;
 		} catch (Exception e) {
 			logger.error("#getTodaySta#", e);
@@ -828,5 +829,6 @@ public class OrderService {
     	bigd = bigd.setScale(2,BigDecimal.ROUND_HALF_UP);
     	return bigd.doubleValue();
     }
+    
 }
 

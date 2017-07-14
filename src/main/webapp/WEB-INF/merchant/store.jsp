@@ -16,7 +16,7 @@
                     </div>
                     <div class="today-money fr" style="background: #6ebcce;">
                         <h3>今日实收</h3>
-                        <p>${map['orderSta'].am - map['refundSta'].refundMoney }</p>
+                        <p>${map['am']  }</p>
                     </div>
                 </div>
                 <div class="trade clearfix">
