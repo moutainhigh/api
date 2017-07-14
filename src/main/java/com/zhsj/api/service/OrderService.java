@@ -365,9 +365,9 @@ public class OrderService {
     }
     
     
-    public Object getOrderListByParam(String storeNo,int payChannel,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
-    	logger.info("#getOrderListByParam# storeNo = {}, payChanel = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
-    			storeNo, payChannel,payMethod, startTime, endTime, status, page, pageSize);
+    public Object getOrderListByParam(int type,String storeNo,int payChannel,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
+    	logger.info("#getOrderListByParam# type={},storeNo = {}, payChanel = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
+    			type,storeNo, payChannel,payMethod, startTime, endTime, status, page, pageSize);
     	Map<String, Object> paramMap = new HashMap<String, Object>();
     	paramMap.put("payChannel", payChannel);
     	paramMap.put("payMethod", payMethod);
@@ -377,11 +377,11 @@ public class OrderService {
     	paramMap.put("start", (page-1)*pageSize);
     	paramMap.put("pageSize", pageSize);
     	try {
-    		paramMap.put("isAll","-1".equals(storeNo)?1:0);
-    		if("-1".equals(storeNo)){
-    			StoreBean storeBean = LoginUserUtil.getStore();
-    			storeNo = storeBean.getStoreNo();
-    		}
+    		paramMap.put("isAll",type);
+//    		if("-1".equals(storeNo)){
+//    			StoreBean storeBean = LoginUserUtil.getStore();
+//    			storeNo = storeBean.getStoreNo();
+//    		}
 			paramMap.put("storeNo", storeNo);
 			Map<String, Object> resultMap = new HashMap<String, Object>();
 			List<OrderBean> list = bmOrderDao.getListByParamMap(paramMap);

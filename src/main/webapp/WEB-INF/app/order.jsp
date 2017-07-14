@@ -452,11 +452,18 @@ $('.tran_time .clearfix li').on("click",function(){
     		       endTime = (new Date(date+" 23:59:59").getTime())/1000;
     		   }
     		   var storeNo = $("#storeNo").attr("data-val");
+    		   var type = 0;
+    		   if("-1" == storeNo){
+    			   type = 1;
+    			   storeNo = "${storeNo}";
+    		   }
+    		   
     		var data = {
     		    payChannel:$("#payChannel").attr("data-val"),
     			payMethod:$("#payMethod").attr("data-val"),
     			status:$("#status").attr("data-val"),
     			storeNo:storeNo,
+    			type:type,
     			pageSize:10,
     			page:page,
     			startTime:startTime,
