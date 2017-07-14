@@ -3,6 +3,10 @@
     text-align: center;
 
 }
+.mine-title img{
+	width:62px;
+	height:62px;
+}
 .mine-title h3{
     font-size:0.3rem;
     padding:5px 0;

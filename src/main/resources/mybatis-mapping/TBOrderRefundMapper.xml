@@ -6,12 +6,6 @@
        ,status,refund_des,utime,ctime
     </sql>
     
-    <select id="getByNo">
-    	select <include refid="SELECT_FIELDS"/>
-    	from tb_order_refund
-    	where refund_no = #{orderNo}
-    </select>
-    
     <update id="updateStatusByNo">
     	update tb_order_refund
     	set status = #{status} 
@@ -31,5 +25,18 @@
     	from tb_order_refund
     	where refund_no = #{refundNo}
     </select>
+    
+     <update id="updateStatusAndOrderNo">
+    	update tb_order_refund
+    	set status = #{status} ,refund_no=#{reOrderNo},refund_money=#{refundMoney}
+    	where refund_no=#{preOrderNo} and status=1
+    </update>
+    
+    <select id="getPreRefund" resultType="com.zhsj.api.bean.OrderRefundBean">
+       select <include refid="SELECT_FIELDS"/>
+    	from tb_order_refund
+    	WHERE refund_no LIKE "pre%" AND ctime BETWEEN #{startTime} AND #{endTime}
+    </select>
+    
     
 </mapper>

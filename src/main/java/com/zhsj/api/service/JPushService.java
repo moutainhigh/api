@@ -95,9 +95,9 @@ public class JPushService {
     			String json = toSuccessMsg(orderBean, regIds);
     			String result = sendPost("https://api.jpush.cn/v3/push", json);
     			logger.info("result="+result);
-    			Map<String, String> map = JSON.parseObject(result, Map.class);
-    			JPUSH_MSG.put((int)orderBean.getId(), map.get("msg_id"));
-    			sendJPushMsg((int)orderBean.getId(),json);
+//    			Map<String, String> map = JSON.parseObject(result, Map.class);
+//    			JPUSH_MSG.put((int)orderBean.getId(), map.get("msg_id"));
+//    			sendJPushMsg((int)orderBean.getId(),json);
     		}
     		
     		return CommonResult.success("");
@@ -175,14 +175,24 @@ public class JPushService {
     	//ios以通知下发消息
     	JSONObject iosJson = new JSONObject();
     	iosJson.put("alert", psBean.getNt());
-    	iosJson.put("content-available", "true");
+//    	iosJson.put("content-available", true);
+    	iosJson.put("badge", 1);
+    	iosJson.put("sound", "default");
+    	iosJson.put("mutable-content", true);
+
     	JSONObject dataJson = new JSONObject();
     	dataJson.put("data", JSON.toJSON(psBean));
     	iosJson.put("extras", dataJson);
     	
-    	JSONObject ios = new JSONObject();
-    	ios.put("ios", iosJson);
-    	jsonObject.put("notification", ios);
+    	JSONObject notification = new JSONObject();
+    	notification.put("ios", iosJson);
+    	
+    	if("1110674590".equals(bean.getStoreNo())){
+    		JSONObject androidJson = new JSONObject();
+    		androidJson.put("alert", psBean.getNt());
+    		notification.put("android", androidJson);
+    	}
+    	jsonObject.put("notification", notification);
     	
     	//自定义消息
     	JSONObject mess = new JSONObject();
@@ -195,6 +205,7 @@ public class JPushService {
     	options.put("sendno", bean.getId());
     	String apns_production = MtConfig.getProperty("JG_IOS_APNS_PRODUCTION", "fasle");
     	options.put("apns_production", "true".equals(apns_production)?true:false);
+    	options.put("apns_collapse_id", bean.getOrderId());
     	jsonObject.put("options", options);
     	return jsonObject.toJSONString();
     }
@@ -327,23 +338,28 @@ public class JPushService {
     	    	}
 				return 0;
 			}
-		}.withDefaultTimeoutPolicy().executeWithRetry(15000L);
+		}.withDefaultTimeoutPolicy().executeWithRetry(30000L);
     }
     
     public static void main(String[] args) throws Exception {
 //		new JPushService().sendSuccessMsg("18071adc033cab91e3e");
     	List list = new ArrayList<>();
+//    	list.add("191e35f7e07307e7858");
+//    	list.add("191e35f7e073dd9e2f3");
     	list.add("18071adc033cab91e3e");
-    	list.add("1a1018970a90b635897");
+//    	list.add("140fe1da9e9a73f88cc");
+//    	list.add("191e35f7e073064cff9");
+    	
     	
     	OrderBean orderBean = new OrderBean();
     	orderBean.setId(1);
-    	orderBean.setOrderId("121225");
+    	orderBean.setOrderId("15");
     	orderBean.setCtime(1497234339);
     	orderBean.setPayMethod("1");
-    	orderBean.setActualChargeAmount(0.01);
-    	orderBean.setPlanChargeAmount(0.01);
+    	orderBean.setActualChargeAmount(0.04);
+    	orderBean.setPlanChargeAmount(0.12);
     	orderBean.setStatus(1);
+    	orderBean.setStoreNo("1110674590");
     	
     	String json = new JPushService().toSuccessMsg(orderBean, list);
     	System.out.println(json);
@@ -352,7 +368,7 @@ public class JPushService {
     	String resultString = new JPushService().sendPost("https://api.jpush.cn/v3/push", json);
     	System.out.println(resultString);
     	Map<String, String> map = JSON.parseObject(resultString, Map.class);
-    	System.out.println(map.get("msg_id"));
+//    	System.out.println(map.get("msg_id"));
     	String url = "https://report.jpush.cn/v3/received?msg_ids="+map.get("msg_id");
     	String result = new JPushService().sendGet(url);
     	System.out.println(result);

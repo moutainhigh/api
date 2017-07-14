@@ -1,5 +1,7 @@
 package com.zhsj.api.service;
 
+import com.zhsj.api.bean.LoginUser;
+import com.zhsj.api.bean.ModuleBean;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.OrderRefundBean;
 import com.zhsj.api.bean.StoreAccountBean;
@@ -7,14 +9,21 @@ import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.result.OrderSta;
 import com.zhsj.api.bean.result.RefundSta;
+import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
+import com.zhsj.api.constants.StroeRole;
 import com.zhsj.api.dao.TbOrderDao;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
+import com.zhsj.api.util.MtConfig;
+import com.zhsj.api.util.StoreUtils;
+import com.zhsj.api.dao.TBModuleBindRoleDao;
 import com.zhsj.api.dao.TBOrderRefundDao;
+import com.zhsj.api.dao.TBStoreAccountBindRoleDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreSignDao;
+import com.zhsj.api.dao.TbStoreBindOrgDao;
 import com.zhsj.api.dao.TbStoreDao;
 import com.zhsj.api.dao.TbUserBindStoreDao;
 import com.zhsj.api.util.DateUtil;
@@ -25,8 +34,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +71,16 @@ public class OrderService {
     private TBOrderRefundDao tbOrderRefundDao;
     @Autowired
     private JPushService jPushService;
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private TbStoreBindOrgDao tbStoreBindOrgDao;
+    @Autowired
+    private TBStoreAccountBindRoleDao tbStoreAccountBindRoleDao;
+    @Autowired
+    private TBModuleBindRoleDao tbModuleBindRoleDao;
+    @Autowired
+    private UserService userService;
     @Autowired
     private TbStoreDao tbStoreDao;
 
@@ -267,19 +289,59 @@ public class OrderService {
 			 Map<String, Object> refundMap = tbOrderDao.countRefundByUserAndTime(storeNo, startTime, endTime, accountId);
 			 Map<String, Object> storeMap = tbOrderDao.countStoreDisByUserAndTime(storeNo, startTime, endTime, accountId, statuses);
 			 Map<String, Object> orgMap = tbOrderDao.countOrgDisByUserAndTime(storeNo, startTime, endTime, accountId,statuses);
-
-			 bean.setRefundMoney(((BigDecimal)refundMap.get("refundMoney")).doubleValue());
+			 
+			 Map<String, Object> wxMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "1");
+			 Map<String, Object> aliMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "2");
+			 Map<String, Object> unMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "3");
+			 
+			 bean.setRefundMoney(bigToDouble(((BigDecimal)refundMap.get("refundMoney"))));
 			 bean.setRefundNum((Long)refundMap.get("count"));
 			 bean.setStoreDisNum((Long)storeMap.get("count"));
-			 bean.setStoreDisMoney(((BigDecimal)storeMap.get("storeDisSum")).doubleValue());
+			 bean.setStoreDisMoney(bigToDouble((BigDecimal)storeMap.get("storeDisSum")));
 			 bean.setOrgDisNum((Long)orgMap.get("count"));
-			 bean.setOrgDisMoney(((BigDecimal)orgMap.get("orgDisSum")).doubleValue());
+			 bean.setOrgDisMoney(bigToDouble((BigDecimal)orgMap.get("orgDisSum")));
 			 
 			 bean.setTotalNum((Long)countMap.get("count"));
-			 bean.setTotalMoney(((BigDecimal)countMap.get("planMoney")).doubleValue());
+			 bean.setTotalMoney(bigToDouble((BigDecimal)countMap.get("planMoney")));
 			 
-			 bean.setActualMoney(((BigDecimal)countMap.get("actualMoney")).subtract((BigDecimal)refundMap.get("refundMoney")).doubleValue());
+			 bean.setActualMoney(bigToDouble(((BigDecimal)countMap.get("actualMoney")).subtract((BigDecimal)refundMap.get("refundMoney"))));
 
+			 if(wxMap == null){
+				 bean.setDisplayWX(0);
+			 }else{
+				 bean.setDisplayWX(1);
+				 bean.setPlanMoneyWX(wxMap.get("planMoney") == null?0:bigToDouble((BigDecimal)wxMap.get("planMoney")));
+				 bean.setActualMoneyWX(wxMap.get("actualMoney") == null?0:bigToDouble((BigDecimal)wxMap.get("actualMoney")));
+				 bean.setStoreDisMoneyWX(wxMap.get("storeDisMoney") == null?0:bigToDouble((BigDecimal)wxMap.get("storeDisMoney")));
+				 bean.setOrgDisMoneyWX(wxMap.get("orgDisMoney") == null?0:bigToDouble((BigDecimal)wxMap.get("orgDisMoney")));
+				 bean.setRefundWX(wxMap.get("refundMoney") == null?0:bigToDouble((BigDecimal)wxMap.get("refundMoney")));
+				 bean.setActualMoneyWX(Arith.sub(bean.getActualMoneyWX(), bean.getRefundWX()));
+			 }
+			
+			 if(aliMap == null){
+				 bean.setDisplayAli(0);
+			 }else{
+				 bean.setDisplayAli(1);
+				 bean.setPlanMoneyAli(aliMap.get("planMoney") == null?0:bigToDouble((BigDecimal)aliMap.get("planMoney")));
+				 bean.setActualMoneyAli(aliMap.get("actualMoney") == null?0:bigToDouble((BigDecimal)aliMap.get("actualMoney")));
+				 bean.setStoreDisMoneyAli(aliMap.get("storeDisMoney") == null?0:bigToDouble((BigDecimal)aliMap.get("storeDisMoney")));
+				 bean.setOrgDisMoneyAli(aliMap.get("orgDisMoney") == null?0:bigToDouble((BigDecimal)aliMap.get("orgDisMoney")));
+				 bean.setRefundAli(aliMap.get("refundMoney") == null?0:bigToDouble((BigDecimal)aliMap.get("refundMoney")));
+				 bean.setActualMoneyAli(Arith.sub(bean.getActualMoneyAli(), bean.getRefundAli()));
+			 }
+			 
+			 if(unMap == null){
+				 bean.setDisplayUCard(0);
+			 }else{
+				 bean.setDisplayUCard(1);
+				 bean.setPlanMoneyUCard(unMap.get("planMoney") == null?0:bigToDouble((BigDecimal)unMap.get("planMoney")));
+				 bean.setActualMoneyUCard(unMap.get("actualMoney") == null?0:bigToDouble((BigDecimal)unMap.get("actualMoney")));
+				 bean.setStoreDisMoneyUCard(unMap.get("storeDisMoney") == null?0:bigToDouble((BigDecimal)unMap.get("storeDisMoney")));
+				 bean.setOrgDisMoneyUCard(unMap.get("orgDisMoney") == null?0:bigToDouble((BigDecimal)unMap.get("orgDisMoney")));
+				 bean.setRefundUCard(unMap.get("refundMoney") == null?0:bigToDouble((BigDecimal)unMap.get("refundMoney")));
+				 bean.setActualMoneyUCard(Arith.sub(bean.getActualMoneyUCard(), bean.getRefundUCard()));
+			 }
+			 
 			 return CommonResult.success("", bean);
     	 }catch (Exception e) {
     		 logger.error("#OrderService.countShift# storeNO={},userId={},startTime={},endTime={},auth={}",
@@ -455,11 +517,217 @@ public class OrderService {
 			Map<String, Object> resultMap = new HashMap<String, Object>();
 			resultMap.put("orderSta", orderSta);
 			resultMap.put("refundSta", refundSta);
+			resultMap.put("am", Arith.sub(orderSta.getAm(), refundSta.getRefundMoney()));
 			return resultMap;
 		} catch (Exception e) {
 			logger.error("#getTodaySta#", e);
 		}
     	return null;
+    }
+    public CommonResult savePreOrder(String userId,String storeNo,int planAmount,int actualmount,int payType,int payMethod,int channel,String auth){
+    	logger.info("#OrderService.savePreOrder# userId={},storeNo,palnAmount={},actualAmount={},payType={},payMethod={},channel={},auth={}",
+        											userId,storeNo,planAmount,actualmount,payType,payMethod,channel,auth);
+    	try{
+    		StoreBean storeBean = storeService.getStoreByNO(storeNo);
+    		if(storeBean == null){
+    			return CommonResult.defaultError("商家不存在");
+    		}
+    		Long orgId = tbStoreBindOrgDao.getOrgIdByStoreNO(storeNo);
+    		String orderNo = StoreUtils.getOrderNO(storeNo);
+    		//保存定单
+			OrderBean orderBean = new OrderBean();
+			orderBean.setOrderId(orderNo);
+			orderBean.setActualChargeAmount(Arith.div(actualmount, 100.00));
+			orderBean.setPlanChargeAmount(Arith.div(planAmount, 100.00));
+			orderBean.setStatus(0);
+			orderBean.setDiscountType(0);
+			orderBean.setDiscountId(0);
+			orderBean.setPayType(payType);
+			orderBean.setPayMethod(String.valueOf(payMethod));
+			orderBean.setStoreNo(storeNo);
+			if(StringUtils.isEmpty(storeBean.getParentNo()) || "0".equals(storeBean.getParentNo())){
+				orderBean.setParentStoreNo(storeBean.getStoreNo());
+			}else {
+				orderBean.setParentStoreNo(storeBean.getParentNo());
+			}
+			orderBean.setOrgId(orgId);
+			orderBean.setUserId(0);
+			orderBean.setOrgIds(storeBean.getOrgIds());
+			orderBean.setSaleId(storeBean.getSaleId());
+
+			orderBean.setStoreDiscountPrice(0.0);
+			orderBean.setOrgDiscountPrice(0.0);
+			orderBean.setDiscountDetail("");
+			
+			orderBean.setAccountId(Long.parseLong(userId));
+			orderBean.setPayChannel(channel);
+			int num = tbOrderDao.insertOrder(orderBean);
+			if(num >=1){
+				Map<String, String> data = new HashMap<>();
+				data.put("orderNo", orderNo);
+				data.put("callback", MtConfig.getProperty("UNIONPAY_CALLBACK", ""));
+				data.put("actualAmount", actualmount+"");
+				return CommonResult.success("", data);
+			}else{
+				logger.error("#OrderService.savePreOrder# msg={},userId={},storeNo={},actualAmount={}","保存订单失败",userId,storeNo,actualmount);
+				return CommonResult.defaultError("保存订单失败");
+			}
+    	}catch(Exception e){
+    		logger.error("#OrderService.savePreOrder# userId={},storeNo={},palnAmount={},actualAmount={},payType={},payMethod={},channel={},auth={}",
+					userId,storeNo,planAmount,actualmount,payType,payMethod,channel,auth,e);
+    		return CommonResult.defaultError("系统出错");
+    	}
+    	
+    }
+    
+    public CommonResult updateOrderStatus(String userId,String storeNo,String orderNo,String cashierTradeNo,int status,String auth) {
+        logger.info("#OrderService.updateOrderStatus# userId={},storeNo={},orderNo={},cashierTradeNo={},status={},auth={}",
+        											userId,storeNo,orderNo,cashierTradeNo,status,auth);
+        try{
+        	StoreBean storeBean = storeService.getStoreByNO(storeNo);
+    		if(storeBean == null){
+    			return CommonResult.defaultError("商家不存在");
+    		}
+    		int num = tbOrderDao.updateByAccount(status, 0, orderNo, Long.parseLong(userId), cashierTradeNo);
+    		if(num > 0){
+    			return CommonResult.success("更新成功");
+    		}
+    		
+    		OrderBean orderBean = tbOrderDao.getByOrderId(orderNo);
+    		if(orderBean.getStatus() == status){
+    			return CommonResult.success("更新成功");
+    		}
+    		return CommonResult.success("更新失败");
+        }catch (Exception e) {
+        	logger.error("#OrderService.updateOrderStatus# userId={},storeNo={},orderNo={},cashierTradeNo={},status={},auth={}",
+					userId,storeNo,orderNo,cashierTradeNo,status,auth,e);
+		}
+        return CommonResult.defaultError("系统异常");
+    }
+    
+    public CommonResult refundUnionpay(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth){
+    	 logger.info("#OrderService.refundUnionpay# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
+					userId,storeNo,orderNo,cashierTradeNo,auth);
+    	 try{
+    		 auth = URLDecoder.decode(auth, "utf-8");
+			 String[] args = auth.split(",");
+			 
+			 List<Integer> moduleIds = new ArrayList<>();
+			 List<Integer> roleIds = tbStoreAccountBindRoleDao.getRoleIdByAccountId(Long.parseLong(args[1]));
+			 if(!CollectionUtils.isEmpty(roleIds)){
+				 moduleIds = tbModuleBindRoleDao.getModuleIdByRoleIds(roleIds);
+				 moduleIds = CollectionUtils.isEmpty(moduleIds)?new ArrayList<Integer>():moduleIds;
+			 }
+			 
+			 int refundRole = Integer.parseInt(MtConfig.getProperty("STORE_REFUND_MODULE_ID", "0"));
+			 if(!moduleIds.contains(refundRole)){
+				return CommonResult.build(2, "没有权限操作");
+			 }
+    		 
+			if(cashierTradeNo.startsWith("09")){
+				cashierTradeNo = cashierTradeNo.substring(2);
+			} 
+    		OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, orderNo, cashierTradeNo);
+ 			if(bean == null){
+ 				return CommonResult.build(2, "订单号不存在");
+ 			}
+ 			if(bean.getStatus() == 3){
+ 				return CommonResult.success("该订单已经在处理中");
+ 			}else if(bean.getStatus() == 4){
+ 				return CommonResult.success("该订单退款成功");
+ 			}else if(bean.getStatus() == 5){
+ 				return CommonResult.success("该订单退款失败");
+ 			}
+ 			
+ 			//保存定单信息
+ 			OrderRefundBean orderRefundBean = new OrderRefundBean();
+			orderRefundBean.setRefundNo("pre"+bean.getOrderId());
+			orderRefundBean.setRefundMoney(bean.getActualChargeAmount());
+			orderRefundBean.setSubmitUserId(Long.parseLong(userId));
+			
+			OrderRefundBean refundBean = tbOrderRefundDao.getByRefundNo("pre"+bean.getOrderId());
+			if(refundBean == null){
+				int reCode = tbOrderRefundDao.insert(orderRefundBean);
+				if(reCode != 1){
+					logger.info("#appRefund# 添加orderRefundBean出错了");
+					return CommonResult.build(2, "系统异常");
+				}
+			}
+			return CommonResult.success("", bean.getTransactionId());
+    	 }catch (Exception e) {
+    		 logger.error("#OrderService.refundUnionpay# userId={},orderNo={},cashierTradeNo={},auth={}",
+ 					userId,orderNo,cashierTradeNo,auth,e);
+		}
+    	return CommonResult.defaultError("系统异常");
+    }
+    
+    public CommonResult refundSuccess(String userId,String storeNo,String cashierTradeNo,String auth) {
+        logger.info("#OrderService.refundSuccess# userId={},storeNo={},cashierTradeNo={},auth={}",
+				userId,storeNo,cashierTradeNo,auth);
+        try{
+        	OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNo, "", cashierTradeNo);
+        	if(bean == null){
+ 				return CommonResult.build(2, "订单不存在");
+ 			}
+        	int reCode = tbOrderRefundDao.updateStatusAndOrderNo("re"+bean.getOrderId(), "pre"+bean.getOrderId(), 5, bean.getActualChargeAmount());
+			if(reCode != 1){
+				logger.info("#OrderService.refundSuccess# 更新orderRefundBean出错了");
+				return CommonResult.build(2, "系统异常");
+			}
+			int code = tbOrderDao.updateStatusAndMoney(bean.getId(), 4,bean.getActualChargeAmount(),"re"+bean.getOrderId());
+			if(code != 1){
+				logger.info("#OrderService.refundSuccess#  更新order出错了");
+				return CommonResult.build(2, "系统异常");
+			}
+			return CommonResult.success("");
+        }catch (Exception e) {
+        	logger.error("#OrderService.refundSuccess# userId={},storeNo={},cashierTradeNo={},auth={}",
+    				userId,storeNo,cashierTradeNo,auth,e);
+        }
+        return CommonResult.defaultError("系统异常");
+    }
+    
+    public boolean callbackWPOS(String content){
+    	boolean flag = false;
+    	logger.info("#OrderService.callbackWPOS# content={}",content);
+    	try{
+    		Map<String,String> map = new HashMap<>();
+    		String[] args = content.split("&");
+    		for(int i = 0;i<args.length;i++){
+    			map.put(args[i].split("=")[0], URLDecoder.decode(args[i].split("=")[1]));
+    		}
+    		if("PAY".equals(map.get("trade_status"))){
+    			String orderNo = map.get("out_trade_no");
+    			String transactionId = map.get("cashier_trade_no");
+    			String buyer = map.get("buyer");
+    			
+    			OrderBean bean = tbOrderDao.getByOrderId(orderNo);
+    			StoreBean storeBean = tbStoreDao.getStoreByNo(bean.getStoreNo());
+    			//添加用户
+    			UserBean userBean = userService.saveStoreUser(buyer,3,storeBean.getStoreNo(),storeBean.getParentNo(),"",0);
+    			//更新表信息
+    			int num = tbOrderDao.updateStatus(bean.getId(), 1, 0, transactionId, userBean.getId());
+    			if(num <=0){
+    				tbOrderDao.updateUser(bean.getId(), transactionId, userBean.getId());
+    			}
+    			flag = true;
+    		}
+    	}catch (Exception e) {
+    		logger.error("#OrderService.callbackWPOS# content={}",content,e);
+		}
+    	return flag;
+    }
+    
+    public static void main(String[] args) {
+		new OrderService().callbackWPOS("");
+	}
+    
+    private double bigToDouble(BigDecimal bigd){
+    	if(bigd == null){
+    		return 0.0;
+    	}
+    	bigd = bigd.setScale(2,BigDecimal.ROUND_HALF_UP);
+    	return bigd.doubleValue();
     }
 }
 

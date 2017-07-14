@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -127,5 +128,39 @@ public class BaseController {
     public Object queryRefund(String orderNo){
     	logger.info("#BaseController.queryRefund# orderNo={}",orderNo);
     	return orderService.searchRefund(orderNo);
+    }
+    
+    //旺POS收银URL验证
+    @RequestMapping(value = "/wangPos", method =  {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object wangPos(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            System.out.println("=====================");
+            String signature = request.getParameter("signature");
+            String timestamp = request.getParameter("timestamp");
+            String nonce = request.getParameter("nonce");
+            String echostr = request.getParameter("echo_str");
+            String event = request.getParameter("event");
+            
+            System.out.println("signature:" + signature);
+           System.out.println("timestamp:" + timestamp);
+            System.out.println("nonce:" + nonce);
+             System.out.println("echostr:" + echostr);
+             System.out.println("event:" + event);
+             
+             Map<String,Object> map = new HashMap();
+             map.put("status", 0);
+             map.put("info", "success");
+             Map<String,String> dataMap = new HashMap<>();
+             dataMap.put("echo_str", echostr);
+             map.put("data", dataMap);
+//            PrintWriter pw = response.getWriter();
+//            pw.append(echostr);
+//            pw.flush();
+             return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return CommonResult.defaultError("出错了");
     }
 }

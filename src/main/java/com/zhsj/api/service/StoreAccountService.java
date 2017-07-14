@@ -56,6 +56,9 @@ public class StoreAccountService {
 			
 			String storeNo = tbStoreBindAccountDao.getStoreNoByAccountId(storeAccountBean.getId());
 			StoreBean storeBean = tbStoreDao.getStoreByNo(storeNo);
+			if(storeBean == null ){
+				return CommonResult.defaultError("商家不在营业状态");
+			}
 			
 			tbStoreAccountDao.initSignStatus(regId);
 			tbStoreAccountDao.updateSignStatus(storeAccountBean.getId(),regId, 1);

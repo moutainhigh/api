@@ -4,15 +4,20 @@
     <sql id="SELECT_FIELDS">
         id,order_id,plan_charge_amount,actual_charge_amount,status,discount_type,
         discount_id,pay_type,pay_method,store_no,parent_store_no,org_id,user_id,ctime,utime,org_ids,sale_id,
-        refund_no,refund_money,pay_channel,account_id
+        refund_no,refund_money,pay_channel,account_id,transaction_id
     </sql>
 
-    <insert id="insertOrder" >
+     <insert id="insertOrder" >
         INSERT INTO tb_order
-       (order_id,plan_charge_amount,actual_charge_amount,status,discount_type,discount_id,pay_type,pay_method,store_no,parent_store_no,org_id,user_id,ctime,utime,org_ids,sale_id,discount_ids)
-        VALUES (#{bean.orderId},#{bean.planChargeAmount},#{bean.actualChargeAmount},#{bean.status},#{bean.discountType},
-        #{bean.discountId},#{bean.payType},#{bean.payMethod},#{bean.storeNo},#{bean.parentStoreNo},#{bean.orgId},#{bean.userId},#{bean.ctime},#{bean.utime},#{bean.orgIds},#{bean.saleId},#{bean.discountIds})
+       (order_id,plan_charge_amount,actual_charge_amount,status,pay_type,pay_method,store_no,parent_store_no,org_id,
+       		user_id,ctime,utime,org_ids,sale_id,store_discount_price,org_discount_price,discount_detail,pay_channel,account_id)
+        VALUES 
+        (#{bean.orderId},#{bean.planChargeAmount},#{bean.actualChargeAmount},#{bean.status},
+        #{bean.payType},#{bean.payMethod},#{bean.storeNo},#{bean.parentStoreNo},#{bean.orgId},
+        #{bean.userId},unix_timestamp(now()),unix_timestamp(now()),#{bean.orgIds},#{bean.saleId},#{bean.storeDiscountPrice},
+        #{bean.orgDiscountPrice},#{bean.discountDetail},#{bean.payChannel},#{bean.accountId})
     </insert>
+    
 
 
     <update id="updateOrderByOrderId">
@@ -304,6 +309,26 @@
      	and ctime BETWEEN #{startTime} AND #{endTime} and ( account_id = #{accountId} or account_id = 0 )
      	and status = 4
      </select>
+     
+     <select id="countByUserTimeMethod" resultType="java.util.HashMap">
+     	SELECT SUM(plan_charge_amount) planMoney,SUM(actual_charge_amount) actualMoney,
+		       SUM(store_discount_price) storeDisMoney,
+		       SUM(org_discount_price) orgDisMoney,
+		       SUM(IF(STATUS = 4,refund_money,0)) refundMoney
+		FROM tb_order 
+		where store_No = #{storeNo} 
+     	and ctime BETWEEN #{startTime} AND #{endTime} and ( account_id = #{accountId} or account_id = 0 )
+     	<choose>
+            <when test="statuses != null and statuses.size() > 0">
+                AND status IN
+                <foreach collection="statuses" item="st"
+                         open="(" separator="," close=")" >
+                    #{st} 
+                </foreach>
+            </when>
+        </choose> 
+        and pay_method = #{payMethod}
+     </select>
 
      <select id="getByStatusAndCtime" resultType="orderBean">
      	SELECT <include refid="SELECT_FIELDS"/>
@@ -443,6 +468,7 @@
      
      <select id="getByOrderIdOrTransId" resultType="orderBean">
           select  id,order_id orderId,plan_charge_amount planChargeAmount,actual_charge_amount actualChargeAmount,status,pay_type payType,pay_method payMethod,ctime
+          	,transaction_id
           from tb_order
           <where>
                  status in (1,3,4,5)
@@ -519,5 +545,34 @@
         </where>
      
      </select>
+     <update id="updateStatusAndMoney">
+        update tb_order
+        set status = #{status},refund_money=#{refundMoney},refund_no=#{refundNo},
+        utime = unix_timestamp(now())
+        where id = #{id}
+     </update>
+     
+     
+     <update id="updateByAccount">
+        update tb_order
+        set status = #{status},transaction_id=#{transactionId},
+        utime = unix_timestamp(now())
+        where status = #{preStatus} and order_id = #{orderId} and account_id = #{accountId}
+     </update>
+     
+      <update id="updateStatus">
+        update tb_order
+        set status = #{status},transaction_id=#{transactionId},user_id=#{userId},
+        utime = unix_timestamp(now())
+        where status = #{preStatus} and id = #{id} 
+     </update>
+      <update id="updateUser">
+        update tb_order
+        set transaction_id=#{transactionId},user_id=#{userId},
+        utime = unix_timestamp(now())
+        where id = #{id} 
+     </update>
+     	
+	
      
 </mapper>

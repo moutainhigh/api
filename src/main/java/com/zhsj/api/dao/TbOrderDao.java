@@ -26,6 +26,12 @@ public interface TbOrderDao {
 
     int updateOrderByOrderId(@Param("status") int status,
                              @Param("orderId") String orderId);
+    
+    int updateByAccount(@Param("status") int status,
+    					@Param("preStatus")int preStatus,
+            			@Param("orderId") String orderId,
+            			@Param("accountId")long accountId,
+            			@Param("transactionId")String transactionId);
 
     int updateOrderByOrderIdIde(@Param("status") int status,
                              @Param("preStatus") int prestatus,
@@ -129,7 +135,14 @@ public interface TbOrderDao {
 												  @Param("accountId")long accountId,
 												  @Param("statuses")List<Integer> statuses);
 	
-
+	Map<String, Object> countByUserTimeMethod(@Param("storeNo")String storeNo,
+			  @Param("startTime") int startTime,
+			  @Param("endTime")int endTime,
+			  @Param("accountId")long accountId,
+			  @Param("statuses")List<Integer> statuses,
+			  @Param("payMethod")String payMethod);
+	
+	
 	List<OrderBean> getByStatusAndCtime(@Param("status")int status,
 										@Param("startTime")int startTime,
 										@Param("endTime")int endTime);
@@ -168,4 +181,19 @@ public interface TbOrderDao {
     double getTodayRefundMoney(@Param("storeNo")String storeNo, @Param("startTime")int startTime, @Param("endTime")int endTime);
     
     
- }
+	
+	int updateStatusAndMoney(@Param("id")long id, 
+							 @Param("status")int status,
+							 @Param("refundMoney")double refundMoney,
+							 @Param("refundNo") String refundNo);
+	
+	int updateStatus(@Param("id")long id, 
+			 		@Param("status")int status,
+			 		@Param("preStatus")int preStatus,
+			 		@Param("transactionId")String transactionId,
+			 		@Param("userId")long userId);
+	
+	int updateUser(@Param("id")long id, 
+			 		@Param("transactionId")String transactionId,
+			 		@Param("userId")long userId);
+}
