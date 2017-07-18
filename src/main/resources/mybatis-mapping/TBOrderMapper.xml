@@ -586,5 +586,16 @@
         utime = unix_timestamp(now())
         where id = #{id} 
      </update>
+     
+     <select id="getActualMoney" resultType="double">
+     	SELECT ifnull(SUM(actual_charge_amount),0)
+     	FROM tb_order 
+     	WHERE 
+	    store_no in <foreach collection="storeList" item="storeNo" open="(" separator="," close=")">
+	                  #{storeNo}
+	             </foreach>
+     	and ctime between #{startTime} and #{endTime} 
+     	AND pay_type =#{payType} AND pay_method =#{payMethod} AND STATUS = 1
+     </select>
 	
 </mapper>

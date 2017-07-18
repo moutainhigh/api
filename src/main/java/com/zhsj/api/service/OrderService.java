@@ -8,6 +8,7 @@ import com.zhsj.api.bean.OrderRefundBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.bean.StoreBean;
+import com.zhsj.api.bean.StorePayInfo;
 import com.zhsj.api.bean.result.OrderSta;
 import com.zhsj.api.bean.result.RefundSta;
 import com.zhsj.api.bean.UserBean;
@@ -26,6 +27,7 @@ import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreSignDao;
 import com.zhsj.api.dao.TbStoreBindOrgDao;
 import com.zhsj.api.dao.TbStoreDao;
+import com.zhsj.api.dao.TbStorePayInfoDao;
 import com.zhsj.api.dao.TbUserBindStoreDao;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.login.LoginUserUtil;
@@ -84,6 +86,8 @@ public class OrderService {
     private TbStoreDao tbStoreDao;
     @Autowired
     private FuyouService fuyouService;
+    @Autowired
+    private TbStorePayInfoDao tbStorePayInfoDao;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -152,6 +156,14 @@ public class OrderService {
     	    	logger.info("#OrderService.refundMoney# orderNo={},price={},msg={}",orderNo,price,"退款金额不正确");
     			return CommonResult.defaultError("退款金额不正确");
     		}
+    		
+    		double actualMoney = this.getAccoutMoney(orderBean.getStoreNo(), orderBean.getPayType(), orderBean.getPayMethod());
+    		if(price > actualMoney){
+    			logger.info("#OrderService.refundMoney# orderNo={},price={},actualMoney={},msg={}",orderNo,price,actualMoney,"商家余额不够退款");
+    			return CommonResult.defaultError("商家余额不足");
+    		}
+    		
+    		
     		String result = "Fail";
     		switch(orderBean.getPayType()){
 				case 1:
@@ -175,8 +187,8 @@ public class OrderService {
 					//中信接口
 					result = pinganService.refundMoney(orderBean,price,userId);
 					break;
-				case 5:
-					//中信接口
+				case 6:
+					//富友接口
 					result = fuyouService.refundMoney(orderBean,price,userId);
 					break;
 				default:
@@ -193,6 +205,29 @@ public class OrderService {
         	logger.error("#OrderService.refundMoney# orderNo={},price={}",orderNo,price,e);
         	return CommonResult.defaultError("系统异常");
     	}
+    }
+    
+    private double getAccoutMoney(String storeNo,int payType,String payMethod){
+    	double totalMoney = 0.0;
+    	try{
+    		List<StorePayInfo> list = tbStorePayInfoDao.getByStoreNoAndType(storeNo, payType, payMethod);
+    		if(CollectionUtils.isEmpty(list)){
+    			return totalMoney;
+    		}
+    		StorePayInfo payInfo  = list.get(0);
+    		String field1 = payInfo.getField1()==null?"":payInfo.getField1();
+    		String mchId = payInfo.getMchId()==null?"":payInfo.getMchId();
+    		List<String> storeNoList = tbStorePayInfoDao.getStoreNo(payType, payMethod,field1, mchId);
+    		if(CollectionUtils.isEmpty(storeNoList)){
+    			return totalMoney;
+    		}
+    		int startTime = DateUtil.getTodayStartTime();
+			int endTime = startTime + 60*60*24;
+    		return tbOrderDao.getActualMoney(storeNoList, payType, payMethod, startTime, endTime);
+    	}catch(Exception e){
+    		logger.error("#OrderService.getAccoutMoney# storeNo={}",storeNo,e);
+    	}
+    	return totalMoney;
     }
     
     public CommonResult searchRefund(String orderNo){

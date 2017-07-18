@@ -204,4 +204,11 @@ public interface TbOrderDao {
 	int updateUser(@Param("id")long id, 
 			 		@Param("transactionId")String transactionId,
 			 		@Param("userId")long userId);
+	
+	double getActualMoney(@Param("storeList")List<String> storeList,
+						  @Param("payType")int payType,
+						  @Param("payMethod")String payMethod,
+						  @Param("startTime")int startTime, 
+						  @Param("endTime")int endTime);
+	
 }

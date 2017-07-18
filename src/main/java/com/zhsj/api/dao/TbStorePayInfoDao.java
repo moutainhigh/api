@@ -30,11 +30,10 @@ public interface TbStorePayInfoDao {
                       @Param("remark") String remark,
                       @Param("status") int status);
 
-//    int updateByNo1 (@Param("remark") String remark,
-//    				 @Param("storeNo")String storeNO,
-//    				 @Param("rate")String rate,
-//    				 @Param("settlementType")String settlementType,
-//    				 @Param("payMethod")String paymethod);
+    List<String> getStoreNo(@Param("payType")int payType,
+							@Param("payMethod")String payMethod,
+							@Param("field1") String field1,
+							@Param("mchId") String mchId);
 
 
 }

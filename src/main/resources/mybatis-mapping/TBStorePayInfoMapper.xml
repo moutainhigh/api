@@ -29,7 +29,18 @@
         
     </insert>
 
-
+	<select id="getStoreNo" resultType="java.lang.String">
+		SELECT store_no FROM tb_store_pay_info 
+		WHERE 
+		pay_type=#{payType} and pay_method=#{payMethod}
+		<if test="field1 != null and field1 != '' ">
+			and field1 =#{field1}
+		</if>
+		<if test="mchId != null and mchId != '' ">
+			 AND mch_id = #{mchId}
+		</if>
+		
+	</select>
 
 
 
