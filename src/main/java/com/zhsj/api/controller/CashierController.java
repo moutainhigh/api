@@ -3,6 +3,7 @@ package com.zhsj.api.controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -115,7 +116,7 @@ public class CashierController {
     @ResponseBody
     //交班统计打印
     public Object sentShiftMsg(String storeNo,String userId,String startTime,String endTime,String type, String auth) {
-        logger.info("#CashierController.countShift# storeNO={},userId={},startTime={},endTime={},type={},auth={}",
+        logger.info("#CashierController.sentShiftMsg# storeNO={},userId={},startTime={},endTime={},type={},auth={}",
         		storeNo,userId,startTime,endTime,type,auth);
         if(StringUtils.isEmpty(storeNo) || StringUtils.isEmpty(userId)){
         	return CommonResult.defaultError("输入信息有误");
@@ -238,13 +239,13 @@ public class CashierController {
     
     @RequestMapping(value = "orderList")
     @ResponseBody
-    public Object orderList(String storeNo,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
-    	logger.info("#orderList# storeNo = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
-    			storeNo, payMethod, startTime, endTime, status, page, pageSize);
+    public Object orderList(int type,String storeNo,int payChannel,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
+    	logger.info("#orderList# type={},storeNo = {}, payChannel = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
+    			type,storeNo, payChannel, payMethod, startTime, endTime, status, page, pageSize);
     	if(StringUtils.isEmpty(storeNo)){
     		return CommonResult.build(2, "门店编号有误");
     	}
-    	return orderService.getOrderListByParam(storeNo, payMethod, startTime, endTime, status, page, pageSize);
+    	return orderService.getOrderListByParam(type,storeNo, payChannel,payMethod, startTime, endTime, status, page, pageSize);
     }
     
     @RequestMapping(value = "refundPage")
@@ -322,6 +323,35 @@ public class CashierController {
 		}
     }
     
+    @RequestMapping(value = "/callbackFY", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //保存定单
+    public void callbackFY(HttpServletRequest request, HttpServletResponse response) {
+    	InputStream is= null;     
+    	String contentStr="";     
+    	PrintWriter pw = null;
+		try {
+			pw = response.getWriter();
+			is = request.getInputStream();       
+			contentStr= IOUtils.toString(is, "utf-8");
+			contentStr = URLDecoder.decode(contentStr, "GBK");
+	        contentStr = contentStr.replace("req=", "");
+            logger.info("#callbackFY# content={}",contentStr);
+		} catch (IOException e) {
+			logger.error("#CashierController.callback# e={}",e.getMessage(),e );
+		}finally{
+		    pw.flush();
+		    pw.close();
+		    if(is !=null){
+		    	try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		    }
+		}
+    }
+    
     @RequestMapping(value = "/updateOrderStatus", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     //更新订单状态
@@ -349,7 +379,22 @@ public class CashierController {
         if(StringUtils.isEmpty(cashierTradeNo) && StringUtils.isEmpty(orderNo)){
         	return CommonResult.defaultError("订单号与交易号不能全为空");
         }
-        return orderService.refundUnionpay(userId, storeNo,orderNo, cashierTradeNo, auth);
+        return orderService.refundUnionpay(userId, storeNo,5,orderNo, cashierTradeNo, auth);
+    }
+    
+    @RequestMapping(value = "/refundUP", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //发起退款
+    public Object refundUP(String userId,String storeNo,int type,String orderNo,String cashierTradeNo,String auth) {
+        logger.info("#CashierController.refundUP# userId={},storeNo={},type={},orderNo={},cashierTradeNo={},auth={}",
+        											userId,storeNo,type,orderNo,cashierTradeNo,auth);
+        if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(auth) || StringUtils.isEmpty(storeNo)){
+        	return CommonResult.defaultError("参数不正确,证检查");
+        }
+        if(StringUtils.isEmpty(cashierTradeNo) && StringUtils.isEmpty(orderNo)){
+        	return CommonResult.defaultError("订单号与交易号不能全为空");
+        }
+        return orderService.refundUP(userId, storeNo,type,orderNo, cashierTradeNo, auth);
     }
     
     @RequestMapping(value = "/refundSuccess", method = {RequestMethod.GET,RequestMethod.POST})
@@ -364,7 +409,22 @@ public class CashierController {
         if(StringUtils.isEmpty(cashierTradeNo) ){
         	return CommonResult.defaultError("参数不正确,证检查");
         }
-        return orderService.refundSuccess(userId, storeNo, cashierTradeNo, auth);
+        return orderService.refundSuccess(userId, storeNo, "",cashierTradeNo, auth);
+    }
+    
+    @RequestMapping(value = "/refundUPSuccess", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //更新订单状态
+    public Object refundUPSuccess(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth) {
+        logger.info("#CashierController.refundSuccess# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
+        											userId,storeNo,orderNo,cashierTradeNo,auth);
+        if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(storeNo) || StringUtils.isEmpty(auth)){
+        	return CommonResult.defaultError("参数不正确,证检查");
+        }
+        if(StringUtils.isEmpty(cashierTradeNo) && StringUtils.isEmpty(orderNo)){
+        	return CommonResult.defaultError("参数不正确,证检查");
+        }
+        return orderService.refundSuccess(userId, storeNo, orderNo,cashierTradeNo, auth);
     }
     
     

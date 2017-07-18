@@ -82,20 +82,29 @@
 	            	$.each(data.data,function(index,value){
 	            		var imgUrl = value.iconUrl;
 	            		imgUrl += "-line.png";
-	            		_html+="<li class=\"fl\" onclick=\"loadSecondMenu("+value.id+","+value.type+",'"+value.url+"',this)\">";
+	            		_html+="<li class=\"fl\" onclick=\"loadSecondMenu("+value.id+","+value.type+",'"+value.url+"',"+index+")\" data-idx="+index+">";
 	            		_html+="<p class=\"foot-button\"><img  src=\"../resource/img/merchant/"+imgUrl+"\" \/><\/p>";
 	            		_html+="<span class=\"foot-name mine-color \">"+value.displayName+"</span>";
-	            		_html+="<\/li>"
+	            		_html+="<\/li>";
 	            	}); 
 	            	$("#mainMenu").html(_html);
-	            	$("#mainMenu li:first").click();
+	            	if(sessionStorage.getItem("defaultload")){
+	            		var paramObj = JSON.parse(sessionStorage.getItem("defaultload"));
+	            		loadSecondMenu(paramObj.id,paramObj.type,paramObj.url,paramObj.idx);
+	            	}else{
+	            	     $("#mainMenu li:first").click();
+	            	}
 	            }else{
 	                 jalert.show(data.msg);
 	            }
 	        });
 	}
 	
-	function loadSecondMenu(id,type,url,obj){
+	function loadSecondMenu(id,type,url,idx){
+		sessionStorage.setItem("defaultload", JSON.stringify({
+			id:id,type:type,url:url,idx:idx
+		}));
+		var obj = $("#mainMenu li")[idx];
 		if(url == ""){
 			jalert.show("您没有权限,请联系相关人员开通!!");
 			return;
@@ -112,17 +121,17 @@
 		 if(url == "/merchant/store"){
 			 $("#_storeShow").html("");
 			$("#_storeShow").show();
-			$("#_storeShow").load("./store?id="+id+"&type="+type+"&auth="+_auth);
+			$("#_storeShow").load("../merchant/store?id="+id+"&type="+type+"&auth="+_auth);
 		}
 		if(url == "/merchant/assistant"){
 			$("#_assistantShow").html("");
 			$("#_assistantShow").show();
-			$("#_assistantShow").load("./assistant?id="+id+"&type="+type+"&auth="+_auth);
+			$("#_assistantShow").load("../merchant/assistant?id="+id+"&type="+type+"&auth="+_auth);
 		}
 		if(url == "/merchant/mine"){
 			 $("#_mineShow").html("");
 			$("#_mineShow").show();
-			$("#_mineShow").load("./mine?id="+id+"&type="+type+"&auth="+_auth);
+			$("#_mineShow").load("../merchant/mine?id="+id+"&type="+type+"&auth="+_auth);
 		} 
 		
 	}
@@ -136,7 +145,8 @@
 			jalert.show("您没有权限,请联系相关人员开通!!");
 			return;
 		}
-		alert(url);
+// 		alert(url);
+        location.href="../"+url+"?auth="+_auth;
 	}
 </script>
 

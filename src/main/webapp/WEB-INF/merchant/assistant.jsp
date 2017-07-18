@@ -11,10 +11,10 @@
                             <!--轮播图start-->
 	            <div class="swiper-container">
 	                <div class="swiper-wrapper">
-	                    <div class="swiper-slide"><img src="../resource/img/merchant/banner-one.png"/> </div>
-	                    <div class="swiper-slide"><img src="../resource/img/merchant/banner-two.png"/></div>
-	                    <div class="swiper-slide"><img src="../resource/img/merchant/banner-three.png"/></div>
-	
+	                    <div class="swiper-slide"><img src="../resource/img/merchant/banner/banner01.jpg"/> </div>
+	                    <div class="swiper-slide"><img src="../resource/img/merchant/banner/banner02.jpg"/></div>
+	                    <div class="swiper-slide"><img src="../resource/img/merchant/banner/banner03.jpg"/></div>
+	                    <div class="swiper-slide"><img src="../resource/img/merchant/banner/banner04.jpg"/></div>
 	                </div>
 	                 <!--Add Pagination -->
 	                <div class="swiper-pagination"></div>

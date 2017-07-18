@@ -1,0 +1,44 @@
+.member-tit{
+    line-height:2.2rem;
+    font-size:0.8rem;
+    text-align: center;
+    color: #959595;
+}
+.member-tail{
+    line-height:1.4rem;
+    font-size:1rem;
+    text-align: center;
+
+}
+.old-member, .active-member{
+    font-size:0.8rem;
+    color:#959595;
+
+}
+
+.member-oldbox, .member-actbox{
+    width:49%;
+    text-align: center;
+}
+.member-oldbox{
+    border-right:0.025rem solid #ccc;
+}
+.member-summary{
+    padding-top:0.4rem;
+}
+.foot{
+    margin-top:0.8rem;
+}
+.foot h2{
+    line-height:2.2rem;
+    font-size:0.8rem;
+    background: #f4f4f4;
+    margin-bottom:0.8rem;
+}
+.member-sale{
+    display: inline-block;
+    width:0.4rem;
+    height:1.2rem;
+    background: #3c59e5;
+    vertical-align: middle;
+}

@@ -9,6 +9,6 @@ img{vertical-align:top;}
 .fr{float:right;}
 .clearfix:after{display:block; content:''; clear:both;}
 .clearfix{zoom:1;}
-
+input{vertical-align:middle}
 /*
 html { overflow-x:hidden; overflow-y:hidden; }*/

@@ -1,23 +1,23 @@
 package com.zhsj.api.service;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import com.zhsj.api.bean.RoleBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StoreBean;
+import com.zhsj.api.dao.TBRoleDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindAccountDao;
 import com.zhsj.api.dao.TBStoreSignDao;
 import com.zhsj.api.dao.TbStoreDao;
-import com.zhsj.api.dao.TbStoreNoDao;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.DateUtil;
@@ -35,6 +35,8 @@ public class StoreAccountService {
 	private TbStoreDao tbStoreDao;
 	@Autowired
 	private TBStoreBindAccountDao tbStoreBindAccountDao;
+	@Autowired
+	private TBRoleDao tbRoleDao;
 	
 	public CommonResult signCashier(String account,String passwd,String lat,String lon,String regId,String imei,String auth){
 		logger.info("#StoreAccountService.signCashier# account={},passwd={},lat={},lon={},regId={},imei={}auth={}",
@@ -100,4 +102,24 @@ public class StoreAccountService {
 		return tbStoreBindAccountDao.getStoreNoByAccountId(accountId);
 	}
 	
+	
+	
+	public Object getListByStoreNo(String storeNo){
+		logger.info("#getListByStoreNo# storeNo = {}", storeNo);
+		try {
+			List<Long> accountIds = tbStoreBindAccountDao.getAccountIdByStoreNo(storeNo);
+			if(accountIds == null){
+				return null;
+			}
+			List<StoreAccountBean> storeAccountBeans = tbStoreAccountDao.getListByIds2(accountIds);
+			for(StoreAccountBean storeAccountBean:storeAccountBeans){
+				List<RoleBean> roleList = tbRoleDao.getListByAccountId(storeAccountBean.getId());
+				storeAccountBean.setRoleList(roleList);
+			}
+			return storeAccountBeans;
+		} catch (Exception e) {
+			logger.error("#getListByStoreNo# storeNo = {}", storeNo, e);
+		}
+		return null;
+	}
 }

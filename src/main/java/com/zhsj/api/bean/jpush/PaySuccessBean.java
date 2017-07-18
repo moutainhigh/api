@@ -92,7 +92,7 @@ public class PaySuccessBean {
 	public void setDc(String dc) {
 		this.dc = dc;
 	}
-	public PaySuccessBean toBean(OrderBean bean,String qrcode,String uri){
+	public PaySuccessBean toBean(OrderBean bean,String qrcode,String uri,String desc){
 		if(bean == null){
 			return null;
 		}
@@ -108,7 +108,7 @@ public class PaySuccessBean {
 		pb.setCode(bean.getAccountId()+""+((int)Arith.mul(bean.getPlanChargeAmount(),100)));
 		pb.setQr(qrcode);
 		pb.setNt(pb.getPt()+"收款"+bean.getPlanChargeAmount()+"元");
-		pb.setDc("");
+		pb.setDc(desc);
 		return pb;
 	}
 	

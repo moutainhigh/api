@@ -6,6 +6,7 @@ import com.zhsj.api.util.db.DynamicDataSource;
 import com.zhsj.api.bean.MchInfoAddBean;
 import com.zhsj.api.bean.MinMaxBean;
 import com.zhsj.api.bean.StoreBean;
+import com.zhsj.api.bean.result.StoreSta;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -43,5 +44,9 @@ public interface TbStoreDao {
     MinMaxBean getMaxMin();
     
     int updateStore(@Param("info")MchInfoAddBean info);
+    
+    
+    int getChildStoreCountByStoreNo(@Param("storeNo")String storeNo);
+    
     
 }

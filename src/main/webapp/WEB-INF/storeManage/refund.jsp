@@ -1,0 +1,91 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>退款</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link href="../resource/css/app/refund.css" rel="stylesheet" type="text/css">
+    <script src="../resource/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript">
+    (function(win,doc){
+        function change(){
+            doc.documentElement.style.fontSize=doc.documentElement.clientWidth*20/375+'px';
+        }
+        change();
+        win.addEventListener('resize',change,false);
+    })(window,document);
+    
+    </script>
+  </head>
+  
+  <body>
+     <div class="content">
+         <input type="hidden" id="storeNo" value="${storeNo }">
+         <input type="hidden" id="accountId" value="${accountId }">
+         <div class="refund_con">
+             <fieldset>
+			     <legend>退款条件</legend>
+			     <div class="row">
+			         <label>交易号:</label>
+			         <div class="row_ipt">
+			             <input type="tel" id="transId" placeholder="输入退款的交易号" autofocus="autofocus" />
+			         </div>
+			     </div>   
+			     <div class="row">
+			         <label>商户单号:</label>
+			         <div class="row_ipt">
+			             <input type="tel" id="orderId" placeholder="输入退款的订单号" />
+			         </div>
+			     </div>   
+			     <div class="row tt">
+			        <span id="t">*&nbsp;订单号和交易号至少一个必填!</span>
+			     </div>     
+			     <div class="row serach">
+			         <span id="serach">搜&nbsp;索</span>
+			     </div>
+			     
+			  </fieldset>
+         </div>
+	     <div class="reminders">
+	           <div class="reminders_container">
+	             <i>!</i>
+		         <span id="rem"></span>
+	         </div>
+	     </div>
+	     <div class="refund_order">
+	             <div class="tips">
+	               <i></i>
+	             </div>
+	             <div class="redund_detail">
+	                <input type="hidden" id="oid">
+	                <div class="row">
+	                   <label>退款金额:</label>
+	                   <div class="row_ipt refund_ipt">
+				             <input type="number" id="money" value="" />
+				         </div>
+		              <div class="refund-w">
+					         <span id="refund">退&nbsp;款</span>
+					  </div>
+	                </div>
+	                <div class="row">
+	                   <label>
+	                       <img alt="" src="../resource/img/app/order/wechat-ico.png" id="logo">
+	                   </label>
+	                   <div class="row_ipt details">
+	                       <div><span class="color">￥<span id="am"></span></span><del>￥<span id="pm"></span></del><span id="status"></span></div>
+	                       <div><span class="color" id="ctime"></span></div>
+                       </div>
+	                </div>
+	                
+	             </div>
+	         </div>   
+	  </div>
+  </body>
+</html>
+<script src="../resource/js/storeManage/refund.js"></script>
+

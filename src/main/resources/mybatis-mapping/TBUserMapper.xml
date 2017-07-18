@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhsj.api.dao.TbUserDao">
     <sql id="SELECT_FIELDS">
-        id,open_id,nick_name,head_img,sex,city,province,country,privilege,unionid,utime,ctime,app_id,subscribe
+        id,open_id openId,nick_name nickName,head_img headImg,sex,city,province,country,privilege,unionid,utime,ctime,app_id appId,subscribe
     </sql>
 
     <select id="getUserByOpenId" resultType="userBean" >

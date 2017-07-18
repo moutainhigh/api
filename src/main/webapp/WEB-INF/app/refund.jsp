@@ -11,6 +11,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="../resource/css/app/refund.css" rel="stylesheet" type="text/css">
     <script src="../resource/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../resource/js/jquery.alert.js"></script>
     <script type="text/javascript">
     (function(win,doc){
         function change(){
@@ -66,7 +67,7 @@
 	                <div class="row">
 	                   <label>退款金额:</label>
 	                   <div class="row_ipt refund_ipt">
-				             <input type="number" id="money" value="" onkeypress="javascript:return false" onfocus="cur_focus(this)"  >
+				             <input type="number" id="money" value="" onfocus="cur_focus(this);">
 				         </div>
 		              <div class="refund-w">
 					         <span id="refund">退&nbsp;款</span>

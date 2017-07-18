@@ -75,6 +75,7 @@ public class Merchant
 	public static void updateMerchantByPaykey() {
 		Map<String, String> reqData = new HashMap<String, String>();
 		reqData.put("paykey", "d818637264454ea7b2aa8ee1f077e7f4"); //修改商户的paykey
+		reqData.put("paykey", "77e3e1c03c8e47ceb3624b2f135c0d71"); //修改商户的paykey
         reqData.put("agent_no", "95272016121410000062");//代理商编号
         reqData.put("wx_rate", "0.38"); //微信费率
         reqData.put("ali_rate", "0.38");//支付宝费率

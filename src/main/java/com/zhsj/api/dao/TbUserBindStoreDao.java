@@ -35,4 +35,5 @@ public interface TbUserBindStoreDao {
     List<UserBindStoreBean> getListByStoreNo(@Param("storeNo")String storeNo,
     		                                 @Param("startTime")int startTime,
     		                                 @Param("endTime")int endTime);
+    
 }

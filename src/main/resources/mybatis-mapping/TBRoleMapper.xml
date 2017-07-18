@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBRoleDao">
+
+     <select id="getListByAccountId" resultType="roleBean">
+        select role.id id, role.name name from tb_role role left join tb_store_account_bind_role sabr on role.id = sabr.role_id
+        where sabr.account_id = #{accountId} and role.valid = 1 and role.type = 2 and sabr.valid = 1
+     </select>
+
+     <select id="getListByTypeEq2" resultType="roleBean">
+        select id, name from tb_role where type = 2 and valid = 1
+     </select>
+     
+</mapper>

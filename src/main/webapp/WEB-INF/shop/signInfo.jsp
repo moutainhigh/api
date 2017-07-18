@@ -11,6 +11,7 @@ pageEncoding="UTF-8"%>
     <meta content="telephone=no" name="format-detection">
     <link href="../resource/css/manager/common.css" type="text/css" rel="stylesheet">
     <link href="../resource/css/manager/signInfo.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="../resource/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../resource/js/wechatCommon.js"></script>
     <style>
           #protocol{
@@ -47,10 +48,19 @@ pageEncoding="UTF-8"%>
        <section class="f3">
            <div class="agreement">
                <div class="content">
-                   <span><a href="http://zhihuishangjie.mikecrm.com/ZMJql5V" id="protocol">协议与条款</a></span>
+                   <span>协议与条款</span>
                </div>
            </div>
        </section>
    </div>
 </body>
 </html>
+<script>
+  $(function(){
+	 $(".agreement").click(function(){
+		location.href = "http://zhihuishangjie.mikecrm.com/ZMJql5V";
+	 }); 
+  });
+  
+  
+</script>

@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhsj.api.dao.TBStoreSettingsDao">
+    <sql id="SELECT_FIELD">
+    	id, store_no storeNo,cloud_print cloudPrint,ele_invoice
+    </sql>
     
     <sql id="TABLE">
        tb_store_settings
     </sql>
 
     <select id="getByStoreNo" resultType="com.zhsj.api.bean.StoreSettingsBean">
-       select id, store_no storeNo,cloud_print cloudPrint from <include refid="TABLE"/>
+       select <include refid="SELECT_FIELD"/>  
+       from <include refid="TABLE"/>
        <where>
           store_no = #{storeNo} 
        </where>

@@ -1,0 +1,104 @@
+nav h3 img{
+    width: 0.5rem;
+    height: 0.95rem;
+    vertical-align: text-bottom;
+}
+nav h3 span{
+    position: relative;
+    left:0.8rem;
+}
+nav h3 {
+    text-align: center;
+    line-height: 2.2rem;
+    font-size:.9rem;
+    border-bottom: 0.025rem solid #ccc;
+    color:#FFF;
+    background:#1c313e;
+    
+}
+nav p{
+    line-height:1.8rem;
+    border-bottom: 0.025rem solid #ccc;
+    font-size:.6rem;
+    padding:0 0.6rem;
+    color:#BBB;
+}
+.store-number{
+    padding-right:0.4rem;
+}
+.store-number img{
+    width: .8rem;
+    height: .8rem;
+    vertical-align: -.2rem;
+}
+.company-label-one, .company-label-two{
+    display: inline-block;
+    padding: .2rem;
+    border-radius: 3px;
+    background: #eb793b;
+    font-size: 0.6rem;
+    color: #fff;
+    line-height: .6rem;
+    height: .6rem;
+    vertical-align: .1rem;
+    font-weight:bold;
+}
+h3 .company-label-two{
+    background: #feb558;
+}
+ul li{
+    padding:.2rem .6rem;
+    background: #fff;
+    border-bottom:1px solid #ccc;
+}
+.strore_manager{
+	padding:.6rem !important;
+}
+
+.company-name{
+    font-size: 1rem;
+    padding-right:0.4rem;
+    font-weight:bold;
+}
+.fl p{
+    padding-top:0.3rem;
+    color:#666;
+}
+.img-small img{
+	vertical-align: bottom;
+    width: .6rem;
+}
+li p{
+	font-size:0.6rem;
+}
+.middle{
+    background: #d9d9d9;
+}
+.middle ul{
+    background: #f4f4f4;
+    padding:0.3rem 0rem 0rem;
+}
+.store-detail{
+    line-height:2.45rem;
+}
+.store-detail img{
+    width: 0.525rem;
+    height: 0.95rem;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.btn{
+	text-align:center;
+	margin-top:2rem;
+	margin-bottom:1rem;
+}
+.btn button{
+    width:5.2rem;
+    height:1.8rem;
+    background: #feb558;
+    color: #fff;
+    border:none;
+    font-size:0.9rem;
+    border-radius:5px;
+}

@@ -74,7 +74,7 @@
            text-overflow:ellipsis;
            vertical-align:middle;
            display:inline-block;
-           width:80%;
+           width:70%;
         }
         .shape{
           width:100%;
@@ -109,6 +109,33 @@
             display:none;
             z-index:1005;
          }
+         .statistics{
+            position:fixed;
+            height:2.8rem;
+            top:2rem;
+            left:0;
+            right:0;
+            z-index: 1000;
+            background: #FFF;
+         }
+         .statistics ul{
+           list-style:none;
+           border-bottom:1px solid #CCC;
+         }
+         .statistics ul li{
+           float:left;
+           width:33.333%;
+           text-align:center;
+         }
+         .statistics ul li:not(:last-child){
+           border-right:1px solid #CCC;
+         }
+         .statistics ul li p {
+             font-size:.75rem;
+             margin:0 !important;
+             color:#666;
+             line-height:1.4rem;
+         }
     </style>
     <script type="text/javascript">
     
@@ -138,20 +165,24 @@
    <div class="item clearfix">
         <div class="title">
             <ul class="title-con clearfix">
+                <li class="fl padding-left-no menu-lists" data-val="-1" id="payChannel">
+                    <strong class="payChannel " >渠道</strong>
+                    <span><img src="../resource/img/app/order/triangle-symbol.png"/> </span>
+                </li>
                 <li class="fl padding-left-no menu-lists" data-val="-1" id="payMethod">
-                    <strong class="pay-type " >支付类型</strong>
+                    <strong class="pay-type " >类型</strong>
                     <span><img src="../resource/img/app/order/triangle-symbol.png"/> </span>
                 </li>
                 <li class="fl menu-lists">
-                    <strong>交易时间</strong>
+                    <strong>时间</strong>
                     <span><img  src="../resource/img/app/order/triangle-symbol.png"/> </span>
                 </li>
                 <li class="fl menu-lists" data-val="-1" id="status">
-                    <strong class="pay-status ">交易状态</strong>
+                    <strong class="pay-status ">状态</strong>
                     <span><img src="../resource/img/app/order/triangle-symbol.png"/> </span>
                 </li>
                 <li class="fl width-no menu-lists" data-val="-1" id="storeNo">
-                    <strong class="pay-store ">所属门店</strong>
+                    <strong class="pay-store ">门店</strong>
                     <span><img src="../resource/img/app/order/triangle-symbol.png" /> </span>
                 </li>
             </ul>
@@ -162,6 +193,12 @@
            <img src="../resource/img/app/order/loading.gif">
         </div>
         <div class="con_content">
+            <ul class="title-lists con">
+	            <li data-val="-1" class="checked_color">全部</li>
+	            <li data-val="1">固定二维码</li>
+	            <li data-val="2">被扫</li>
+	            <li data-val="3">主扫</li>
+	        </ul>
 	        <ul class="title-lists con">
 	            <li data-val="-1" class="checked_color">全部</li>
 	            <li data-val="1">微信</li>
@@ -204,6 +241,22 @@
 	            </c:forEach>
 	        </ul>
         </div>
+        <div class="statistics">
+             <ul class="clearfix">
+                <li>
+                   <p>应收</p>
+                   <p>￥<span id="pm"></span></p>
+                </li>
+                <li>
+                   <p>实收</p>
+                   <p>￥<span id="am">0.00</span></p>
+                </li>
+                <li>
+                   <p>笔数</p>
+                   <p><span id="count">0</span></p>
+                </li>
+             </ul>
+        </div>
         <div class="scroll_box"  id="wrapper">
             <div id="scroller">
                <!-- data -->
@@ -243,9 +296,7 @@ String.prototype.gblen = function() {
           if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
       return fmt;
   };
-var page = 1;
-var totalPage = 0;
-window.onscroll = load;
+
 var date = new Date();
 var startTime = new Date(date+" 00:00:00").getTime(), endTime= new Date(date+" 23:59:59").getTime();
 $('.menu-lists').on('click',function(){
@@ -392,7 +443,6 @@ $('.tran_time .clearfix li').on("click",function(){
 		return state;
   }
     	   function order(page){
-    		   console.log(page);
     			   var date = new Date();
     			   date = date.Format("yyyy/MM/dd");
     		   if(startTime == undefined || startTime == 0){
@@ -401,11 +451,19 @@ $('.tran_time .clearfix li').on("click",function(){
     		   if(endTime == undefined || endTime == 0){
     		       endTime = (new Date(date+" 23:59:59").getTime())/1000;
     		   }
-    		   var storeNo = $("#storeNo").attr("data-val") == -1?${storeNo}:$("#storeNo").attr("data-val");
+    		   var storeNo = $("#storeNo").attr("data-val");
+    		   var type = 0;
+    		   if("-1" == storeNo){
+    			   type = 1;
+    			   storeNo = "${storeNo}";
+    		   }
+    		   
     		var data = {
+    		    payChannel:$("#payChannel").attr("data-val"),
     			payMethod:$("#payMethod").attr("data-val"),
     			status:$("#status").attr("data-val"),
     			storeNo:storeNo,
+    			type:type,
     			pageSize:10,
     			page:page,
     			startTime:startTime,
@@ -416,38 +474,27 @@ $('.tran_time .clearfix li').on("click",function(){
     		$.post("./orderList",data,function(result){
     			if(result.code == 0){
     				var obj = result.data.list;
-    				var content = "";
     				if(page == 1){
     					totalPage = Math.round(result.data.count/10);
+    					var sta = result.data.orderSta;
+    					$("#pm").text(sta.pm);
+    					$("#am").text(sta.am);
+    					$("#count").text(sta.count);
     					document.body.scrollTop = 0;
     					$("#scroller").empty();
     				}
     				for(var i=0,len=obj.length;i<len;i++){
     					var time = new Date(obj[i].ctime*1000).Format("yyyy-MM-dd hh:mm:ss");
     					var t = time.split(" ");
-    					   content += '<div class="list wepay-box">'
+    					var content = '<div class="list wepay-box">'
 	    						   +  '<ul class="clearfix" >'
 	    						   +  '        <li class="fl">';
 	    						   if(obj[i].payMethod == 1){
-	    							   if(obj[i].status !=3 ){
 	    				                    content+= '<span><img src="../resource/img/app/order/wechat-ico.png"/> </span>';
-	    							   }else{
-	    								    content+= '<span><img src="../resource/img/app/order/wechat-gray.png"/> </span>';
-	    							   }
 	    						   }else if(obj[i].payMethod == 2){
-	    							   if(obj[i].status !=3 ){
 	    							        content+= '<span><img src="../resource/img/app/order/pay-icon.png"/> </span>';
-	    							   }else{
-	    								    content+= '<span><img src="../resource/img/app/order/pay-gray.png"/> </span>';
-	    							   }
-	    							   payName = "支付宝";
 	    						   }else if(obj[i].payMethod == 3){
-	    							   if(obj[i].status !=3 ){
 	    							        content+= '<span><img src="../resource/img/app/order/unionPay-icon.png"/> </span>';
-	    							   }else{
-	    								    content+= '<span><img src="../resource/img/app/order/unionPay-gray.png"/> </span>';
-	    							   }
-	    							   payName = "银联";
 	    						   }
 	    						   content +=  '</li>'
 	    						   +  '        <li class="fl">'
@@ -457,21 +504,26 @@ $('.tran_time .clearfix li').on("click",function(){
 	    						   +  '        <li class="fr">'
 	    						   +  '             <h2 class=" present-price">￥'+obj[i].actualChargeAmount+'</h2>'
 	    						   +  '             <h2 class="old-price">￥'+obj[i].planChargeAmount+'</h2>'
-	    						   +  '        </li>'
-	    						   +  '         <li class="fl business-cheap"><h2 class="business-num">'+getStatus(obj[i].status)+'</h2><h2 >';
-	    						   if(obj[i].storeDiscountPrice != 0){
-	    						       content +=  '<span class="business">商家优惠</span>';
-	    						   }
-	    						   if(obj[i].orgDiscountPrice != 0){
-	    							   content +=  '<span class="business">平台优惠</span>';
+	    						   +  '        </li>';
+	    						   if(obj[i].status != 4){
+	    							   content += ' <li class="fl business-cheap"><h2 class="business-num">'+getStatus(obj[i].status)+'</h2><h2 >';
+		    						   if(obj[i].storeDiscountPrice != 0){
+		    						       content +=  '<span class="business">商家优惠</span>';
+		    						   }
+		    						   if(obj[i].orgDiscountPrice != 0){
+		    							   content +=  '<span class="business">平台优惠</span>';
+		    						   }
+	    						   }else{
+	    							   content += ' <li class="fl business-cheap"><h2 class="business-num">￥'+obj[i].refundMoney+'</h2>';
+	    						       content +=  '<h2 style="margin-top:.65rem;"><span >'+getStatus(obj[i].status)+'</span>';
 	    						   }
 	    						   content +=  '  </h2>'
 	    						   +  '         </li>'
 	    						   +  '     </ul>'
 	    						   +  '  </div>';
     					
+    				             $("#scroller").append(content);
     				}
-    				$("#scroller").append(content);
     			}else{
     				alert(result.msg);
     			}
@@ -481,12 +533,22 @@ $('.tran_time .clearfix li').on("click",function(){
     	}
     	
     	
+    	   var page = 1;
+    	   var totalPage = 0;
+    	   window.onscroll = load;
     	   function load(){
+    		   
+	    		 if(document.body.scrollTop > 0){
+                       $(".statistics").css("box-shadow","0 0 10px #666");
+	             }else{
+	                   $(".statistics").css("box-shadow","none");
+	             }
     	   	     if(page <= totalPage){
-    	   			   if(document.body.scrollTop >= document.body.scrollHeight - window.innerHeight-30){
-    	   				   order(page);
-    	   				   page++;
-    	   			   }
+    	   	    	 if(document.body.scrollHeight > (page * window.innerHeight -10)){
+	    	   			   if(document.body.scrollTop >= document.body.scrollHeight - window.innerHeight-30){
+	    	   				   order(++page);
+	    	   			   }
+    	   	    	 }
     	   		  }
     	   	}
     	$(function(){
