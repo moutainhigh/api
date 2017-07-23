@@ -346,42 +346,46 @@ public class JPushService {
     	List list = new ArrayList<>();
 //    	list.add("191e35f7e07307e7858");
 //    	list.add("191e35f7e073dd9e2f3");
-    	list.add("190e35f7e072e5546d4");
-//    	list.add("140fe1da9e9a73f88cc");
+//    	list.add("171976fa8ab475dfc47");
+    	list.add("18171adc0339fa84a9d");
 //    	list.add("191e35f7e073064cff9");
-    	
-    	
-    	OrderBean orderBean = new OrderBean();
-    	orderBean.setId(1);
-    	orderBean.setOrderId("15");
-    	orderBean.setCtime(1497234339);
-    	orderBean.setPayMethod("1");
-    	orderBean.setActualChargeAmount(0.04);
-    	orderBean.setPlanChargeAmount(0.12);
-    	orderBean.setStatus(1);
-    	orderBean.setStoreNo("1110674590");
-    	
-    	String json = new JPushService().toSuccessMsg(orderBean, list);
-    	System.out.println(json);
-//		String result = sendPost("https://api.jpush.cn/v3/push", json);
-//    	String json = "{\"message\":{\"msg_content\":{\"nt\":\"你有一笔0.01元订单支付成功\",\"time\":\"2017-05-25 10:16\",\"cmd\":1,\"no\":\"10001170525369841513\",\"am\":\"0.01\",\"pt\":\"微信\",\"pm\":\"0.01\",\"st\":\"成功\",\"code\":\"671\",\"url\":\"http://wwt.bj37du.com/api/10001170525369841513\",\"qr\":\"qrcode\"}},\"platform\":\"all\",\"audience\":{\"registration_id\":[\"18071adc033cab91e3e\"]},\"options\":{\"time_to_live\":1800,\"sendno\":\"33\"}}";
-    	String resultString = new JPushService().sendPost("https://api.jpush.cn/v3/push", json);
-    	System.out.println(resultString);
-    	Map<String, String> map = JSON.parseObject(resultString, Map.class);
-//    	System.out.println(map.get("msg_id"));
-    	String url = "https://report.jpush.cn/v3/received?msg_ids="+map.get("msg_id");
-    	String result = new JPushService().sendGet(url);
-    	System.out.println(result);
-    	JSONArray jsonArray = JSON.parseArray(result);
-    	for(int i=0;i<jsonArray.size();i++){
-    		String jmsg = jsonArray.get(i).toString();
-    		Map<String, Object> getMap = JSON.parseObject(jmsg,Map.class);
-    		if(getMap.get("android_received") == null && getMap.get("ios_msg_received")==null){
-    			throw new ApiException(1002, "极光推送失败");
-    		}else{
-    			System.out.print(result);
-    		}
+    	for(int i = 1;i<30;i++){
+    		String noString = String.valueOf(i);
+        	OrderBean orderBean = new OrderBean();
+        	orderBean.setId(1);
+        	orderBean.setOrderId(String.valueOf(noString));
+        	orderBean.setCtime(1497234339);
+        	orderBean.setPayMethod("1");
+        	orderBean.setActualChargeAmount(0.04);
+        	orderBean.setPlanChargeAmount(Double.parseDouble(noString));
+        	orderBean.setStatus(1);
+        	orderBean.setStoreNo("1110674590");
+        	
+        	String json = new JPushService().toSuccessMsg(orderBean, list);
+        	System.out.println(json);
+//    		String result = sendPost("https://api.jpush.cn/v3/push", json);
+//        	String json = "{\"message\":{\"msg_content\":{\"nt\":\"你有一笔0.01元订单支付成功\",\"time\":\"2017-05-25 10:16\",\"cmd\":1,\"no\":\"10001170525369841513\",\"am\":\"0.01\",\"pt\":\"微信\",\"pm\":\"0.01\",\"st\":\"成功\",\"code\":\"671\",\"url\":\"http://wwt.bj37du.com/api/10001170525369841513\",\"qr\":\"qrcode\"}},\"platform\":\"all\",\"audience\":{\"registration_id\":[\"18071adc033cab91e3e\"]},\"options\":{\"time_to_live\":1800,\"sendno\":\"33\"}}";
+        	String resultString = new JPushService().sendPost("https://api.jpush.cn/v3/push", json);
+        	 resultString = new JPushService().sendPost("https://api.jpush.cn/v3/push", json);
+        	 resultString = new JPushService().sendPost("https://api.jpush.cn/v3/push", json);
+        	System.out.println(resultString);
+        	Map<String, String> map = JSON.parseObject(resultString, Map.class);
+//        	System.out.println(map.get("msg_id"));
+//        	String url = "https://report.jpush.cn/v3/received?msg_ids="+map.get("msg_id");
+//        	String result = new JPushService().sendGet(url);
+//        	System.out.println(result);
+//        	JSONArray jsonArray = JSON.parseArray(result);
+//        	for(int i=0;i<jsonArray.size();i++){
+//        		String jmsg = jsonArray.get(i).toString();
+//        		Map<String, Object> getMap = JSON.parseObject(jmsg,Map.class);
+//        		if(getMap.get("android_received") == null && getMap.get("ios_msg_received")==null){
+//        			throw new ApiException(1002, "极光推送失败");
+//        		}else{
+//        			System.out.print(result);
+//        		}
+//        	}
     	}
+    	
 		
 	}
     

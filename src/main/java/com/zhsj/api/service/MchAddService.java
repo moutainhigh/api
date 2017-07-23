@@ -8,6 +8,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONObject;
 import com.mysql.fabric.xmlrpc.base.Array;
 import com.zhsj.api.bean.*;
+import com.zhsj.api.bean.fuyou.MchInfoFY;
 import com.zhsj.api.dao.*;
 import com.zhsj.api.util.Md5;
 import com.zhsj.api.util.MtConfig;
@@ -56,9 +57,9 @@ public class MchAddService {
     TBCityCodeDao tbCityCodeDao;
     
     
-    public String addMch(String storeName,String storeAccount,String storeNo,String auth){
-        logger.info("#MchAddService.addMch# storeName={},storeAccount={},storeNo={},auth={}"
-                , storeName, storeAccount, storeNo, auth);
+    public String addMch(String storeName,String storeAccount,String storeNo,int type,String auth){
+        logger.info("#MchAddService.addMch# storeName={},storeAccount={},storeNo={},type={},auth={}"
+                , storeName, storeAccount, storeNo,type, auth);
         try {
             //检查storeNo是否已经使用
             StoreBean storeBean = storeService.getStoreByNO(storeNo);
@@ -68,7 +69,7 @@ public class MchAddService {
             //检查账号是不已经使用
             StoreAccountBean storeAccountBean = tbStoreAccountDao.getByAccount(storeAccount);
             if(storeAccountBean != null){
-                String data = tbStoreExtendDao.getDataByStoreNo(storeNo,1);
+                String data = tbStoreExtendDao.getDataByStoreNo(storeNo,type);
                 if(StringUtils.isEmpty(data)){
                     return "登录帐号已经使用";
                 }else{
@@ -103,14 +104,22 @@ public class MchAddService {
 
             tbStoreBindAccountDao.insert(storeNo, storeAccountBean.getId());
             tbStoreBindOrgDao.insert(storeNo, orgBean.getId(), orgBean.getOrgIds() + "," + orgBean.getId());
-            
-            MchInfoAddBean mchInfo = new MchInfoAddBean();
-            mchInfo.setStoreName(storeName);
-            mchInfo.setShortName(storeName);
-            mchInfo.setStoreNo(storeNo);
-            mchInfo.setStep(1);
-            String json = JSONObject.toJSON(mchInfo).toString();
-            tbStoreExtendDao.insert(storeNo,1,json);
+            String json = "";
+            if(type == 1){
+            	MchInfoAddBean mchInfo = new MchInfoAddBean();
+                mchInfo.setStoreName(storeName);
+                mchInfo.setShortName(storeName);
+                mchInfo.setStoreNo(storeNo);
+                mchInfo.setStep(1);
+                json = JSONObject.toJSON(mchInfo).toString();
+            }else if(type == 2){//富有
+            	MchInfoFY mchInfo = new MchInfoFY();
+                mchInfo.setMchnt_name(storeName);
+                mchInfo.setMchnt_shortname(storeName);
+                mchInfo.setStoreNo(storeNo);
+                mchInfo.setStep(1);
+            }
+            tbStoreExtendDao.insert(storeNo,type,json);
             return "SUCCESS";
         }catch (Exception e){
             logger.error("#MchAddService.addMch# storeName={},storeAccount={},storeNo={},auth={}"

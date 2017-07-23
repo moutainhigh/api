@@ -59,15 +59,15 @@ pageEncoding="UTF-8"%>
                                   <img src="../resource/img/jinjianshanghu.png">
                               </p>
                               <p>
-                                  <span>进件商户</span>
+                                  <span>进件商户(民生)</span>
                               </p>
                           </li>
-                          <li id="searchStore">
+                          <li id="newInsertFY">
                               <p>
-                                  <img src="../resource/img/chaxunjinjian.png">
+                                  <img src="../resource/img/jinjianshanghu.png">
                               </p>
                               <p>
-                                  <span>查询进件</span>
+                                  <span>进件商户(富友)</span>
                               </p>
                           </li>
                           <li id="searchDeal">
@@ -129,8 +129,8 @@ pageEncoding="UTF-8"%>
             window.open("https://www.mszxyh.com/wapserver/outer/index.html?Page=login&ChannelId=mszx02279");
         });
 
-        $("#searchStore").on("touchend",function(){
-            jalert.show("暂未开通");
+        $("#newInsertFY").on("touchend",function(){
+        	 window.open("../mchAddFY/new?auth="+auth) ;
         });
         $("#searchDeal").on("touchend",function(){
             jalert.show("暂未开通");

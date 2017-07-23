@@ -7,14 +7,22 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.zhsj.api.constants.Const;
+import com.zhsj.api.util.wft.MD5;
 
 /**
  * Created by Ricky on 2016/11/19.
  */
 public class Sign {
 
+	static Logger logger = LoggerFactory.getLogger(Sign.class);
     /**
      * sign(RSA签名方法)
      * TODO(这里描述这个方法适用条件 – 可选)
@@ -97,4 +105,26 @@ public class Sign {
         return (new BASE64Decoder()).decodeBuffer(key);
     }
 
+    public static String getSign(Map<String,String> map,String key){
+        ArrayList<String> list = new ArrayList<String>();
+        for(Map.Entry<String,String> entry:map.entrySet()){
+            if(entry.getValue()!=""){
+                list.add(entry.getKey() + "=" + entry.getValue() + "&");
+            }
+        }
+        int size = list.size();
+        String [] arrayToSort = list.toArray(new String[size]);
+        Arrays.sort(arrayToSort, String.CASE_INSENSITIVE_ORDER);
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < size; i ++) {
+            sb.append(arrayToSort[i]);
+        }
+        String result = sb.toString();
+        result += "key=" + key;
+        System.out.println(result);
+        logger.info("Sign Before MD5:" + result);
+        result = MD5.MD5Encode(result,Const.FUYOU_CHARSET);
+        logger.info("Sign Result:" + result);
+        return result;
+    }
 }

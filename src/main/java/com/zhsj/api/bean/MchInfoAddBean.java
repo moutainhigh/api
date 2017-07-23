@@ -28,6 +28,7 @@ public class MchInfoAddBean {
 	private String accountPhone;//开户手机号
 	private String wxRate;
 	private String aliRate;
+	
 	public String getStoreName() {
 		return storeName;
 	}

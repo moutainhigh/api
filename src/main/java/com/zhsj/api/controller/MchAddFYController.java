@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/mchAdd")
-public class MchAddController {
-    Logger logger = LoggerFactory.getLogger(MchAddController.class);
+@RequestMapping("/mchAddFY")
+public class MchAddFYController {
+    Logger logger = LoggerFactory.getLogger(MchAddFYController.class);
 
     @Autowired
     private MchAddService mchAddService;
@@ -29,7 +29,7 @@ public class MchAddController {
     public ModelAndView newMch(String auth) {
         logger.info("#MchAddController.newMch# ");
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("./mchAddFY/new");
+        modelAndView.setViewName("./mchAdd/new");
         modelAndView.addObject("auth", auth);
         return modelAndView;
     }
@@ -43,7 +43,7 @@ public class MchAddController {
     	 if(StringUtils.isEmpty(storeName) || StringUtils.isEmpty(storeAccount) || StringUtils.isEmpty(storeNo)){
     		 return CommonResult.build(1, "参数不正确");
     	 }
-         String result = mchAddService.addMch(storeName, storeAccount, storeNo,1, auth);
+         String result = mchAddService.addMch(storeName, storeAccount, storeNo,2, auth);
          Map<String,String> map = new HashMap<>();
          map.put("auth", auth);
          map.put("storeNo", storeNo);
