@@ -10,6 +10,7 @@ import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.result.OrderSta;
 import com.zhsj.api.bean.result.RefundSta;
+import com.zhsj.api.bean.result.ShiftNewBean;
 import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
@@ -359,6 +360,93 @@ public class OrderService {
     	return CommonResult.defaultError("出错了");
     }
 
+    public CommonResult countNewShift(String storeNo,String userId,int startTime,int endTime, String auth){
+   	 logger.info("#OrderService.countNewShift# storeNO={},userId={},startTime={},endTime={},auth={}",
+        		storeNo,userId,startTime,endTime,auth);
+   	 try{
+   		 ShiftNewBean bean = new ShiftNewBean();
+   		 bean.setStartTime(DateUtil.getTime(((long)startTime)*1000));
+   		 bean.setEndTime(DateUtil.getTime(((long)endTime)*1000));
+   		 
+   		 long accountId = Long.parseLong(userId);
+   		 StoreAccountBean storeAccountBean = tbStoreAccountDao.getById(accountId);
+   		 if(storeAccountBean == null){
+   			 return CommonResult.defaultError("用户信息出错");
+   		 }
+   		 bean.setName(storeAccountBean.getName());
+   		 if(StringUtils.isEmpty(storeAccountBean.getName())){
+   			 bean.setName(storeAccountBean.getAccount());
+   		 }
+   		 
+			 List<Integer> statuses = new ArrayList<>();
+			 statuses.add(1);
+			 statuses.add(3);
+			 statuses.add(4);
+			 statuses.add(5);
+			 Map<String, Object> countMap = tbOrderDao.countByUserAndTime(storeNo, startTime, endTime, accountId,statuses);
+			 Map<String, Object> refundMap = tbOrderDao.countRefundByUserAndTime(storeNo, startTime, endTime, accountId);
+			 Map<String, Object> storeMap = tbOrderDao.countStoreDisByUserAndTime(storeNo, startTime, endTime, accountId, statuses);
+			 Map<String, Object> orgMap = tbOrderDao.countOrgDisByUserAndTime(storeNo, startTime, endTime, accountId,statuses);
+			 
+			 Map<String, Object> wxMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "1");
+			 Map<String, Object> aliMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "2");
+			 Map<String, Object> unMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "3");
+			 
+			 bean.setRefundMoney(bigToStr(((BigDecimal)refundMap.get("refundMoney"))));
+			 bean.setRefundNum(String.valueOf(refundMap.get("count")));
+			 bean.setStoreDisNum(String.valueOf(storeMap.get("count")));
+			 bean.setStoreDisMoney(bigToStr((BigDecimal)storeMap.get("storeDisSum")));
+			 bean.setOrgDisNum(String.valueOf(orgMap.get("count")));
+			 bean.setOrgDisMoney(bigToStr((BigDecimal)orgMap.get("orgDisSum")));
+			 
+			 bean.setTotalNum(String.valueOf(countMap.get("count")));
+			 bean.setTotalMoney(bigToStr((BigDecimal)countMap.get("planMoney")));
+			 
+			 bean.setActualMoney(bigToStr(((BigDecimal)countMap.get("actualMoney")).subtract((BigDecimal)refundMap.get("refundMoney"))));
+
+			 if(wxMap == null){
+				 bean.setDisplayWX(0);
+			 }else{
+				 bean.setDisplayWX(1);
+				 bean.setPlanMoneyWX(bigToStr((BigDecimal)wxMap.get("planMoney")));
+				 bean.setActualMoneyWX(bigToStr((BigDecimal)wxMap.get("actualMoney")));
+				 bean.setStoreDisMoneyWX(bigToStr((BigDecimal)wxMap.get("storeDisMoney")));
+				 bean.setOrgDisMoneyWX(bigToStr((BigDecimal)wxMap.get("orgDisMoney")));
+				 bean.setRefundWX(bigToStr((BigDecimal)wxMap.get("refundMoney")));
+				 bean.setActualMoneyWX(Arith.sub(bean.getActualMoneyWX(), bean.getRefundWX()));
+			 }
+			
+			 if(aliMap == null){
+				 bean.setDisplayAli(0);
+			 }else{
+				 bean.setDisplayAli(1);
+				 bean.setPlanMoneyAli(bigToStr((BigDecimal)aliMap.get("planMoney")));
+				 bean.setActualMoneyAli(bigToStr((BigDecimal)aliMap.get("actualMoney")));
+				 bean.setStoreDisMoneyAli(bigToStr((BigDecimal)aliMap.get("storeDisMoney")));
+				 bean.setOrgDisMoneyAli(bigToStr((BigDecimal)aliMap.get("orgDisMoney")));
+				 bean.setRefundAli(bigToStr((BigDecimal)aliMap.get("refundMoney")));
+				 bean.setActualMoneyAli(Arith.sub(bean.getActualMoneyAli(), bean.getRefundAli()));
+			 }
+			 
+			 if(unMap == null){
+				 bean.setDisplayUCard(0);
+			 }else{
+				 bean.setDisplayUCard(1);
+				 bean.setPlanMoneyUCard(bigToStr((BigDecimal)unMap.get("planMoney")));
+				 bean.setActualMoneyUCard(bigToStr((BigDecimal)unMap.get("actualMoney")));
+				 bean.setStoreDisMoneyUCard(bigToStr((BigDecimal)unMap.get("storeDisMoney")));
+				 bean.setOrgDisMoneyUCard(bigToStr((BigDecimal)unMap.get("orgDisMoney")));
+				 bean.setRefundUCard(bigToStr((BigDecimal)unMap.get("refundMoney")));
+				 bean.setActualMoneyUCard(Arith.sub(bean.getActualMoneyUCard(),bean.getRefundUCard()));
+			 }
+			 
+			 return CommonResult.success("", bean);
+   	 }catch (Exception e) {
+   		 logger.error("#OrderService.countShift# storeNO={},userId={},startTime={},endTime={},auth={}",
+   	         		storeNo,userId,startTime,endTime,auth,e);
+		}
+   	return CommonResult.defaultError("出错了");
+   }
     
     public List<OrderBean> getByStatusAndCtime(int status,int startTime,int endTime){
     	return bmOrderDao.getByStatusAndCtime(status, startTime, endTime);
@@ -828,6 +916,14 @@ public class OrderService {
     	}
     	bigd = bigd.setScale(2,BigDecimal.ROUND_HALF_UP);
     	return bigd.doubleValue();
+    }
+    
+    private String bigToStr(BigDecimal bigd){
+    	if(bigd == null){
+    		return "0";
+    	}
+    	bigd = bigd.setScale(2,BigDecimal.ROUND_HALF_UP);
+    	return bigd.toString();
     }
     
 }

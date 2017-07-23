@@ -31,6 +31,12 @@ public class Arith {
         BigDecimal b2 = new BigDecimal(Double.toString(v2));
         return b1.subtract(b2).doubleValue();
     } 
+    
+    public static String sub(String v1,String v2){
+        BigDecimal b1 = new BigDecimal(v1);
+        BigDecimal b2 = new BigDecimal(v2);
+        return b1.subtract(b2).toString();
+    } 
     /**
      * 提供精确的乘法运算。
      * @param v1 被乘数
