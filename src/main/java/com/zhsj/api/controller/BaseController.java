@@ -3,8 +3,10 @@ package com.zhsj.api.controller;
 import com.zhsj.api.bean.BusinessTypeBean;
 import com.zhsj.api.service.BaseService;
 import com.zhsj.api.service.OrderService;
+import com.zhsj.api.service.WXService;
 import com.zhsj.api.util.CommonResult;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ public class BaseController {
     private BaseService baseService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private WXService wxService;
 
     //微信可以访问到 网页授权域名
     @RequestMapping(value = "/accWeixin", method = RequestMethod.GET)
@@ -163,4 +167,17 @@ public class BaseController {
         }
         return CommonResult.defaultError("出错了");
     }
+    
+    
+    @RequestMapping(value = "/queryTransfersInfo", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Object queryTransfersInfo(String orderNo){
+    	logger.info("#BaseController.queryTransfersInfo# orderNo={}",orderNo);
+    	if(StringUtils.isEmpty(orderNo)){
+    		return CommonResult.build(1, "订单号不能为空");
+    	}
+    	return  wxService.queryTransfersInfo(orderNo);
+    }
+    
+    
 }
