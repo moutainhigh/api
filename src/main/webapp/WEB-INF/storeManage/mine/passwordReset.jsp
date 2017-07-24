@@ -63,7 +63,7 @@ pageEncoding="UTF-8"%>
             return;
         }
 
-        if(pw != npw){
+        if(pw == npw){
             jalert.show("新旧密码不能一样");
             return;
         }
