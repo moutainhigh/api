@@ -36,5 +36,10 @@ public interface TbStorePayInfoDao {
 //    				 @Param("settlementType")String settlementType,
 //    				 @Param("payMethod")String paymethod);
 
-
+     StorePayInfo getByStoreNoAndTypeAndMethod(@Param("storeNo")String storeNo, 
+    		 @Param("payType")int payType, @Param("payMethod")String payMethod);
+     
+     List<String> getStoreNosByField1(@Param("field1")String field1);
+     
+     List<String> getStoreNosByMchId(@Param("mchId")String mchId);
 }

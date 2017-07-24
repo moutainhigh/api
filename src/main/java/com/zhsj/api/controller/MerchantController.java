@@ -101,7 +101,7 @@ public class MerchantController {
     public ModelAndView test() throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("./merchant/index");
-        String auth = "o5pmes_cN1AMrFptmwpDaNj6DXkI";
+        String auth = "o5pmesyob9P9Otj-jl-U3ETnArlY";
         DesUtils des = new DesUtils();//自定义密钥   
         modelAndView.addObject("auth", "31"+des.encrypt(22+","+22+",2,"+auth));
         return modelAndView;
