@@ -34,6 +34,10 @@ public class StoreBean {
     private String email;
     private String contactsPeople;
     
+    private String taxpayerNum;
+    private String enterpriseName;
+    private int expireTime;
+    
     public long getId() {
         return id;
     }
@@ -240,6 +244,30 @@ public class StoreBean {
 
 	public void setContactsPeople(String contactsPeople) {
 		this.contactsPeople = contactsPeople;
+	}
+
+	public String getTaxpayerNum() {
+		return taxpayerNum;
+	}
+
+	public void setTaxpayerNum(String taxpayerNum) {
+		this.taxpayerNum = taxpayerNum;
+	}
+
+	public String getEnterpriseName() {
+		return enterpriseName;
+	}
+
+	public void setEnterpriseName(String enterpriseName) {
+		this.enterpriseName = enterpriseName;
+	}
+
+	public int getExpireTime() {
+		return expireTime;
+	}
+
+	public void setExpireTime(int expireTime) {
+		this.expireTime = expireTime;
 	}
     
     

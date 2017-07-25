@@ -20,12 +20,14 @@ import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.StoreBindPrinterBean;
 import com.zhsj.api.bean.StoreSettingsBean;
 import com.zhsj.api.bean.result.ShiftBean;
+import com.zhsj.api.constants.Const;
 import com.zhsj.api.dao.TBPrinterSecretDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindPrinterDao;
 import com.zhsj.api.dao.TBStoreSettingsDao;
 import com.zhsj.api.dao.TbOrderDao;
 import com.zhsj.api.dao.TbStoreDao;
+import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.login.LoginUserUtil;
@@ -50,6 +52,8 @@ public class PrinterService {
 	private TBStoreAccountDao tbStoreAccountDao;
 	@Autowired
 	private WXService wxService;
+	@Autowired
+	private VPiaotongService vpiaotongService;
 	
 	
 	
@@ -193,7 +197,12 @@ public class PrinterService {
 			String printInitial = PrinterUtil.requestPrintPost(deviceId, secretKey, initByte);
 			Map<String,Object> map = JSON.parseObject(printInitial, Map.class);
 			if("ok".equals(map.get("state"))){
-				 result = PrinterUtil.request(deviceId, secretKey, orderBean, cashierName);
+				String qr = vpiaotongService.getStoreQRCode(orderBean.getStoreNo(), orderBean.getOrderId(), orderBean.getActualChargeAmount());
+		    	String desc = "";
+		    	if(StringUtils.isNotEmpty(qr)){
+		    		desc = Const.ELE_INVOICE_DESC;
+		    	}
+				 result = PrinterUtil.request(deviceId, secretKey, orderBean, cashierName,qr,desc);
 			}
 			logger.info("#printerByOrder# result = {}", result);
 			Map<String,Object> rsmap = JSON.parseObject(result, Map.class);
@@ -236,18 +245,58 @@ public class PrinterService {
 			 Map<String, Object> storeMap = tbOrderDao.countStoreDisByUserAndTime(storeNo, startTime, endTime, accountId, statuses);
 			 Map<String, Object> orgMap = tbOrderDao.countOrgDisByUserAndTime(storeNo, startTime, endTime, accountId,statuses);
 
-			 bean.setRefundMoney(((BigDecimal)refundMap.get("refundMoney")).doubleValue());
+			 Map<String, Object> wxMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "1");
+			 Map<String, Object> aliMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "2");
+			 Map<String, Object> unMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "3");
+			 
+			 
+			 bean.setRefundMoney(bigToDouble(((BigDecimal)refundMap.get("refundMoney"))));
 			 bean.setRefundNum((Long)refundMap.get("count"));
 			 bean.setStoreDisNum((Long)storeMap.get("count"));
-			 bean.setStoreDisMoney(((BigDecimal)storeMap.get("storeDisSum")).doubleValue());
+			 bean.setStoreDisMoney(bigToDouble((BigDecimal)storeMap.get("storeDisSum")));
 			 bean.setOrgDisNum((Long)orgMap.get("count"));
-			 bean.setOrgDisMoney(((BigDecimal)orgMap.get("orgDisSum")).doubleValue());
+			 bean.setOrgDisMoney(bigToDouble((BigDecimal)orgMap.get("orgDisSum")));
 			 
 			 bean.setTotalNum((Long)countMap.get("count"));
-			 bean.setTotalMoney(((BigDecimal)countMap.get("planMoney")).doubleValue());
+			 bean.setTotalMoney(bigToDouble((BigDecimal)countMap.get("planMoney")));
 			 
-			 bean.setActualMoney(((BigDecimal)countMap.get("actualMoney")).subtract((BigDecimal)refundMap.get("refundMoney")).doubleValue());
+			 bean.setActualMoney(bigToDouble(((BigDecimal)countMap.get("actualMoney")).subtract((BigDecimal)refundMap.get("refundMoney"))));
 
+			 if(wxMap == null){
+				 bean.setDisplayWX(0);
+			 }else{
+				 bean.setDisplayWX(1);
+				 bean.setPlanMoneyWX(wxMap.get("planMoney") == null?0:bigToDouble((BigDecimal)wxMap.get("planMoney")));
+				 bean.setActualMoneyWX(wxMap.get("actualMoney") == null?0:bigToDouble((BigDecimal)wxMap.get("actualMoney")));
+				 bean.setStoreDisMoneyWX(wxMap.get("storeDisMoney") == null?0:bigToDouble((BigDecimal)wxMap.get("storeDisMoney")));
+				 bean.setOrgDisMoneyWX(wxMap.get("orgDisMoney") == null?0:bigToDouble((BigDecimal)wxMap.get("orgDisMoney")));
+				 bean.setRefundWX(wxMap.get("refundMoney") == null?0:bigToDouble((BigDecimal)wxMap.get("refundMoney")));
+				 bean.setActualMoneyWX(Arith.sub(bean.getActualMoneyWX(), bean.getRefundWX()));
+			 }
+			
+			 if(aliMap == null){
+				 bean.setDisplayAli(0);
+			 }else{
+				 bean.setDisplayAli(1);
+				 bean.setPlanMoneyAli(aliMap.get("planMoney") == null?0:bigToDouble((BigDecimal)aliMap.get("planMoney")));
+				 bean.setActualMoneyAli(aliMap.get("actualMoney") == null?0:bigToDouble((BigDecimal)aliMap.get("actualMoney")));
+				 bean.setStoreDisMoneyAli(aliMap.get("storeDisMoney") == null?0:bigToDouble((BigDecimal)aliMap.get("storeDisMoney")));
+				 bean.setOrgDisMoneyAli(aliMap.get("orgDisMoney") == null?0:bigToDouble((BigDecimal)aliMap.get("orgDisMoney")));
+				 bean.setRefundAli(aliMap.get("refundMoney") == null?0:bigToDouble((BigDecimal)aliMap.get("refundMoney")));
+				 bean.setActualMoneyAli(Arith.sub(bean.getActualMoneyAli(), bean.getRefundAli()));
+			 }
+			 
+			 if(unMap == null){
+				 bean.setDisplayUCard(0);
+			 }else{
+				 bean.setDisplayUCard(1);
+				 bean.setPlanMoneyUCard(unMap.get("planMoney") == null?0:bigToDouble((BigDecimal)unMap.get("planMoney")));
+				 bean.setActualMoneyUCard(unMap.get("actualMoney") == null?0:bigToDouble((BigDecimal)unMap.get("actualMoney")));
+				 bean.setStoreDisMoneyUCard(unMap.get("storeDisMoney") == null?0:bigToDouble((BigDecimal)unMap.get("storeDisMoney")));
+				 bean.setOrgDisMoneyUCard(unMap.get("orgDisMoney") == null?0:bigToDouble((BigDecimal)unMap.get("orgDisMoney")));
+				 bean.setRefundUCard(unMap.get("refundMoney") == null?0:bigToDouble((BigDecimal)unMap.get("refundMoney")));
+				 bean.setActualMoneyUCard(Arith.sub(bean.getActualMoneyUCard(), bean.getRefundUCard()));
+			 }
 			if("1".equals(type)){
 				//模板消息
 				wxService.sendStoreThift(storeNo, bean);
@@ -320,5 +369,13 @@ public class PrinterService {
 			return CommonResult.success("系统出错");
 		}
 	}
+	
+	 private double bigToDouble(BigDecimal bigd){
+    	if(bigd == null){
+    		return 0.0;
+    	}
+    	bigd = bigd.setScale(2,BigDecimal.ROUND_HALF_UP);
+    	return bigd.doubleValue();
+    }
 	
 }

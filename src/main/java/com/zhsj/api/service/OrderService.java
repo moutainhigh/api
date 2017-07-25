@@ -1,21 +1,19 @@
 package com.zhsj.api.service;
 
 import com.alibaba.fastjson.JSON;
-import com.zhsj.api.bean.LoginUser;
-import com.zhsj.api.bean.ModuleBean;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.OrderRefundBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.StorePayInfo;
+import com.zhsj.api.bean.jpush.PaySuccessBean;
 import com.zhsj.api.bean.result.OrderSta;
 import com.zhsj.api.bean.result.RefundSta;
 import com.zhsj.api.bean.result.ShiftNewBean;
-import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
-import com.zhsj.api.constants.StroeRole;
+import com.zhsj.api.constants.Const;
 import com.zhsj.api.dao.TbOrderDao;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
@@ -32,17 +30,14 @@ import com.zhsj.api.dao.TbStorePayInfoDao;
 import com.zhsj.api.dao.TbUserBindStoreDao;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.login.LoginUserUtil;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
 import java.math.BigDecimal;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -91,6 +86,8 @@ public class OrderService {
     private FuyouService fuyouService;
     @Autowired
     private TbStorePayInfoDao tbStorePayInfoDao;
+    @Autowired
+    private VPiaotongService vpiaotongService;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -241,7 +238,7 @@ public class OrderService {
 					//中信接口
 					result = pinganService.searchRefund(orderBean);
 					break;
-				case 5:
+				case 6:
 					//富友接口
 					result = fuyouService.searchRefund(orderBean);
 					break;
@@ -976,6 +973,16 @@ public class OrderService {
     	}
     	bigd = bigd.setScale(2,BigDecimal.ROUND_HALF_UP);
     	return bigd.doubleValue();
+    }
+    
+    public PaySuccessBean getPaySuccessBean(OrderBean bean){
+    	String qr = vpiaotongService.getStoreQRCode(bean.getStoreNo(), bean.getOrderId(), bean.getActualChargeAmount());
+    	String desc = "";
+    	if(StringUtils.isNotEmpty(qr)){
+    		desc = Const.ELE_INVOICE_DESC;
+    	}
+		String apiUri = MtConfig.getProperty("API_URL", "");
+		return new PaySuccessBean().toBean(bean, qr,apiUri,desc);
     }
     
     private String bigToStr(BigDecimal bigd){

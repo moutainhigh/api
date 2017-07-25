@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBStoreItemDao">
+
+	<sql id="SELECT_FIELD">
+		id,store_no,item_name,tax_rate,tax_code
+	</sql>
+
+    <select id="getItems" resultType="storeItemBean">
+        SELECT <include refid="SELECT_FIELD"/>
+        FROM tb_store_item
+        where store_no=#{storeNo} and valid = 1
+    </select>
+
+
+</mapper>

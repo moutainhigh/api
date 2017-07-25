@@ -123,9 +123,17 @@ public class PrinterUtil {
 		return result;
 	}
 	
-public static String request(String deviceId, String secertKey,OrderBean orderBean, String cashierName){
-	        //1、保存byte数组
+	public static String request(String deviceId, String secertKey,OrderBean orderBean, String cashierName){
+		return request(deviceId, secertKey, orderBean, cashierName,"","");
+	}	
+	
+	public static String request(String deviceId, String secertKey,OrderBean orderBean, String cashierName,String qr,String desc){
+		logger.info("#PrinterUtil.request# deviceId={},secertKey={},orderBean={},cashierName={},qr={},desc={}",
+				deviceId,secertKey,orderBean,cashierName,qr,desc);
+		try{
+			//1、保存byte数组
 			ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+			
 			//2、title设置格式
 			String tilteSetting = CloudPrinter.TITLESE_TTING;
 			byte[] titleSettingByte = PrinterUtil.hexStringToBytes(tilteSetting);
@@ -133,12 +141,9 @@ public static String request(String deviceId, String secertKey,OrderBean orderBe
 			//3、title设置
 			String title = orderBean.getStoreName()+"\r\n\r\n";
 			byte[] titleByte;
-			try {
-				titleByte = title.getBytes(CloudPrinter.CHARSET);
-				byteBuffer.put(titleByte);
-			} catch (UnsupportedEncodingException e2) {
-				e2.printStackTrace();
-			}
+			titleByte = title.getBytes(CloudPrinter.CHARSET);
+			byteBuffer.put(titleByte);
+			
 			//content 设置格式
 			String contentSetting = CloudPrinter.CONTENT_SETTING;
 			byte[] contentSettingByte = PrinterUtil.hexStringToBytes(contentSetting);
@@ -161,42 +166,29 @@ public static String request(String deviceId, String secertKey,OrderBean orderBe
 			String cashier = "收银员:"+cashierName+"\r\n";
 			contentBuffer.append(split).append(cashier);
 			byte[] contentByte;
-			try {
-				contentByte = contentBuffer.toString().getBytes(CloudPrinter.CHARSET);
-				byteBuffer.put(contentByte);
-			} catch (UnsupportedEncodingException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			contentByte = contentBuffer.toString().getBytes(CloudPrinter.CHARSET);
+			byteBuffer.put(contentByte);
+			
 			//
-			if("1110674255".equals(orderBean.getStoreNo())){
+			if(StringUtils.isNotEmpty(qr)){
 				// 设置二维码
 				byteBuffer.put(titleSettingByte);
-				String url = "http://weixin.qq.com/q/02Qe2INmmTcN11cWWohr4f";
-				byte[] hexQR = PrinterUtil.getURLQRCode(url);
+				byte[] hexQR = PrinterUtil.getURLQRCode(qr);
 				byteBuffer.put(hexQR);
+			}
+			if(StringUtils.isNotEmpty(desc)){
 				//底部内容
 				String bottomSetting = CloudPrinter.BOTTOM_TTING;
 				byte[] bottomSettingByte = PrinterUtil.hexStringToBytes(bottomSetting);
 				byteBuffer.put(bottomSettingByte);
 				StringBuffer bottomContent = new StringBuffer();
-				bottomContent.append("扫一扫领红包\r\n");
-				bottomContent.append("消费可以抵现还可以转赠闺蜜哦\r\n");
-				try {
-					byteBuffer.put(bottomContent.toString().getBytes(CloudPrinter.CHARSET));
-				} catch (UnsupportedEncodingException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				bottomContent.append(desc);
+				byteBuffer.put(bottomContent.toString().getBytes(CloudPrinter.CHARSET));
 			}
 			//换行
 			byteBuffer.put(contentSettingByte);
-			try {
-				byteBuffer.put("\r\n\r\n\r\n".toString().getBytes(CloudPrinter.CHARSET));
-			} catch (UnsupportedEncodingException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			byteBuffer.put("\r\n\r\n\r\n".toString().getBytes(CloudPrinter.CHARSET));
+			
 			//打印指令
 			byte[] goPrint = {0x0d,0x0a};
 			byteBuffer.put(goPrint);
@@ -204,74 +196,92 @@ public static String request(String deviceId, String secertKey,OrderBean orderBe
 			byte[] bs = new byte[byteBuffer.position()];
 			byteBuffer.flip();
 			byteBuffer.get(bs);
-			try {
-				String result = requestPrintPost(deviceId, secertKey, bs);
-				logger.info("#request# result = {}", result);
-				return result;
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	        return null;
-}	
-	
+			String result = requestPrintPost(deviceId, secertKey, bs);
+			logger.info("#request# result = {}", result);
+			return result;
+		}catch (Exception e) {
+			logger.error("#PrinterUtil.request# deviceId={},secertKey={},orderBean={},cashierName={},qr={},desc={}",
+							deviceId,secertKey,orderBean,cashierName,qr,desc,e);
+		}
+		return null;
+	}	
 
-public static String requestByShift(String deviceId, String secertKey,ShiftBean shiftBean){
-    //1、保存byte数组
-	ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
-	//2、title设置格式
-	//content 设置格式
-	String contentSetting = CloudPrinter.CONTENT_SETTING;
-	byte[] contentSettingByte = PrinterUtil.hexStringToBytes(contentSetting);
-	byteBuffer.put(contentSettingByte);
-//	//content 设置
-	StringBuffer contentBuffer = new StringBuffer();
-	String cashier = "收银员:"+shiftBean.getName()+"\r\n";
-	String split = "-------------------------------\r\n";
-	String startTime = "起始时间: "+shiftBean.getStartTime()+"\r\n";
-	String endTime  = "结束时间: "+shiftBean.getEndTime()+"\r\n";
-	String actualM = "支付金额: "+shiftBean.getActualMoney()+"\r\n";
-	String totalNum = "支付笔数: "+shiftBean.getTotalNum()+"\r\n";
-	String refundM = "退款金额: "+shiftBean.getRefundMoney()+"\r\n";
-	String refundNum = "退款笔数: "+shiftBean.getRefundNum()+"\r\n";
-	String orgDisMoney = "支付金额: "+shiftBean.getOrgDisMoney()+"\r\n";
-	String orgDisNum = "支付笔数: "+shiftBean.getOrgDisNum()+"\r\n";
-	String storeDisMoney = "退款金额: "+shiftBean.getStoreDisMoney()+"\r\n";
-	String storeDisNum = "退款笔数: "+shiftBean.getStoreDisNum()+"\r\n";
-	String money = "收款: "+shiftBean.getTotalMoney()+"\r\n\r\n\r\n";
-	contentBuffer.append(cashier).append(split).append(startTime).append(endTime)
-	.append(actualM).append(totalNum).append(refundM).append(refundNum).append(orgDisMoney)
-	.append(orgDisNum).append(storeDisMoney).append(storeDisNum).append(split).append(money);
-	byte[] contentByte;
-	try {
-		contentByte = contentBuffer.toString().getBytes(CloudPrinter.CHARSET);
-		byteBuffer.put(contentByte);
-	} catch (UnsupportedEncodingException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	}
-	// 设置二维码
-//	byteBuffer.put(titleSettingByte);
-//	String url = "http://www.zhihuishangjie.com/";
-//	byte[] hexQR = PrinterUtil.getURLQRCode(url);
-//	byteBuffer.put(hexQR);
-	//打印指令
-	byte[] goPrint = {0x0d,0x0a};
-	byteBuffer.put(goPrint);
-	//存放实际打印的byte
-	byte[] bs = new byte[byteBuffer.position()];
-	byteBuffer.flip();
-	byteBuffer.get(bs);
-	try {
-		String result = requestPrintPost(deviceId, secertKey, bs);
-		logger.info("#request# result = {}", result);
-		return result;
-	} catch (Exception e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-    return null;
-}	
+	public static String requestByShift(String deviceId, String secertKey,ShiftBean shiftBean){
+		logger.info("#PrinterUtil.requestByShift# deviceid={}",deviceId);
+		try{
+			//1、保存byte数组
+			ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+			//2、title设置格式
+			//content 设置格式
+			String contentSetting = CloudPrinter.CONTENT_SETTING;
+			byte[] contentSettingByte = PrinterUtil.hexStringToBytes(contentSetting);
+			byteBuffer.put(contentSettingByte);
+			//	//content 设置
+			StringBuffer contentBuffer = new StringBuffer();
+			contentBuffer.append("收银员: "+shiftBean.getName()+"\r\n");
+			contentBuffer.append("营业款总额: "+shiftBean.getActualMoney()+"\r\n");
+			contentBuffer.append("订单金额: "+shiftBean.getTotalMoney()+"\r\n");
+			contentBuffer.append("支付笔数: "+shiftBean.getTotalNum()+"\r\n");
+			contentBuffer.append("退款金额: "+shiftBean.getRefundMoney()+"\r\n");
+			contentBuffer.append("退款笔数: "+shiftBean.getRefundNum()+"\r\n");
+			contentBuffer.append("平台减免: "+shiftBean.getOrgDisMoney()+"\r\n");
+			contentBuffer.append("商家减免: "+shiftBean.getStoreDisMoney()+"\r\n");
+			contentBuffer.append("-------------------------------\r\n");
+			
+			if(shiftBean.getDisplayWX() == 1){
+				contentBuffer.append("微信订单金额: "+shiftBean.getPlanMoneyWX()+"\r\n");
+				contentBuffer.append("实收金额: "+shiftBean.getActualMoneyWX()+"\r\n");
+				contentBuffer.append("平台优惠: "+shiftBean.getOrgDisMoneyWX()+"\r\n");
+				contentBuffer.append("商家优惠: "+shiftBean.getStoreDisMoneyWX()+"\r\n");
+				contentBuffer.append("退款金额: "+shiftBean.getRefundWX()+"\r\n");
+//				contentBuffer.append("-------------------------------\r\n");
+				contentBuffer.append("\r\n");
+			}
+			if(shiftBean.getDisplayAli() == 1){
+				contentBuffer.append("支付宝订单金额: "+shiftBean.getPlanMoneyAli()+"\r\n");
+				contentBuffer.append( "实收金额: "+shiftBean.getActualMoneyAli()+"\r\n");
+				contentBuffer.append("平台优惠: "+shiftBean.getOrgDisMoneyAli()+"\r\n");
+				contentBuffer.append("商家优惠: "+shiftBean.getStoreDisMoneyAli()+"\r\n");
+				contentBuffer.append("退款金额: "+shiftBean.getRefundAli()+"\r\n");
+//				contentBuffer.append("-------------------------------\r\n");
+			}
+			if(shiftBean.getDisplayUCard() == 1){
+				contentBuffer.append("\r\n");
+				contentBuffer.append("银联卡订单金额: "+shiftBean.getPlanMoneyUCard()+"\r\n");
+				contentBuffer.append("实收金额: "+shiftBean.getActualMoneyUCard()+"\r\n");
+				contentBuffer.append("平台优惠: "+shiftBean.getOrgDisMoneyUCard()+"\r\n");
+				contentBuffer.append("商家优惠: "+shiftBean.getStoreDisMoneyUCard()+"\r\n");
+				contentBuffer.append("退款金额: "+shiftBean.getRefundWX()+"\r\n");
+				contentBuffer.append("\r\n");
+			}
+			contentBuffer.append("-------------------------------\r\n");
+			contentBuffer.append("起始时间: "+shiftBean.getStartTime()+"\r\n");
+			contentBuffer.append("结束时间: "+shiftBean.getEndTime()+"\r\n");
+			contentBuffer.append("\r\n\r\n");
+			byte[] contentByte;
+			
+			contentByte = contentBuffer.toString().getBytes(CloudPrinter.CHARSET);
+			byteBuffer.put(contentByte);
+			// 设置二维码
+			//	byteBuffer.put(titleSettingByte);
+			//	String url = "http://www.zhihuishangjie.com/";
+			//	byte[] hexQR = PrinterUtil.getURLQRCode(url);
+			//	byteBuffer.put(hexQR);
+			//打印指令
+			byte[] goPrint = {0x0d,0x0a};
+			byteBuffer.put(goPrint);
+			//存放实际打印的byte
+			byte[] bs = new byte[byteBuffer.position()];
+			byteBuffer.flip();
+			byteBuffer.get(bs);
+			String result = requestPrintPost(deviceId, secertKey, bs);
+			logger.info("#request# result = {}", result);
+			return result;
+		}catch (Exception e) {
+			logger.error("#PrinterUtil.requestByShift# deviceid={}",deviceId,e);
+		}
+	    return null;
+	}	
 	
 	
 public static String requestPrintPost(String deviceId, String secertKey, byte[] content) throws Exception {
