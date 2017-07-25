@@ -190,7 +190,7 @@ public class OrderService {
 					//中信接口
 					result = pinganService.refundMoney(orderBean,price,userId);
 					break;
-				case 5:
+				case 6:
 					//中信接口
 					result = fuyouService.refundMoney(orderBean,price,userId);
 					break;
@@ -533,7 +533,7 @@ public class OrderService {
 		}
     }
     
-    public Object appRefund(long id,double price,int accountId){
+    public CommonResult appRefund(long id,double price,int accountId){
     	logger.info("#appRefund# id={}, price={},accountId={}", id, price, accountId);
     	try {
 			OrderBean orderBean = bmOrderDao.getById(id);
@@ -638,14 +638,17 @@ public class OrderService {
     	String payMethod = orderBean.getPayMethod();
     	StorePayInfo storePayInfo = tbStorePayInfoDao.getByStoreNoAndTypeAndMethod(storeNo, payType, payMethod);
     	List<String> storeNos = new ArrayList<>();
-    	if(StringUtils.isNotEmpty(storePayInfo.getField1()) && payType != 1){
+    	if(StringUtils.isNotEmpty(storePayInfo.getField1()) && payType != 1 && payType != 6){
     		String field1 = storePayInfo.getField1();
     		storeNos = tbStorePayInfoDao.getStoreNosByField1(field1);
     	}else if(StringUtils.isNotEmpty(storePayInfo.getMchId()) && payType == 1 && "1".equals(payMethod)){
     		String mchId = storePayInfo.getMchId();
     		storeNos = tbStorePayInfoDao.getStoreNosByMchId(mchId);
+    	}else if(StringUtils.isNotEmpty(storePayInfo.getMchId()) && payType == 6 ){
+    		String mchId = storePayInfo.getMchId();
+    		storeNos = tbStorePayInfoDao.getStoreNosByMchId(mchId);
     	}
-    	if(storeNos == null){
+    	if(CollectionUtils.isEmpty(storeNos)){
     		return 0;
     	}
     	int todayStartTime = DateUtil.getTodayStartTime();
@@ -957,6 +960,10 @@ public class OrderService {
     		logger.error("#OrderService.callbackWPOS# content={}",content,e);
 		}
     	return flag;
+    }
+    
+    public OrderBean getOrder(String mchnt_order_no,String transaction_id,String wwt_order_no,String storeNo,String orderType){
+    	return tbOrderDao.getBy3Id( mchnt_order_no, transaction_id, wwt_order_no,storeNo,orderType);
     }
     
     public static void main(String[] args) {
