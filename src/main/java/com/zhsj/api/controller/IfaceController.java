@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,7 +26,7 @@ public class IfaceController {
      */
     @RequestMapping(value = "/micropay", method = RequestMethod.POST)
     @ResponseBody
-    public Object micropay(String req){
+    public Object micropay(@RequestBody String req){
     	logger.info("#IfaceController.micropay# req={}",req);
     	if(StringUtils.isEmpty(req)){
     		return CommonResult.build(2, "参数出错");
@@ -42,7 +43,7 @@ public class IfaceController {
      */
     @RequestMapping(value = "/commonQuery", method = RequestMethod.POST)
     @ResponseBody
-    public Object commonQuery(String req){
+    public Object commonQuery(@RequestBody String req){
     	logger.info("#IfaceController.commonQuery# req={}",req);
     	if(StringUtils.isEmpty(req)){
     		return CommonResult.build(2, "参数出错");
@@ -59,7 +60,7 @@ public class IfaceController {
      */
     @RequestMapping(value = "/commonRefund", method = RequestMethod.POST)
     @ResponseBody
-    public Object commonRefund(String req){
+    public Object commonRefund(@RequestBody String req){
     	logger.info("#IfaceController.commonRefund# req={}",req);
     	if(StringUtils.isEmpty(req)){
     		return CommonResult.build(2, "参数出错");
