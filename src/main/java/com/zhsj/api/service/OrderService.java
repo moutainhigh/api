@@ -241,7 +241,7 @@ public class OrderService {
 					//中信接口
 					result = pinganService.searchRefund(orderBean);
 					break;
-				case 5:
+				case 6:
 					//富友接口
 					result = fuyouService.searchRefund(orderBean);
 					break;
