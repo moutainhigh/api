@@ -69,18 +69,21 @@ public class WXService {
     private ShopService shopService;
 
     public String getOpenId(String code,String appId){
-      String openId = "";
-        try {
-       	 String url = MtConfig.getProperty("OPEN_URL", "")+ "/getOpenId";
-       	 Map<String, String> parameters = new HashMap();
-       	 parameters.put("appId", appId);
-       	 parameters.put("code", code);
-       	 String result = HttpClient.sendGet(url, parameters);
-       	 Map<String,Object> map = JSON.parseObject(result, Map.class);
-      	 int rcode = (Integer)map.get("code");
-      	 if(rcode == 0){
-      		 openId = (String)map.get("data");
-      	 }
+    	String openId = "";
+    	try {
+    		if(StringUtils.isEmpty(code) || StringUtils.isEmpty(appId)){
+    			return openId;
+    		}
+	       	 String url = MtConfig.getProperty("OPEN_URL", "")+ "/getOpenId";
+	       	 Map<String, String> parameters = new HashMap();
+	       	 parameters.put("appId", appId);
+	       	 parameters.put("code", code);
+	       	 String result = HttpClient.sendGet(url, parameters);
+	       	 Map<String,Object> map = JSON.parseObject(result, Map.class);
+	      	 int rcode = (Integer)map.get("code");
+	      	 if(rcode == 0){
+	      		 openId = (String)map.get("data");
+	      	 }
        }catch (Exception e){
            logger.error("#WXService.getUserByCode# code={},appId={},e={}",code,appId,e);
        }
