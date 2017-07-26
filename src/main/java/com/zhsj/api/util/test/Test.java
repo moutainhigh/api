@@ -63,7 +63,7 @@ public class Test {
     	reqBean.setSign(reqBean.sign());
     	Map<String,Object> parameters = new HashMap();
     	parameters.put("req", JSON.toJSON(reqBean).toString());
-    	String st = HttpClient.sendPost("http://127.0.0.1:8080/api/commonRefund", parameters);
+    	String st = HttpClient.sendPost("http://wwt.bj37du.com:8082/api/commonRefund", parameters);
     	System.out.println("=====================================");
     	System.out.println(st);
     	
