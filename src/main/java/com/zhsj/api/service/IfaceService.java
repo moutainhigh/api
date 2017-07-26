@@ -37,6 +37,8 @@ public class IfaceService {
     private StoreService storeService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private FuyouService fuyouService;
     
     public CommonResult micropay(String req){
     	logger.info("#IfaceService.micropay# req={}",req);
@@ -126,6 +128,15 @@ public class IfaceService {
 				return CommonResult.build(10005, "订单不存在");
 			}
 			
+			String trans_stat= OrderStatusCons.of(bean.getStatus()).getDesc();
+			//富有单子处理
+			if(bean.getPayType() == 6 && bean.getStatus() != OrderStatusCons.SUCCESS.getType()){
+				String status = fuyouService.searchOrder(bean);
+				if("SUCCESS".equals(status)){
+					trans_stat = "SUCCESS";
+				}
+			}
+			
 			QueryResBean resBean = new QueryResBean();
 			resBean.setOrder_type(reqBean.getOrder_type());
 			resBean.setIns_cd(reqBean.getIns_cd());
@@ -136,7 +147,7 @@ public class IfaceService {
 			resBean.setTransaction_id(bean.getTransactionId());
     		resBean.setWwt_order_no(bean.getOrderId());
     		resBean.setMcnnt_order_no(reqBean.getMchnt_order_no());
-    		resBean.setTrans_stat(OrderStatusCons.of(bean.getStatus()).getDesc());
+    		resBean.setTrans_stat(trans_stat);
 			resBean.setRandom_str(RandomStringGenerator.getRandomStringByLength(8));
 			resBean.setSign(resBean.sign());
 			return CommonResult.build(0, "SUCCESS", resBean);

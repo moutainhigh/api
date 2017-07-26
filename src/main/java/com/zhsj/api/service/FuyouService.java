@@ -123,6 +123,45 @@ public class FuyouService {
 		return result;
 	}
 	
+	public String searchOrder(OrderBean orderBean){
+		logger.info("#FuyouService.searchOrder# orderBean={}",orderBean);
+		String result = "FAIL";
+		try{
+			List<StorePayInfo> storePayInfos = tbStorePayInfoDao.getByStoreNoAndType(orderBean.getStoreNo(), orderBean.getPayType(), orderBean.getPayMethod());
+			if(CollectionUtils.isEmpty(storePayInfos)){
+				return "支付类型错误";
+			}
+			StorePayInfo storePayInfo = storePayInfos.get(0);
+			
+			Map<String, String> map = new HashMap<>();
+			map.put("version", "1.0");
+			map.put("ins_cd", MtConfig.getProperty("FUYOU_INS_CD", ""));//机构号
+			map.put("mchnt_cd", storePayInfo.getMchId());
+			map.put("term_id", RandomStringGenerator.getRandomStringByLength(8));
+			map.put("random_str", RandomStringGenerator.getRandomStringByLength(8));
+			map.put("sign", "");
+			if("1".equals(storePayInfo.getPayMethod())){
+				map.put("order_type", "WECHAT");
+			}else if("2".equals(storePayInfo.getPayMethod())){
+				map.put("order_type", "ALIPAY");
+			}
+			map.put("mchnt_order_no", orderBean.getOrderId());
+			
+			String dataString = this.getResultData(map, "/commonQuery");
+			logger.info(dataString);
+			Map<String, String> resMap = XMLBeanUtils.xmlToMap(dataString);
+			if(!"000000".equals(resMap.get("result_code"))){
+				result = resMap.get("result_msg");
+			}else{
+				result = resMap.get("trans_stat");
+			}		
+		}catch (Exception e) {
+			result = "系统异常";
+			logger.error("#FuyouService.refundMoney# orderBean={}",orderBean,e);
+		}
+		return result;
+	}
+	
 	public String getResultData(Map<String, String> map,String uri) throws Exception{
 		String sign = Utils.getSign(map);
 		map.put("sign", sign);
