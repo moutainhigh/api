@@ -72,11 +72,9 @@ public class IfaceService {
 			map.put("mchOrderNo", reqBean.getMchnt_order_no());
 			String content = HttpClient.sendPost(uri, map);
 			CommonResult commonResult = JSON.parseObject(content, CommonResult.class);
-			if(commonResult.getCode() != 0){
-				return commonResult;
-			}
+			
 			OrderBean bean = orderService.getByOrderId(commonResult.getData().toString());
-    		MicroPayResBean resBean = new MicroPayResBean();
+			MicroPayResBean resBean = new MicroPayResBean();
     		String order_type = "1".equals(bean.getPayMethod())?"WECHAT":"ALIPAY" ;
     		resBean.setOrder_type(order_type);
     		resBean.setIns_cd(reqBean.getIns_cd());
@@ -90,6 +88,14 @@ public class IfaceService {
 			resBean.setRandom_str(RandomStringGenerator.getRandomStringByLength(8));
 			resBean.setAddn_inf(reqBean.getAddn_inf());
 			resBean.setSign(resBean.sign());
+			
+			if(commonResult.getCode() == -1){
+				commonResult.setData(reqBean);
+				return commonResult;
+			}
+			if(commonResult.getCode() != 0){
+				return commonResult;
+			}
 			return CommonResult.build(0, "SUCCESS", resBean);
     	}catch (Exception e) {
     		logger.error("#IfaceService.micropay# req={}",req,e);
