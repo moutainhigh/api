@@ -26,11 +26,19 @@
             #{field4},#{remark},#{status},1,unix_timestamp(now()),unix_timestamp(now())
             )
         </foreach>
-        
     </insert>
 
+    <select id="getByStoreNoAndTypeAndMethod" resultType="storePayInfo" >
+       select <include refid="SELECT_FIELDS"/> from tb_store_pay_info
+       where store_no = #{storeNo} and pay_type = #{payType} and pay_method = #{payMethod} and status = 1 and valid = 1
+    </select>
 
-
-
+    <select id="getStoreNosByField1" resultType="String">
+       select store_no storeNo from tb_store_pay_info where field1 = #{field1} and status = 1 and valid = 1
+    </select>
+    
+    <select id="getStoreNosByMchId" resultType="String">
+       select store_no storeNo from tb_store_pay_info where mch_id = #{mchId} and status = 1 and valid = 1
+    </select>
 
 </mapper>

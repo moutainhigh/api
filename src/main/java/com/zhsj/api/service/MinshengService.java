@@ -218,7 +218,6 @@ public class MinshengService {
 					StringUtils.isEmpty(resultMap.get("ali_sub_mch_id"))){
 				return resultMap.get("sub_msg");
 			}
-			
 			String paykey = resultMap.get("paykey");
 			String paysec = resultMap.get("paysec");
 			String ali_rate = resultMap.get("ali_rate");
