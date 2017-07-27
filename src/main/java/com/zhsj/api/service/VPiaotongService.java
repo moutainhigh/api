@@ -21,11 +21,13 @@ import com.vpiaotong.openapi.OpenApi;
 import com.vpiaotong.openapi.util.Base64Util;
 import com.vpiaotong.openapi.util.HttpUtils;
 import com.vpiaotong.openapi.util.SecurityUtil;
+import com.zhsj.api.bean.PWTSettings;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.StoreItemBean;
 import com.zhsj.api.bean.StoreSettingsBean;
 import com.zhsj.api.dao.TBStoreItemDao;
 import com.zhsj.api.dao.TBStoreSettingsDao;
+import com.zhsj.api.dao.TBWPTSettingsDao;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.MtConfig;
@@ -42,6 +44,8 @@ public class VPiaotongService {
 	StoreService storeService;
 	@Autowired
 	TBStoreItemDao tbStoreItemDao;
+	@Autowired
+	TBWPTSettingsDao tbWPTSettingsDao;
 	
 	public String getStoreQRCode(String storeNo,String orderNo,double totalPrice){
 		logger.info("#VPiaotongService.VPiaotongService# storeNo={},orderNo={},totalPrice={}",storeNo,orderNo,totalPrice);
@@ -58,33 +62,36 @@ public class VPiaotongService {
 				return qr;
 			}
 			StoreBean storeBean = storeService.getStoreByNO(storeNo);
-			return this.getQrCodeByItems(storeBean, itemBeans, totalPrice, orderNo);
+			List<PWTSettings> pwtList = tbWPTSettingsDao.getByEn(storeSettingsBean.getIsTest());
+			if(CollectionUtils.isEmpty(pwtList)){
+				return "";
+			}
+			return this.getQrCodeByItems(storeBean, itemBeans, totalPrice, orderNo,pwtList.get(0));
 		}catch (Exception e) {
 			logger.error("#VPiaotongService.VPiaotongService# storeNo={}",storeNo,e);
 		}
 		return qr;
 	}
 	
-	public String getQrCodeByItems(StoreBean storeBean,List<StoreItemBean> itemList,double totalPrice,String orderNo){
+	public String getQrCodeByItems(StoreBean storeBean,List<StoreItemBean> itemList,double totalPrice,String orderNo,PWTSettings pwtSettings){
         logger.info("#VPiaotongService.getQrCodeByItems# storeBean={},totalPrice={},orderNo={}",storeBean.getStoreNo(),totalPrice,orderNo);
 		try{
 			//明细
 	        List<Map> list = new ArrayList<>();
-	        for(StoreItemBean bean:itemList){
-	        	Map<String, String> itemMap = new HashMap<>();
-	    		itemMap.put("itemName", bean.getItemName());
-	    		itemMap.put("taxRateValue",String.valueOf(Arith.round(bean.getTaxRate(), 2)));
-	    		itemMap.put("taxClassificationCode", bean.getTaxCode());
-	    		if(bean.getQuantity() >0 && bean.getUnitPrice()>0){
-	    			itemMap.put("unitPrice", String.valueOf(Arith.round(bean.getUnitPrice(),2)));
-	        		itemMap.put("quantity", String.valueOf(bean.getQuantity()));
-	        		double total = bean.getUnitPrice() * bean.getQuantity();
-	        		itemMap.put("invoiceItemAmount",String.valueOf(Arith.round(total,2)));
-	    		}else{
-	    			itemMap.put("invoiceItemAmount",String.valueOf(Arith.round(totalPrice,2)));
-	    		}
-	    		list.add(itemMap);
-	        }
+	        StoreItemBean bean = itemList.get(0);
+        	Map<String, String> itemMap = new HashMap<>();
+    		itemMap.put("itemName", bean.getItemName());
+    		itemMap.put("taxRateValue",String.valueOf(Arith.round(bean.getTaxRate(), 2)));
+    		itemMap.put("taxClassificationCode", bean.getTaxCode());
+    		if(bean.getQuantity() >0 && bean.getUnitPrice()>0){
+    			itemMap.put("unitPrice", String.valueOf(Arith.round(bean.getUnitPrice(),2)));
+        		itemMap.put("quantity", String.valueOf(bean.getQuantity()));
+        		double total = bean.getUnitPrice() * bean.getQuantity();
+        		itemMap.put("invoiceItemAmount",String.valueOf(Arith.round(total,2)));
+    		}else{
+    			itemMap.put("invoiceItemAmount",String.valueOf(Arith.round(totalPrice,2)));
+    		}
+    		list.add(itemMap);
 			
 			//信息
 			DateTime dateTime = DateTime.now();
@@ -100,12 +107,14 @@ public class VPiaotongService {
 	        content.put("itemList", list);
 	        String req = JSON.toJSONString(content);
 	        
-	        String platformPrefix = MtConfig.getProperty("PLATFORM_PREFIX", "");
-	        String platformCode = MtConfig.getProperty("PLATFORM_CODE", "");
-	        String password = MtConfig.getProperty("PLATFORM_PASSWORD", "");
-	        String privateKey = MtConfig.getProperty("PLATFORM_PRIVATE_KEY", "");
+	        
+	        
+	        String platformPrefix = pwtSettings.getPrefix();
+	        String platformCode = pwtSettings.getPlatformCode();
+	        String password = pwtSettings.getPlatformPassword();
+	        String privateKey = pwtSettings.getPrivateKey();
 	        String buildRequest = new OpenApi(password, platformCode, platformPrefix, privateKey).buildRequest(req);
-			String url = "http://fpkj.testnw.vpiaotong.cn/tp/openapi/getQrCodeByItems.pt";
+			String url = pwtSettings.getRequestUrl();
 	        String response = HttpUtils.postJson(url, buildRequest);
 	        Map<String, String> map = JSON.parseObject(response, Map.class);
 	        if("0000".equals(map.get("code"))){
@@ -133,8 +142,8 @@ public class VPiaotongService {
 		bean.setTaxRate(0.04);
 		itemList.add(bean);
 //		
-		String qr = new VPiaotongService().getQrCodeByItems(storeBean,itemList,110.98,DateUtil.getCurrentTimeHaveHR());
-		System.out.println(qr);
+//		String qr = new VPiaotongService().getQrCodeByItems(storeBean,itemList,110.98,DateUtil.getCurrentTimeHaveHR());
+//		System.out.println(qr);
 		
 //		KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
 //        keyPairGen.initialize(1024);

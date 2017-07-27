@@ -40,5 +40,7 @@
         <typeAlias type="com.zhsj.api.bean.RoleBean" alias="roleBean"/>
         <typeAlias type="com.zhsj.api.bean.NotifyBean" alias="notifyBean"/>
         <typeAlias type="com.zhsj.api.bean.StoreItemBean" alias="storeItemBean"/>
+    	<typeAlias type="com.zhsj.api.bean.PWTSettings" alias="pwtSettings"/>
+    	
     </typeAliases>
 </configuration>
