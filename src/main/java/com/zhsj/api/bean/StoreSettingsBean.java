@@ -6,6 +6,7 @@ public class StoreSettingsBean {
 	private String storeNo;
 	private int cloudPrint;
 	private int eleInvoice;
+	private int isTest;
 	
 	
 	public int getId() {
@@ -31,6 +32,12 @@ public class StoreSettingsBean {
 	}
 	public void setEleInvoice(int eleInvoice) {
 		this.eleInvoice = eleInvoice;
+	}
+	public int getIsTest() {
+		return isTest;
+	}
+	public void setIsTest(int isTest) {
+		this.isTest = isTest;
 	}
 	
 	
