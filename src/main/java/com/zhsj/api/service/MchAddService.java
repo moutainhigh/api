@@ -114,10 +114,10 @@ public class MchAddService {
                 json = JSONObject.toJSON(mchInfo).toString();
             }else if(type == 2){//富有
             	MchInfoFY mchInfo = new MchInfoFY();
-                mchInfo.setMchnt_name(storeName);
                 mchInfo.setMchnt_shortname(storeName);
                 mchInfo.setStoreNo(storeNo);
-                mchInfo.setStep(1);
+                mchInfo.setStep("1");
+                json = JSONObject.toJSON(mchInfo).toString();
             }
             tbStoreExtendDao.insert(storeNo,type,json);
             return "SUCCESS";

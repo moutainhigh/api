@@ -257,7 +257,7 @@ public class FuyouService {
 		orderBean.setPayMethod("1");
 //		new PinganService().refundMoney(orderBean);
 //		new FuyouService().searchRefund(orderBean);
-//		new FuyouService().queryWithdrawAmt("0001000F0539031");
+		new FuyouService().queryWithdrawAmt("0001000F0539031");
 //		System.out.println(new FuyouService().mchntNameCheck("1111111333","222在"));
 		
 		MchInfoFY mchInfo = new MchInfoFY();
@@ -307,6 +307,6 @@ public class FuyouService {
 		mchInfo.setAli_flag("1");
 		mchInfo.setAli_set_cd("M0174");
 //		new FuyouService().mchntAdd(mchInfo);
-		new FuyouService().mchntUpd(mchInfo, "0001000F0539031");
+//		new FuyouService().mchntUpd(mchInfo, "0001000F0539031");
 	}
 }

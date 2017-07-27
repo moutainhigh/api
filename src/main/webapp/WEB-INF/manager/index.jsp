@@ -129,7 +129,7 @@ pageEncoding="UTF-8"%>
             window.open("https://www.mszxyh.com/wapserver/outer/index.html?Page=login&ChannelId=mszx02279");
         });
 
-        $("#newInsertFY").on("touchend",function(){
+        $("#newInsertFY").on("click",function(){
         	 window.open("../mchAddFY/new?auth="+auth) ;
         });
         $("#searchDeal").on("touchend",function(){
