@@ -130,7 +130,8 @@ public class IfaceService {
 			
 			String trans_stat= OrderStatusCons.of(bean.getStatus()).getDesc();
 			//富有单子处理
-			if(bean.getPayType() == 6 && bean.getStatus() != OrderStatusCons.SUCCESS.getType()){
+			if(bean.getPayType() == 6 && bean.getPayChannel() != 1 && 
+					bean.getStatus() != OrderStatusCons.SUCCESS.getType()){
 				String status = fuyouService.searchOrder(bean);
 				if("SUCCESS".equals(status)){
 					trans_stat = "SUCCESS";
