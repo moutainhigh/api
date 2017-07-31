@@ -29,7 +29,7 @@ public class MchAddController {
     public ModelAndView newMch(String auth) {
         logger.info("#MchAddController.newMch# ");
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("./mchAddFY/new");
+        modelAndView.setViewName("./mchAdd/new");
         modelAndView.addObject("auth", auth);
         return modelAndView;
     }
@@ -66,7 +66,7 @@ public class MchAddController {
         	 return modelAndView;
         }
         modelAndView.addObject("auth",auth);
-        modelAndView.addObject("info", mchAddService.getByStoreNo(storeNo));
+        modelAndView.addObject("info", mchAddService.getByStoreNo(storeNo,1));
         modelAndView.setViewName("./mchAdd/mchInfo");
         return modelAndView;
     }
@@ -110,7 +110,7 @@ public class MchAddController {
         	 return modelAndView;
         }
         modelAndView.addObject("auth",auth);
-        modelAndView.addObject("info", mchAddService.getByStoreNo(storeNo));
+        modelAndView.addObject("info", mchAddService.getByStoreNo(storeNo,1));
         modelAndView.setViewName("./mchAdd/settle");
         return modelAndView;
     }

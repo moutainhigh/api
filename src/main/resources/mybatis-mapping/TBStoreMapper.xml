@@ -117,6 +117,14 @@
     	where store_no = #{info.storeNo}
     </update>
     
+     <update id="updateStoreFY">
+    	update tb_store
+    	set province=#{info.province},city=#{info.city},county=#{info.county},street=#{info.street},
+        business_type=#{info.business},e_mail=#{info.contact_email},contacts_people=#{info.contact_person},
+        address=#{info.address},phone=#{info.contact_mobile}
+    	where store_no = #{info.storeNo}
+    </update>
+    
     
     <select id="getChildStoreCountByStoreNo" resultType="Integer">
       select count(1) from tb_store where parent_no = #{storeNo} and status = 1 and valid = 1

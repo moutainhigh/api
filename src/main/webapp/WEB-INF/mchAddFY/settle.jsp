@@ -25,7 +25,11 @@
             win.addEventListener('resize',change,false);
         })(window,document)
     </script>
-
+	<style type="text/css">
+		.settlement-tit{font-size:0.6rem}
+		.settlement-input input{font-size:0.5rem}
+		.mask{height:1.1rem}
+	</style>
 </head>
 <input value="${auth}" id="auth" name="auth" type="hidden">
 <input value="${info.storeNo}" id="storeNo" name="storeNo" type="hidden">
@@ -54,25 +58,31 @@
     </div>
 
     <div class="base-con">
+    	<div class="settlement-box settlement-padd" >
+    		<span  class="settlement-tit">
+           		<input type="radio" name="acnt_type" id="acnt_type" checked="checked" value="1" style="-webkit-appearance:radio;">企业账户
+           		&nbsp;&nbsp;
+           		<input type="radio" name="acnt_type" id="acnt_type" value="2" style="-webkit-appearance:radio;box-sizing: border-box;">个人账户
+          		<span class="settlement-input" id="_aaf" style="margin-left:14px;border:1px dashed #000;display:none" ><input id="_acntArtifFlag"  style="width:4.6rem;font-size:0.6rem;" value="法人入账" class="please-input please-input1" data-id="1" /></span>
+          	</span>
+        </div>
         <div class="settlement-box settlement-padd">
-            <span class="settlement-tit">电子卡号:</span><span class="settlement-input"><input id="_bankAccount" value="${info.bankAccount }" class="please-input please-input1" type="tel" placeholder="请输入银行卡号" /></span>
+            <span class="settlement-tit">银行卡号:</span><span class="settlement-input"><input id="_acnt_no" value="${info.acnt_no }" class="please-input please-input1" type="tel" placeholder="请输入银行卡号" /></span>
         </div>
          <div class="settlement-box settlement-padd">
-             <span class="settlement-tit">开户银行:</span><span class="settlement-input"><input id="_bankName" value="${info.bankName }" readonly="readonly" class="please-input" type="text" placeholder="请选择银行"/></span>
+             <span class="settlement-tit">开户银行:</span><span class="settlement-input"><input id="_iss_bank_nm" value="${info.iss_bank_nm }"  class="please-input" type="text" placeholder="请填写开户行"/></span>
+         </div>
+         <div class="settlement-box settlement-padd">
+             <span class="settlement-tit">联行号:</span><span class="settlement-input"><input id="_inter_bank_no" value="${info.inter_bank_no }"  class="please-input" type="text" placeholder="请填写开户行联行号"/></span>
          </div>
           <div class="settlement-box settlement-padd">
-              <span class="settlement-tit">开&nbsp;&nbsp;户&nbsp;&nbsp;名:</span><span class="settlement-input please-input1"><input id="_accountName" value="${info.accountName }" class="please-input" type="text" placeholder="个人姓名"/></span>
+              <span class="settlement-tit">开&nbsp;&nbsp;户&nbsp;&nbsp;名:</span><span class="settlement-input please-input1"><input id="_acnt_nm" value="${info.acnt_nm }" class="please-input" type="text" placeholder="个人姓名或公司名称"/></span>
           </div>
-
-        <!--身份证号-->
-        <div class="settlement-box settlement-padd">
-            <span class="settlement-tit">身份证号:</span><span class="settlement-input"><input id="_accountIdCard" value="${info.accountIdCard}" class="please-input " type="text" placeholder="请输入身份证号"/></span>
-        </div>
-
-        <!--开户手机-->
-        <div class="settlement-box settlement-padd">
-            <span class="settlement-tit">开户手机:</span><span class="settlement-input"><input id="_accountPhone" value="${info.accountPhone }" class="please-input" type="tel" placeholder="请输入手机号"/></span>
-        </div>
+		   <!--身份证号-->
+	        <div class="settlement-box settlement-padd">
+	            <span class="settlement-tit">身份证号:</span><span class="settlement-input"><input id="_acnt_certif_id" value="${info.acnt_certif_id}" class="please-input " type="text" placeholder="请输入身份证号"/></span>
+	        </div>
+       
 
     </div>
 
@@ -131,37 +141,50 @@ function load(){
 	 $("#_submit").on("click",function(){
          _submit();
      });
-	 loadBank();
+	 $(":radio").click(function(){
+		 var value=$(this).val();
+		 if(value==2){
+			 $("#_aaf").show();
+		 }else{
+			 $("#_aaf").hide();
+		 }
+	 });
+	 
+	 loadAcntArtifFlag();
 }
 
 function _submit(){
-	 var _bankAccount = $.trim($("#_bankAccount").val()).replace(/\s/g,"");
-     var _bankName = $.trim($("#_bankName").val());
-     var _accountName = $.trim($("#_accountName").val());
-     var _accountIdCard = $.trim($("#_accountIdCard").val());
-     var _accountPhone = $.trim($("#_accountPhone").val());
-     var _wxRate = $.trim($("#_wxRate").val());
-     var _aliRate = $.trim($("#_aliRate").val());
+	var _acnt_type = $("input[name='acnt_type']:checked").val();
+	var _aaf = $.trim($("#_acntArtifFlag").attr("data-id"));
+	
+	 var _acnt_no = $.trim($("#_acnt_no").val()).replace(/\s/g,"");
+     var _iss_bank_nm = $.trim($("#_iss_bank_nm").val());
+     var _inter_bank_no = $.trim($("#_inter_bank_no").val());
+     var _acnt_nm = $.trim($("#_acnt_nm").val());
+     var _acnt_certif_id = $.trim($("#_acnt_certif_id").val());
+     var _wx_set_cd = $.trim($("#_wxRate").val());
+     var _ali_set_cd = $.trim($("#_aliRate").val());
      var storeNo = $.trim($("#storeNo").val());
      var auth = $.trim($("#auth").val());
-     if(_bankAccount == "" || _bankName == "" ){
+     if(_acnt_no == "" || _iss_bank_nm == "" || _inter_bank_no == ""){
     	 jalert.show("请完整填写银行信息");
          return;
      }
-     if(_accountName == "" || _accountIdCard == "" || _accountPhone == "" ){
-    	 jalert.show("请完整填写用户信息");
+     if(_acnt_nm == "" || _acnt_certif_id == ""  ){
+    	 jalert.show("请完整填写开户信息");
          return;
      }
-     if(_wxRate == "" || _aliRate == "" ){
+     if(_wx_set_cd == "" || _ali_set_cd == "" ){
     	 jalert.show("请完整填写费率信息");
          return;
      }
      $("#_submit").css("background","#d3d3d3");
      $("#_submit").unbind("click");
-     var jsonData = {"bankAccount":_bankAccount,"bankName":_bankName,"accountName":_accountName,
-				"accountIdCard":_accountIdCard,"accountPhone":_accountPhone,"wxRate":_wxRate,
-				"aliRate":_aliRate,
-				"storeNo":storeNo,"auth":auth};
+     var jsonData = {"acnt_type":_acnt_type,"acnt_artif_flag":_aaf,
+    		 		 "acnt_no":_acnt_no,"iss_bank_nm":_iss_bank_nm,"inter_bank_no":_inter_bank_no,
+    		 		 "acnt_nm":_acnt_nm,"acnt_certif_id":_acnt_certif_id,
+    		 		 "wx_set_cd":_wx_set_cd,"ali_set_cd":_ali_set_cd,
+					"storeNo":storeNo,"auth":auth};
 		$.post("./mchSettle",jsonData,function(obj){
 		  if(obj.code == 0){
 		      location.href = obj.data.url+"?auth="+obj.data.auth+"&storeNo="+obj.data.storeNo;
@@ -175,76 +198,20 @@ function _submit(){
 		});
 }
 
-function loadBank(){
+function loadAcntArtifFlag(){
 	 //开户银行
-    $("#_bankName").on("click",function(){
+    $("#_acntArtifFlag").on("click",function(){
     	jselect.operateObj.defaultsel = $(this).attr("data-id");
     	jselect.operateObj.curObj = $(this);
     	jselect.init();
     	jselect.add({
-			  msg:'中国民生银行',
-			  id:'中国民生银行',
-			  exec:function(){backfill("_bankName")}
+			  msg:'非法人入账',
+			  id:'0',
+			  exec:function(){backfill("_acntArtifFlag")}
 		  }).add({
-			  msg:'中国农业银行',
-			  id:'中国农业银行',
-			  exec:function(){backfill("_bankName")}
-		  }).add({
-			  msg:'工商银行',
-			  id:'工商银行',
-			  exec:function(){backfill("_bankName")}
-		  }).add({
-			  msg:'建设银行',
-			  id:'建设银行',
-			  exec:function(){backfill("_bankName")}
-		  }).add({
-			  msg:'中国银行',
-			  id:'中国银行',
-			  exec:function(){backfill("_bankName")}
-		  }).add({
-			  msg:'广发银行',
-			  id:'广发银行',
-			  exec:function(){backfill("_bankName")}
-		  }).add({
-			  msg:'光大银行',
-			  id:'光大银行',
-			  exec:function(){backfill("_bankName")}
-		  }).add({
-			  msg:'华夏银行',
-			  id:'华夏银行',
-			  exec:function(){backfill("_bankName")}
-		  }).add({
-			  msg:'交通银行',
-			  id:'交通银行',
-			  exec:function(){backfill("_bankName")}
-		  }).add({
-			  msg:'平安银行',
-			  id:'平安银行',
-			  exec:function(){backfill("_bankName")}
-		  }).add({
-			  msg:'齐鲁银行',
-			  id:'齐鲁银行',
-			  exec:function(){backfill("_bankName")}
-		  }).add({
-			  msg:'青岛商行',
-			  id:'青岛商行',
-			  exec:function(){backfill("_bankName")}
-		  }).add({
-			  msg:'兴业银行',
-			  id:'兴业银行',
-			  exec:function(){backfill("_bankName")}
-		  }).add({
-			  msg:'中国邮政储蓄银行',
-			  id:'中国邮政储蓄银行',
-			  exec:function(){backfill("_bankName")}
-		  }).add({
-			  msg:'招商银行',
-			  id:'招商银行',
-			  exec:function(){backfill("_bankName")}
-		  }).add({
-			  msg:'中信银行',
-			  id:'中信银行',
-			  exec:function(){backfill("_bankName")}
+			  msg:'法人入账',
+			  id:'1',
+			  exec:function(){backfill("_acntArtifFlag")}
 		  });
   	jselect.show();
     });

@@ -24,7 +24,13 @@
             win.addEventListener('resize',change,false);
         })(window,document)
     </script>
-
+	<style type="text/css">
+		.busi-address{font-size:0.6rem}
+		.industry-type{font-size:0.6rem}
+		.baseborder2{font-size:0.5rem;height:1.2rem}
+		.baseborder{font-size:0.5rem;}
+		.base-tab2{padding-top:0.5rem;}
+	</style>
 </head>
 <body>
 <div class="item">
@@ -56,12 +62,15 @@
     </div>
     <!--公共头部结束-->
     <div class="base-con">
-        <h3 class="fl busi-address">商户地址:</h3>
+    		<div class="base-tab2 clearfix">
+                <h3 class="fl busi-address">商户名称:</h3><div class="base-tab-le fl"><input type="text" id="_mchnt_name" placeholder="与营业执照上相同" value="${info.mchnt_name}"  class="baseborder2 add "/></div>
+            </div>
+        	<h3 class="fl busi-address">商户地址:</h3>
             <div class="base-tab clearfix">
-                <input id="_province" type="text" placeholder="请输入省份" value="" data-id="${info.province}"  readonly="true" class="baseborder province"/>
-                <input id="_city" type="text" placeholder="请输入城市" value="" data-id="${info.city}" readonly="true" class="baseborder city" />
-                <input id="_county" type="text" placeholder="请输入区/县" value="" data-id="${info.county}" readonly="true" class="baseborder province" />
-                <input id="_street" type="text" placeholder="请输入街道" value="" data-id="${info.street}" readonly="true" class="baseborder city" />
+                <input id="_province" type="text" placeholder="请输入省份" value="" data-id=""  readonly="true" class="baseborder province"/>
+                <input id="_city" type="text" placeholder="请输入城市" value="" data-id="" readonly="true" class="baseborder city" />
+                <input id="_county" type="text" placeholder="请输入区/县" value="" data-id="" readonly="true" class="baseborder province" />
+                <input id="_street" type="text" placeholder="请输入街道" value="" data-id="" readonly="true" class="baseborder city" />
             </div>
             <div class="base-tab2 clearfix">
                 <h3 class="fl busi-address">详细地址:</h3><div class="base-tab-le fl"><input type="text" id="_address" value="${info.address }" placeholder="请输入详细地址" class="baseborder2 add "/></div>
@@ -74,19 +83,19 @@
                 <input id="_three" type="text" placeholder="类目" value="" readonly="true" class="baseborder province" />
             </div>
 			<div class="base-tab2 clearfix">
-                <h3 class="fl busi-address">联系人:&nbsp;&nbsp;&nbsp;&nbsp;</h3><div class="base-tab-le fl"><input type="text" id="_contactsPeople" placeholder="请输入联系人" value="${info.contactsPeople }"  class="baseborder2 add "/></div>
+                <h3 class="fl busi-address">法&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;人:</h3><div class="base-tab-le fl"><input type="text" id="_contactsPeople" placeholder="请输入法人姓名" value="${info.contact_person }"  class="baseborder2 add "/></div>
             </div>
             <div class="base-tab2 clearfix">
-                <h3 class="fl busi-address">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话:</h3><div class="base-tab-le fl"><input type="text" id="_phone" value="${info.phone }" placeholder="请输入联系人电话" class="baseborder2 add "/></div>
+                <h3 class="fl busi-address">身份证号:</h3><div class="base-tab-le fl"><input type="text" id="_idCard" placeholder="请输入法人人身份证号" value="${info.certif_id }" class="baseborder2 add "/></div>
             </div>
             <div class="base-tab2 clearfix">
-                <h3 class="fl busi-address">邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱:</h3><div class="base-tab-le fl"><input type="text" id="_email" value="${info.email}" placeholder="请输入联系人邮箱" class="baseborder2 add "/></div>
+                <h3 class="fl busi-address">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话:</h3><div class="base-tab-le fl"><input type="text" id="_phone" value="${info.contact_mobile }" placeholder="请输入联系人电话" class="baseborder2 add "/></div>
             </div>
             <div class="base-tab2 clearfix">
-                <h3 class="fl busi-address">身份证号:</h3><div class="base-tab-le fl"><input type="text" id="_idCard" placeholder="请输入联系人身份证号" value="${info.idCard }" class="baseborder2 add "/></div>
+                <h3 class="fl busi-address">客服电话:</h3><div class="base-tab-le fl"><input type="text" id="_contact_phone" value="${info.contact_phone }" placeholder="请输入客服电话" class="baseborder2 add "/></div>
             </div>
             <div class="base-tab2 clearfix">
-                <h3 class="fl busi-address">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注:</h3><div class="base-tab-le fl"><input type="text" id="_intro" value="${info.intro}" placeholder="备注" class="baseborder2 add "/></div>
+                <h3 class="fl busi-address">邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱:</h3><div class="base-tab-le fl"><input type="text" id="_email" value="${info.contact_email}" placeholder="请输入联系人邮箱" class="baseborder2 add "/></div>
             </div>
    		</div>
      		
@@ -163,6 +172,8 @@ function load(){
 }
 
 function _submit(){
+	 var _mchnt_name =  $.trim($("#_mchnt_name").val());
+	 
 	 var _province = $.trim($("#_province").attr("data-id"));
 	 var _city = $.trim($("#_city").attr("data-id"));
 	 var _county = $.trim($("#_county").attr("data-id"));
@@ -171,13 +182,16 @@ function _submit(){
      
      var _three = $.trim($("#_three").attr("data-id"));
      
-     var address = $.trim($("#_address").val());
      var contactsPeople = $.trim($("#_contactsPeople").val());
      var phone = $.trim($("#_phone").val());
+     var contact_phone = $.trim($("#_contact_phone").val());
      var email = $.trim($("#_email").val());
      var idCard = $.trim($("#_idCard").val());
-     var intro = $.trim($("#_intro").val());
 
+     if( _mchnt_name=="" ){
+         jalert.show("请填写商家名称");
+         return;
+     }
      
      if( _province=="" || _city=="" || _county=="" || _address==""){
          jalert.show("请填写地址信息");
@@ -189,13 +203,13 @@ function _submit(){
          return;
      }
      
-     if( contactsPeople=="" || phone=="" || email=="" || idCard==""){
+     if( contactsPeople=="" || phone=="" || email=="" || idCard=="" || contact_phone == ""){
          jalert.show("请填写联系人信息");
          return;
      }
      var myreg = /^(1+\d{10})$/;
      if(!myreg.test(phone)) {
-         jalert.show('请输入有效的手机号码！');
+         jalert.show('请输入有效的电话号码！');
          return false;
      }
      
@@ -218,10 +232,11 @@ function _submit(){
      var auth = $("#auth").val();
      var storeNo= $("#storeNo").val();
      
-    var jsonData = {"province":_province,"city":_city,"county":_county,"street":_street,
+    var jsonData = {"mchnt_name":_mchnt_name,
+    				"province":_province,"city":_city,"county":_county,"street":_street,
     				"address":_address,"lat":_lat,"lon":_lon,
-    				"businessType":_three,
-    				"contactsPeople":contactsPeople,"phone":phone,"email":email,"idCard":idCard,"intro":intro,
+    				"business":_three,
+    				"contact_person":contactsPeople,"contact_mobile":phone,"contact_phone":contact_phone,"contact_email":email,"certif_id":idCard,
     				"storeNo":storeNo,"auth":auth};
      $.post("./mchUpdate",jsonData,function(obj){
          if(obj.code == 0){

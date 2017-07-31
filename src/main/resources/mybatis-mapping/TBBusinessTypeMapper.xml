@@ -3,7 +3,7 @@
 <mapper namespace="com.zhsj.api.dao.TBBusinessTypeDao">
 
     <select id="getListById" resultType="com.zhsj.api.bean.BusinessTypeBean">
-	      select id,parent_id,name 
+	      select id,parent_id,name,code
 	      from tb_business_type
 	      where parent_id = #{id}
     </select>
@@ -11,4 +11,10 @@
     <insert id="insert">
       insert into tb_business_type (parent_id,name) values (#{parentId},#{name})
     </insert>
+    
+    <select id="getById" resultType="com.zhsj.api.bean.BusinessTypeBean">
+    	select id,parent_id,name,code
+	      from tb_business_type
+	      where id = #{id}
+    </select>
 </mapper>

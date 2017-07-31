@@ -9,7 +9,7 @@
     </select>
 
 	<select id="getCityCodes" resultType="cityCodeBean">
-        SELECT code,name
+        SELECT code,name,fy_code
         FROM tb_city_code
         where 1=1
          <choose>

@@ -7,45 +7,59 @@ import java.util.Map;
 public class MchInfoFY {
 	private String storeNo;
 	private String step;
+	private String province;
+	private String city;
+	private String county;
+	private String street;
+	private String address;
 	
 	private String trace_no ;
 	private String ins_cd ;//机构号 
-	private String link_mchnt_cd;//挂靠商户号
+	
+//	private String link_mchnt_cd;//挂靠商户号
+	/***商户基本信息***/
 	private String mchnt_name ; //商户名称
 	private String mchnt_shortname ; //商户简称
 	private String real_name ; //商户真实名称
 	private String certif_id ; //法人证件号
-	private String certif_id_expire_dt; //格式YYYYMMDD
-	private String acnt_type ;//入账账户类型
+//	private String certif_id_expire_dt; //格式YYYYMMDD
 	private String contact_person ; //联系人
 	private String contact_mobile ; //联系人手机号
 	private String contact_email ;
 	private String contact_phone ; //联系电话
 	private String city_cd ; //城市编号
 	private String county_cd ;
+	private String business ;  
+	
+	/********结算信息*********/
+	private String acnt_type ;//入账账户类型
+	private String artif_nm ;//法人姓名
+	private String acnt_artif_flag ;//法人入账标识(0:非法人入账,1:法人入账)
+	private String acnt_certif_id ;//入账证件号
 	private String inter_bank_no ;//联行号
 	private String iss_bank_nm ;
 	private String acnt_nm ;//入账户名
 	private String acnt_no ;//入账账号
+	private String wx_set_cd ;  //微信支付扣率
+	private String ali_set_cd ; //支付宝支付扣率
+	
+	
+	
 	private String set_cd ; //手续费扣率套餐代码
-	private String business ;  
 	private String settle_amt ; //小额清算金额（单位分）
 	private String sign ;
-	
 	private String tx_set_cd ;
 	private String settle_tp ;
 	private String tx_flag ;
 	
-	private String artif_nm ;//法人姓名
-	private String acnt_artif_flag ;//法人入账标识(0:非法人入账,1:法人入账)
-	private String acnt_certif_tp ;//入账证件类型("0":"身份证","1":"护照","2":"军官证","3":"士兵证","4":"回乡证","5":"户口本","6":"外国护照","7":"其它")
-	private String acnt_certif_id ;//入账证件号
+	
 //	private String contact_addr ;
 	private String th_flag ; //退货标识(0:不能退货,1:可以退货)
 	private String wx_flag ;  //微信支付标识(0：关闭微信,1：开通微信)
 	private String ali_flag ; //支付宝支付标识(0：关闭支付宝,1：开通支付宝)
-	private String wx_set_cd ;  //微信支付扣率
-	private String ali_set_cd ; //支付宝支付扣率
+	private String acnt_certif_tp ;//入账证件类型("0":"身份证","1":"护照","2":"军官证","3":"士兵证","4":"回乡证","5":"户口本","6":"外国护照","7":"其它")
+	private String daily_settle_set_cd; // D1扣率套餐代码（若开通D1则必填）
+	private String daily_settle_flag;//	是否开通D1提现（0:不开通，1：开通）
 	
 	private String qpay_flag ; //qq钱包标识
 	private String qpay_set_cd ;  //QQ钱包扣率
@@ -54,6 +68,19 @@ public class MchInfoFY {
 	private String wxapp_flag ; //微信app支付标识
 	private String wxapp_set_cd ;  //微信app支付扣率
 	private String wxapp_link_mchnt_cd ;//微信app支付挂接商户号
+	
+	public String getStoreNo() {
+		return storeNo;
+	}
+	public void setStoreNo(String storeNo) {
+		this.storeNo = storeNo;
+	}
+	public String getStep() {
+		return step;
+	}
+	public void setStep(String step) {
+		this.step = step;
+	}
 	public String getTrace_no() {
 		return trace_no;
 	}
@@ -65,12 +92,6 @@ public class MchInfoFY {
 	}
 	public void setIns_cd(String ins_cd) {
 		this.ins_cd = ins_cd;
-	}
-	public String getLink_mchnt_cd() {
-		return link_mchnt_cd;
-	}
-	public void setLink_mchnt_cd(String link_mchnt_cd) {
-		this.link_mchnt_cd = link_mchnt_cd;
 	}
 	public String getMchnt_name() {
 		return mchnt_name;
@@ -95,18 +116,6 @@ public class MchInfoFY {
 	}
 	public void setCertif_id(String certif_id) {
 		this.certif_id = certif_id;
-	}
-	public String getCertif_id_expire_dt() {
-		return certif_id_expire_dt;
-	}
-	public void setCertif_id_expire_dt(String certif_id_expire_dt) {
-		this.certif_id_expire_dt = certif_id_expire_dt;
-	}
-	public String getAcnt_type() {
-		return acnt_type;
-	}
-	public void setAcnt_type(String acnt_type) {
-		this.acnt_type = acnt_type;
 	}
 	public String getContact_person() {
 		return contact_person;
@@ -144,6 +153,36 @@ public class MchInfoFY {
 	public void setCounty_cd(String county_cd) {
 		this.county_cd = county_cd;
 	}
+	public String getBusiness() {
+		return business;
+	}
+	public void setBusiness(String business) {
+		this.business = business;
+	}
+	public String getAcnt_type() {
+		return acnt_type;
+	}
+	public void setAcnt_type(String acnt_type) {
+		this.acnt_type = acnt_type;
+	}
+	public String getArtif_nm() {
+		return artif_nm;
+	}
+	public void setArtif_nm(String artif_nm) {
+		this.artif_nm = artif_nm;
+	}
+	public String getAcnt_artif_flag() {
+		return acnt_artif_flag;
+	}
+	public void setAcnt_artif_flag(String acnt_artif_flag) {
+		this.acnt_artif_flag = acnt_artif_flag;
+	}
+	public String getAcnt_certif_id() {
+		return acnt_certif_id;
+	}
+	public void setAcnt_certif_id(String acnt_certif_id) {
+		this.acnt_certif_id = acnt_certif_id;
+	}
 	public String getInter_bank_no() {
 		return inter_bank_no;
 	}
@@ -168,17 +207,23 @@ public class MchInfoFY {
 	public void setAcnt_no(String acnt_no) {
 		this.acnt_no = acnt_no;
 	}
+	public String getWx_set_cd() {
+		return wx_set_cd;
+	}
+	public void setWx_set_cd(String wx_set_cd) {
+		this.wx_set_cd = wx_set_cd;
+	}
+	public String getAli_set_cd() {
+		return ali_set_cd;
+	}
+	public void setAli_set_cd(String ali_set_cd) {
+		this.ali_set_cd = ali_set_cd;
+	}
 	public String getSet_cd() {
 		return set_cd;
 	}
 	public void setSet_cd(String set_cd) {
 		this.set_cd = set_cd;
-	}
-	public String getBusiness() {
-		return business;
-	}
-	public void setBusiness(String business) {
-		this.business = business;
 	}
 	public String getSettle_amt() {
 		return settle_amt;
@@ -210,30 +255,6 @@ public class MchInfoFY {
 	public void setTx_flag(String tx_flag) {
 		this.tx_flag = tx_flag;
 	}
-	public String getArtif_nm() {
-		return artif_nm;
-	}
-	public void setArtif_nm(String artif_nm) {
-		this.artif_nm = artif_nm;
-	}
-	public String getAcnt_artif_flag() {
-		return acnt_artif_flag;
-	}
-	public void setAcnt_artif_flag(String acnt_artif_flag) {
-		this.acnt_artif_flag = acnt_artif_flag;
-	}
-	public String getAcnt_certif_tp() {
-		return acnt_certif_tp;
-	}
-	public void setAcnt_certif_tp(String acnt_certif_tp) {
-		this.acnt_certif_tp = acnt_certif_tp;
-	}
-	public String getAcnt_certif_id() {
-		return acnt_certif_id;
-	}
-	public void setAcnt_certif_id(String acnt_certif_id) {
-		this.acnt_certif_id = acnt_certif_id;
-	}
 	public String getTh_flag() {
 		return th_flag;
 	}
@@ -252,17 +273,23 @@ public class MchInfoFY {
 	public void setAli_flag(String ali_flag) {
 		this.ali_flag = ali_flag;
 	}
-	public String getWx_set_cd() {
-		return wx_set_cd;
+	public String getAcnt_certif_tp() {
+		return acnt_certif_tp;
 	}
-	public void setWx_set_cd(String wx_set_cd) {
-		this.wx_set_cd = wx_set_cd;
+	public void setAcnt_certif_tp(String acnt_certif_tp) {
+		this.acnt_certif_tp = acnt_certif_tp;
 	}
-	public String getAli_set_cd() {
-		return ali_set_cd;
+	public String getDaily_settle_set_cd() {
+		return daily_settle_set_cd;
 	}
-	public void setAli_set_cd(String ali_set_cd) {
-		this.ali_set_cd = ali_set_cd;
+	public void setDaily_settle_set_cd(String daily_settle_set_cd) {
+		this.daily_settle_set_cd = daily_settle_set_cd;
+	}
+	public String getDaily_settle_flag() {
+		return daily_settle_flag;
+	}
+	public void setDaily_settle_flag(String daily_settle_flag) {
+		this.daily_settle_flag = daily_settle_flag;
 	}
 	public String getQpay_flag() {
 		return qpay_flag;
@@ -306,19 +333,37 @@ public class MchInfoFY {
 	public void setWxapp_link_mchnt_cd(String wxapp_link_mchnt_cd) {
 		this.wxapp_link_mchnt_cd = wxapp_link_mchnt_cd;
 	}
-	public String getStoreNo() {
-		return storeNo;
-	}
-	public void setStoreNo(String storeNo) {
-		this.storeNo = storeNo;
-	}
-	public String getStep() {
-		return step;
-	}
-	public void setStep(String step) {
-		this.step = step;
-	}
 	
+	public String getProvince() {
+		return province;
+	}
+	public void setProvince(String province) {
+		this.province = province;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public String getCounty() {
+		return county;
+	}
+	public void setCounty(String county) {
+		this.county = county;
+	}
+	public String getStreet() {
+		return street;
+	}
+	public void setStreet(String street) {
+		this.street = street;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
 	public Map<String,String> toMap(){
         Map<String,String> map = new HashMap<String, String>();
         Field[] fields = this.getClass().getDeclaredFields();

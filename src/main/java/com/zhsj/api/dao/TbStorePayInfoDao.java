@@ -29,6 +29,8 @@ public interface TbStorePayInfoDao {
                       @Param("field4") String field4,
                       @Param("remark") String remark,
                       @Param("status") int status);
+    
+    int insertFY(@Param("beans")List beans);
 
 //    int updateByNo1 (@Param("remark") String remark,
 //    				 @Param("storeNo")String storeNO,

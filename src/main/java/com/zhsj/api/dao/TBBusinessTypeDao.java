@@ -16,4 +16,6 @@ public interface TBBusinessTypeDao {
 	List<BusinessTypeBean> getListById(@Param("id") int id);
 	
 	int insert(BusinessTypeBean businessTypeBean);
+	
+	BusinessTypeBean getById(@Param("id")int id);
 }
