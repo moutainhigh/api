@@ -244,7 +244,7 @@ public class ShopController {
 
     @RequestMapping(value = "/transactionOrder", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView transactionOrder(String auth,long id) throws Exception {
+    public ModelAndView transactionOrder(@RequestParam String auth,@RequestParam long id) throws Exception {
         logger.info("#ShopController.transactionOrder# auth={},id={}",auth,id);
         ModelAndView modelAndView = new ModelAndView();
         OrderBean orderBean = shopService.getOrderDetail(id);
