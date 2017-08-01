@@ -1,8 +1,14 @@
 package com.zhsj.api.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.zhsj.api.bean.MchInfoAddBean;
+import com.zhsj.api.bean.fuyou.MchInfoFY;
+import com.zhsj.api.dao.TBStoreExtendDao;
+import com.zhsj.api.service.FuyouService;
 import com.zhsj.api.service.MchAddService;
 import com.zhsj.api.util.CommonResult;
+import com.zhsj.api.util.SpringBeanUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +28,10 @@ public class MchAddController {
 
     @Autowired
     private MchAddService mchAddService;
+    @Autowired
+    private FuyouService fuyouService;
+    @Autowired
+    TBStoreExtendDao tbStoreExtendDao;
     
     @RequestMapping(value = "/new", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
@@ -151,6 +161,20 @@ public class MchAddController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("auth",auth);
         modelAndView.addObject("storeNo", storeNo);
+        modelAndView.setViewName("./mchAdd/mchAddSuccess");
+        return modelAndView;
+    }
+    
+    @RequestMapping(value = "/abc", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //成功页
+    public ModelAndView abc() {
+        ModelAndView modelAndView = new ModelAndView();
+        
+        String str = tbStoreExtendDao.getDataByStoreNo("1110674566", 2);
+        MchInfoFY mchInfoFY  = JSON.parseObject(str, MchInfoFY.class);
+        mchInfoFY.setWx_set_cd("0.40");
+       fuyouService.mchntUpd(mchInfoFY, "");
         modelAndView.setViewName("./mchAdd/mchAddSuccess");
         return modelAndView;
     }

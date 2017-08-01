@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.alibaba.fastjson.JSON;
 import com.sun.istack.internal.FinalArrayList;
 import com.sun.tools.classfile.InnerClasses_attribute.Info;
 import com.zhsj.api.bean.BusinessTypeBean;
@@ -29,11 +30,13 @@ import com.zhsj.api.constants.Const;
 import com.zhsj.api.constants.T1RateCons;
 import com.zhsj.api.dao.TBBusinessTypeDao;
 import com.zhsj.api.dao.TBCityCodeDao;
+import com.zhsj.api.dao.TBStoreExtendDao;
 import com.zhsj.api.dao.TbStorePayInfoDao;
 import com.zhsj.api.exception.ApiException;
 import com.zhsj.api.retry.SimpleRetryTemplate;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.MtConfig;
+import com.zhsj.api.util.SpringBeanUtil;
 import com.zhsj.api.util.XMLBeanUtils;
 import com.zhsj.api.util.fuyou.HttpUtils;
 import com.zhsj.api.util.fuyou.Sign;
@@ -331,20 +334,85 @@ public class FuyouService {
 	}
 	
 	public String mchntUpd(MchInfoFY mchInfo,String mchntCd){
-		logger.info("#FuyouService.mchntAdd# mchInfo={}",mchInfo);
+		logger.info("#FuyouService.mchntUpd# mchInfo={}",mchInfo);
 		String result = "FAIL";
 		try{
-			Map<String, String> map = mchInfo.toMap();
+			String mchntName = mchInfo.getMchnt_name();
+			
+			List<String> cityCodes = new ArrayList<>();
+			cityCodes.add(mchInfo.getCity());
+			cityCodes.add(mchInfo.getCounty());
+			List<CityCodeBean> cityCodeBeans = tbCityCodeDao.getCityCodes(cityCodes);
+			if(CollectionUtils.isEmpty(cityCodeBeans)){
+				return result;
+			}
+			Map<String,String> cityMap = new HashMap<>();
+			for(CityCodeBean bean:cityCodeBeans){
+				cityMap.put(bean.getCode(), bean.getFyCode());
+			}
+			
+			BusinessTypeBean btypeBean = tbBusinessTypeDao.getById(Integer.parseInt(mchInfo.getBusiness()));
+			if(btypeBean == null){
+				return result;
+			}
+			
+			Map<String, String> map = new HashMap<>();
 			map.put("trace_no", mchInfo.getStoreNo());
-			map.put("fy_mchnt_cd", mchntCd);
+			
+			map.put("fy_mchnt_cd", "0001000F0547650");
+			map.put("ins_cd", MtConfig.getProperty("FUYOU_INS_CD", ""));
+			
+//			private String link_mchnt_cd;//挂靠商户号
+			/***商户基本信息***/
+//			map.put("mchnt_name", mchntName);//商户名称
+//			map.put("mchnt_shortname",mchInfo.getMchnt_shortname());
+//			map.put("real_name", mchInfo.getReal_name());
+//			map.put("certif_id", mchInfo.getCertif_id());
+//			map.put("contact_person", mchInfo.getContact_person());
+//			map.put("contact_mobile", mchInfo.getContact_mobile());
+//			map.put("contact_email", mchInfo.getContact_email());
+//			map.put("contact_phone", mchInfo.getContact_phone());
+//			map.put("city_cd", cityMap.get(mchInfo.getCity()));
+//			map.put("county_cd", cityMap.get(mchInfo.getCounty()));
+//			map.put("business", btypeBean.getCode());
+//			
+//			/********结算信息*********/
+//			map.put("acnt_type", mchInfo.getAcnt_type());
+//			map.put("acnt_artif_flag", mchInfo.getAcnt_artif_flag());
+//			if("0".equals( mchInfo.getAcnt_artif_flag())){
+//				map.put("artif_nm", mchInfo.getContact_person());
+//			}
+//			map.put("acnt_certif_id",mchInfo.getAcnt_certif_id());
+//			map.put("inter_bank_no", mchInfo.getInter_bank_no());
+//			map.put("iss_bank_nm", mchInfo.getIss_bank_nm());
+//			map.put("acnt_nm", mchInfo.getAcnt_nm());
+//			map.put("acnt_no", mchInfo.getAcnt_no());
+			map.put("wx_set_cd" ,T1RateCons.of(Double.parseDouble(mchInfo.getWx_set_cd())).getDesc());
+//			map.put("ali_set_cd", T1RateCons.of(Double.parseDouble(mchInfo.getAli_set_cd())).getDesc());
+//			
+//			
+//			map.put("set_cd", T1RateCons.of(Double.parseDouble(mchInfo.getWx_set_cd())).getDesc());
+//			map.put("settle_amt", "1");//小额清算金额（单位分）
+//			map.put("settle_tp", "1");//清算类型：1自动结算；2手动结算
+//			map.put("tx_flag", "0"); //是否开通D0
+////			map.put("tx_set_cd", value);//D0
+//			map.put("daily_settle_flag","0");//	是否开通D1提现（0:不开通，1：开通
+////			map.put("daily_settle_set_cd; // D1扣率套餐代码（若开通D1则必填）
+//					
+//			
+//			map.put("wx_flag", "1"); //微信支付标识(0：关闭微信,1：开通微信)
+//			map.put("ali_flag" , "1"); //支付宝支付标识(0：关闭支付宝,1：开通支付宝)
+//			map.put("acnt_certif_tp" , "0");;//入账证件类型("0":"身份证","1":"护照","2":"军官证","3":"士兵证","4":"回乡证","5":"户口本","6":"外国护照","7":"其它")
+//			map.put("th_flag", "1");//退货标识(0:不能退货,1:可以退货)
 			map.put("sign", Sign.getSign(map,MtConfig.getProperty("FUYOU_MCH_ADD_KEY", "")));
+
 			String dataString = this.getResultData(map, MtConfig.getProperty("FUYOU_MCH_ADD_URL", "")+"wxMchntUpd");
 			logger.info(dataString);
 			Map<String, String> resMap = XMLBeanUtils.xmlToMap(dataString);
 			if(!"0000".equals(resMap.get("ret_code"))){
 				result = resMap.get("ret_msg");
 			}else{
-				result = "SUCCESS";
+				
 			}		
 		}catch (Exception e) {
 			result = "系统异常";
@@ -358,62 +426,71 @@ public class FuyouService {
 	
 	
 	public static void main(String[] args) {
-		OrderBean orderBean = new OrderBean();
-		orderBean.setActualChargeAmount(1);
-		orderBean.setOrderId("1001170710532789007");
-		orderBean.setPayMethod("1");
-//		new PinganService().refundMoney(orderBean);
-//		new FuyouService().searchRefund(orderBean);
-		new FuyouService().queryWithdrawAmt("0001000F0539031");
-//		System.out.println(new FuyouService().mchntNameCheck("1111111333","222在"));
+		FuyouService fuyouService = (FuyouService) SpringBeanUtil.getBean("fuyouService");
+        TBStoreExtendDao tbStoreExtendDao = (TBStoreExtendDao) SpringBeanUtil.getBean("tbStoreExtendDao");
+        
+        String str = tbStoreExtendDao.getDataByStoreNo("1110674566", 2);
+        MchInfoFY mchInfoFY  = JSON.parseObject(str, MchInfoFY.class);
+        mchInfoFY.setWx_set_cd("0.40");
+        
+        fuyouService.mchntUpd(mchInfoFY, "");
 		
-		MchInfoFY mchInfo = new MchInfoFY();
-		mchInfo.setStoreNo("10001");
-		mchInfo.setStep("3");
-		
-		
-		mchInfo.setIns_cd("08A9999999");
-		mchInfo.setMchnt_name("小林开店");
-		mchInfo.setMchnt_shortname("小林开店了详情");
-		mchInfo.setReal_name("小林开店了详情");
-		mchInfo.setCertif_id("13072719871217189X");
-		
-		mchInfo.setAcnt_type("2");
-		mchInfo.setInter_bank_no("305100001104");
-		mchInfo.setIss_bank_nm("中国民生银行股份有限公司北京上地支行");
-		mchInfo.setAcnt_nm("林春光");
-		mchInfo.setAcnt_no("6226220108357913");
-		mchInfo.setSet_cd("M0174");
-		mchInfo.setArtif_nm("林春光");
-		mchInfo.setAcnt_artif_flag("0");
-		mchInfo.setAcnt_certif_id("13072719871217189X");
-		mchInfo.setAcnt_certif_tp("0");
-		
-		
-		
-		mchInfo.setContact_email("286066088@qq.com");
-		mchInfo.setContact_mobile("13811408460");
-		mchInfo.setContact_person("林春光");
-		mchInfo.setContact_phone("13811408460");
-		
-		mchInfo.setCity_cd("1000");
-		mchInfo.setCounty_cd("1007");
-		
-		
-		mchInfo.setBusiness("292");
-		mchInfo.setSettle_amt("1");
-		
-		mchInfo.setSettle_tp("2");
-		
-		mchInfo.setTx_flag("0");
-//		mchInfo.setTx_set_cd("1");
-		
-		mchInfo.setTh_flag("1");
-		mchInfo.setWx_flag("1");
-		mchInfo.setWx_set_cd("M0174");
-		mchInfo.setAli_flag("1");
-		mchInfo.setAli_set_cd("M0174");
-//		new FuyouService().mchntAdd(mchInfo);
-//		new FuyouService().mchntUpd(mchInfo, "0001000F0539031");
+//		OrderBean orderBean = new OrderBean();
+//		orderBean.setActualChargeAmount(1);
+//		orderBean.setOrderId("1001170710532789007");
+//		orderBean.setPayMethod("1");
+////		new PinganService().refundMoney(orderBean);
+////		new FuyouService().searchRefund(orderBean);
+//		new FuyouService().queryWithdrawAmt("0001000F0539031");
+////		System.out.println(new FuyouService().mchntNameCheck("1111111333","222在"));
+//		
+//		MchInfoFY mchInfo = new MchInfoFY();
+//		mchInfo.setStoreNo("10001");
+//		mchInfo.setStep("3");
+//		
+//		
+//		mchInfo.setIns_cd("08A9999999");
+//		mchInfo.setMchnt_name("小林开店");
+//		mchInfo.setMchnt_shortname("小林开店了详情");
+//		mchInfo.setReal_name("小林开店了详情");
+//		mchInfo.setCertif_id("13072719871217189X");
+//		
+//		mchInfo.setAcnt_type("2");
+//		mchInfo.setInter_bank_no("305100001104");
+//		mchInfo.setIss_bank_nm("中国民生银行股份有限公司北京上地支行");
+//		mchInfo.setAcnt_nm("林春光");
+//		mchInfo.setAcnt_no("6226220108357913");
+//		mchInfo.setSet_cd("M0174");
+//		mchInfo.setArtif_nm("林春光");
+//		mchInfo.setAcnt_artif_flag("0");
+//		mchInfo.setAcnt_certif_id("13072719871217189X");
+//		mchInfo.setAcnt_certif_tp("0");
+//		
+//		
+//		
+//		mchInfo.setContact_email("286066088@qq.com");
+//		mchInfo.setContact_mobile("13811408460");
+//		mchInfo.setContact_person("林春光");
+//		mchInfo.setContact_phone("13811408460");
+//		
+//		mchInfo.setCity_cd("1000");
+//		mchInfo.setCounty_cd("1007");
+//		
+//		
+//		mchInfo.setBusiness("292");
+//		mchInfo.setSettle_amt("1");
+//		
+//		mchInfo.setSettle_tp("2");
+//		
+//		mchInfo.setTx_flag("0");
+////		mchInfo.setTx_set_cd("1");
+//		
+//		mchInfo.setTh_flag("1");
+//		mchInfo.setWx_flag("1");
+//		mchInfo.setWx_set_cd("M0174");
+//		mchInfo.setAli_flag("1");
+//		mchInfo.setAli_set_cd("M0174");
+////		new FuyouService().mchntAdd(mchInfo);
+////		new FuyouService().mchntUpd(mchInfo, "0001000F0539031");
 	}
 }
