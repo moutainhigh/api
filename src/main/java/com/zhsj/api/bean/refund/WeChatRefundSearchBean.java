@@ -1,7 +1,6 @@
 package com.zhsj.api.bean.refund;
 
 import java.lang.reflect.Field;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zhsj.api.util.MD5Util;
-import com.zhsj.api.util.wft.MD5;
 
 public class WeChatRefundSearchBean {
 	private String appid;

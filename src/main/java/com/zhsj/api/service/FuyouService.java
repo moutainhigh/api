@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -301,6 +300,13 @@ public class FuyouService {
 			map.put("ali_flag" , "1"); //支付宝支付标识(0：关闭支付宝,1：开通支付宝)
 			map.put("acnt_certif_tp" , "0");;//入账证件类型("0":"身份证","1":"护照","2":"军官证","3":"士兵证","4":"回乡证","5":"户口本","6":"外国护照","7":"其它")
 			map.put("th_flag", "1");//退货标识(0:不能退货,1:可以退货)
+			
+			map.put("qpay_flag", "0");
+			map.put("jdpay_flag", "0");
+			map.put("wxapp_flag", "0");
+			map.put("cup_qrpay_st", "0");
+			
+			
 			map.put("sign", Sign.getSign(map,MtConfig.getProperty("FUYOU_MCH_ADD_KEY", "")));
 
 			String dataString = this.getResultData(map, MtConfig.getProperty("FUYOU_MCH_ADD_URL", "")+"wxMchntAdd");
@@ -431,6 +437,8 @@ public class FuyouService {
 	
 	public static void main(String[] args) {
 		new FuyouService().mchntNameCheck("mchntNameCheck");
+		new FuyouService().mchntNameCheck("张店一二三商务信息咨询服务部");
+		
 //		OrderBean orderBean = new OrderBean();
 //		orderBean.setActualChargeAmount(1);
 //		orderBean.setOrderId("1001170710532789007");

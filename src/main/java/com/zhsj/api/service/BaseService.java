@@ -1,7 +1,6 @@
 package com.zhsj.api.service;
 
 import com.alibaba.fastjson.JSON;
-import com.sun.tools.classfile.InnerClasses_attribute.Info;
 import com.zhsj.api.bean.CityCodeBean;
 import com.zhsj.api.bean.BusinessTypeBean;
 import com.zhsj.api.bean.OrderBean;
@@ -12,20 +11,13 @@ import com.zhsj.api.bean.result.CheckUpdateResult;
 import com.zhsj.api.dao.TBCityCodeDao;
 import com.zhsj.api.dao.TBBusinessTypeDao;
 import com.zhsj.api.dao.TBVersionInfoDao;
-import com.zhsj.api.dao.TbOrderDao;
-import com.zhsj.api.dao.TbStoreDao;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.HttpClient;
 import com.zhsj.api.util.MtConfig;
-import com.zhsj.api.util.SSLUtil;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
