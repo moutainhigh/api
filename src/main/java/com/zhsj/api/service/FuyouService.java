@@ -430,15 +430,7 @@ public class FuyouService {
 	
 	
 	public static void main(String[] args) {
-		FuyouService fuyouService = (FuyouService) SpringBeanUtil.getBean("fuyouService");
-        TBStoreExtendDao tbStoreExtendDao = (TBStoreExtendDao) SpringBeanUtil.getBean("tbStoreExtendDao");
-        
-        String str = tbStoreExtendDao.getDataByStoreNo("1110674566", 2);
-        MchInfoFY mchInfoFY  = JSON.parseObject(str, MchInfoFY.class);
-        mchInfoFY.setWx_set_cd("0.40");
-        
-        fuyouService.mchntUpd(mchInfoFY, "");
-		
+		new FuyouService().mchntNameCheck("mchntNameCheck");
 //		OrderBean orderBean = new OrderBean();
 //		orderBean.setActualChargeAmount(1);
 //		orderBean.setOrderId("1001170710532789007");
