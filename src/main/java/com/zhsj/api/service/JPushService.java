@@ -317,33 +317,38 @@ public class JPushService {
 
     }
     
-    private void sendJPushMsg(final int sendNo,final String json) {
-    	try{
-    		Integer num = new SimpleRetryTemplate<Integer>() {
-    			@Override
-    			public Integer invoke() throws Exception {
-    				String msg_id = JPUSH_MSG.get(sendNo);
-    				String url = "https://report.jpush.cn/v3/received?msg_ids="+msg_id;
-    				String result = new JPushService().sendGet(url);
-        	    	JSONArray jsonArray = JSON.parseArray(result);
-        	    	for(int i=0;i<jsonArray.size();i++){
-        	    		String jmsg = jsonArray.get(i).toString();
-        	    		Map<String, Object> getMap = JSON.parseObject(jmsg,Map.class);
-        	    		if(getMap.get("android_received") == null && getMap.get("ios_msg_received")==null){
-        	    			logger.info("json="+json);
-        					result = sendPost("https://api.jpush.cn/v3/push", json);
-        	    			logger.info("result="+result);
-        	    			Map<String, String> map = JSON.parseObject(result, Map.class);
-        	    			JPUSH_MSG.put(sendNo, map.get("msg_id"));
-        	    			throw new ApiException(1002, "极光推送失败");
-        	    		}
-        	    	}
-    				return 0;
-    			}
-    		}.withDefaultTimeoutPolicy().executeWithRetry(30000L);
-    	}catch (Exception e) {
-			logger.warn("#sendJPushMsg#,e={}",e.getMessage(),e);
-		}
+    private void sendJPushMsg(final int sendNo,final String json) throws Exception{
+    	Integer num = new SimpleRetryTemplate<Integer>() {
+			@Override
+			public Integer invoke() throws Exception {
+				String msg_id = JPUSH_MSG.get(sendNo);
+				String url = "https://report.jpush.cn/v3/received?msg_ids="+msg_id;
+				String result = new JPushService().sendGet(url);
+    	    	JSONArray jsonArray = JSON.parseArray(result);
+    	    	int length = jsonArray.size();
+    	    	if(length > 0){
+	    	    	for(int i=0;i<length;i++){
+	    	    		String jmsg = jsonArray.get(i).toString();
+	    	    		Map<String, Object> getMap = JSON.parseObject(jmsg,Map.class);
+	    	    		if(getMap.get("android_received") == null && getMap.get("ios_msg_received")==null){
+	    	    			logger.info("json="+json);
+	    					result = sendPost("https://api.jpush.cn/v3/push", json);
+	    	    			logger.info("result="+result);
+	    	    			Map<String, String> map = JSON.parseObject(result, Map.class);
+	    	    			JPUSH_MSG.put(sendNo, map.get("msg_id"));
+	    	    			throw new ApiException(1002, "极光推送失败");
+	    	    		}
+	    	    	}
+    	    	}else{
+    	    		result = sendPost("https://api.jpush.cn/v3/push", json);
+	    			logger.info("result="+result);
+	    			Map<String, String> map = JSON.parseObject(result, Map.class);
+	    			JPUSH_MSG.put(sendNo, map.get("msg_id"));
+	    			throw new ApiException(1002, "极光推送失败");
+    	    	}
+				return 0;
+			}
+		}.withDefaultTimeoutPolicy().executeWithRetry(30000L);
     }
     
     public static void main(String[] args) throws Exception {

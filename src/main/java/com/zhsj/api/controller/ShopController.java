@@ -326,7 +326,7 @@ public class ShopController {
     @RequestMapping(value = "/searchUserInfo" , method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public Object searchUserInfo(String auth,long userId) {
-        logger.info("#ShopController.searchUserInfo# auth={},userId", auth, userId);
+        logger.info("#ShopController.searchUserInfo# auth={},userId={}", auth, userId);
         return CommonResult.build(0, "success",userService.getUserId(userId));
     }
 

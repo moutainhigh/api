@@ -1,23 +1,19 @@
 package com.zhsj.api.service;
 
 import com.alibaba.fastjson.JSON;
-import com.zhsj.api.bean.LoginUser;
-import com.zhsj.api.bean.ModuleBean;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.OrderRefundBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.bean.StoreBean;
-import com.zhsj.api.bean.jpush.PaySuccessBean;
 import com.zhsj.api.bean.StorePayInfo;
+import com.zhsj.api.bean.jpush.PaySuccessBean;
 import com.zhsj.api.bean.result.OrderSta;
 import com.zhsj.api.bean.result.RefundSta;
 import com.zhsj.api.bean.result.ShiftNewBean;
-import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
 import com.zhsj.api.constants.Const;
-import com.zhsj.api.constants.StroeRole;
 import com.zhsj.api.dao.TbOrderDao;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
@@ -34,17 +30,14 @@ import com.zhsj.api.dao.TbStorePayInfoDao;
 import com.zhsj.api.dao.TbUserBindStoreDao;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.login.LoginUserUtil;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
 import java.math.BigDecimal;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,9 +85,9 @@ public class OrderService {
     @Autowired
     private FuyouService fuyouService;
     @Autowired
-    private VPiaotongService vpiaotongService;
-    @Autowired
     private TbStorePayInfoDao tbStorePayInfoDao;
+    @Autowired
+    private VPiaotongService vpiaotongService;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -472,7 +465,7 @@ public class OrderService {
     
     
     public Object getOrderListByParam(int type,String storeNo,int payChannel,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
-    	logger.info("#getOrderListByParam# type={},storeNo = {}, payChanel = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
+    	logger.info("#getOrderListByParam# type={},storeNo = {}, payChanel = {}, payMethod = {}, startTime= {},endTime={}, status ={},page={}, pageSize={}",
     			type,storeNo, payChannel,payMethod, startTime, endTime, status, page, pageSize);
     	Map<String, Object> paramMap = new HashMap<String, Object>();
     	paramMap.put("payChannel", payChannel);
