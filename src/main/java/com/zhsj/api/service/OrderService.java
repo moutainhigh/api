@@ -468,7 +468,7 @@ public class OrderService {
     
     
     public Object getOrderListByParam(int type,String storeNo,int payChannel,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
-    	logger.info("#getOrderListByParam# type={},storeNo = {}, payChanel = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
+    	logger.info("#getOrderListByParam# type={},storeNo = {}, payChanel = {}, payMethod = {}, startTime= {},endTime={}, status ={},page={}, pageSize={}",
     			type,storeNo, payChannel,payMethod, startTime, endTime, status, page, pageSize);
     	Map<String, Object> paramMap = new HashMap<String, Object>();
     	paramMap.put("payChannel", payChannel);

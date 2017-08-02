@@ -402,7 +402,8 @@ $('.tran_time .clearfix li').on("click",function(){
             var picker = new $$.DtPicker(options);
             picker.show(function(rs) {
                 this.innerText = rs.text;
-                $(that).attr("data-d",rs.text);
+                var date = rs.text;
+                $(that).attr("data-d",date.replace(/-/g,"/"));
                 $(that).parents("li").siblings().find("li").removeClass("checked_time");
                 $(that).text(rs.text);
                 $(that).addClass("checked_time");

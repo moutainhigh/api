@@ -95,7 +95,7 @@ public class StoreManageController {
     
     @RequestMapping(value = "orderList", method = RequestMethod.POST)
     public Object orderList(int type,String storeNo,int payChannel,int payMethod, int startTime, int endTime, int status, int page,int pageSize){
-    	logger.info("#orderList# type={},storeNo = {}, payChannel = {}, payMethod = {}, startTime= {},endTime={}, status ={},page+{}, pageSize={}",
+    	logger.info("#orderList# type={},storeNo = {}, payChannel = {}, payMethod = {}, startTime= {},endTime={}, status ={},page={}, pageSize={}",
     			type,storeNo, payChannel, payMethod, startTime, endTime, status, page, pageSize);
     	if(StringUtils.isEmpty(storeNo)){
     		return CommonResult.build(2, "门店编号有误");

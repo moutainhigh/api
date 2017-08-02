@@ -82,7 +82,7 @@ public class WXService {
       		 openId = (String)map.get("data");
       	 }
        }catch (Exception e){
-           logger.error("#WXService.getUserByCode# code={},appId={},e={}",code,appId,e);
+           logger.error("#WXService.getOpenId# code={},appId={},e={}",code,appId,e);
        }
        return openId;
     }
