@@ -24,8 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -112,11 +114,29 @@ public class CashierController {
         return  orderService.countShift(storeNo, userId, stime, etime, auth);
     }
     
+    @RequestMapping(value = "/countV2Shift", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //交班统计
+    public Object countV2Shift(String storeNo,String userId,String startTime,String endTime, String auth) {
+        logger.info("#CashierController.countV2Shift# storeNO={},userId={},startTime={},endTime={},auth={}",
+        		storeNo,userId,startTime,endTime,auth);
+        if(StringUtils.isEmpty(storeNo) || StringUtils.isEmpty(userId)){
+        	return CommonResult.defaultError("输入信息有误");
+        }
+        if(StringUtils.isEmpty(startTime) || StringUtils.isEmpty(endTime)){
+        	return CommonResult.defaultError("时间信息有误");
+        }
+        int stime = Integer.parseInt(startTime);
+        int etime = Integer.parseInt(endTime);
+        
+        return  orderService.countNewShift(storeNo, userId, stime, etime, auth);
+    }
+    
     @RequestMapping(value = "/sentShiftMsg", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     //交班统计打印
     public Object sentShiftMsg(String storeNo,String userId,String startTime,String endTime,String type, String auth) {
-        logger.info("#CashierController.countShift# storeNO={},userId={},startTime={},endTime={},type={},auth={}",
+        logger.info("#CashierController.sentShiftMsg# storeNO={},userId={},startTime={},endTime={},type={},auth={}",
         		storeNo,userId,startTime,endTime,type,auth);
         if(StringUtils.isEmpty(storeNo) || StringUtils.isEmpty(userId)){
         	return CommonResult.defaultError("输入信息有误");
@@ -211,7 +231,7 @@ public class CashierController {
     @RequestMapping(value = "/orderDetail", method = RequestMethod.GET)
     @ResponseBody
     //订间详情
-    public ModelAndView orderDetail(long id) throws Exception {
+    public ModelAndView orderDetail(@RequestParam long id) throws Exception {
         logger.info("#CashierController.orderDetail# id={}",id);
         ModelAndView modelAndView = new ModelAndView();
         OrderBean orderBean = shopService.getOrderDetail(id);

@@ -53,6 +53,8 @@ public class JPushService {
     private TBStoreAccountDao tbStoreAccountDao;
     @Autowired
     private PrinterService printerService;
+    @Autowired
+    private VPiaotongService vpiaotongService;
     
     private Map<Integer,String> JPUSH_MSG =  Collections.synchronizedMap(new HashMap<Integer,String>());
     
@@ -95,9 +97,9 @@ public class JPushService {
     			String json = toSuccessMsg(orderBean, regIds);
     			String result = sendPost("https://api.jpush.cn/v3/push", json);
     			logger.info("result="+result);
-//    			Map<String, String> map = JSON.parseObject(result, Map.class);
-//    			JPUSH_MSG.put((int)orderBean.getId(), map.get("msg_id"));
-//    			sendJPushMsg((int)orderBean.getId(),json);
+    			Map<String, String> map = JSON.parseObject(result, Map.class);
+    			JPUSH_MSG.put((int)orderBean.getId(), map.get("msg_id"));
+    			sendJPushMsg((int)orderBean.getId(),json);
     		}
     		
     		return CommonResult.success("");
@@ -159,8 +161,7 @@ public class JPushService {
 
     
     private String toSuccessMsg(OrderBean bean,List<String> regIds){
-    	String uri = MtConfig.getProperty("API_URL", "");
-    	PaySuccessBean psBean = new PaySuccessBean().toBean(bean, "",uri);
+    	PaySuccessBean psBean = orderService.getPaySuccessBean(bean);
     	
     	JSONObject jsonObject = new JSONObject();
     	jsonObject.put("platform", "all");//推送平台
@@ -316,29 +317,33 @@ public class JPushService {
 
     }
     
-    private void sendJPushMsg(final int sendNo,final String json) throws Exception{
-    	Integer num = new SimpleRetryTemplate<Integer>() {
-			@Override
-			public Integer invoke() throws Exception {
-				String msg_id = JPUSH_MSG.get(sendNo);
-				String url = "https://report.jpush.cn/v3/received?msg_ids="+msg_id;
-				String result = new JPushService().sendGet(url);
-    	    	JSONArray jsonArray = JSON.parseArray(result);
-    	    	for(int i=0;i<jsonArray.size();i++){
-    	    		String jmsg = jsonArray.get(i).toString();
-    	    		Map<String, Object> getMap = JSON.parseObject(jmsg,Map.class);
-    	    		if(getMap.get("android_received") == null && getMap.get("ios_msg_received")==null){
-    	    			logger.info("json="+json);
-    					result = sendPost("https://api.jpush.cn/v3/push", json);
-    	    			logger.info("result="+result);
-    	    			Map<String, String> map = JSON.parseObject(result, Map.class);
-    	    			JPUSH_MSG.put(sendNo, map.get("msg_id"));
-    	    			throw new ApiException(1002, "极光推送失败");
-    	    		}
-    	    	}
-				return 0;
-			}
-		}.withDefaultTimeoutPolicy().executeWithRetry(30000L);
+    private void sendJPushMsg(final int sendNo,final String json) {
+    	try{
+    		Integer num = new SimpleRetryTemplate<Integer>() {
+    			@Override
+    			public Integer invoke() throws Exception {
+    				String msg_id = JPUSH_MSG.get(sendNo);
+    				String url = "https://report.jpush.cn/v3/received?msg_ids="+msg_id;
+    				String result = new JPushService().sendGet(url);
+        	    	JSONArray jsonArray = JSON.parseArray(result);
+        	    	for(int i=0;i<jsonArray.size();i++){
+        	    		String jmsg = jsonArray.get(i).toString();
+        	    		Map<String, Object> getMap = JSON.parseObject(jmsg,Map.class);
+        	    		if(getMap.get("android_received") == null && getMap.get("ios_msg_received")==null){
+        	    			logger.info("json="+json);
+        					result = sendPost("https://api.jpush.cn/v3/push", json);
+        	    			logger.info("result="+result);
+        	    			Map<String, String> map = JSON.parseObject(result, Map.class);
+        	    			JPUSH_MSG.put(sendNo, map.get("msg_id"));
+        	    			throw new ApiException(1002, "极光推送失败");
+        	    		}
+        	    	}
+    				return 0;
+    			}
+    		}.withDefaultTimeoutPolicy().executeWithRetry(30000L);
+    	}catch (Exception e) {
+			logger.warn("#sendJPushMsg#,e={}",e.getMessage(),e);
+		}
     }
     
     public static void main(String[] args) throws Exception {

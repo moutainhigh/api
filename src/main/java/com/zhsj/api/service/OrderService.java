@@ -8,11 +8,15 @@ import com.zhsj.api.bean.OrderRefundBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.bean.StoreBean;
+import com.zhsj.api.bean.jpush.PaySuccessBean;
+import com.zhsj.api.bean.StorePayInfo;
 import com.zhsj.api.bean.result.OrderSta;
 import com.zhsj.api.bean.result.RefundSta;
+import com.zhsj.api.bean.result.ShiftNewBean;
 import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
+import com.zhsj.api.constants.Const;
 import com.zhsj.api.constants.StroeRole;
 import com.zhsj.api.dao.TbOrderDao;
 import com.zhsj.api.util.Arith;
@@ -26,15 +30,18 @@ import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreSignDao;
 import com.zhsj.api.dao.TbStoreBindOrgDao;
 import com.zhsj.api.dao.TbStoreDao;
+import com.zhsj.api.dao.TbStorePayInfoDao;
 import com.zhsj.api.dao.TbUserBindStoreDao;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.login.LoginUserUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -84,6 +91,10 @@ public class OrderService {
     private TbStoreDao tbStoreDao;
     @Autowired
     private FuyouService fuyouService;
+    @Autowired
+    private VPiaotongService vpiaotongService;
+    @Autowired
+    private TbStorePayInfoDao tbStorePayInfoDao;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -152,9 +163,17 @@ public class OrderService {
     	    	logger.info("#OrderService.refundMoney# orderNo={},price={},msg={}",orderNo,price,"退款金额不正确");
     			return CommonResult.defaultError("退款金额不正确");
     		}
+    		List<Integer> statusList = new ArrayList<>();
+    		statusList.add(1);
+    		statusList.add(3);
+    		statusList.add(5);
+    		double balance = getBalance(orderBean.getId(), statusList);
+    		if(Arith.sub(balance, price) < 0){
+    			return CommonResult.defaultError("账户余额不足");
+    		}
     		String result = "Fail";
     		switch(orderBean.getPayType()){
-				case 1:
+				case 1: 
 					//官方接口
 					if("1".equals(orderBean.getPayMethod())){//微信
 						result = weChatService.refundMoney(orderBean,price,userId);
@@ -175,7 +194,7 @@ public class OrderService {
 					//中信接口
 					result = pinganService.refundMoney(orderBean,price,userId);
 					break;
-				case 5:
+				case 6:
 					//中信接口
 					result = fuyouService.refundMoney(orderBean,price,userId);
 					break;
@@ -226,7 +245,7 @@ public class OrderService {
 					//中信接口
 					result = pinganService.searchRefund(orderBean);
 					break;
-				case 5:
+				case 6:
 					//富友接口
 					result = fuyouService.searchRefund(orderBean);
 					break;
@@ -359,6 +378,93 @@ public class OrderService {
     	return CommonResult.defaultError("出错了");
     }
 
+    public CommonResult countNewShift(String storeNo,String userId,int startTime,int endTime, String auth){
+   	 logger.info("#OrderService.countNewShift# storeNO={},userId={},startTime={},endTime={},auth={}",
+        		storeNo,userId,startTime,endTime,auth);
+   	 try{
+   		 ShiftNewBean bean = new ShiftNewBean();
+   		 bean.setStartTime(DateUtil.getTime(((long)startTime)*1000));
+   		 bean.setEndTime(DateUtil.getTime(((long)endTime)*1000));
+   		 
+   		 long accountId = Long.parseLong(userId);
+   		 StoreAccountBean storeAccountBean = tbStoreAccountDao.getById(accountId);
+   		 if(storeAccountBean == null){
+   			 return CommonResult.defaultError("用户信息出错");
+   		 }
+   		 bean.setName(storeAccountBean.getName());
+   		 if(StringUtils.isEmpty(storeAccountBean.getName())){
+   			 bean.setName(storeAccountBean.getAccount());
+   		 }
+   		 
+			 List<Integer> statuses = new ArrayList<>();
+			 statuses.add(1);
+			 statuses.add(3);
+			 statuses.add(4);
+			 statuses.add(5);
+			 Map<String, Object> countMap = tbOrderDao.countByUserAndTime(storeNo, startTime, endTime, accountId,statuses);
+			 Map<String, Object> refundMap = tbOrderDao.countRefundByUserAndTime(storeNo, startTime, endTime, accountId);
+			 Map<String, Object> storeMap = tbOrderDao.countStoreDisByUserAndTime(storeNo, startTime, endTime, accountId, statuses);
+			 Map<String, Object> orgMap = tbOrderDao.countOrgDisByUserAndTime(storeNo, startTime, endTime, accountId,statuses);
+			 
+			 Map<String, Object> wxMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "1");
+			 Map<String, Object> aliMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "2");
+			 Map<String, Object> unMap = tbOrderDao.countByUserTimeMethod(storeNo, startTime, endTime, accountId, statuses, "3");
+			 
+			 bean.setRefundMoney(bigToStr(((BigDecimal)refundMap.get("refundMoney"))));
+			 bean.setRefundNum(String.valueOf(refundMap.get("count")));
+			 bean.setStoreDisNum(String.valueOf(storeMap.get("count")));
+			 bean.setStoreDisMoney(bigToStr((BigDecimal)storeMap.get("storeDisSum")));
+			 bean.setOrgDisNum(String.valueOf(orgMap.get("count")));
+			 bean.setOrgDisMoney(bigToStr((BigDecimal)orgMap.get("orgDisSum")));
+			 
+			 bean.setTotalNum(String.valueOf(countMap.get("count")));
+			 bean.setTotalMoney(bigToStr((BigDecimal)countMap.get("planMoney")));
+			 
+			 bean.setActualMoney(bigToStr(((BigDecimal)countMap.get("actualMoney")).subtract((BigDecimal)refundMap.get("refundMoney"))));
+
+			 if(wxMap == null){
+				 bean.setDisplayWX(0);
+			 }else{
+				 bean.setDisplayWX(1);
+				 bean.setPlanMoneyWX(bigToStr((BigDecimal)wxMap.get("planMoney")));
+				 bean.setActualMoneyWX(bigToStr((BigDecimal)wxMap.get("actualMoney")));
+				 bean.setStoreDisMoneyWX(bigToStr((BigDecimal)wxMap.get("storeDisMoney")));
+				 bean.setOrgDisMoneyWX(bigToStr((BigDecimal)wxMap.get("orgDisMoney")));
+				 bean.setRefundWX(bigToStr((BigDecimal)wxMap.get("refundMoney")));
+				 bean.setActualMoneyWX(Arith.sub(bean.getActualMoneyWX(), bean.getRefundWX()));
+			 }
+			
+			 if(aliMap == null){
+				 bean.setDisplayAli(0);
+			 }else{
+				 bean.setDisplayAli(1);
+				 bean.setPlanMoneyAli(bigToStr((BigDecimal)aliMap.get("planMoney")));
+				 bean.setActualMoneyAli(bigToStr((BigDecimal)aliMap.get("actualMoney")));
+				 bean.setStoreDisMoneyAli(bigToStr((BigDecimal)aliMap.get("storeDisMoney")));
+				 bean.setOrgDisMoneyAli(bigToStr((BigDecimal)aliMap.get("orgDisMoney")));
+				 bean.setRefundAli(bigToStr((BigDecimal)aliMap.get("refundMoney")));
+				 bean.setActualMoneyAli(Arith.sub(bean.getActualMoneyAli(), bean.getRefundAli()));
+			 }
+			 
+			 if(unMap == null){
+				 bean.setDisplayUCard(0);
+			 }else{
+				 bean.setDisplayUCard(1);
+				 bean.setPlanMoneyUCard(bigToStr((BigDecimal)unMap.get("planMoney")));
+				 bean.setActualMoneyUCard(bigToStr((BigDecimal)unMap.get("actualMoney")));
+				 bean.setStoreDisMoneyUCard(bigToStr((BigDecimal)unMap.get("storeDisMoney")));
+				 bean.setOrgDisMoneyUCard(bigToStr((BigDecimal)unMap.get("orgDisMoney")));
+				 bean.setRefundUCard(bigToStr((BigDecimal)unMap.get("refundMoney")));
+				 bean.setActualMoneyUCard(Arith.sub(bean.getActualMoneyUCard(),bean.getRefundUCard()));
+			 }
+			 
+			 return CommonResult.success("", bean);
+   	 }catch (Exception e) {
+   		 logger.error("#OrderService.countShift# storeNO={},userId={},startTime={},endTime={},auth={}",
+   	         		storeNo,userId,startTime,endTime,auth,e);
+		}
+   	return CommonResult.defaultError("出错了");
+   }
     
     public List<OrderBean> getByStatusAndCtime(int status,int startTime,int endTime){
     	return bmOrderDao.getByStatusAndCtime(status, startTime, endTime);
@@ -431,32 +537,44 @@ public class OrderService {
 		}
     }
     
-    public Object appRefund(long id,double price,int accountId){
+    public CommonResult appRefund(long id,double price,int accountId){
     	logger.info("#appRefund# id={}, price={},accountId={}", id, price, accountId);
     	try {
 			OrderBean orderBean = bmOrderDao.getById(id);
 			if("3".equals(orderBean.getPayMethod())){
 				return CommonResult.build(2, "不支持银联卡退款");
 			}
-			String refundNo = "re"+orderBean.getOrderId();
-			OrderRefundBean orderRefund = tbOrderRefundDao.getByRefundNo(refundNo);
-			if(orderRefund != null){
-				return CommonResult.build(2, orderBean.getStatus() == 3?"该订单正在处理中":"该订单已经处理完成");
-			}
+//			String refundNo = "re"+orderBean.getOrderId();
+//			OrderRefundBean orderRefund = tbOrderRefundDao.getByRefundNo(refundNo);
+//			if(orderRefund != null){
+//				return CommonResult.build(2, orderBean.getStatus() == 3?"该订单正在处理中":"该订单已经处理完成");
+//			}
+			
 			if(price > orderBean.getActualChargeAmount()){
 				return CommonResult.build(2, "退款金额不能大于实付金额");
 			}
+			List<Integer> statusList = new ArrayList<>();
+			statusList.add(1);
+			double balance = getBalance(id, statusList);
+			if(Arith.sub(balance, price) < 0){
+				return CommonResult.build(2, "退款失败,原因:账户余额不足");
+			}
 			if(orderBean.getStatus() == 1){
-				OrderRefundBean orderRefundBean = new OrderRefundBean();
-				orderRefundBean.setRefundNo(refundNo);
-				orderRefundBean.setRefundMoney(price);
-				orderRefundBean.setSubmitUserId(accountId);
-				int reCode = tbOrderRefundDao.insert(orderRefundBean);
-				if(reCode != 1){
-					logger.info("#appRefund# 添加orderRefundBean出错了");
-					return CommonResult.build(2, "系统异常");
+				String refundNo = "re"+orderBean.getOrderId();
+				OrderRefundBean orderRefund = tbOrderRefundDao.getByRefundNo(refundNo);
+				if(orderRefund == null){
+					OrderRefundBean orderRefundBean = new OrderRefundBean();
+					orderRefundBean.setRefundNo(refundNo);
+					orderRefundBean.setRefundMoney(price);
+					orderRefundBean.setSubmitUserId(accountId);
+					int reCode = tbOrderRefundDao.insert(orderRefundBean);
+					if(reCode != 1){
+						logger.info("#appRefund# 添加orderRefundBean出错了");
+						return CommonResult.build(2, "系统异常");
+					}
 				}
-				int code = tbOrderDao.updateOrderRefundById(orderBean.getId(), refundNo, price);
+				//更新status为3订单处理中
+				int code = tbOrderDao.updateOrderRefundById(orderBean.getId(), refundNo, price, 3);
 				if(code != 1){
 					logger.info("#appRefund# 更新order出错了");
 					return CommonResult.build(2, "系统异常");
@@ -486,17 +604,19 @@ public class OrderService {
 						return CommonResult.success("退款中");
 					}
 				}else{
-					int failCode = tbOrderDao.updateStatusById(orderBean.getId(),5);
+					//更新status为初始状态1
+					int failCode = tbOrderDao.updateOrderRefundById(orderBean.getId(),"",0.00,1);
 					if(failCode != 1){
 						logger.info("#appRefund# 退款失败 。更新order状态失败");
 						return CommonResult.build(2, "系统异常");
 					}
-					int reFailCode = tbOrderRefundDao.updateStatusByNo(refundNo, 3);
+					//更新status为初始状态1
+					int reFailCode = tbOrderRefundDao.updateStatusByNo(refundNo, 1);
 					if(reFailCode != 1){
 						logger.info("#appRefund# 退款失败 。 更新refundorder状态失败");
 						return CommonResult.build(2, "系统异常");
 					}
-					return CommonResult.success("退款失败");
+					return CommonResult.success("退款失败,原因:"+commonResult.getMsg());
 				}
 			}else if(orderBean.getStatus() == 3){
 				return CommonResult.build(2, "该订单正在退款中");
@@ -513,6 +633,34 @@ public class OrderService {
 		}
     }
     
+    //获取账户余额
+    private double getBalance(long id,List<Integer> statusList){
+    	logger.info("#getBalance# id = {}", id);
+    	OrderBean orderBean = bmOrderDao.getById(id);
+    	String storeNo = orderBean.getStoreNo();
+    	int payType = orderBean.getPayType();
+    	String payMethod = orderBean.getPayMethod();
+    	StorePayInfo storePayInfo = tbStorePayInfoDao.getByStoreNoAndTypeAndMethod(storeNo, payType, payMethod);
+    	List<String> storeNos = new ArrayList<>();
+    	if(StringUtils.isNotEmpty(storePayInfo.getField1()) && payType != 1 && payType != 6){
+    		String field1 = storePayInfo.getField1();
+    		storeNos = tbStorePayInfoDao.getStoreNosByField1(field1);
+    	}else if(StringUtils.isNotEmpty(storePayInfo.getMchId()) && payType == 1 && "1".equals(payMethod)){
+    		String mchId = storePayInfo.getMchId();
+    		storeNos = tbStorePayInfoDao.getStoreNosByMchId(mchId);
+    	}else if(StringUtils.isNotEmpty(storePayInfo.getMchId()) && payType == 6 ){
+    		String mchId = storePayInfo.getMchId();
+    		storeNos = tbStorePayInfoDao.getStoreNosByMchId(mchId);
+    	}
+    	if(CollectionUtils.isEmpty(storeNos)){
+    		return 0;
+    	}
+    	int todayStartTime = DateUtil.getTodayStartTime();
+    	int todayEndTime = todayStartTime + 24*60*60-1;
+    	Map<String, Object> amMap = tbOrderDao.getAmSum(storeNos,todayStartTime,todayEndTime,payType,payMethod, statusList);
+    	BigDecimal amSum = (BigDecimal) amMap.get("amsum");
+    	return amSum.doubleValue();
+    }
     
     public Map<String, Object> getTodaySta(){
     	logger.info("#getTodaySta#");
@@ -818,6 +966,10 @@ public class OrderService {
     	return flag;
     }
     
+    public OrderBean getOrder(String mchnt_order_no,String transaction_id,String wwt_order_no,String storeNo,String orderType){
+    	return tbOrderDao.getBy3Id( mchnt_order_no, transaction_id, wwt_order_no,storeNo,orderType);
+    }
+    
     public static void main(String[] args) {
 		new OrderService().callbackWPOS("");
 	}
@@ -828,6 +980,24 @@ public class OrderService {
     	}
     	bigd = bigd.setScale(2,BigDecimal.ROUND_HALF_UP);
     	return bigd.doubleValue();
+    }
+    
+    public PaySuccessBean getPaySuccessBean(OrderBean bean){
+    	String qr = vpiaotongService.getStoreQRCode(bean.getStoreNo(), bean.getOrderId(), bean.getActualChargeAmount());
+    	String desc = "";
+    	if(StringUtils.isNotEmpty(qr)){
+    		desc = Const.ELE_INVOICE_DESC;
+    	}
+		String apiUri = MtConfig.getProperty("API_URL", "");
+		return new PaySuccessBean().toBean(bean, qr,apiUri,desc);
+    }
+    
+    private String bigToStr(BigDecimal bigd){
+    	if(bigd == null){
+    		return "0";
+    	}
+    	bigd = bigd.setScale(2,BigDecimal.ROUND_HALF_UP);
+    	return bigd.toString();
     }
     
 }

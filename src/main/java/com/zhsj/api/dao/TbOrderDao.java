@@ -173,7 +173,7 @@ public interface TbOrderDao {
 										@Param("transId")String transId,
 										@Param("payType")int payType);
 	
-	int updateOrderRefundById(@Param("id")long id,@Param("refundNo")String refundNo,@Param("refundMoney")double refundMoney);
+	int updateOrderRefundById(@Param("id")long id,@Param("refundNo")String refundNo,@Param("refundMoney")double refundMoney, @Param("status")int status);
 	
 	int updateStatusById(@Param("id")long id, @Param("status")int status);
 
@@ -204,4 +204,18 @@ public interface TbOrderDao {
 	int updateUser(@Param("id")long id, 
 			 		@Param("transactionId")String transactionId,
 			 		@Param("userId")long userId);
+	
+	Map<String, Object> getAmSum(@Param("storeNos")List<String> storeNos,
+			@Param("startTime")int startTime,@Param("endTime")int endTime,
+			@Param("payType")int payType,@Param("payMethod")String payMethod,
+			@Param("statusList")List<Integer> statusList);
+	
+	OrderBean getBy3Id(@Param("mchnt_order_no")String mchnt_order_no,
+					   @Param("transaction_id")String transaction_id,
+					   @Param("wwt_order_no")String wwt_order_no,
+					   @Param("storeNo")String storeNo,
+					   @Param("orderType")String orderType);
+	
+//	Map<String, Object> getRefundSum(@Param("storeNos")List<String> storeNos, 
+//			@Param("startTime")int startTime, @Param("endTime")int endTime, @Param("payType")int payType, @Param("payMethod")String payMethod);
 }
