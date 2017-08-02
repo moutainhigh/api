@@ -349,6 +349,7 @@ public class JPushService {
 				return 0;
 			}
 		}.withDefaultTimeoutPolicy().executeWithRetry(30000L);
+    }
     
     public static void main(String[] args) throws Exception {
 //		new JPushService().sendSuccessMsg("18071adc033cab91e3e");
