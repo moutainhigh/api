@@ -8,6 +8,7 @@ import com.zhsj.api.bean.OrderRefundBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.bean.StoreBean;
+import com.zhsj.api.bean.jpush.PaySuccessBean;
 import com.zhsj.api.bean.StorePayInfo;
 import com.zhsj.api.bean.result.OrderSta;
 import com.zhsj.api.bean.result.RefundSta;
@@ -15,6 +16,7 @@ import com.zhsj.api.bean.result.ShiftNewBean;
 import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
+import com.zhsj.api.constants.Const;
 import com.zhsj.api.constants.StroeRole;
 import com.zhsj.api.dao.TbOrderDao;
 import com.zhsj.api.util.Arith;
@@ -89,6 +91,8 @@ public class OrderService {
     private TbStoreDao tbStoreDao;
     @Autowired
     private FuyouService fuyouService;
+    @Autowired
+    private VPiaotongService vpiaotongService;
     @Autowired
     private TbStorePayInfoDao tbStorePayInfoDao;
 
@@ -976,6 +980,16 @@ public class OrderService {
     	}
     	bigd = bigd.setScale(2,BigDecimal.ROUND_HALF_UP);
     	return bigd.doubleValue();
+    }
+    
+    public PaySuccessBean getPaySuccessBean(OrderBean bean){
+    	String qr = vpiaotongService.getStoreQRCode(bean.getStoreNo(), bean.getOrderId(), bean.getActualChargeAmount());
+    	String desc = "";
+    	if(StringUtils.isNotEmpty(qr)){
+    		desc = Const.ELE_INVOICE_DESC;
+    	}
+		String apiUri = MtConfig.getProperty("API_URL", "");
+		return new PaySuccessBean().toBean(bean, qr,apiUri,desc);
     }
     
     private String bigToStr(BigDecimal bigd){

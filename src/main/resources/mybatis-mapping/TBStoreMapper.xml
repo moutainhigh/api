@@ -4,7 +4,7 @@
     <sql id="SELECT_FIELDS">
         id,parent_no,store_no,name,city_code,address,phone,gitPicURL(shop_logo) as shop_logo,intro,status,
         latitude,longitude,valid,utime,ctime,org_ids,sale_id,app_id,price,province,city,county,street,
-        business_type,e_mail,contacts_people
+        business_type,e_mail,contacts_people,taxpayer_num,enterprise_name,expire_time
     </sql>
     <select id="getStoreByNo" resultType="storeBean" >
         select <include refid="SELECT_FIELDS"/>

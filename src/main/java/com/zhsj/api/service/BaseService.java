@@ -52,6 +52,8 @@ public class BaseService {
     private StoreAccountService storeAccountService;
     @Autowired
     OrderService orderService;
+    @Autowired
+    private VPiaotongService vpiaotongService;
 
     public List<CityCodeBean> getCityCode(String cityCode){
         logger.info("#BaseService.getCityCode# cityCode={}",cityCode);
@@ -132,8 +134,7 @@ public class BaseService {
 			}
 			OrderBean bean = orderService.getByOrderId(commonResult.getData().toString());
 			
-			String apiUri = MtConfig.getProperty("API_URL", "");
-			PaySuccessBean psBean = new PaySuccessBean().toBean(bean, "",apiUri);
+			PaySuccessBean psBean = orderService.getPaySuccessBean(bean);
 			return commonResult.success("", psBean);
     	} catch (Exception e) {
 			logger.error("#BaseService.microPay# storeNo={},userId={},price={},authCode={},auth={}",

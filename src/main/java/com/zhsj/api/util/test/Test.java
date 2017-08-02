@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.util.*;
 
+import org.joda.time.DateTime;
+
 /**
  * Created by lcg on 16/12/29.
  */
@@ -32,7 +34,6 @@ public class Test {
     	Map<String,Object> parameters = new HashMap();
     	parameters.put("req", JSON.toJSON(reqBean).toString());
     	String st = HttpClient.sendPost("http://127.0.0.1:8080/api/micropay", parameters);
-    	System.out.println(st);
     	
 //    	QueryReqBean reqBean = new QueryReqBean();
 //    	reqBean.setVersion("1.0");
