@@ -260,7 +260,27 @@
           <artifactId>wopensdk</artifactId>
           <version>1.0</version>
       </dependency>
-	
+      <!-- 大帐房微票通 -->
+     <dependency>
+         <groupId>com.vpiaotong</groupId>
+         <artifactId>vpt-common-openapi</artifactId>
+         <version>1.1.0-SNAPSHOT</version>
+     </dependency>
+     <dependency>
+         <groupId>joda-time</groupId>
+         <artifactId>joda-time</artifactId>
+         <version>2.9</version>
+     </dependency>
+	<dependency>
+	    <groupId>com.google.code.gson</groupId>
+	    <artifactId>gson</artifactId>
+	    <version>2.8.0</version>
+	</dependency>
+	<dependency>
+         <groupId>org.apache.httpcomponents</groupId>
+         <artifactId>fluent-hc</artifactId>
+         <version>4.3</version>
+     </dependency>
   </dependencies>
 
 

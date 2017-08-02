@@ -4,7 +4,7 @@
     <sql id="SELECT_FIELDS">
         id,order_id,plan_charge_amount,actual_charge_amount,status,discount_type,
         discount_id,pay_type,pay_method,store_no,parent_store_no,org_id,user_id,ctime,utime,org_ids,sale_id,
-        refund_no,refund_money,pay_channel,account_id,transaction_id
+        refund_no,refund_money,pay_channel,account_id,transaction_id,mchnt_order_no
     </sql>
 
      <insert id="insertOrder" >
@@ -597,6 +597,21 @@
         and store_no in <foreach collection="storeNos" item="storeNo" open="(" close=")" separator=",">
             #{storeNo}
         </foreach>
+	 </select>
+	 
+	 <select id="getBy3Id" resultType="orderBean">
+	 	select <include refid="SELECT_FIELDS"/>
+	 	from tb_order
+	 	where store_no = #{storeNo} and pay_method = #{orderType}
+	 	<if test=" mchnt_order_no != null and mchnt_order_no != '' ">
+            and mchnt_order_no = #{mchnt_order_no}
+        </if>
+        <if test=" transaction_id != null and transaction_id != '' ">
+            and transaction_id = #{transaction_id}
+        </if>
+        <if test=" wwt_order_no != null and wwt_order_no != '' ">
+            and order_id = #{wwt_order_no}
+        </if>
 	 </select>
 	 
 <!-- 	 <select id="getRefundSum" resultType="Map"> -->

@@ -69,18 +69,21 @@ public class WXService {
     private ShopService shopService;
 
     public String getOpenId(String code,String appId){
-      String openId = "";
-        try {
-       	 String url = MtConfig.getProperty("OPEN_URL", "")+ "/getOpenId";
-       	 Map<String, String> parameters = new HashMap();
-       	 parameters.put("appId", appId);
-       	 parameters.put("code", code);
-       	 String result = HttpClient.sendGet(url, parameters);
-       	 Map<String,Object> map = JSON.parseObject(result, Map.class);
-      	 int rcode = (Integer)map.get("code");
-      	 if(rcode == 0){
-      		 openId = (String)map.get("data");
-      	 }
+    	String openId = "";
+    	try {
+    		if(StringUtils.isEmpty(code) || StringUtils.isEmpty(appId)){
+    			return openId;
+    		}
+	       	 String url = MtConfig.getProperty("OPEN_URL", "")+ "/getOpenId";
+	       	 Map<String, String> parameters = new HashMap();
+	       	 parameters.put("appId", appId);
+	       	 parameters.put("code", code);
+	       	 String result = HttpClient.sendGet(url, parameters);
+	       	 Map<String,Object> map = JSON.parseObject(result, Map.class);
+	      	 int rcode = (Integer)map.get("code");
+	      	 if(rcode == 0){
+	      		 openId = (String)map.get("data");
+	      	 }
        }catch (Exception e){
            logger.error("#WXService.getOpenId# code={},appId={},e={}",code,appId,e);
        }
@@ -417,15 +420,17 @@ public class WXService {
             String startT = bean.getStartTime().substring(11);
             String endT = bean.getEndTime().substring(11);
             String _remark = "\"value\": \""+"当班时间："+startT+"-"+endT+
-            					"\\n 收银总金额："+bean.getTotalMoney()+
-            					"\\n 收银总笔数： "+bean.getTotalNum()+
-            					"\\n 退款总金额："+bean.getRefundMoney()+
-            					"\\n 退款总笔数："+bean.getRefundNum()+
-            					"\\n平台减免金额："+bean.getOrgDisMoney()+
-            					"\\n平台减免笔数："+bean.getOrgDisNum()+
-            					"\\n商户减免金额："+bean.getStoreDisMoney()+
-            					"\\n商户减免笔数："+bean.getStoreDisNum()+
-            					"\"";
+            		"\\n营业总金额："+bean.getActualMoney()+
+            		"\\n"+
+					"\\n收银总金额："+bean.getTotalMoney()+
+					"\\n收银总笔数： "+bean.getTotalNum()+
+					"\\n退款总金额："+bean.getRefundMoney()+
+					"\\n退款总笔数："+bean.getRefundNum()+
+					"\\n平台减免金额："+bean.getOrgDisMoney()+
+					"\\n平台减免笔数："+bean.getOrgDisNum()+
+					"\\n商户减免金额："+bean.getStoreDisMoney()+
+					"\\n商户减免笔数："+bean.getStoreDisNum()+
+					"\"";
             storeThift = storeThift.replace("_remark",_remark);
             
             String url = MtConfig.getProperty("OPEN_URL", "")+ "/sendMessage";

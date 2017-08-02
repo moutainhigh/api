@@ -53,6 +53,8 @@ public class JPushService {
     private TBStoreAccountDao tbStoreAccountDao;
     @Autowired
     private PrinterService printerService;
+    @Autowired
+    private VPiaotongService vpiaotongService;
     
     private Map<Integer,String> JPUSH_MSG =  Collections.synchronizedMap(new HashMap<Integer,String>());
     
@@ -159,8 +161,7 @@ public class JPushService {
 
     
     private String toSuccessMsg(OrderBean bean,List<String> regIds){
-    	String uri = MtConfig.getProperty("API_URL", "");
-    	PaySuccessBean psBean = new PaySuccessBean().toBean(bean, "",uri);
+    	PaySuccessBean psBean = orderService.getPaySuccessBean(bean);
     	
     	JSONObject jsonObject = new JSONObject();
     	jsonObject.put("platform", "all");//推送平台
@@ -348,7 +349,6 @@ public class JPushService {
 				return 0;
 			}
 		}.withDefaultTimeoutPolicy().executeWithRetry(30000L);
-    }
     
     public static void main(String[] args) throws Exception {
 //		new JPushService().sendSuccessMsg("18071adc033cab91e3e");
