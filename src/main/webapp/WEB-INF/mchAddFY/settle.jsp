@@ -111,7 +111,6 @@
     <!--遮罩层费率支付宝-->
 <div class="" style="position: absolute;">
         <div class="popup set-box" style="position: fixed; background:#efefef; bottom:0; display: none; width:100%">
-            <input class="popup-one" type="button" attr="aaa" value="0.3" style="width:100%; height:2.4rem; border-bottom:1px solid #ccc;"/>
             <input class="popup-one" type="button" attr="aaa" value="0.38" style="width:100%; height:2.4rem; border-bottom:1px solid #ccc;"/>
             <input class="popup-one" type="button" attr="aaa" value="0.45" style="width:100%; height:2.4rem; border-bottom:1px solid #ccc;"/>
             <input class="popup-one" type="button" attr="aaa" value="0.6" style="width:100%; height:2.4rem; "/>
@@ -120,7 +119,6 @@
     <!--遮罩层费率end-->
     <!--微信-->
     <div class="cutofftime popup2 set-box" style="position: fixed; background:#efefef; bottom:0; display: none; width:100%">
-        <input class="popup-one" type="button" attr="bbb" value="0.3" style="width:100%; height:2.4rem; border:1px solid #ccc;"/>
         <input class="popup-one" type="button" attr="bbb" value="0.38" style="width:100%; height:2.4rem; border:1px solid #ccc;"/>
         <input class="popup-one" type="button" attr="bbb" value="0.45" style="width:100%; height:2.4rem; border:1px solid #ccc;"/>
         <input class="popup-one" type="button" attr="bbb" value="0.6" style="width:100%; height:2.4rem; "/>
