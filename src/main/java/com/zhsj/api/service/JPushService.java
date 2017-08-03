@@ -1,8 +1,6 @@
 package com.zhsj.api.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +13,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.aspectj.weaver.ast.Var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +21,7 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
-import com.sun.xml.internal.ws.api.pipe.Tube;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.jpush.PaySuccessBean;
@@ -36,9 +31,7 @@ import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindAccountDao;
 import com.zhsj.api.exception.ApiException;
 import com.zhsj.api.retry.SimpleRetryTemplate;
-import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
-import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.MtConfig;
 
 
@@ -97,12 +90,6 @@ public class JPushService {
     			List<String> regIds = jIds.subList(i * maxSize,  Math.min(totalSize, (i + 1) * maxSize));
     			String json = toSuccessMsg(orderBean, regIds);
     			sendJGMsg(json,orderNo);
-    			
-//    			String result = sendPost("https://api.jpush.cn/v3/push", json);
-//    			logger.info("result="+result);
-//    			Map<String, String> map = JSON.parseObject(result, Map.class);
-//    			JPUSH_MSG.put((int)orderBean.getId(), map.get("msg_id"));
-//    			sendJPushMsg((int)orderBean.getId(),json,2,10000);
     		}
     		
     		return CommonResult.success("");
@@ -117,8 +104,6 @@ public class JPushService {
     public CommonResult sendRefundMsg(String orderNo,long accountId){
     	logger.info("#JPushService.sendRefundMsg# orderNO={}",orderNo);
     	try{
-//    		printerService.printByOrder(orderNo);
-    		
     		OrderBean orderBean = orderService.getByOrderId(orderNo);
     		if(orderBean == null){
     			return CommonResult.success("订单号不存在");
@@ -396,10 +381,9 @@ public class JPushService {
         	    	for(int i=0;i<jsonArray.size();i++){
         	    		String jmsg = jsonArray.get(i).toString();
         	    		Map<String, Object> getMap = JSON.parseObject(jmsg,Map.class);
-        	    		if(getMap.get("android_received") == null && getMap.get("ios_msg_received")==null){
-        	    			throw new ApiException(1002, "极光查询失败");
+        	    		if(getMap.get("android_received") != null || getMap.get("ios_msg_received")!=null){
+        	    			return 1;
         	    		}
-        	    		return 1;
         	    	}
         	    	throw new ApiException(1002, "极光查询失败");
     			}
