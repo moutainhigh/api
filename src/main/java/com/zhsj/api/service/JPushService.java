@@ -177,7 +177,7 @@ public class JPushService {
 			return ;
 		}
 		
-		int num = this.searchJPushMsg(msgId, 3, 20);
+		int num = this.searchJPushMsg(msgId, 3, 20*1000);
 		if(num <= 0){
 			//失败
 			tbSendJGMsgDao.save(2, msgId, orderId, json);
