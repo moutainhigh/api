@@ -94,10 +94,12 @@
 		<div class="set-time-tit fl">
 		        <span class="settlement-tit sett-time" style="margin-top: 0.4rem; display: block;">费率(支付宝):</span>
 		        <span class="settlement-tit sett-time" style="margin-top: 0.9rem; display: block;">费率(微信):</span>
+		        <span class="settlement-tit sett-time" style="margin-top: 0.9rem; display: block;">费率(其它):</span>
 		</div>
         <div class="settlement-box-last settlement-time fr">
             <input type="button" id="_aliRate" value="0.6" class="mask mask-one"/>
             <input type="button" id="_wxRate" value="0.6" class="mask mask-one"/>
+            <input type="button" id="_otherRate" value="0.6" class="mask mask-one"/>
         </div>
 
 
@@ -118,6 +120,14 @@
 </div>
     <!--遮罩层费率end-->
     <!--微信-->
+    <div class="cutofftime popup2 set-box" style="position: fixed; background:#efefef; bottom:0; display: none; width:100%">
+        <input class="popup-one" type="button" attr="bbb" value="0.38" style="width:100%; height:2.4rem; border:1px solid #ccc;"/>
+        <input class="popup-one" type="button" attr="bbb" value="0.45" style="width:100%; height:2.4rem; border:1px solid #ccc;"/>
+        <input class="popup-one" type="button" attr="bbb" value="0.6" style="width:100%; height:2.4rem; "/>
+    </div>
+    <!--结算时间end-->
+    
+    <!--其它-->
     <div class="cutofftime popup2 set-box" style="position: fixed; background:#efefef; bottom:0; display: none; width:100%">
         <input class="popup-one" type="button" attr="bbb" value="0.38" style="width:100%; height:2.4rem; border:1px solid #ccc;"/>
         <input class="popup-one" type="button" attr="bbb" value="0.45" style="width:100%; height:2.4rem; border:1px solid #ccc;"/>
@@ -162,6 +172,7 @@ function _submit(){
      var _acnt_certif_id = $.trim($("#_acnt_certif_id").val());
      var _wx_set_cd = $.trim($("#_wxRate").val());
      var _ali_set_cd = $.trim($("#_aliRate").val());
+     vare _other_cd = $.trim($("#_otherRate").val());
      var storeNo = $.trim($("#storeNo").val());
      var auth = $.trim($("#auth").val());
      if(_acnt_no == "" || _iss_bank_nm == "" || _inter_bank_no == ""){
@@ -181,7 +192,7 @@ function _submit(){
      var jsonData = {"acnt_type":_acnt_type,"acnt_artif_flag":_aaf,
     		 		 "acnt_no":_acnt_no,"iss_bank_nm":_iss_bank_nm,"inter_bank_no":_inter_bank_no,
     		 		 "acnt_nm":_acnt_nm,"acnt_certif_id":_acnt_certif_id,
-    		 		 "wx_set_cd":_wx_set_cd,"ali_set_cd":_ali_set_cd,
+    		 		 "wx_set_cd":_wx_set_cd,"ali_set_cd":_ali_set_cd,"set_cd":_other_cd,
 					"storeNo":storeNo,"auth":auth};
 		$.post("./mchSettle",jsonData,function(obj){
 		  if(obj.code == 0){

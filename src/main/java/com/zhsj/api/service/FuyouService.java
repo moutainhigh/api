@@ -257,6 +257,8 @@ public class FuyouService {
 			Map<String, String> map = new HashMap<>();
 			map.put("trace_no", mchInfo.getStoreNo());
 			map.put("ins_cd", MtConfig.getProperty("FUYOU_INS_CD", ""));
+			map.put("link_mchnt_cd", "0001000F0485972");
+			
 			
 //			private String link_mchnt_cd;//挂靠商户号
 			/***商户基本信息***/
@@ -285,9 +287,9 @@ public class FuyouService {
 			map.put("acnt_no", mchInfo.getAcnt_no());
 			map.put("wx_set_cd" ,T1RateCons.of(Double.parseDouble(mchInfo.getWx_set_cd())).getDesc());
 			map.put("ali_set_cd", T1RateCons.of(Double.parseDouble(mchInfo.getAli_set_cd())).getDesc());
+			map.put("set_cd", T1RateCons.of(Double.parseDouble(mchInfo.getSet_cd())).getDesc());
 			
 			
-			map.put("set_cd", T1RateCons.of(Double.parseDouble(mchInfo.getWx_set_cd())).getDesc());
 			map.put("settle_amt", "1");//小额清算金额（单位分）
 			map.put("settle_tp", "1");//清算类型：1自动结算；2手动结算
 			map.put("tx_flag", "0"); //是否开通D0

@@ -346,6 +346,9 @@ public class IfaceService {
     		if(orderBean == null){
 				return CommonResult.build(10005, "订单不存在");
 			}
+    		if(orderBean.getStatus() == 3 || orderBean.getStatus() == 4 || orderBean.getStatus() == 5){
+    			return CommonResult.build(10007, "重复退款");
+    		}
 			double v1 = Double.parseDouble(reqBean.getRefund_amt());
     		CommonResult refundReult = orderService.appRefund(orderBean.getId(),v1, Integer.parseInt(reqBean.getTerm_id()));
     		if(refundReult.getCode() == 2){
