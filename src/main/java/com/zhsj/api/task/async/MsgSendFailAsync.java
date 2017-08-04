@@ -26,7 +26,7 @@ public class MsgSendFailAsync implements Runnable {
     @Override
     public void run() {
         try{
-        	JPushService jPushService = (JPushService) SpringBeanUtil.getBean("jPushService");
+        	JPushService jPushService = (JPushService) SpringBeanUtil.getBean("JPushService");
         	jPushService.sendRefundMsg(orderNo,accountId);
         }catch (Exception e){
             logger.error("#MsgSendFailAsync.run# e={}",e.getMessage(),e);
