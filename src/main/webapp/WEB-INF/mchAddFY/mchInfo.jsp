@@ -63,7 +63,7 @@
     <!--公共头部结束-->
     <div class="base-con">
     		<div class="base-tab2 clearfix">
-                <h3 class="fl busi-address">商户名称:</h3><div class="base-tab-le fl"><input type="text" id="_mchnt_name" placeholder="与营业执照上相同" value="${info.mchnt_name}"  class="baseborder2 add "/></div>
+                <h3 class="fl busi-address">营业执照名称:</h3><div class="base-tab-le fl"><input type="text" id="_mchnt_name" placeholder="与营业执照上相同" value="${info.mchnt_name}"  class="baseborder2 add "/></div>
             </div>
         	<h3 class="fl busi-address">商户地址:</h3>
             <div class="base-tab clearfix">

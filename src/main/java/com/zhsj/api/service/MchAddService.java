@@ -297,6 +297,7 @@ public class MchAddService {
             mchInfo.setAcnt_no(info.getAcnt_no());
             mchInfo.setWx_set_cd(info.getWx_set_cd());
             mchInfo.setAli_set_cd(info.getAli_set_cd());
+            mchInfo.setSet_cd(info.getSet_cd());
             
             String json = JSONObject.toJSON(mchInfo).toString();
             //更新扩展
