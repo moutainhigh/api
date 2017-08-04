@@ -16,6 +16,9 @@ public interface TBStoreAccountDao {
     StoreAccountBean getByAccount(@Param("account") String account);
     
     StoreAccountBean getOneByAccount(@Param("account") String account);
+    
+    List<StoreAccountBean> getByDevice(@Param("type") int type,
+    								   @Param("deviceNo")String deviceNo);
 
     long insert(@Param("bean")StoreAccountBean bean);
 

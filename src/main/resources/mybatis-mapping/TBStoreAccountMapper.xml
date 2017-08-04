@@ -2,17 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhsj.api.dao.TBStoreAccountDao">
 	<sql id="SELECT_FIELDS">
-		id,account,password,open_id,name,head_img,j_id
+		id,account,password,open_id,name,head_img,j_id,device_type,device_no
 	</sql>
 
     <select id="getByAccount" resultType="storeAccountBean">
-        SELECT id,account,password,open_id,name,head_img
+        SELECT <include refid="SELECT_FIELDS"/>
         FROM tb_store_account
         WHERE status=1 and valid = 1 and account = #{account}
     </select>
     
+     <select id="getByDevice" resultType="storeAccountBean">
+        SELECT <include refid="SELECT_FIELDS"/>
+        FROM tb_store_account
+        WHERE status=1 and valid = 1 and device_no = #{deviceNo} and device_type = #{type}
+    </select>
+    
     <select id="getOneByAccount" resultType="storeAccountBean">
-        SELECT id,account,password,open_id,name,head_img
+        SELECT <include refid="SELECT_FIELDS"/>
         FROM tb_store_account
         WHERE account = #{account}
     </select>

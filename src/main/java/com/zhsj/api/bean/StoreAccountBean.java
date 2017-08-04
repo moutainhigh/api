@@ -18,6 +18,9 @@ public class StoreAccountBean{
     private int status;
     private int valid;
     private String jId;
+    
+    private int deviceType;
+    private String deviceNo;
 
     //@Transient
     private List<RoleBean> roleList;
@@ -109,6 +112,22 @@ public class StoreAccountBean{
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public int getDeviceType() {
+		return deviceType;
+	}
+
+	public void setDeviceType(int deviceType) {
+		this.deviceType = deviceType;
+	}
+
+	public String getDeviceNo() {
+		return deviceNo;
+	}
+
+	public void setDeviceNo(String deviceNo) {
+		this.deviceNo = deviceNo;
 	}
     
 	

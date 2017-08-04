@@ -90,12 +90,6 @@ public class JPushService {
     			List<String> regIds = jIds.subList(i * maxSize,  Math.min(totalSize, (i + 1) * maxSize));
     			String json = toSuccessMsg(orderBean, regIds);
     			sendJGMsg(json,orderNo);
-    			
-//    			String result = sendPost("https://api.jpush.cn/v3/push", json);
-//    			logger.info("result="+result);
-//    			Map<String, String> map = JSON.parseObject(result, Map.class);
-//    			JPUSH_MSG.put((int)orderBean.getId(), map.get("msg_id"));
-//    			sendJPushMsg((int)orderBean.getId(),json,2,10000);
     		}
     		
     		return CommonResult.success("");
@@ -110,8 +104,6 @@ public class JPushService {
     public CommonResult sendRefundMsg(String orderNo,long accountId){
     	logger.info("#JPushService.sendRefundMsg# orderNO={}",orderNo);
     	try{
-//    		printerService.printByOrder(orderNo);
-    		
     		OrderBean orderBean = orderService.getByOrderId(orderNo);
     		if(orderBean == null){
     			return CommonResult.success("订单号不存在");
@@ -364,6 +356,9 @@ public class JPushService {
     				String url = "https://api.jpush.cn/v3/push/cid";
     		    	String cidJson = new JPushService().sendGet(url);
     		    	JSONObject jsonObject = JSON.parseObject(cidJson);
+    		    	if(jsonObject == null){
+    		    		throw new ApiException(1003, "查询cid出错");
+    		    	}
     		    	JSONArray jsonArray = jsonObject.getJSONArray("cidlist");
     		    	if(jsonArray == null || jsonArray.size() <=0){
     		    		throw new ApiException(1003, "查询cid出错");
@@ -389,10 +384,9 @@ public class JPushService {
         	    	for(int i=0;i<jsonArray.size();i++){
         	    		String jmsg = jsonArray.get(i).toString();
         	    		Map<String, Object> getMap = JSON.parseObject(jmsg,Map.class);
-        	    		if(getMap.get("android_received") == null && getMap.get("ios_msg_received")==null){
-        	    			throw new ApiException(1002, "极光查询失败");
+        	    		if(getMap.get("android_received") != null || getMap.get("ios_msg_received")!=null){
+        	    			return 1;
         	    		}
-        	    		return 1;
         	    	}
         	    	throw new ApiException(1002, "极光查询失败");
     			}
