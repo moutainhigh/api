@@ -15,7 +15,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.aspectj.weaver.ast.Var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +32,7 @@ import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindAccountDao;
 import com.zhsj.api.exception.ApiException;
 import com.zhsj.api.retry.SimpleRetryTemplate;
-import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
-import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.MtConfig;
 
 

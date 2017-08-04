@@ -15,7 +15,9 @@ import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
 import com.zhsj.api.constants.Const;
 import com.zhsj.api.dao.TbOrderDao;
+import com.zhsj.api.task.async.MsgSendFailAsync;
 import com.zhsj.api.util.Arith;
+import com.zhsj.api.util.AyncTaskUtil;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.StoreUtils;
@@ -88,6 +90,8 @@ public class OrderService {
     private TbStorePayInfoDao tbStorePayInfoDao;
     @Autowired
     private VPiaotongService vpiaotongService;
+    @Autowired
+    private AyncTaskUtil ayncTaskUtil;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -574,7 +578,9 @@ public class OrderService {
 				}
 				CommonResult commonResult = refundMoney(orderBean.getOrderId(),price,accountId);
 				if(commonResult.getCode() == 0){
-					jPushService.sendRefundMsg(orderBean.getOrderId(),accountId);
+//					jPushService.sendRefundMsg(orderBean.getOrderId(),accountId);
+					MsgSendFailAsync msgSendFailAsync = new MsgSendFailAsync(orderBean.getOrderId(),accountId);
+					ayncTaskUtil.commitAyncTask(msgSendFailAsync);
 					CommonResult commonResult2 = searchRefund(orderBean.getOrderId());
 					if(commonResult2.getCode() == 0 && "SUCCESS".equals(commonResult2.getData())){
 						int sCode = tbOrderDao.updateStatusById(orderBean.getId(), 4);
