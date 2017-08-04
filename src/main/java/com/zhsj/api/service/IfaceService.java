@@ -1,9 +1,11 @@
 package com.zhsj.api.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import com.alibaba.fastjson.JSON;
 import com.zhsj.api.bean.OrderBean;
+import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.bean.iface.BaseBean;
 import com.zhsj.api.bean.iface.MicroPayReqBean;
@@ -20,6 +22,7 @@ import com.zhsj.api.bean.iface.RefundResBean;
 import com.zhsj.api.constants.DiscountATypeCons;
 import com.zhsj.api.constants.OrderStatusCons;
 import com.zhsj.api.constants.PayChannelCons;
+import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.HttpClient;
@@ -30,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Created by lcg on 16/12/5.
@@ -44,6 +48,8 @@ public class IfaceService {
     private OrderService orderService;
     @Autowired
     private FuyouService fuyouService;
+    @Autowired
+    private TBStoreAccountDao tbStoreAccountDao;
     
     public CommonResult micropay(String req){
     	logger.info("#IfaceService.micropay# req={}",req);
@@ -68,10 +74,16 @@ public class IfaceService {
     			return CommonResult.build(10004, "商家不存在");
     		}
     		
+    		List<StoreAccountBean> accountBeans = tbStoreAccountDao.getByDevice(channel, reqBean.getTerm_id());
+    		if(CollectionUtils.isEmpty(accountBeans)){
+    			return CommonResult.build(10009, "终端号不存在");
+    		}
+    		String accountId = String.valueOf(accountBeans.get(0).getId());
+    		
     		String uri = MtConfig.getProperty("PAY_URL", "")+"microPayAsyn";
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("price", reqBean.getOrder_amt());
-			map.put("accountId", reqBean.getTerm_id());
+			map.put("accountId", accountId);
 			map.put("storeNo", reqBean.getMchnt_cd());
 			map.put("authCode", reqBean.getAuth_code());
 			map.put("payChannel", channel);
@@ -126,13 +138,18 @@ public class IfaceService {
     		if(storeBean == null){
     			return CommonResult.build(10004, "商家不存在");
     		}
+    		List<StoreAccountBean> accountBeans = tbStoreAccountDao.getByDevice(channel, reqBean.getTerm_id());
+    		if(CollectionUtils.isEmpty(accountBeans)){
+    			return CommonResult.build(10009, "终端号不存在");
+    		}
+    		String accountId = String.valueOf(accountBeans.get(0).getId());
     		
     		int price = (int)Arith.mul(Double.parseDouble(reqBean.getOrder_amt()), 100);
     		
     		String uri = MtConfig.getProperty("PAY_URL", "")+"microPayAsyn";
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("price", price);
-			map.put("accountId", reqBean.getTerm_id());
+			map.put("accountId", accountId);
 			map.put("storeNo", reqBean.getMchnt_cd());
 			map.put("authCode", reqBean.getAuth_code());
 			map.put("payChannel", channel);
@@ -204,11 +221,19 @@ public class IfaceService {
 				}
 			}
 			
+			String termId = "";
+			if(bean.getAccountId() > 0){
+				StoreAccountBean accountBean = tbStoreAccountDao.getById(bean.getAccountId());
+				if(accountBean != null){
+					termId = StringUtils.isEmpty(accountBean.getDeviceNo())?"":accountBean.getDeviceNo();
+				}
+			}
+			
 			QueryResBean resBean = new QueryResBean();
 			resBean.setOrder_type(reqBean.getOrder_type());
 			resBean.setIns_cd(reqBean.getIns_cd());
 			resBean.setMchnt_cd(reqBean.getMchnt_cd());
-			resBean.setTerm_id(String.valueOf(bean.getAccountId()));
+			resBean.setTerm_id(termId);
 			resBean.setOrder_amount((int)Arith.mul(bean.getPlanChargeAmount(), 100));
 			resBean.setActual_amount((int)Arith.mul(bean.getActualChargeAmount(), 100));
 			resBean.setTransaction_id(bean.getTransactionId());
@@ -263,11 +288,19 @@ public class IfaceService {
 				}
 			}
 			
+			String termId = "";
+			if(bean.getAccountId() > 0){
+				StoreAccountBean accountBean = tbStoreAccountDao.getById(bean.getAccountId());
+				if(accountBean != null){
+					termId = StringUtils.isEmpty(accountBean.getDeviceNo())?"":accountBean.getDeviceNo();
+				}
+			}
+			
 			QueryResV2Bean resBean = new QueryResV2Bean();
 			resBean.setOrder_type(reqBean.getOrder_type());
 			resBean.setIns_cd(reqBean.getIns_cd());
 			resBean.setMchnt_cd(reqBean.getMchnt_cd());
-			resBean.setTerm_id(String.valueOf(bean.getAccountId()));
+			resBean.setTerm_id(termId);
 			resBean.setOrder_amount(String.valueOf(Arith.div(bean.getPlanChargeAmount(), 1,2)));
 			resBean.setActual_amount(String.valueOf(Arith.div(bean.getActualChargeAmount(), 1,2)));
 			resBean.setTransaction_id(bean.getTransactionId());
@@ -293,17 +326,32 @@ public class IfaceService {
     		if(result.getCode() != 0){
     			return result;
     		}
+    		
+    		int channel = 0;
+    		if(PayChannelCons.WSY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.WSY_CHANNEL.getType(); 
+    		}else if(PayChannelCons.YDC_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.YDC_CHANNEL.getType();
+    		}else{
+    			return CommonResult.build(10006, "组织不存在");
+    		}
     		StoreBean storeBean = storeService.getStoreByNO(reqBean.getMchnt_cd());
     		if(storeBean == null){
     			return CommonResult.build(10004, "商家不存在");
     		}
+    		
+    		List<StoreAccountBean> accountBeans = tbStoreAccountDao.getByDevice(channel, reqBean.getTerm_id());
+    		if(CollectionUtils.isEmpty(accountBeans)){
+    			return CommonResult.build(10009, "终端号不存在");
+    		}
+    		int accountId = (int)(accountBeans.get(0).getId());
     		
     		OrderBean orderBean = orderService.getByOrderId(reqBean.getRefund_order_no());
     		if(orderBean == null){
 				return CommonResult.build(10005, "订单不存在");
 			}
 			double v1 = reqBean.getRefund_amt();
-    		CommonResult refundReult = orderService.appRefund(orderBean.getId(), Arith.div(v1, 100, 2), Integer.parseInt(reqBean.getTerm_id()));
+    		CommonResult refundReult = orderService.appRefund(orderBean.getId(), Arith.div(v1, 100, 2), accountId);
     		if(refundReult.getCode() == 2){
     			return CommonResult.build(10007, refundReult.getMsg());
     		}
@@ -337,10 +385,25 @@ public class IfaceService {
     		if(result.getCode() != 0){
     			return result;
     		}
+    		int channel = 0;
+    		if(PayChannelCons.WSY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.WSY_CHANNEL.getType(); 
+    		}else if(PayChannelCons.YDC_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.YDC_CHANNEL.getType();
+    		}else{
+    			return CommonResult.build(10006, "组织不存在");
+    		}
+    		
     		StoreBean storeBean = storeService.getStoreByNO(reqBean.getMchnt_cd());
     		if(storeBean == null){
     			return CommonResult.build(10004, "商家不存在");
     		}
+    		
+    		List<StoreAccountBean> accountBeans = tbStoreAccountDao.getByDevice(channel, reqBean.getTerm_id());
+    		if(CollectionUtils.isEmpty(accountBeans)){
+    			return CommonResult.build(10009, "终端号不存在");
+    		}
+    		int accountId = (int)(accountBeans.get(0).getId());
     		
     		OrderBean orderBean = orderService.getByOrderId(reqBean.getRefund_order_no());
     		if(orderBean == null){
@@ -350,7 +413,7 @@ public class IfaceService {
     			return CommonResult.build(10007, "重复退款");
     		}
 			double v1 = Double.parseDouble(reqBean.getRefund_amt());
-    		CommonResult refundReult = orderService.appRefund(orderBean.getId(),v1, Integer.parseInt(reqBean.getTerm_id()));
+    		CommonResult refundReult = orderService.appRefund(orderBean.getId(),v1, accountId);
     		if(refundReult.getCode() == 2){
     			return CommonResult.build(10007, refundReult.getMsg());
     		}
@@ -360,7 +423,7 @@ public class IfaceService {
     			resBean.setOrder_type(order_type);
     			resBean.setIns_cd(reqBean.getIns_cd());
     			resBean.setMchnt_cd(reqBean.getMchnt_cd());
-    			resBean.setTerm_id(String.valueOf(orderBean.getAccountId()));
+    			resBean.setTerm_id(reqBean.getTerm_id());
     			resBean.setTransaction_id(orderBean.getTransactionId());
         		resBean.setWwt_order_no(orderBean.getOrderId());
         		resBean.setMcnnt_order_no(orderBean.getMchntOrderNo());
