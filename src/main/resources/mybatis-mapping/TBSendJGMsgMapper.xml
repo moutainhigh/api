@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBSendJGMsgDao">
+
+   <insert id="save">
+   		insert into tb_send_jg_msg
+   		 (type,msg_id,order_id,msg,status,utime,ctime)
+   		 values
+   		 (#{type},#{msgId},#{orderId},#{msg},0,unix_timestamp(now()),unix_timestamp(now()))
+   </insert>
+
+
+
+</mapper>
