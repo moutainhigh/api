@@ -169,15 +169,14 @@ public class FuyouService {
 			logger.info(dataString);
 			Map<String, String> resMap = XMLBeanUtils.xmlToMap(dataString);
 			if(!"000000".equals(resMap.get("result_code"))){
-				return CommonResult.success(resMap.get("result_msg"));
+				return CommonResult.defaultError( resMap.get("result_msg"));
 			}else{
-				return CommonResult.success(resMap.get("trans_stat"), resMap);
+				return CommonResult.success("",resMap);
 			}		
 		}catch (Exception e) {
-			result = "系统异常";
 			logger.error("#FuyouService.searchOrder# orderBean={}",orderBean,e);
 		}
-		return CommonResult.defaultError("系统出错");
+		return CommonResult.defaultError("系统异常");
 	}
 	
 	public String getResultData(Map<String, String> map,String url) throws Exception{

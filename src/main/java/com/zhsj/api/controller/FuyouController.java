@@ -37,6 +37,6 @@ public class FuyouController {
 		}
 		CommonResult result = fuyouService.searchOrder(orderBean);
 		logger.info("#queryOrder# msg = {}", result);
-		return CommonResult.success(result.getMsg());
+		return result;
 	}
 }
