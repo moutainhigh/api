@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import com.alibaba.fastjson.JSON;
 import com.zhsj.api.bean.BusinessTypeBean;
 import com.zhsj.api.bean.CityCodeBean;
 import com.zhsj.api.bean.OrderBean;
@@ -28,6 +27,7 @@ import com.zhsj.api.dao.TBCityCodeDao;
 import com.zhsj.api.dao.TBStoreExtendDao;
 import com.zhsj.api.dao.TbStorePayInfoDao;
 import com.zhsj.api.util.Arith;
+import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.SpringBeanUtil;
 import com.zhsj.api.util.XMLBeanUtils;
@@ -345,77 +345,19 @@ public class FuyouService {
 		return result;
 	}
 	
-	public String mchntUpd(MchInfoFY mchInfo,String mchntCd){
-		logger.info("#FuyouService.mchntUpd# mchInfo={}",mchInfo);
+	public String mchntUpd(String mchntCd){
+		logger.info("#FuyouService.mchntUpd# mchntCd={}",mchntCd);
 		String result = "FAIL";
 		try{
-			String mchntName = mchInfo.getMchnt_name();
-			
-			List<String> cityCodes = new ArrayList<>();
-			cityCodes.add(mchInfo.getCity());
-			cityCodes.add(mchInfo.getCounty());
-			List<CityCodeBean> cityCodeBeans = tbCityCodeDao.getCityCodes(cityCodes);
-			if(CollectionUtils.isEmpty(cityCodeBeans)){
-				return result;
-			}
-			Map<String,String> cityMap = new HashMap<>();
-			for(CityCodeBean bean:cityCodeBeans){
-				cityMap.put(bean.getCode(), bean.getFyCode());
-			}
-			
-			BusinessTypeBean btypeBean = tbBusinessTypeDao.getById(Integer.parseInt(mchInfo.getBusiness()));
-			if(btypeBean == null){
-				return result;
-			}
-			
 			Map<String, String> map = new HashMap<>();
-			map.put("trace_no", mchInfo.getStoreNo());
+			map.put("trace_no", DateUtil.unixTime()+"");
 			
-			map.put("fy_mchnt_cd", "0001000F0547650");
+			map.put("fy_mchnt_cd", mchntCd);
 			map.put("ins_cd", MtConfig.getProperty("FUYOU_INS_CD", ""));
 			
-//			private String link_mchnt_cd;//挂靠商户号
-			/***商户基本信息***/
-//			map.put("mchnt_name", mchntName);//商户名称
-//			map.put("mchnt_shortname",mchInfo.getMchnt_shortname());
-//			map.put("real_name", mchInfo.getReal_name());
-//			map.put("certif_id", mchInfo.getCertif_id());
-//			map.put("contact_person", mchInfo.getContact_person());
-//			map.put("contact_mobile", mchInfo.getContact_mobile());
-//			map.put("contact_email", mchInfo.getContact_email());
-//			map.put("contact_phone", mchInfo.getContact_phone());
-//			map.put("city_cd", cityMap.get(mchInfo.getCity()));
-//			map.put("county_cd", cityMap.get(mchInfo.getCounty()));
-//			map.put("business", btypeBean.getCode());
-//			
-//			/********结算信息*********/
-//			map.put("acnt_type", mchInfo.getAcnt_type());
-//			map.put("acnt_artif_flag", mchInfo.getAcnt_artif_flag());
-//			if("0".equals( mchInfo.getAcnt_artif_flag())){
-//				map.put("artif_nm", mchInfo.getContact_person());
-//			}
-//			map.put("acnt_certif_id",mchInfo.getAcnt_certif_id());
-//			map.put("inter_bank_no", mchInfo.getInter_bank_no());
-//			map.put("iss_bank_nm", mchInfo.getIss_bank_nm());
-//			map.put("acnt_nm", mchInfo.getAcnt_nm());
-//			map.put("acnt_no", mchInfo.getAcnt_no());
-			map.put("wx_set_cd" ,T1RateCons.of(Double.parseDouble(mchInfo.getWx_set_cd())).getDesc());
-//			map.put("ali_set_cd", T1RateCons.of(Double.parseDouble(mchInfo.getAli_set_cd())).getDesc());
-//			
-//			
-//			map.put("set_cd", T1RateCons.of(Double.parseDouble(mchInfo.getWx_set_cd())).getDesc());
-//			map.put("settle_amt", "1");//小额清算金额（单位分）
-//			map.put("settle_tp", "1");//清算类型：1自动结算；2手动结算
-//			map.put("tx_flag", "0"); //是否开通D0
-////			map.put("tx_set_cd", value);//D0
-//			map.put("daily_settle_flag","0");//	是否开通D1提现（0:不开通，1：开通
-////			map.put("daily_settle_set_cd; // D1扣率套餐代码（若开通D1则必填）
-//					
-//			
-//			map.put("wx_flag", "1"); //微信支付标识(0：关闭微信,1：开通微信)
-//			map.put("ali_flag" , "1"); //支付宝支付标识(0：关闭支付宝,1：开通支付宝)
-//			map.put("acnt_certif_tp" , "0");;//入账证件类型("0":"身份证","1":"护照","2":"军官证","3":"士兵证","4":"回乡证","5":"户口本","6":"外国护照","7":"其它")
-//			map.put("th_flag", "1");//退货标识(0:不能退货,1:可以退货)
+			map.put("tx_flag", "1");
+			map.put("tx_set_cd", "Z0089");
+			
 			map.put("sign", Sign.getSign(map,MtConfig.getProperty("FUYOU_MCH_ADD_KEY", "")));
 
 			String dataString = this.getResultData(map, MtConfig.getProperty("FUYOU_MCH_ADD_URL", "")+"wxMchntUpd");
@@ -428,17 +370,147 @@ public class FuyouService {
 			}		
 		}catch (Exception e) {
 			result = "系统异常";
-			logger.error("#FuyouService.mchntAdd# mchInfo={}",mchInfo,e);
+			logger.error("#FuyouService.mchntAdd# mchntCd={}",mchntCd,e);
 		}
 		return result;
 	}
 	
 	
+	public void queryWithdrawAmt(String mchntcd){
+		try{
+			Map<String, String> map = new HashMap<>();
+			map.put("ins_cd",MtConfig.getProperty("FUYOU_INS_CD", ""));//机构号
+			map.put("mchnt_cd", mchntcd);
+			map.put("random_str", RandomStringGenerator.getRandomStringByLength(8));
+			String sign = Utils.getSign(map);
+			map.put("sign", sign);
+			String dataString = this.getResultData(map, MtConfig.getProperty("FUYOU_URL", "")+"/queryWithdrawAmt");
+			logger.info(dataString);
+			Map<String, String> resMap = XMLBeanUtils.xmlToMap(dataString);
+			if(!"SUCCESS".equals(resMap.get("return_code"))){
+				logger.info("查询出错 msg={}"+resMap.get("return_msg"));
+				return;
+			}
+			
+			if(!"SUCCESS".equals(resMap.get("result_code"))){
+				logger.info("查询出错 resultMsg={}",resMap.get("err_code_des"));
+				return;
+			}
+			String settledAmt = resMap.get("settled_amt");//已结算金额
+			String not_settle_amt = resMap.get("not_settle_amt");//未结算金额
+			String reserved_book_balance = resMap.get("reserved_book_balance");//账面余额
+			logger.info("settledAmt={},not_settle_amt={},reserved_book_balance={}",settledAmt,not_settle_amt,reserved_book_balance);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void queryFeeAmt(String mchntcd){
+		try{
+			Map<String, String> map = new HashMap<>();
+			map.put("ins_cd",MtConfig.getProperty("FUYOU_INS_CD", ""));//机构号
+			map.put("mchnt_cd", mchntcd);
+			map.put("random_str", RandomStringGenerator.getRandomStringByLength(8));
+			map.put("amt", "11199");
+			String sign = Utils.getSign(map);
+			map.put("sign", sign);
+			String dataString = this.getResultData(map, MtConfig.getProperty("FUYOU_URL", "")+"/queryFeeAmt");
+			logger.info(dataString);
+			Map<String, String> resMap = XMLBeanUtils.xmlToMap(dataString);
+			if(!"SUCCESS".equals(resMap.get("return_code"))){
+				logger.info("查询出错 msg={}"+resMap.get("return_msg"));
+				return;
+			}
+			
+			if(!"SUCCESS".equals(resMap.get("result_code"))){
+				logger.info("查询出错 resultMsg={}",resMap.get("err_code_des"));
+				return;
+			}
+			String fee_amt = resMap.get("fee_amt");//已结算金额
+			String fee_desc = resMap.get("fee_desc");//未结算金额
+			logger.info("fee_amt={},fee_desc={}",fee_amt,fee_desc);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void queryChnlPayAmt(String mchntcd){
+		try{
+			Map<String, String> map = new HashMap<>();
+			map.put("ins_cd",MtConfig.getProperty("FUYOU_INS_CD", ""));//机构号
+			map.put("mchnt_cd", mchntcd);
+			map.put("random_str", RandomStringGenerator.getRandomStringByLength(8));
+			
+			map.put("start_date", "20170801");
+			map.put("end_date", "20170808");
+			map.put("start_index", "1"); //开始笔数
+			map.put("end_index", "5");  //结束笔数
+			String sign = Utils.getSign(map);
+			map.put("sign", sign);
+			String dataString = this.getResultData(map, MtConfig.getProperty("FUYOU_URL", "")+"/queryWithdrawAmt");
+			logger.info(dataString);
+			Map<String, String> resMap = XMLBeanUtils.xmlToMap(dataString);
+			if(!"SUCCESS".equals(resMap.get("return_code"))){
+				logger.info("查询出错 msg={}"+resMap.get("return_msg"));
+				return;
+			}
+			
+			if(!"SUCCESS".equals(resMap.get("result_code"))){
+				logger.info("查询出错 resultMsg={}",resMap.get("err_code_des"));
+				return;
+			}
+			String settledAmt = resMap.get("settled_amt");//已结算金额
+			String not_settle_amt = resMap.get("not_settle_amt");//未结算金额
+			String reserved_book_balance = resMap.get("reserved_book_balance");//账面余额
+			logger.info("settledAmt={},not_settle_amt={},reserved_book_balance={}",settledAmt,not_settle_amt,reserved_book_balance);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	
+	public void withdraw(String mchntcd){
+		try{
+			Map<String, String> map = new HashMap<>();
+			map.put("ins_cd",MtConfig.getProperty("FUYOU_INS_CD", ""));//机构号
+			map.put("mchnt_cd", mchntcd);
+			map.put("random_str", RandomStringGenerator.getRandomStringByLength(8));
+			
+			map.put("amt", "100");
+			map.put("fee_amt", "2");
+			map.put("txn_type", "2"); 
+			String sign = Utils.getSign(map);
+			map.put("sign", sign);
+			String dataString = this.getResultData(map, MtConfig.getProperty("FUYOU_URL", "")+"/withdraw");
+			logger.info(dataString);
+			Map<String, String> resMap = XMLBeanUtils.xmlToMap(dataString);
+			if(!"SUCCESS".equals(resMap.get("return_code"))){
+				logger.info("查询出错 msg={}"+resMap.get("return_msg"));
+				return;
+			}
+			
+			if(!"SUCCESS".equals(resMap.get("result_code"))){
+				logger.info("查询出错 resultMsg={}",resMap.get("err_code_des"));
+				return;
+			}
+			String settledAmt = resMap.get("settled_amt");//已结算金额
+			String not_settle_amt = resMap.get("not_settle_amt");//未结算金额
+			String reserved_book_balance = resMap.get("reserved_book_balance");//账面余额
+			logger.info("settledAmt={},not_settle_amt={},reserved_book_balance={}",settledAmt,not_settle_amt,reserved_book_balance);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public static void main(String[] args) {
-		new FuyouService().mchntNameCheck("张店一二三商务信息咨询服务部");
+//		new FuyouService().mchntNameCheck("张店一二三商务信息咨询服务部");
+//		new FuyouService().mchntUpd("0001460F0487042");
+//		new FuyouService().queryWithdrawAmt("0001460F0487042");
+		new FuyouService().queryChnlPayAmt("0001460F0487042");
+//		new FuyouService().queryFeeAmt("0001460F0487042");
+//		new FuyouService().withdraw("0001460F0487042");
 		
 //		OrderBean orderBean = new OrderBean();
 //		orderBean.setActualChargeAmount(1);

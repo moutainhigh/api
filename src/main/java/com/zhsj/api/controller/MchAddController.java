@@ -172,7 +172,7 @@ public class MchAddController {
         String str = tbStoreExtendDao.getDataByStoreNo("1110674566", 2);
         MchInfoFY mchInfoFY  = JSON.parseObject(str, MchInfoFY.class);
         mchInfoFY.setWx_set_cd("0.40");
-       fuyouService.mchntUpd(mchInfoFY, "");
+//       fuyouService.mchntUpd(mchInfoFY, "");
         modelAndView.setViewName("./mchAdd/mchAddSuccess");
         return modelAndView;
     }
