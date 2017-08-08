@@ -141,7 +141,6 @@ public class FuyouService {
 	
 	public CommonResult searchOrder(OrderBean orderBean){
 		logger.info("#FuyouService.searchOrder# orderBean={}",orderBean);
-		String result = "FAIL";
 		try{
 			List<StorePayInfo> storePayInfos = tbStorePayInfoDao.getByStoreNoAndType(orderBean.getStoreNo(), orderBean.getPayType(), orderBean.getPayMethod());
 			if(CollectionUtils.isEmpty(storePayInfos)){
