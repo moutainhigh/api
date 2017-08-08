@@ -196,7 +196,7 @@ public class OrderService {
 					result = pinganService.refundMoney(orderBean,price,userId);
 					break;
 				case 6:
-					//中信接口
+					//富有接口
 					result = fuyouService.refundMoney(orderBean,price,userId);
 					break;
 				default:
@@ -619,7 +619,7 @@ public class OrderService {
 						logger.info("#appRefund# 退款失败 。 更新refundorder状态失败");
 						return CommonResult.build(2, "系统异常");
 					}
-					return CommonResult.success("退款失败,原因:"+commonResult.getMsg());
+					return CommonResult.defaultError("退款失败,原因:"+commonResult.getMsg());
 				}
 			}else if(orderBean.getStatus() == 3){
 				return CommonResult.build(2, "该订单正在退款中");
