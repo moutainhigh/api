@@ -28,6 +28,7 @@ import com.zhsj.api.dao.TBCityCodeDao;
 import com.zhsj.api.dao.TBStoreExtendDao;
 import com.zhsj.api.dao.TbStorePayInfoDao;
 import com.zhsj.api.util.Arith;
+import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.SpringBeanUtil;
 import com.zhsj.api.util.XMLBeanUtils;
@@ -138,13 +139,13 @@ public class FuyouService {
 		return result;
 	}
 	
-	public String searchOrder(OrderBean orderBean){
+	public CommonResult searchOrder(OrderBean orderBean){
 		logger.info("#FuyouService.searchOrder# orderBean={}",orderBean);
 		String result = "FAIL";
 		try{
 			List<StorePayInfo> storePayInfos = tbStorePayInfoDao.getByStoreNoAndType(orderBean.getStoreNo(), orderBean.getPayType(), orderBean.getPayMethod());
 			if(CollectionUtils.isEmpty(storePayInfos)){
-				return "支付类型错误";
+				return CommonResult.defaultError("支付类型错误");
 			}
 			StorePayInfo storePayInfo = storePayInfos.get(0);
 			
@@ -168,15 +169,14 @@ public class FuyouService {
 			logger.info(dataString);
 			Map<String, String> resMap = XMLBeanUtils.xmlToMap(dataString);
 			if(!"000000".equals(resMap.get("result_code"))){
-				result = resMap.get("result_msg");
+				return CommonResult.defaultError( resMap.get("result_msg"));
 			}else{
-				result = resMap.get("trans_stat");
+				return CommonResult.success("",resMap);
 			}		
 		}catch (Exception e) {
-			result = "系统异常";
 			logger.error("#FuyouService.searchOrder# orderBean={}",orderBean,e);
 		}
-		return result;
+		return CommonResult.defaultError("系统异常");
 	}
 	
 	public String getResultData(Map<String, String> map,String url) throws Exception{
