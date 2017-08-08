@@ -14,7 +14,7 @@ import com.zhsj.api.bean.result.ShiftNewBean;
 import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
 import com.zhsj.api.constants.Const;
-import com.zhsj.api.dao.TbOrderDao;
+import com.zhsj.api.dao.TBOrderDao;
 import com.zhsj.api.task.async.MsgSendFailAsync;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.AyncTaskUtil;
@@ -53,7 +53,7 @@ public class OrderService {
     Logger logger = LoggerFactory.getLogger(OrderService.class);
 
     @Autowired
-    private TbOrderDao bmOrderDao;
+    private TBOrderDao bmOrderDao;
     @Autowired
     private MinshengService minshengService;
     @Autowired
@@ -61,7 +61,7 @@ public class OrderService {
     @Autowired
     private WeChatService weChatService;
     @Autowired
-    private TbOrderDao tbOrderDao;
+    private TBOrderDao tbOrderDao;
     @Autowired
     private TbUserBindStoreDao tbUserBindStoreDao;
     @Autowired
@@ -103,6 +103,10 @@ public class OrderService {
 
     public OrderBean getByOrderId(String orderId){
         return tbOrderDao.getByOrderId(orderId);
+    }
+    
+    public OrderBean getByTransactionId(String transactionId){
+        return tbOrderDao.getByTransactionId(transactionId);
     }
 
     public List<OrderBean> getMSAliListByCtime(long id,int time ,int pageSize){

@@ -50,7 +50,7 @@ public class MchAddService {
     @Autowired
     TBStoreExtendDao tbStoreExtendDao;
     @Autowired
-    TbOrderDao tbOrder;
+    TBOrderDao tbOrder;
     @Autowired
     MinshengService minshengService;
     @Autowired

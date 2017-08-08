@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Component
 @DynamicDataSource(DS.DB_FLOW)
-public interface TbOrderDao {
+public interface TBOrderDao {
 
     int insertOrder(@Param("bean") OrderBean orderBean);
 
@@ -38,6 +38,8 @@ public interface TbOrderDao {
                              @Param("orderId") String orderId);
 
     OrderBean getByOrderId(@Param("orderId")String orderId);
+    
+    OrderBean getByTransactionId(@Param("transactionId")String transactionId);
 
     OrderBean getById(@Param("id")long id);
 

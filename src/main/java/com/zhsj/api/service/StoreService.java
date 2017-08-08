@@ -25,7 +25,7 @@ import com.zhsj.api.dao.TBStoreAccountBindRoleDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindAccountDao;
 import com.zhsj.api.dao.TBStoreTransactionSummaryDao;
-import com.zhsj.api.dao.TbOrderDao;
+import com.zhsj.api.dao.TBOrderDao;
 import com.zhsj.api.dao.TbStoreDao;
 import com.zhsj.api.dao.TbUserBindStoreDao;
 import com.zhsj.api.util.Arith;
@@ -50,7 +50,7 @@ public class StoreService {
     @Autowired
     private TbStoreDao tbStoreDao;
     @Autowired
-    private TbOrderDao tbOrderDao;
+    private TBOrderDao tbOrderDao;
     @Autowired
     private TBStoreAccountDao tbStoreAccountDao;
     @Autowired

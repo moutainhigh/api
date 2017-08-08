@@ -37,7 +37,7 @@ public class ShopService {
     @Autowired
     TBStoreAccountDao tbStoreAccountDao;
     @Autowired
-    TbOrderDao orderDao;
+    TBOrderDao orderDao;
     @Autowired
     TbUserBindStoreDao tbUserBindStoreDao;
     @Autowired
