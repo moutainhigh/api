@@ -35,8 +35,8 @@ public class FuyouController {
 		if(null == orderBean){
 			return CommonResult.build(2, "订单查询不到");
 		}
-		String result = fuyouService.searchOrder(orderBean);
+		CommonResult result = fuyouService.searchOrder(orderBean);
 		logger.info("#queryOrder# msg = {}", result);
-		return CommonResult.success(result);
+		return CommonResult.success(result.getMsg());
 	}
 }

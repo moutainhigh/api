@@ -212,12 +212,15 @@ public class IfaceService {
 			}
 			
 			String trans_stat= OrderStatusCons.of(bean.getStatus()).getDesc();
+			String transactionId = bean.getTransactionId();
 			//富有单子处理
 			if(bean.getPayType() == 6 && bean.getPayChannel() != 1 && 
 					bean.getStatus() != OrderStatusCons.SUCCESS.getType()){
-				String status = fuyouService.searchOrder(bean);
-				if("SUCCESS".equals(status)){
+				CommonResult commonResult = fuyouService.searchOrder(bean);
+				if("SUCCESS".equals(commonResult.getMsg())){
 					trans_stat = "SUCCESS";
+					Map<String, String> map = (Map<String, String>)commonResult.getData();
+					transactionId = StringUtils.isEmpty(map.get("reserved_channel_order_id"))?map.get("transaction_id"):map.get("reserved_channel_order_id");
 				}
 			}
 			
@@ -236,7 +239,7 @@ public class IfaceService {
 			resBean.setTerm_id(termId);
 			resBean.setOrder_amount((int)Arith.mul(bean.getPlanChargeAmount(), 100));
 			resBean.setActual_amount((int)Arith.mul(bean.getActualChargeAmount(), 100));
-			resBean.setTransaction_id(bean.getTransactionId());
+			resBean.setTransaction_id(transactionId);
     		resBean.setWwt_order_no(bean.getOrderId());
     		resBean.setMcnnt_order_no(reqBean.getMchnt_order_no());
     		resBean.setTrans_stat(trans_stat);
@@ -279,12 +282,15 @@ public class IfaceService {
 			}
 			
 			String trans_stat= OrderStatusCons.of(bean.getStatus()).getDesc();
+			String transactionId = bean.getTransactionId();
 			//富有单子处理
 			if(bean.getPayType() == 6 && bean.getPayChannel() != 1 && 
 					bean.getStatus() != OrderStatusCons.SUCCESS.getType()){
-				String status = fuyouService.searchOrder(bean);
-				if("SUCCESS".equals(status)){
+				CommonResult commonResult = fuyouService.searchOrder(bean);
+				if("SUCCESS".equals(commonResult.getMsg())){
 					trans_stat = "SUCCESS";
+					Map<String, String> map = (Map<String, String>)commonResult.getData();
+					transactionId = StringUtils.isEmpty(map.get("reserved_channel_order_id"))?map.get("transaction_id"):map.get("reserved_channel_order_id");
 				}
 			}
 			
@@ -303,7 +309,7 @@ public class IfaceService {
 			resBean.setTerm_id(termId);
 			resBean.setOrder_amount(String.valueOf(Arith.div(bean.getPlanChargeAmount(), 1,2)));
 			resBean.setActual_amount(String.valueOf(Arith.div(bean.getActualChargeAmount(), 1,2)));
-			resBean.setTransaction_id(bean.getTransactionId());
+			resBean.setTransaction_id(transactionId);
     		resBean.setWwt_order_no(bean.getOrderId());
     		resBean.setMcnnt_order_no(reqBean.getMchnt_order_no());
     		resBean.setTrans_stat(trans_stat);
