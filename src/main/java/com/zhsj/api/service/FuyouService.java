@@ -438,6 +438,7 @@ public class FuyouService {
 	
 	
 	public static void main(String[] args) {
+		new FuyouService().mchntNameCheck("mchntNameCheck");
 		new FuyouService().mchntNameCheck("张店一二三商务信息咨询服务部");
 		
 //		OrderBean orderBean = new OrderBean();

@@ -424,12 +424,12 @@ public class JPushService {
     	String resulurlat = new JPushService().sendGet(urla);
     	System.out.println(resulurlat);
     	
-    	String json = "{\"cid\":\"e6b6ec672479ecd3a154a1d0-c9a8faf0-5027-479b-ac83-5e1d95cef93d\",\"message\":{\"msg_content\":{\"nt\":\"你有一笔0.01元订单支付成功\",\"time\":\"2017-05-25 10:16\",\"cmd\":1,\"no\":\"12\",\"am\":\"0.01\",\"pt\":\"微信\",\"pm\":\"0.01\",\"st\":\"成功\",\"code\":\"671\",\"url\":\"http://wwt.bj37du.com/api/10001170525369841513\",\"qr\":\"qrcode\"}},\"platform\":\"all\",\"audience\":{\"registration_id\":[\"18071adc033cab91e3e\"]},\"options\":{\"time_to_live\":1800,\"sendno\":\"33\"}}";
-    	String resultString = new JPushService().sendPost("https://api.jpush.cn/v3/push", json);
-    	System.out.println(resultString);
-    	Map<String, String> map = JSON.parseObject(resultString, Map.class);
-    	System.out.println(map.get("msg_id"));
-    	String url = "https://report.jpush.cn/v3/received?msg_ids="+map.get("msg_id");
+//    	String json = "{\"cid\":\"e6b6ec672479ecd3a154a1d0-c9a8faf0-5027-479b-ac83-5e1d95cef93d\",\"message\":{\"msg_content\":{\"nt\":\"你有一笔0.01元订单支付成功\",\"time\":\"2017-05-25 10:16\",\"cmd\":1,\"no\":\"12\",\"am\":\"0.01\",\"pt\":\"微信\",\"pm\":\"0.01\",\"st\":\"成功\",\"code\":\"671\",\"url\":\"http://wwt.bj37du.com/api/10001170525369841513\",\"qr\":\"qrcode\"}},\"platform\":\"all\",\"audience\":{\"registration_id\":[\"18071adc033cab91e3e\"]},\"options\":{\"time_to_live\":1800,\"sendno\":\"33\"}}";
+//    	String resultString = new JPushService().sendPost("https://api.jpush.cn/v3/push", json);
+//    	System.out.println(resultString);
+//    	Map<String, String> map = JSON.parseObject(resultString, Map.class);
+//    	System.out.println(map.get("msg_id"));
+    	String url = "https://report.jpush.cn/v3/received?msg_ids=29273397870741827";//+map.get("msg_id");
     	String result = new JPushService().sendGet(url);
     	System.out.println(result);
 //    	JSONArray jsonArray = JSON.parseArray(result);
