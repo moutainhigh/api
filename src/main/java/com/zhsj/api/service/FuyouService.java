@@ -277,9 +277,9 @@ public class FuyouService {
 			/********结算信息*********/
 			map.put("acnt_type", mchInfo.getAcnt_type());
 			map.put("acnt_artif_flag", mchInfo.getAcnt_artif_flag());
-			if("0".equals( mchInfo.getAcnt_artif_flag())){
+//			if("0".equals( mchInfo.getAcnt_artif_flag())){
 				map.put("artif_nm", mchInfo.getContact_person());
-			}
+//			}
 			map.put("acnt_certif_id",mchInfo.getAcnt_certif_id());
 			map.put("inter_bank_no", mchInfo.getInter_bank_no());
 			map.put("iss_bank_nm", mchInfo.getIss_bank_nm());
@@ -412,7 +412,7 @@ public class FuyouService {
 			map.put("ins_cd",MtConfig.getProperty("FUYOU_INS_CD", ""));//机构号
 			map.put("mchnt_cd", mchntcd);
 			map.put("random_str", RandomStringGenerator.getRandomStringByLength(8));
-			map.put("amt", "11199");
+			map.put("amt", "400");
 			String sign = Utils.getSign(map);
 			map.put("sign", sign);
 			String dataString = this.getResultData(map, MtConfig.getProperty("FUYOU_URL", "")+"/queryFeeAmt");
@@ -445,11 +445,11 @@ public class FuyouService {
 			
 			map.put("start_date", "20170801");
 			map.put("end_date", "20170808");
-			map.put("start_index", "1"); //开始笔数
+			map.put("start_index", "0"); //开始笔数
 			map.put("end_index", "5");  //结束笔数
 			String sign = Utils.getSign(map);
 			map.put("sign", sign);
-			String dataString = this.getResultData(map, MtConfig.getProperty("FUYOU_URL", "")+"/queryWithdrawAmt");
+			String dataString = this.getResultData(map, MtConfig.getProperty("FUYOU_URL", "")+"/queryChnlPayAmt");
 			logger.info(dataString);
 			Map<String, String> resMap = XMLBeanUtils.xmlToMap(dataString);
 			if(!"SUCCESS".equals(resMap.get("return_code"))){
@@ -478,9 +478,9 @@ public class FuyouService {
 			map.put("mchnt_cd", mchntcd);
 			map.put("random_str", RandomStringGenerator.getRandomStringByLength(8));
 			
-			map.put("amt", "100");
-			map.put("fee_amt", "2");
-			map.put("txn_type", "2"); 
+			map.put("amt", "400");
+			map.put("fee_amt", "000000000000");
+			map.put("txn_type", "1"); 
 			String sign = Utils.getSign(map);
 			map.put("sign", sign);
 			String dataString = this.getResultData(map, MtConfig.getProperty("FUYOU_URL", "")+"/withdraw");
