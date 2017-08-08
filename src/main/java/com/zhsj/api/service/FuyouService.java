@@ -277,9 +277,9 @@ public class FuyouService {
 			/********结算信息*********/
 			map.put("acnt_type", mchInfo.getAcnt_type());
 			map.put("acnt_artif_flag", mchInfo.getAcnt_artif_flag());
-			if("0".equals( mchInfo.getAcnt_artif_flag())){
-				map.put("artif_nm", mchInfo.getContact_person());
-			}
+//			if("0".equals( mchInfo.getAcnt_artif_flag())){
+			map.put("artif_nm", mchInfo.getContact_person());
+//			}
 			map.put("acnt_certif_id",mchInfo.getAcnt_certif_id());
 			map.put("inter_bank_no", mchInfo.getInter_bank_no());
 			map.put("iss_bank_nm", mchInfo.getIss_bank_nm());
