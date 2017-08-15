@@ -388,7 +388,7 @@ public class CashierController {
     
     @RequestMapping(value = "/refundUnionpay", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    //发起退款
+    //发起退款(v1.0.0)
     public Object refundUnionpay(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth) {
         logger.info("#CashierController.refundUnionpay# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
         											userId,storeNo,orderNo,cashierTradeNo,auth);
@@ -414,6 +414,21 @@ public class CashierController {
         	return CommonResult.defaultError("订单号与交易号不能全为空");
         }
         return orderService.refundUP(userId, storeNo,type,orderNo, cashierTradeNo, auth);
+    }
+    
+    @RequestMapping(value = "/refundUPFY", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    //发起退款(v1.0.2富有)
+    public Object refundUPFY(String userId,String storeNo,String cashierTradeNo,double price,String auth) {
+        logger.info("#CashierController.refundUPFY# userId={},storeNo={},price={},cashierTradeNo={},auth={}",
+        											userId,storeNo,price,cashierTradeNo,auth);
+        if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(auth) || StringUtils.isEmpty(storeNo)){
+        	return CommonResult.defaultError("参数不正确,证检查");
+        }
+        if(StringUtils.isEmpty(cashierTradeNo) ){
+        	return CommonResult.defaultError("参考号不能全为空");
+        }
+        return orderService.refundUPFY(userId, storeNo, cashierTradeNo,price ,auth);
     }
     
     @RequestMapping(value = "/refundSuccess", method = {RequestMethod.GET,RequestMethod.POST})

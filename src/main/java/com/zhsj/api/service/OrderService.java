@@ -884,6 +884,68 @@ public class OrderService {
    	return CommonResult.defaultError("系统异常");
    }
     
+    
+    public CommonResult refundUPFY(String userId,String storeNo,String cashierTradeNo,double price,String auth){
+      	 logger.info("#OrderService.refundUPFY# userId={},storeNo={},cashierTradeNo={},price={},auth={}",
+   					userId,storeNo,cashierTradeNo,price,auth);
+      	 try{
+      		 auth = URLDecoder.decode(auth, "utf-8");
+   			 String[] args = auth.split(",");
+   			 
+   			 List<Integer> moduleIds = new ArrayList<>();
+   			 List<Integer> roleIds = tbStoreAccountBindRoleDao.getRoleIdByAccountId(Long.parseLong(args[1]));
+   			 if(!CollectionUtils.isEmpty(roleIds)){
+   				 moduleIds = tbModuleBindRoleDao.getModuleIdByRoleIds(roleIds);
+   				 moduleIds = CollectionUtils.isEmpty(moduleIds)?new ArrayList<Integer>():moduleIds;
+   			 }
+   			 
+   			 int refundRole = Integer.parseInt(MtConfig.getProperty("STORE_REFUND_MODULE_ID", "0"));
+   			 if(!moduleIds.contains(refundRole)){
+   				return CommonResult.build(2, "没有权限操作");
+   			 }
+      		 
+   			OrderBean bean = bmOrderDao.getByTransactionIdAndStoreNo(cashierTradeNo, storeNo);
+   			if(bean == null){
+   				return CommonResult.build(2, "订单号不存在");
+   			}
+   			if(bean.getStatus() == 3){
+   				return CommonResult.success("该订单已经在处理中");
+   			}else if(bean.getStatus() == 4){
+   				return CommonResult.success("该订单退款成功");
+   			}else if(bean.getStatus() == 5){
+   				return CommonResult.success("该订单退款失败");
+   			}
+   			
+   			if(bean.getActualChargeAmount() < price){
+   				return CommonResult.success("退款金额不能大于实付金额");
+   			}
+   			
+   			//保存定单信息
+   			OrderRefundBean orderRefundBean = new OrderRefundBean();
+   			orderRefundBean.setRefundNo("pre"+bean.getOrderId());
+   			orderRefundBean.setRefundMoney(bean.getActualChargeAmount());
+   			orderRefundBean.setSubmitUserId(Long.parseLong(userId));
+   			
+   			OrderRefundBean refundBean = tbOrderRefundDao.getByRefundNo("pre"+bean.getOrderId());
+   			if(refundBean == null){
+   				int reCode = tbOrderRefundDao.insert(orderRefundBean);
+   				if(reCode != 1){
+   					logger.info("#appRefund# 添加orderRefundBean出错了");
+   					return CommonResult.build(2, "系统异常");
+   				}
+   			}
+   			Map<String,String> map = new HashMap<>();
+   			map.put("orderNo", bean.getOrderId());
+   			map.put("amount",String.valueOf((int)(Arith.mul(price,100))));
+   			map.put("transactionId", bean.getTransactionId());
+   			return CommonResult.success("",map);
+      	 }catch (Exception e) {
+      		 logger.error("#OrderService.refundUPFY# userId={},cashierTradeNo={},auth={}",
+   					userId,cashierTradeNo,auth,e);
+   		}
+      	return CommonResult.defaultError("系统异常");
+      }
+    
     public CommonResult refundSuccess(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth) {
         logger.info("#OrderService.refundSuccess# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
 				userId,storeNo,orderNo,cashierTradeNo,auth);
