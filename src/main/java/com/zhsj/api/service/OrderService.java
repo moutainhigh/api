@@ -1010,18 +1010,18 @@ public class OrderService {
     	logger.info("#OrderService.callbackFY# content={}",content);
     	try{
     		Map<String,String> map = JSON.parseObject(content,Map.class);
-    		String terminal_id = map.get("terminal_id");
-    		String terminal_trace = map.get("terminal_trace");
-    		String total_fee = map.get("total_fee");
-    		String pay_type = map.get("pay_type");
-    		String pay_status = map.get("pay_status");
+    		String out_trade_no = map.get("out_trade_no");
+    		String pay_type = map.get("pay_type");  //交易类型： 1 微信 2支付宝 3银行卡 4现金 5无卡支付 6qq钱包 7百度钱包8京东钱包 
+    		String pay_status = map.get("pay_status"); //交易状态描述：1.支付成功，2退款成功，3撤销成功，4冲正成功
+    		String card_type = map.get("card_type");//卡属性, 卡属性, 01借记卡, 02信用卡, 03准贷记卡,04预付卡
+    		String refund_fee = map.get("refund_fee");
     		if(!"3".equals(pay_type)){
     			return true;
     		}
     		if("1".equals(pay_status)){
     			//成功
     			
-    		}else if("3".equals(pay_status)){
+    		}else if("3".equals(pay_status) || "2".equals(pay_status)){
     			//取消
     			
     		}
