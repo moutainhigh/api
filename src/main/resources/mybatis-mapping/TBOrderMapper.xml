@@ -43,6 +43,12 @@
         FROM tb_order
         WHERE transaction_id = #{transactionId}
     </select>
+    
+    <select id="getByTransactionIdAndStoreNo" resultType="orderBean">
+        SELECT <include refid="SELECT_FIELDS"/>
+        FROM tb_order
+        WHERE transaction_id = #{transactionId} and store_no = #{storeNo}
+    </select>
 
     <select id="getById" resultType="orderBean">
         SELECT <include refid="SELECT_FIELDS"/>
