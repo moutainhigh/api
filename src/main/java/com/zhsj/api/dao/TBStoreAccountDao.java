@@ -55,7 +55,9 @@ public interface TBStoreAccountDao {
     
     int updateSignStatus(@Param("id")long id,
     					@Param("regId")String regId,
-    					@Param("signStatus")int status);
+    					@Param("signStatus")int status,
+    					@Param("type")int type,
+    					@Param("mid")String mid);
     
     List<StoreAccountBean> getSignByIds(@Param("ids")List<Long> ids,
     									@Param("signStatus")int signStatus);

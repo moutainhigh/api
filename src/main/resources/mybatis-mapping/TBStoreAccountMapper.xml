@@ -200,13 +200,13 @@
     
     <update id="updateSignStatus">
     	update tb_store_account
-    		set sign_status = #{signStatus},j_id=#{regId}
+    		set sign_status = #{signStatus},j_id=#{regId},type=#{type},mid=#{mid}
     		where id=#{id}
     </update>
     
      <update id="initSignStatus">
     	update tb_store_account
-    		set j_id=''
+    		set j_id='',type=0,mid=''
     		where j_id=#{regId}
     </update>
     

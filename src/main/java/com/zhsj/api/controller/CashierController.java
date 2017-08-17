@@ -418,7 +418,7 @@ public class CashierController {
     
     @RequestMapping(value = "/refundUPFY", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    //发起退款(v1.0.2富有)
+    //发起退款(v1.0.2富有退货)
     public Object refundUPFY(String userId,String storeNo,String cashierTradeNo,double price,String auth) {
         logger.info("#CashierController.refundUPFY# userId={},storeNo={},price={},cashierTradeNo={},auth={}",
         											userId,storeNo,price,cashierTradeNo,auth);

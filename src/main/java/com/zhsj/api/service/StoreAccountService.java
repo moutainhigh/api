@@ -61,7 +61,7 @@ public class StoreAccountService {
 			}
 			
 			tbStoreAccountDao.initSignStatus(regId);
-			tbStoreAccountDao.updateSignStatus(storeAccountBean.getId(),regId, 1);
+			tbStoreAccountDao.updateSignStatus(storeAccountBean.getId(),regId, 1,1,imei);
 			tbStoreSignDao.insert(storeAccountBean.getId(), lat, lon, 1,storeNo,imei);
 			
 			Map<String,Object> map = new HashMap<String, Object>();
@@ -88,7 +88,7 @@ public class StoreAccountService {
 				return CommonResult.defaultError("账号不正确");
 			}
 			String storeNo = tbStoreBindAccountDao.getStoreNoByAccountId(storeAccountBean.getId());
-			tbStoreAccountDao.updateSignStatus(storeAccountBean.getId(),"", 2);
+			tbStoreAccountDao.updateSignStatus(storeAccountBean.getId(),"", 2,0,"");
 			tbStoreSignDao.insert(storeAccountBean.getId(), lat, lon, 2,storeNo,imei);
 			return CommonResult.success("交班成功");
 		}catch(Exception e){
