@@ -50,5 +50,23 @@ public class MD5 {
         }
         return resultString;
     }
+    
+    /**
+     * 通过特定编码格式加密字符串
+     * @param origin 需加密的字符串
+     * @param charsetName 编码格式
+     * @return String 加密后的字符串
+     */
+    public static String MD5Encode(String origin, String charsetName) {
+        origin =origin.trim();
+        String resultString = null;
+        try {
+            resultString = new String(origin);
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            resultString = byteArrayToHexString(md.digest(resultString.getBytes(charsetName)));
+        } catch (Exception ex) {
+        }
+        return resultString;
+    }
 
 }

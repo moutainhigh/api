@@ -8,6 +8,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONObject;
 import com.mysql.fabric.xmlrpc.base.Array;
 import com.zhsj.api.bean.*;
+import com.zhsj.api.bean.fuyou.MchInfoFY;
 import com.zhsj.api.dao.*;
 import com.zhsj.api.util.Md5;
 import com.zhsj.api.util.MtConfig;
@@ -49,16 +50,18 @@ public class MchAddService {
     @Autowired
     TBStoreExtendDao tbStoreExtendDao;
     @Autowired
-    TbOrderDao tbOrder;
+    TBOrderDao tbOrder;
     @Autowired
     MinshengService minshengService;
     @Autowired
     TBCityCodeDao tbCityCodeDao;
+    @Autowired
+    FuyouService fuyouService;
     
     
-    public String addMch(String storeName,String storeAccount,String storeNo,String auth){
-        logger.info("#MchAddService.addMch# storeName={},storeAccount={},storeNo={},auth={}"
-                , storeName, storeAccount, storeNo, auth);
+    public String addMch(String storeName,String storeAccount,String storeNo,int type,String auth){
+        logger.info("#MchAddService.addMch# storeName={},storeAccount={},storeNo={},type={},auth={}"
+                , storeName, storeAccount, storeNo,type, auth);
         try {
             //检查storeNo是否已经使用
             StoreBean storeBean = storeService.getStoreByNO(storeNo);
@@ -68,7 +71,7 @@ public class MchAddService {
             //检查账号是不已经使用
             StoreAccountBean storeAccountBean = tbStoreAccountDao.getByAccount(storeAccount);
             if(storeAccountBean != null){
-                String data = tbStoreExtendDao.getDataByStoreNo(storeNo,1);
+                String data = tbStoreExtendDao.getDataByStoreNo(storeNo,type);
                 if(StringUtils.isEmpty(data)){
                     return "登录帐号已经使用";
                 }else{
@@ -103,14 +106,22 @@ public class MchAddService {
 
             tbStoreBindAccountDao.insert(storeNo, storeAccountBean.getId());
             tbStoreBindOrgDao.insert(storeNo, orgBean.getId(), orgBean.getOrgIds() + "," + orgBean.getId());
-            
-            MchInfoAddBean mchInfo = new MchInfoAddBean();
-            mchInfo.setStoreName(storeName);
-            mchInfo.setShortName(storeName);
-            mchInfo.setStoreNo(storeNo);
-            mchInfo.setStep(1);
-            String json = JSONObject.toJSON(mchInfo).toString();
-            tbStoreExtendDao.insert(storeNo,1,json);
+            String json = "";
+            if(type == 1){
+            	MchInfoAddBean mchInfo = new MchInfoAddBean();
+                mchInfo.setStoreName(storeName);
+                mchInfo.setShortName(storeName);
+                mchInfo.setStoreNo(storeNo);
+                mchInfo.setStep(1);
+                json = JSONObject.toJSON(mchInfo).toString();
+            }else if(type == 2){//富有
+            	MchInfoFY mchInfo = new MchInfoFY();
+                mchInfo.setMchnt_shortname(storeName);
+                mchInfo.setStoreNo(storeNo);
+                mchInfo.setStep("1");
+                json = JSONObject.toJSON(mchInfo).toString();
+            }
+            tbStoreExtendDao.insert(storeNo,type,json);
             return "SUCCESS";
         }catch (Exception e){
             logger.error("#MchAddService.addMch# storeName={},storeAccount={},storeNo={},auth={}"
@@ -120,11 +131,11 @@ public class MchAddService {
     }
     
     
-    public Map<String, Object> getByStoreNo(String storeNo){
+    public Map<String, Object> getByStoreNo(String storeNo,int type){
     	logger.info("#MchAddService.getByStoreNo# storeNo={}",storeNo);
     	Map<String, Object> resultMap = new HashMap<String, Object>();
     	try{
-    		String data = tbStoreExtendDao.getDataByStoreNo(storeNo,1);
+    		String data = tbStoreExtendDao.getDataByStoreNo(storeNo,type);
             if(StringUtils.isEmpty(data)){
             	return resultMap;
             }
@@ -184,6 +195,41 @@ public class MchAddService {
         return "ERROR";
     }
     
+    public String updateMchFY(MchInfoFY info,String auth){
+        logger.info("#MchAddService.updateMchFY# info={},auth={}",info,auth);
+        try{
+        	int num = tbStoreDao.updateStoreFY(info);
+        	if(num <= 0){
+        		return "保存商家信息失败";
+        	}
+        	
+            String data = tbStoreExtendDao.getDataByStoreNo(info.getStoreNo(),2);
+            MchInfoFY mchInfo = JSONObject.parseObject(data,MchInfoFY.class);
+            
+            mchInfo.setProvince(info.getProvince());
+            mchInfo.setCity(info.getCity());
+            mchInfo.setCounty(info.getCounty());
+            mchInfo.setStreet(info.getStreet());
+            mchInfo.setAddress(info.getAddress());
+            mchInfo.setReal_name(info.getMchnt_name());
+            mchInfo.setMchnt_name(info.getMchnt_name());
+            mchInfo.setBusiness(info.getBusiness());
+            mchInfo.setContact_person(info.getContact_person());
+            mchInfo.setContact_mobile(info.getContact_mobile());
+            mchInfo.setContact_email(info.getContact_email());
+            mchInfo.setContact_phone(info.getContact_phone());
+            mchInfo.setCertif_id(info.getCertif_id());
+        	mchInfo.setStep("2");
+            String json = JSONObject.toJSON(mchInfo).toString();
+            //更新扩展
+            tbStoreExtendDao.updateByStoreNo(info.getStoreNo(),2,json,2);
+            return "SUCCESS";
+        }catch (Exception e){
+            logger.error("#MchAddService.updateMchFY# info={},auth={}",info,auth,e);
+        }
+        return "ERROR";
+    }
+    
     public String settleMch(MchInfoAddBean info,String auth) {
         logger.info("#MchAddService.settleMch# info={},auth={}",info,auth);
         try{
@@ -227,6 +273,53 @@ public class MchAddService {
         return "ERROR";
     }
     
+    
+    public String settleMchFY(MchInfoFY info,String auth) {
+        logger.info("#MchAddService.settleMchFY# info={},auth={}",info,auth);
+        try{
+        	 Integer status = tbStoreNoDao.getStatusByStoreNo(info.getStoreNo());
+             if(status == null){
+                 return "商家编号不存在";
+             }
+             if(status == 2){
+                 return "SUCCESS";
+             }
+            String data = tbStoreExtendDao.getDataByStoreNo(info.getStoreNo(),2);
+            
+            MchInfoFY mchInfo = JSONObject.parseObject(data,MchInfoFY.class);
+            mchInfo.setAcnt_type(info.getAcnt_type());
+            mchInfo.setAcnt_artif_flag(info.getAcnt_artif_flag());
+            
+            mchInfo.setAcnt_certif_id(info.getAcnt_certif_id());
+            mchInfo.setInter_bank_no(info.getInter_bank_no());
+            mchInfo.setIss_bank_nm(info.getIss_bank_nm());
+            mchInfo.setAcnt_nm(info.getAcnt_nm());
+            mchInfo.setAcnt_no(info.getAcnt_no());
+            mchInfo.setWx_set_cd(info.getWx_set_cd());
+            mchInfo.setAli_set_cd(info.getAli_set_cd());
+            mchInfo.setSet_cd(info.getSet_cd());
+            
+            String json = JSONObject.toJSON(mchInfo).toString();
+            //更新扩展
+            int num = tbStoreExtendDao.updateByStoreNoAndStep(info.getStoreNo(), 2, json,3,2);
+            if(num <=0){
+            	return "不要重复提交";
+            }
+            //如果已经提交，不再提交
+            String result = fuyouService.mchntAdd(mchInfo);
+            if("SUCCESS".equals(result)){
+                long saleId = LoginUserUtil.getLoginUser().getId();
+                tbStoreNoDao.updateStatusByStoreNoAndSaleId(saleId, info.getStoreNo());
+                tbStoreDao.updateStatus(1,info.getStoreNo());
+            }else{
+            	tbStoreExtendDao.updateByStoreNo(info.getStoreNo(),2,json,2);
+            }
+            return result;
+        }catch (Exception e){
+        	logger.error("#MchAddService.settleMch# info={},auth={}",info,auth,e);
+        }
+        return "ERROR";
+    }
     
     public static void main(String[] args){
         System.out.println(new String(Base64.decodeBase64("oFvcxwfZrQxlisYN4yIPbxmOT8KM")));

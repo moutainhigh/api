@@ -41,7 +41,7 @@ public class DiscountService {
     @Autowired
     TBDiscountRuleDao tbDiscountRuleDao;
     @Autowired
-    TbOrderDao tbOrderDao;
+    TBOrderDao tbOrderDao;
 
     public DiscountPage getDiscountPage(String auth,int status,int pageNo,int pageSize){
         logger.info("#DiscountService.getDiscountPage# auth={},status={},pageNo={},pageSize={}",auth,status,pageNo,pageSize);

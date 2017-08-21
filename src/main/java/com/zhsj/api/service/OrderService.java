@@ -14,8 +14,10 @@ import com.zhsj.api.bean.result.ShiftNewBean;
 import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
 import com.zhsj.api.constants.Const;
-import com.zhsj.api.dao.TbOrderDao;
+import com.zhsj.api.dao.TBOrderDao;
+import com.zhsj.api.task.async.MsgSendFailAsync;
 import com.zhsj.api.util.Arith;
+import com.zhsj.api.util.AyncTaskUtil;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.StoreUtils;
@@ -51,7 +53,7 @@ public class OrderService {
     Logger logger = LoggerFactory.getLogger(OrderService.class);
 
     @Autowired
-    private TbOrderDao bmOrderDao;
+    private TBOrderDao bmOrderDao;
     @Autowired
     private MinshengService minshengService;
     @Autowired
@@ -59,7 +61,7 @@ public class OrderService {
     @Autowired
     private WeChatService weChatService;
     @Autowired
-    private TbOrderDao tbOrderDao;
+    private TBOrderDao tbOrderDao;
     @Autowired
     private TbUserBindStoreDao tbUserBindStoreDao;
     @Autowired
@@ -88,6 +90,8 @@ public class OrderService {
     private TbStorePayInfoDao tbStorePayInfoDao;
     @Autowired
     private VPiaotongService vpiaotongService;
+    @Autowired
+    private AyncTaskUtil ayncTaskUtil;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -99,6 +103,10 @@ public class OrderService {
 
     public OrderBean getByOrderId(String orderId){
         return tbOrderDao.getByOrderId(orderId);
+    }
+    
+    public OrderBean getByTransactionId(String transactionId){
+        return tbOrderDao.getByTransactionId(transactionId);
     }
 
     public List<OrderBean> getMSAliListByCtime(long id,int time ,int pageSize){
@@ -188,7 +196,7 @@ public class OrderService {
 					result = pinganService.refundMoney(orderBean,price,userId);
 					break;
 				case 6:
-					//中信接口
+					//富有接口
 					result = fuyouService.refundMoney(orderBean,price,userId);
 					break;
 				default:
@@ -574,7 +582,9 @@ public class OrderService {
 				}
 				CommonResult commonResult = refundMoney(orderBean.getOrderId(),price,accountId);
 				if(commonResult.getCode() == 0){
-					jPushService.sendRefundMsg(orderBean.getOrderId(),accountId);
+//					jPushService.sendRefundMsg(orderBean.getOrderId(),accountId);
+					MsgSendFailAsync msgSendFailAsync = new MsgSendFailAsync(orderBean.getOrderId(),accountId);
+					ayncTaskUtil.commitAyncTask(msgSendFailAsync);
 					CommonResult commonResult2 = searchRefund(orderBean.getOrderId());
 					if(commonResult2.getCode() == 0 && "SUCCESS".equals(commonResult2.getData())){
 						int sCode = tbOrderDao.updateStatusById(orderBean.getId(), 4);
@@ -609,7 +619,7 @@ public class OrderService {
 						logger.info("#appRefund# 退款失败 。 更新refundorder状态失败");
 						return CommonResult.build(2, "系统异常");
 					}
-					return CommonResult.success("退款失败,原因:"+commonResult.getMsg());
+					return CommonResult.defaultError("退款失败,原因:"+commonResult.getMsg());
 				}
 			}else if(orderBean.getStatus() == 3){
 				return CommonResult.build(2, "该订单正在退款中");
@@ -874,6 +884,68 @@ public class OrderService {
    	return CommonResult.defaultError("系统异常");
    }
     
+    
+    public CommonResult refundUPFY(String userId,String storeNo,String cashierTradeNo,double price,String auth){
+      	 logger.info("#OrderService.refundUPFY# userId={},storeNo={},cashierTradeNo={},price={},auth={}",
+   					userId,storeNo,cashierTradeNo,price,auth);
+      	 try{
+      		 auth = URLDecoder.decode(auth, "utf-8");
+   			 String[] args = auth.split(",");
+   			 
+   			 List<Integer> moduleIds = new ArrayList<>();
+   			 List<Integer> roleIds = tbStoreAccountBindRoleDao.getRoleIdByAccountId(Long.parseLong(args[1]));
+   			 if(!CollectionUtils.isEmpty(roleIds)){
+   				 moduleIds = tbModuleBindRoleDao.getModuleIdByRoleIds(roleIds);
+   				 moduleIds = CollectionUtils.isEmpty(moduleIds)?new ArrayList<Integer>():moduleIds;
+   			 }
+   			 
+   			 int refundRole = Integer.parseInt(MtConfig.getProperty("STORE_REFUND_MODULE_ID", "0"));
+   			 if(!moduleIds.contains(refundRole)){
+   				return CommonResult.build(2, "没有权限操作");
+   			 }
+      		 
+   			OrderBean bean = bmOrderDao.getByTransactionIdAndStoreNo(cashierTradeNo, storeNo);
+   			if(bean == null){
+   				return CommonResult.build(2, "订单号不存在");
+   			}
+   			if(bean.getStatus() == 3){
+   				return CommonResult.success("该订单已经在处理中");
+   			}else if(bean.getStatus() == 4){
+   				return CommonResult.success("该订单退款成功");
+   			}else if(bean.getStatus() == 5){
+   				return CommonResult.success("该订单退款失败");
+   			}
+   			
+   			if(bean.getActualChargeAmount() < price){
+   				return CommonResult.success("退款金额不能大于实付金额");
+   			}
+   			
+   			//保存定单信息
+   			OrderRefundBean orderRefundBean = new OrderRefundBean();
+   			orderRefundBean.setRefundNo("pre"+bean.getOrderId());
+   			orderRefundBean.setRefundMoney(bean.getActualChargeAmount());
+   			orderRefundBean.setSubmitUserId(Long.parseLong(userId));
+   			
+   			OrderRefundBean refundBean = tbOrderRefundDao.getByRefundNo("pre"+bean.getOrderId());
+   			if(refundBean == null){
+   				int reCode = tbOrderRefundDao.insert(orderRefundBean);
+   				if(reCode != 1){
+   					logger.info("#appRefund# 添加orderRefundBean出错了");
+   					return CommonResult.build(2, "系统异常");
+   				}
+   			}
+   			Map<String,String> map = new HashMap<>();
+   			map.put("orderNo", bean.getOrderId());
+   			map.put("amount",String.valueOf((int)(Arith.mul(price,100))));
+   			map.put("transactionId", bean.getTransactionId());
+   			return CommonResult.success("",map);
+      	 }catch (Exception e) {
+      		 logger.error("#OrderService.refundUPFY# userId={},cashierTradeNo={},auth={}",
+   					userId,cashierTradeNo,auth,e);
+   		}
+      	return CommonResult.defaultError("系统异常");
+      }
+    
     public CommonResult refundSuccess(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth) {
         logger.info("#OrderService.refundSuccess# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
 				userId,storeNo,orderNo,cashierTradeNo,auth);
@@ -938,18 +1010,18 @@ public class OrderService {
     	logger.info("#OrderService.callbackFY# content={}",content);
     	try{
     		Map<String,String> map = JSON.parseObject(content,Map.class);
-    		String terminal_id = map.get("terminal_id");
-    		String terminal_trace = map.get("terminal_trace");
-    		String total_fee = map.get("total_fee");
-    		String pay_type = map.get("pay_type");
-    		String pay_status = map.get("pay_status");
+    		String out_trade_no = map.get("out_trade_no");
+    		String pay_type = map.get("pay_type");  //交易类型： 1 微信 2支付宝 3银行卡 4现金 5无卡支付 6qq钱包 7百度钱包8京东钱包 
+    		String pay_status = map.get("pay_status"); //交易状态描述：1.支付成功，2退款成功，3撤销成功，4冲正成功
+    		String card_type = map.get("card_type");//卡属性, 卡属性, 01借记卡, 02信用卡, 03准贷记卡,04预付卡
+    		String refund_fee = map.get("refund_fee");
     		if(!"3".equals(pay_type)){
     			return true;
     		}
     		if("1".equals(pay_status)){
     			//成功
     			
-    		}else if("3".equals(pay_status)){
+    		}else if("3".equals(pay_status) || "2".equals(pay_status)){
     			//取消
     			
     		}

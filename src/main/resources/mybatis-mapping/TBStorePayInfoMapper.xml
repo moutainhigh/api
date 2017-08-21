@@ -27,6 +27,21 @@
             )
         </foreach>
     </insert>
+    
+    <insert id="insertFY">
+        INSERT INTO tb_store_pay_info
+        (store_no,pay_type,pay_method,field3,field4,status,valid,utime,ctime,app_id,mch_id)
+        VALUES
+         <foreach collection="beans" item="bean" index="index" separator=",">
+            (#{bean.storeNo},#{bean.payType},#{bean.payMethod},#{bean.field3},'T1',
+            1,1,unix_timestamp(now()),unix_timestamp(now()),#{bean.appId},#{bean.mchId}
+            )
+        </foreach>
+    </insert>
+    
+    
+
+
 
     <select id="getByStoreNoAndTypeAndMethod" resultType="storePayInfo" >
        select <include refid="SELECT_FIELDS"/> from tb_store_pay_info

@@ -91,6 +91,7 @@
             <mvc:mapping path="/module/**" />
             <mvc:mapping path="/order/**" />
             <mvc:mapping path="/mchAdd/**" />
+             <mvc:mapping path="/mchAddFY/**" />
             <mvc:mapping path="/merchant/**" />
             <mvc:mapping path="/storeManage/**"/>
 <!--             <mvc:mapping path="/printer/**" /> -->

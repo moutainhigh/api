@@ -25,7 +25,7 @@ import com.zhsj.api.dao.TBPrinterSecretDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindPrinterDao;
 import com.zhsj.api.dao.TBStoreSettingsDao;
-import com.zhsj.api.dao.TbOrderDao;
+import com.zhsj.api.dao.TBOrderDao;
 import com.zhsj.api.dao.TbStoreDao;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.CommonResult;
@@ -43,7 +43,7 @@ public class PrinterService {
 	@Autowired
 	private TBPrinterSecretDao tbPrinterSecretDao;
 	@Autowired
-	private TbOrderDao tbOrderDao;
+	private TBOrderDao tbOrderDao;
 	@Autowired
 	private TBStoreSettingsDao tbStoreSettingsDao;
 	@Autowired

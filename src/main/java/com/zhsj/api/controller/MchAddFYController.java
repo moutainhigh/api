@@ -1,10 +1,7 @@
 package com.zhsj.api.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.zhsj.api.bean.MchInfoAddBean;
 import com.zhsj.api.bean.fuyou.MchInfoFY;
-import com.zhsj.api.dao.TBStoreExtendDao;
-import com.zhsj.api.service.FuyouService;
 import com.zhsj.api.service.MchAddService;
 import com.zhsj.api.util.CommonResult;
 import org.apache.commons.lang3.StringUtils;
@@ -20,24 +17,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/mchAdd")
-public class MchAddController {
-    Logger logger = LoggerFactory.getLogger(MchAddController.class);
+@RequestMapping("/mchAddFY")
+public class MchAddFYController {
+    Logger logger = LoggerFactory.getLogger(MchAddFYController.class);
 
     @Autowired
     private MchAddService mchAddService;
-    @Autowired
-    private FuyouService fuyouService;
-    @Autowired
-    TBStoreExtendDao tbStoreExtendDao;
     
     @RequestMapping(value = "/new", method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     //新建商户页
     public ModelAndView newMch(String auth) {
-        logger.info("#MchAddController.newMch# ");
+        logger.info("#MchAddFYController.newMch# ");
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("./mchAdd/new");
+        modelAndView.setViewName("./mchAddFY/new");
         modelAndView.addObject("auth", auth);
         return modelAndView;
     }
@@ -46,12 +39,12 @@ public class MchAddController {
     @ResponseBody
     //新建商户
     public Object mchAdd(String storeName,String storeAccount,String storeNo,String auth) {
-    	 logger.info("#MchAddController.mchAdd# storeName={},storeAccount={},storeNo={},auth={}",
+    	 logger.info("#MchAddFYController.mchAdd# storeName={},storeAccount={},storeNo={},auth={}",
                  storeName, storeAccount, storeNo, auth);
     	 if(StringUtils.isEmpty(storeName) || StringUtils.isEmpty(storeAccount) || StringUtils.isEmpty(storeNo)){
     		 return CommonResult.build(1, "参数不正确");
     	 }
-         String result = mchAddService.addMch(storeName, storeAccount, storeNo,1, auth);
+         String result = mchAddService.addMch(storeName, storeAccount, storeNo,2, auth);
          Map<String,String> map = new HashMap<>();
          map.put("auth", auth);
          map.put("storeNo", storeNo);
@@ -67,35 +60,35 @@ public class MchAddController {
     @ResponseBody
     //更新商户资料
     public ModelAndView toMchUpdate(String storeNo,String auth) {
-        logger.info("#MchAddController.toMchUpdate# storeNo={},auth={} ",storeNo,auth);
+        logger.info("#MchAddFYController.toMchUpdate# storeNo={},auth={} ",storeNo,auth);
         ModelAndView modelAndView = new ModelAndView();
         if(StringUtils.isEmpty(storeNo)){
         	modelAndView.setViewName("error");
         	 return modelAndView;
         }
         modelAndView.addObject("auth",auth);
-        modelAndView.addObject("info", mchAddService.getByStoreNo(storeNo,1));
-        modelAndView.setViewName("./mchAdd/mchInfo");
+        modelAndView.addObject("info", mchAddService.getByStoreNo(storeNo,2));
+        modelAndView.setViewName("./mchAddFY/mchInfo");
         return modelAndView;
     }
     
     @RequestMapping(value = "/mchUpdate" , method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public Object mchUpdate(MchInfoAddBean info,String auth) {
-        logger.info("#MchAddController.mchUpdate# info={},auth={},",info,auth);
+    public Object mchUpdate(MchInfoFY info,String auth) {
+        logger.info("#MchAddFYController.mchUpdate# info={},auth={},",info,auth);
         if(StringUtils.isEmpty(info.getProvince()) || StringUtils.isEmpty(info.getCity()) || StringUtils.isEmpty(info.getCounty())|| StringUtils.isEmpty(info.getAddress())){
         	return CommonResult.build(1, "城市信息出错");
         }
         
-        if(info.getBusinessType() <=0){
+        if(StringUtils.isEmpty(info.getBusiness())){
         	return CommonResult.build(1, "营业类别出错");
         }
         
-        if(StringUtils.isEmpty(info.getContactsPeople()) || StringUtils.isEmpty(info.getPhone()) || StringUtils.isEmpty(info.getIdCard())){
+        if(StringUtils.isEmpty(info.getContact_person()) || StringUtils.isEmpty(info.getContact_mobile()) || StringUtils.isEmpty(info.getCertif_id())){
         	return CommonResult.build(1, "人员信息错误");
         }
         
-        String result = mchAddService.updateMch(info, auth);
+        String result = mchAddService.updateMchFY(info, auth);
         Map<String,String> map = new HashMap<>();
         map.put("auth", auth);
         map.put("storeNo", info.getStoreNo());
@@ -111,35 +104,35 @@ public class MchAddController {
     @ResponseBody
     //更新商户结算
     public ModelAndView toMchSettle(String storeNo,String auth) {
-    	logger.info("#MchAddController.toMchSettle# storeNo={},auth={} ",storeNo,auth);
+    	logger.info("#MchAddFYController.toMchSettle# storeNo={},auth={} ",storeNo,auth);
         ModelAndView modelAndView = new ModelAndView();
         if(StringUtils.isEmpty(storeNo)){
         	modelAndView.setViewName("error");
         	 return modelAndView;
         }
         modelAndView.addObject("auth",auth);
-        modelAndView.addObject("info", mchAddService.getByStoreNo(storeNo,1));
-        modelAndView.setViewName("./mchAdd/settle");
+        modelAndView.addObject("info", mchAddService.getByStoreNo(storeNo,2));
+        modelAndView.setViewName("./mchAddFY/settle");
         return modelAndView;
     }
     
     @RequestMapping(value = "/mchSettle" , method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public Object mchSettle(MchInfoAddBean info,String auth){
-        logger.info("#MchAddController.mchSettle# info={},auth={}",info, auth);
-        if(StringUtils.isEmpty(info.getBankAccount()) || StringUtils.isEmpty(info.getBankName()) ){
+    public Object mchSettle(MchInfoFY info,String auth){
+        logger.info("#MchAddFYController.mchSettle# info={},auth={}",info, auth);
+        if(StringUtils.isEmpty(info.getAcnt_nm()) || StringUtils.isEmpty(info.getInter_bank_no()) || StringUtils.isEmpty(info.getIss_bank_nm()) ){
         	return CommonResult.build(1, "银行信息不能为空");
         }
         
-        if(StringUtils.isEmpty(info.getAccountName()) || StringUtils.isEmpty(info.getAccountIdCard()) || StringUtils.isEmpty(info.getAccountPhone())){
+        if(StringUtils.isEmpty(info.getAcnt_nm()) || StringUtils.isEmpty(info.getAcnt_certif_id())){
         	return CommonResult.build(1, "开户人信息不能为空");
         }
         
-        if(StringUtils.isEmpty(info.getWxRate()) || StringUtils.isEmpty(info.getAliRate()) ){
+        if(StringUtils.isEmpty(info.getWx_set_cd()) || StringUtils.isEmpty(info.getAli_set_cd()) ){
         	return CommonResult.build(1, "支付费率不能为空");
         }
         
-        String result = mchAddService.settleMch(info,auth);
+        String result = mchAddService.settleMchFY(info,auth);
         Map<String,String> map = new HashMap<>();
         map.put("auth", auth);
         map.put("storeNo",info.getStoreNo());
@@ -155,24 +148,10 @@ public class MchAddController {
     @ResponseBody
     //成功页
     public ModelAndView mchSuccess(String storeNo,String auth) {
-        logger.info("#MchAddController.mchSuccess# storeNo={},auth={} ",storeNo,auth);
+        logger.info("#MchAddFYController.mchSuccess# storeNo={},auth={} ",storeNo,auth);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("auth",auth);
         modelAndView.addObject("storeNo", storeNo);
-        modelAndView.setViewName("./mchAdd/mchAddSuccess");
-        return modelAndView;
-    }
-    
-    @RequestMapping(value = "/abc", method = {RequestMethod.GET,RequestMethod.POST})
-    @ResponseBody
-    //成功页
-    public ModelAndView abc() {
-        ModelAndView modelAndView = new ModelAndView();
-        
-        String str = tbStoreExtendDao.getDataByStoreNo("1110674566", 2);
-        MchInfoFY mchInfoFY  = JSON.parseObject(str, MchInfoFY.class);
-        mchInfoFY.setWx_set_cd("0.40");
-       fuyouService.mchntUpd(mchInfoFY, "");
         modelAndView.setViewName("./mchAdd/mchAddSuccess");
         return modelAndView;
     }

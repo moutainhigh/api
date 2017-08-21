@@ -51,7 +51,7 @@ public class ManagerService {
     @Autowired
     TBStoreExtendDao tbStoreExtendDao;
     @Autowired
-    TbOrderDao tbOrder;
+    TBOrderDao tbOrder;
     @Autowired
     MinshengService minshengService;
 
