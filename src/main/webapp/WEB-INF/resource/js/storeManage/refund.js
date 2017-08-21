@@ -31,7 +31,9 @@ Date.prototype.Format = function (fmt) { //author: meizz
 					   var obj = result.data;
 					if(obj.status == 1){
 					   $(".reminders").hide();
-					   if(obj.payMethod == 2){
+					   if(obj.payMethod == 1){
+						   $("#logo").attr("src","../resource/img/app/order/wechat-ico.png");
+					   }else if(obj.payMethod == 2){
 						   $("#logo").attr("src","../resource/img/app/order/pay-icon.png");
 					   }else if(obj.payMethod == 3){
 					       $("#logo").attr("src","../resource/img/app/order/unionPay-ico.png");
