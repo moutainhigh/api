@@ -1046,7 +1046,7 @@ public class OrderService {
     			
     			double serviceChange = Arith.div(Arith.mul(orderBean.getActualChargeAmount(), rate),100);
     			if(args.length > 1){
-    				double highCharge = Double.parseDouble(args[2]);
+    				double highCharge = Double.parseDouble(args[1]);
     				if(serviceChange > highCharge ){
     					serviceChange = highCharge;
     				}
