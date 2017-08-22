@@ -356,6 +356,7 @@ public class CashierController {
 			contentStr = URLDecoder.decode(contentStr, "GBK");
 	        contentStr = contentStr.replace("req=", "");
             logger.info("#callbackFY# content={}",contentStr);
+            orderService.callbackFY(contentStr);
 		} catch (IOException e) {
 			logger.error("#CashierController.callback# e={}",e.getMessage(),e );
 		}finally{
