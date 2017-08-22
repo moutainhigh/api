@@ -1,7 +1,6 @@
 package com.zhsj.api.dao;
 
 
-import com.sun.org.glassfish.gmbal.ParameterNames;
 import com.zhsj.api.bean.result.CountDealBean;
 import com.zhsj.api.bean.result.CountDiscount;
 import com.zhsj.api.bean.result.CountMember;
