@@ -53,8 +53,6 @@ public class OrderService {
     Logger logger = LoggerFactory.getLogger(OrderService.class);
 
     @Autowired
-    private TBOrderDao bmOrderDao;
-    @Autowired
     private MinshengService minshengService;
     @Autowired
     private PinganService pinganService;
@@ -71,8 +69,6 @@ public class OrderService {
     @Autowired
     private TBOrderRefundDao tbOrderRefundDao;
     @Autowired
-    private JPushService jPushService;
-    @Autowired
     private StoreService storeService;
     @Autowired
     private TbStoreBindOrgDao tbStoreBindOrgDao;
@@ -80,8 +76,6 @@ public class OrderService {
     private TBStoreAccountBindRoleDao tbStoreAccountBindRoleDao;
     @Autowired
     private TBModuleBindRoleDao tbModuleBindRoleDao;
-    @Autowired
-    private UserService userService;
     @Autowired
     private TbStoreDao tbStoreDao;
     @Autowired
@@ -155,7 +149,7 @@ public class OrderService {
     public CommonResult refundMoney(String orderNo,double price,int userId){
     	logger.info("#OrderService.refundMoney# orderNo={},price={},userId={}",orderNo,price,userId);
     	try{
-    		OrderBean orderBean = bmOrderDao.getByOrderId(orderNo);
+    		OrderBean orderBean = tbOrderDao.getByOrderId(orderNo);
     		if(orderBean == null){
     	    	logger.info("#OrderService.refundMoney# orderNo={},price={},msg={}",orderNo,price,"订单号不存在");
     			return CommonResult.defaultError("订单号不存在");
@@ -218,7 +212,7 @@ public class OrderService {
     public CommonResult searchRefund(String orderNo){
     	logger.info("#OrderService.searchRefund# orderNo={}",orderNo);
     	try{
-    		OrderBean orderBean = bmOrderDao.getByOrderId(orderNo);
+    		OrderBean orderBean = tbOrderDao.getByOrderId(orderNo);
     		if(orderBean == null){
     	    	logger.info("#OrderService.searchRefund# orderNo={},msg={}",orderNo,"订单号不存在");
     			return CommonResult.defaultError("订单号不存在");
@@ -468,7 +462,7 @@ public class OrderService {
    }
     
     public List<OrderBean> getByStatusAndCtime(int status,int startTime,int endTime){
-    	return bmOrderDao.getByStatusAndCtime(status, startTime, endTime);
+    	return tbOrderDao.getByStatusAndCtime(status, startTime, endTime);
     }
     
     
@@ -491,13 +485,13 @@ public class OrderService {
 //    		}
 			paramMap.put("storeNo", storeNo);
 			Map<String, Object> resultMap = new HashMap<String, Object>();
-			List<OrderBean> list = bmOrderDao.getListByParamMap(paramMap);
+			List<OrderBean> list = tbOrderDao.getListByParamMap(paramMap);
 			resultMap.put("list", list);
 			if(page == 1){
-				int count = bmOrderDao.getCountByParamMap(paramMap);
+				int count = tbOrderDao.getCountByParamMap(paramMap);
 				resultMap.put("count", count);
-				OrderSta orderSta = bmOrderDao.getOrderStaByParamMap(paramMap);
-				RefundSta refundSta = bmOrderDao.getRefundStaByParamMap(paramMap);
+				OrderSta orderSta = tbOrderDao.getOrderStaByParamMap(paramMap);
+				RefundSta refundSta = tbOrderDao.getRefundStaByParamMap(paramMap);
 				orderSta.setAm(Arith.sub(orderSta.getAm(), refundSta.getRefundMoney()));
 				resultMap.put("orderSta", orderSta);
 			}
@@ -519,7 +513,7 @@ public class OrderService {
     			storeNos.add(sb.getStoreNo());
     		}
     		storeNos.add(storeNo);
-			OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNos, orderId, transId);
+			OrderBean bean = tbOrderDao.getByOrderIdOrTransId(storeNos, orderId, transId);
 			if(bean == null){
 				return CommonResult.build(2, "订单号不存在");
 			}
@@ -541,7 +535,7 @@ public class OrderService {
     public CommonResult appRefund(long id,double price,int accountId){
     	logger.info("#appRefund# id={}, price={},accountId={}", id, price, accountId);
     	try {
-			OrderBean orderBean = bmOrderDao.getById(id);
+			OrderBean orderBean = tbOrderDao.getById(id);
 			if("3".equals(orderBean.getPayMethod())){
 				return CommonResult.build(2, "不支持银联卡退款");
 			}
@@ -639,7 +633,7 @@ public class OrderService {
     //获取账户余额
     private double getBalance(long id,List<Integer> statusList){
     	logger.info("#getBalance# id = {}", id);
-    	OrderBean orderBean = bmOrderDao.getById(id);
+    	OrderBean orderBean = tbOrderDao.getById(id);
     	String storeNo = orderBean.getStoreNo();
     	int payType = orderBean.getPayType();
     	String payMethod = orderBean.getPayMethod();
@@ -672,8 +666,8 @@ public class OrderService {
 			String storeNo = storeBean.getStoreNo();
 			int startTime = DateUtil.getTodayStartTime();
 			int endTime = startTime+24*60*60-1;
-			OrderSta orderSta = bmOrderDao.getTodayOrderSta(storeNo, startTime, endTime);
-			RefundSta refundSta = bmOrderDao.getTodayRefundSta(storeNo, startTime, endTime);
+			OrderSta orderSta = tbOrderDao.getTodayOrderSta(storeNo, startTime, endTime);
+			RefundSta refundSta = tbOrderDao.getTodayRefundSta(storeNo, startTime, endTime);
 			Map<String, Object> resultMap = new HashMap<String, Object>();
 			resultMap.put("orderSta", orderSta);
 			resultMap.put("refundSta", refundSta);
@@ -790,7 +784,7 @@ public class OrderService {
 				} 
     		 }
 			
-    		OrderBean bean = bmOrderDao.getByTypeOrderIdOrTransId(storeNo, orderNo, cashierTradeNo,type);
+    		OrderBean bean = tbOrderDao.getByTypeOrderIdOrTransId(storeNo, orderNo, cashierTradeNo,type);
  			if(bean == null){
  				return CommonResult.build(2, "订单号不存在");
  			}
@@ -846,7 +840,7 @@ public class OrderService {
 			if(cashierTradeNo.startsWith("09")){
 				cashierTradeNo = cashierTradeNo.substring(2);
 			} 
-			OrderBean bean = bmOrderDao.getByTypeOrderIdOrTransId(storeNo, orderNo, cashierTradeNo,type);
+			OrderBean bean = tbOrderDao.getByTypeOrderIdOrTransId(storeNo, orderNo, cashierTradeNo,type);
 			if(bean == null){
 				return CommonResult.build(2, "订单号不存在");
 			}
@@ -884,13 +878,75 @@ public class OrderService {
    	return CommonResult.defaultError("系统异常");
    }
     
+    
+    public CommonResult refundUPFY(String userId,String storeNo,String cashierTradeNo,double price,String auth){
+      	 logger.info("#OrderService.refundUPFY# userId={},storeNo={},cashierTradeNo={},price={},auth={}",
+   					userId,storeNo,cashierTradeNo,price,auth);
+      	 try{
+      		 auth = URLDecoder.decode(auth, "utf-8");
+   			 String[] args = auth.split(",");
+   			 
+   			 List<Integer> moduleIds = new ArrayList<>();
+   			 List<Integer> roleIds = tbStoreAccountBindRoleDao.getRoleIdByAccountId(Long.parseLong(args[1]));
+   			 if(!CollectionUtils.isEmpty(roleIds)){
+   				 moduleIds = tbModuleBindRoleDao.getModuleIdByRoleIds(roleIds);
+   				 moduleIds = CollectionUtils.isEmpty(moduleIds)?new ArrayList<Integer>():moduleIds;
+   			 }
+   			 
+   			 int refundRole = Integer.parseInt(MtConfig.getProperty("STORE_REFUND_MODULE_ID", "0"));
+   			 if(!moduleIds.contains(refundRole)){
+   				return CommonResult.build(2, "没有权限操作");
+   			 }
+      		 
+   			OrderBean bean = tbOrderDao.getByTransactionIdAndStoreNo(cashierTradeNo, storeNo);
+   			if(bean == null){
+   				return CommonResult.build(2, "订单号不存在");
+   			}
+   			if(bean.getStatus() == 3){
+   				return CommonResult.success("该订单已经在处理中");
+   			}else if(bean.getStatus() == 4){
+   				return CommonResult.success("该订单退款成功");
+   			}else if(bean.getStatus() == 5){
+   				return CommonResult.success("该订单退款失败");
+   			}
+   			
+   			if(bean.getActualChargeAmount() < price){
+   				return CommonResult.success("退款金额不能大于实付金额");
+   			}
+   			
+   			//保存定单信息
+   			OrderRefundBean orderRefundBean = new OrderRefundBean();
+   			orderRefundBean.setRefundNo("pre"+bean.getOrderId());
+   			orderRefundBean.setRefundMoney(bean.getActualChargeAmount());
+   			orderRefundBean.setSubmitUserId(Long.parseLong(userId));
+   			
+   			OrderRefundBean refundBean = tbOrderRefundDao.getByRefundNo("pre"+bean.getOrderId());
+   			if(refundBean == null){
+   				int reCode = tbOrderRefundDao.insert(orderRefundBean);
+   				if(reCode != 1){
+   					logger.info("#appRefund# 添加orderRefundBean出错了");
+   					return CommonResult.build(2, "系统异常");
+   				}
+   			}
+   			Map<String,String> map = new HashMap<>();
+   			map.put("orderNo", bean.getOrderId());
+   			map.put("amount",String.valueOf((int)(Arith.mul(price,100))));
+   			map.put("transactionId", bean.getTransactionId());
+   			return CommonResult.success("",map);
+      	 }catch (Exception e) {
+      		 logger.error("#OrderService.refundUPFY# userId={},cashierTradeNo={},auth={}",
+   					userId,cashierTradeNo,auth,e);
+   		}
+      	return CommonResult.defaultError("系统异常");
+      }
+    
     public CommonResult refundSuccess(String userId,String storeNo,String orderNo,String cashierTradeNo,String auth) {
         logger.info("#OrderService.refundSuccess# userId={},storeNo={},orderNo={},cashierTradeNo={},auth={}",
 				userId,storeNo,orderNo,cashierTradeNo,auth);
         try{
         	List<String> storeNoList = new ArrayList<>();
         	storeNoList.add(storeNo);
-        	OrderBean bean = bmOrderDao.getByOrderIdOrTransId(storeNoList, orderNo, cashierTradeNo);
+        	OrderBean bean = tbOrderDao.getByOrderIdOrTransId(storeNoList, orderNo, cashierTradeNo);
         	if(bean == null){
  				return CommonResult.build(2, "订单不存在");
  			}
@@ -948,19 +1004,55 @@ public class OrderService {
     	logger.info("#OrderService.callbackFY# content={}",content);
     	try{
     		Map<String,String> map = JSON.parseObject(content,Map.class);
-    		String terminal_id = map.get("terminal_id");
-    		String terminal_trace = map.get("terminal_trace");
-    		String total_fee = map.get("total_fee");
-    		String pay_type = map.get("pay_type");
-    		String pay_status = map.get("pay_status");
+    		String out_trade_no = map.get("out_trade_no");
+    		String terminal_id = map.get("terminal_id");// 终端ID
+    		String terminal_trace = map.get("terminal_trace");// 凭证号
+    		String pay_type = map.get("pay_type");  //交易类型： 1 微信 2支付宝 3银行卡 4现金 5无卡支付 6qq钱包 7百度钱包8京东钱包 
+    		String pay_status = map.get("pay_status"); //交易状态描述：1.支付成功，2退款成功，3撤销成功，4冲正成功
+    		String card_type = map.get("card_type");//卡属性, 卡属性, 01借记卡, 02信用卡, 03准贷记卡,04预付卡
     		if(!"3".equals(pay_type)){
     			return true;
     		}
     		if("1".equals(pay_status)){
-    			//成功
+    			if(StringUtils.isEmpty(terminal_id)){
+    				return false;
+    			}
+    			String transactionId = terminal_id+"-"+terminal_trace;
+    			OrderBean  orderBean = tbOrderDao.getByTransactionId(transactionId);
+    			if(orderBean == null){
+    				return false;
+    			}
     			
-    		}else if("3".equals(pay_status)){
-    			//取消
+    			StorePayInfo payInfo = tbStorePayInfoDao.getByStoreNoAndTypeAndMethod(orderBean.getStoreNo(), 6, "3");
+    			if(payInfo == null){
+    				return false;
+    			}
+    			String rateStr = "";
+    			if("01".equals(card_type)){
+    				//01借记卡
+    				rateStr = payInfo.getField1();
+    			}else if("02".equals(card_type)){
+//    				02信用卡
+    				rateStr = payInfo.getField2();
+    			}else{
+    				return false;
+    			}
+    			
+    			if(StringUtils.isEmpty(rateStr)){
+    				return false;
+    			}
+    			String[] args = rateStr.split(",");
+    			double rate = Double.parseDouble(args[0]);
+    			
+    			double serviceChange = Arith.div(Arith.mul(orderBean.getActualChargeAmount(), rate),100);
+    			if(args.length > 1){
+    				double highCharge = Double.parseDouble(args[2]);
+    				if(serviceChange > highCharge ){
+    					serviceChange = highCharge;
+    				}
+    			}
+    			tbOrderDao.updateFYUP(1, transactionId, card_type, serviceChange, rate,out_trade_no);
+    		}else if("3".equals(pay_status) || "2".equals(pay_status)){
     			
     		}
     	}catch (Exception e) {

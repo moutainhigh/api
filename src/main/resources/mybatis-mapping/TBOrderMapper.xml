@@ -41,7 +41,13 @@
      <select id="getByTransactionId" resultType="orderBean">
         SELECT <include refid="SELECT_FIELDS"/>
         FROM tb_order
-        WHERE transaction_id = #{transactionId}
+        WHERE transaction_id = #{transactionId} order by id desc limit 1
+    </select>
+    
+    <select id="getByTransactionIdAndStoreNo" resultType="orderBean">
+        SELECT <include refid="SELECT_FIELDS"/>
+        FROM tb_order
+        WHERE transaction_id = #{transactionId} and store_no = #{storeNo}
     </select>
 
     <select id="getById" resultType="orderBean">
@@ -579,6 +585,14 @@
         utime = unix_timestamp(now())
         where status = #{preStatus} and order_id = #{orderId} and account_id = #{accountId}
      </update>
+     
+      <update id="updateFYUP">
+        update tb_order
+        set utime = unix_timestamp(now()),card_type = #{cardType},service_charge=#{serviceCharge},
+        rate=#{rate},fuyou_order_no = #{fuyouOrderNo}
+        where status = #{status} and transaction_id=#{transactionId} 
+     </update>
+     updateByAccount
      
       <update id="updateStatus">
         update tb_order

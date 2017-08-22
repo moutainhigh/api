@@ -1,6 +1,7 @@
 package com.zhsj.api.dao;
 
 
+import com.sun.org.glassfish.gmbal.ParameterNames;
 import com.zhsj.api.bean.result.CountDealBean;
 import com.zhsj.api.bean.result.CountDiscount;
 import com.zhsj.api.bean.result.CountMember;
@@ -32,6 +33,13 @@ public interface TBOrderDao {
             			@Param("orderId") String orderId,
             			@Param("accountId")long accountId,
             			@Param("transactionId")String transactionId);
+    
+    int updateFYUP(@Param("status") int status,
+						@Param("transactionId")String transactionId,
+						@Param("cardType")String cardType,
+						@Param("serviceCharge")double serviceCharge,
+						@Param("rate")double rate,
+						@Param("fuyouOrderNo")String fuyouOrderNo);
 
     int updateOrderByOrderIdIde(@Param("status") int status,
                              @Param("preStatus") int prestatus,
@@ -40,6 +48,9 @@ public interface TBOrderDao {
     OrderBean getByOrderId(@Param("orderId")String orderId);
     
     OrderBean getByTransactionId(@Param("transactionId")String transactionId);
+    
+    OrderBean getByTransactionIdAndStoreNo(@Param("transactionId")String transactionId,
+    							 @Param("storeNo")String storeNo);
 
     OrderBean getById(@Param("id")long id);
 
