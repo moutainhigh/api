@@ -592,7 +592,6 @@
         rate=#{rate},fuyou_order_no = #{fuyouOrderNo}
         where status = #{status} and transaction_id=#{transactionId} 
      </update>
-     updateByAccount
      
       <update id="updateStatus">
         update tb_order
