@@ -633,6 +633,17 @@
         </if>
 	 </select>
 	 
+	 <select id="getByUser" resultType="orderBean">
+	 	select <include refid="SELECT_FIELDS"/>
+	 	from tb_order
+	 	where store_no = #{storeNo} and user_id=#{userId} and ctime BETWEEN #{startTime} and #{endTime} 
+	 	and status in <foreach collection="statusList" item="status" open="(" close=")" separator=",">
+            #{status}
+        </foreach>
+        order by id desc
+        limit 200
+	 </select>
+	 
 <!-- 	 <select id="getRefundSum" resultType="Map"> -->
 <!-- 	   select ifnull(sum(refund_money), 0) refundsum from tb_order -->
 <!--         where ctime &gt;= #{startTime} and ctime &lt;= #{endTime}  -->

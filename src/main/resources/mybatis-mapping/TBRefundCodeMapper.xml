@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBRefundCodeDao">
+
+	<sql id="SELCET_FIELDS">
+		id,code,open_id,store_no,type
+	</sql>
+	
+	<insert id="insert">
+		insert into tb_refund_code
+		 (code,store_no,utime,ctime)
+		 values 
+		 (#{code},#{storeNo},unix_timestamp(now()),unix_timestamp(now()))
+	</insert>
+	
+	<update id="updateOpenId">
+		update tb_refund_code
+		set open_id = #{openId},utime = unix_timestamp(now())
+		where code = #{code}
+	</update>
+	
+
+     <select id="getByCode" resultType="refundCode">
+     	select <include refid="SELCET_FIELDS"/>
+     	from tb_refund_code
+     	where code = #{code}
+     </select>
+
+     
+</mapper>

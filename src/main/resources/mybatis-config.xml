@@ -41,6 +41,9 @@
         <typeAlias type="com.zhsj.api.bean.NotifyBean" alias="notifyBean"/>
         <typeAlias type="com.zhsj.api.bean.StoreItemBean" alias="storeItemBean"/>
     	<typeAlias type="com.zhsj.api.bean.PWTSettings" alias="pwtSettings"/>
+    	<typeAlias type="com.zhsj.api.bean.RefundCode" alias="refundCode"/>
+    	
+    	
     	
     </typeAliases>
 </configuration>
