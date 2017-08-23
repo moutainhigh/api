@@ -32,6 +32,13 @@ public interface TBOrderDao {
             			@Param("orderId") String orderId,
             			@Param("accountId")long accountId,
             			@Param("transactionId")String transactionId);
+    
+    int updateFYUP(@Param("status") int status,
+						@Param("transactionId")String transactionId,
+						@Param("cardType")String cardType,
+						@Param("serviceCharge")double serviceCharge,
+						@Param("rate")double rate,
+						@Param("fuyouOrderNo")String fuyouOrderNo);
 
     int updateOrderByOrderIdIde(@Param("status") int status,
                              @Param("preStatus") int prestatus,
@@ -220,6 +227,12 @@ public interface TBOrderDao {
 					   @Param("wwt_order_no")String wwt_order_no,
 					   @Param("storeNo")String storeNo,
 					   @Param("orderType")String orderType);
+	
+	List<OrderBean> getByUser(@Param("userId") long userId,
+							  @Param("storeNo")String storeNo,
+							  @Param("startTime")long startTime,
+							  @Param("endTime")long endTime,
+							  @Param("statusList")List statusList);
 	
 //	Map<String, Object> getRefundSum(@Param("storeNos")List<String> storeNos, 
 //			@Param("startTime")int startTime, @Param("endTime")int endTime, @Param("payType")int payType, @Param("payMethod")String payMethod);
