@@ -15,12 +15,14 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mysql.fabric.xmlrpc.base.Array;
 import com.zhsj.api.bean.AliPayInfo;
 import com.zhsj.api.bean.OrderBean;
+import com.zhsj.api.bean.OrderRefundBean;
 import com.zhsj.api.bean.RefundCode;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StorePayInfo;
 import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.iface.RefundResBean;
 import com.zhsj.api.dao.TBOrderDao;
+import com.zhsj.api.dao.TBOrderRefundDao;
 import com.zhsj.api.dao.TBRefundCodeDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindAccountDao;
@@ -58,6 +60,8 @@ public class RefundService {
     WXService wxService;
     @Autowired
     AliService aliService;
+    @Autowired
+    TBOrderRefundDao tbOrderRefundDao;
     
     public CommonResult refundCode(String accountId){
     	logger.info("#RefundService.refundCode# accountId={}",accountId);
@@ -111,6 +115,22 @@ public class RefundService {
     		map.put("time", orderBean.getCtime()+"");
     		map.put("status", orderBean.getStatus()+"");
     		map.put("orderId", orderBean.getOrderId());
+    		
+    		if(orderBean.getStatus() == 3 || orderBean.getStatus() == 4 || orderBean.getStatus() == 5){
+    			map.put("refundMoney", orderBean.getRefundMoney()+"");
+    			OrderRefundBean bean = tbOrderRefundDao.getByRefundNo(orderBean.getRefundNo());
+    			if(bean != null){
+    				long rid = bean.getSubmitUserId() == 0?bean.getApproveUserId():bean.getSubmitUserId();
+    				StoreAccountBean accountBean = null;
+    				if(rid > 0){
+    					accountBean = tbStoreAccountDao.getById(rid);
+    				}
+    				if(accountBean != null){
+    					map.put("refundPersion", accountBean.getName());
+    				}
+    			}
+    		}
+    		
     		return CommonResult.success("", map);
     	}catch (Exception e) {
 			logger.error("#RefundService.searchByNo# orderId={} transactionId={}",orderId,transactionId,e);
@@ -158,6 +178,7 @@ public class RefundService {
     			oMap.put("status", orderBean.getStatus()+"");
     			oMap.put("actualMoney", orderBean.getActualChargeAmount()+"");
     			oMap.put("orderId", orderBean.getOrderId());
+    			oMap.put("refundMoney", orderBean.getRefundMoney()+"");
     			list2.add(oMap);
     		}
     		map.put("num", list2.size());
