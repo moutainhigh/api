@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBAliPayInfoDao">
+    <sql id="SELECT_FIELDS">
+    	id,app_id,gate_way,public_key,private_key,app_name,app_key
+    </sql>
+
+    <select id="getByAppId" resultType="aliPayInfo" >
+        select <include refid="SELECT_FIELDS"/>
+        FROM tb_alipay_info
+        WHERE app_id = #{appId}
+    </select>
+
+
+</mapper>

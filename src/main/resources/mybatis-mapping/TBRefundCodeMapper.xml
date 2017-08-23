@@ -15,7 +15,7 @@
 	
 	<update id="updateOpenId">
 		update tb_refund_code
-		set open_id = #{openId},utime = unix_timestamp(now())
+		set open_id = #{openId},utime = unix_timestamp(now()),type=#{type}
 		where code = #{code}
 	</update>
 	

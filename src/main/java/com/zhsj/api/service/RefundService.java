@@ -4,29 +4,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
+import org.springframework.web.servlet.ModelAndView;
 import com.mysql.fabric.xmlrpc.base.Array;
+import com.zhsj.api.bean.AliPayInfo;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.RefundCode;
 import com.zhsj.api.bean.StoreAccountBean;
+import com.zhsj.api.bean.StorePayInfo;
 import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.iface.RefundResBean;
 import com.zhsj.api.dao.TBOrderDao;
 import com.zhsj.api.dao.TBRefundCodeDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindAccountDao;
+import com.zhsj.api.dao.TbStorePayInfoDao;
 import com.zhsj.api.dao.TbUserDao;
 import com.zhsj.api.util.CommonResult;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.Md5;
 import com.zhsj.api.util.MtConfig;
+import com.zhsj.api.util.WebUtils;
 import com.zhsj.api.util.wft.RandomStringGenerator;
 
 /**
@@ -48,6 +52,12 @@ public class RefundService {
     private TbUserDao tbUserDao;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private TbStorePayInfoDao tbStorePayInfoDao;
+    @Autowired
+    WXService wxService;
+    @Autowired
+    AliService aliService;
     
     public CommonResult refundCode(String accountId){
     	logger.info("#RefundService.refundCode# accountId={}",accountId);
@@ -65,7 +75,7 @@ public class RefundService {
     		}
     		Map<String,String> map = new HashMap();
     		map.put("code", code);
-    		String url = MtConfig.getProperty("API_URL", "")+"/order/v2/scanCode?code="+code;
+    		String url = MtConfig.getProperty("API_URL", "")+"refund/scanCode?code="+code;
     		map.put("url",url);
     		return CommonResult.success("", map);
     	}catch (Exception e) {
@@ -99,6 +109,7 @@ public class RefundService {
     		map.put("actualMoney", orderBean.getActualChargeAmount()+"");
     		map.put("operator", operator);
     		map.put("time", orderBean.getCtime()+"");
+    		map.put("status", orderBean.getStatus()+"");
     		map.put("orderId", orderBean.getOrderId());
     		return CommonResult.success("", map);
     	}catch (Exception e) {
@@ -180,5 +191,85 @@ public class RefundService {
 		}
     	return CommonResult.defaultError("系统异常");
     }
+    
+    public ModelAndView scanCode(String code,HttpServletRequest request){
+    	logger.info("#RefundService.scanCode# code={}",code);
+    	ModelAndView modelAndView = new ModelAndView();
+    	try{
+	     	Map<String, List<String>> headers = WebUtils.getHeaders(request);
+	        List<String> userAgentList = headers.get("user-agent");
+	        //得不到类型，返回错误
+	        if(userAgentList == null || userAgentList.size() == 0){
+	        	modelAndView.setViewName("error_pay");
+	        	return modelAndView;
+	        }
+	        modelAndView.addObject("code", code);
+	        modelAndView.addObject("redirect", "refund/getUserOpenId");
+	        String userAgent = userAgentList.get(0);
+	        if(userAgent.indexOf("MicroMessenger") >= 0){
+	        	List<RefundCode> list = tbRefundCodeDao.getByCode(code);
+	        	if(CollectionUtils.isEmpty(list)){
+	        		modelAndView.setViewName("error");
+	        		return modelAndView;
+	        	}
+	        	List<StorePayInfo> storePayInfos = tbStorePayInfoDao.getStorePayInfoByNO(list.get(0).getStoreNo());
+	        	StorePayInfo storePayInfo = null;
+	        	for(StorePayInfo payInfo:storePayInfos){
+	        		if("1".equals(payInfo.getPayMethod())){
+	        			storePayInfo = payInfo;
+	        			break;
+	        		}
+	        	}
+	        	if(storePayInfo == null){
+	        		modelAndView.setViewName("error");
+	        		return modelAndView;
+	        	}
+         		modelAndView.addObject("appid",storePayInfo.getAppId());
+                modelAndView.setViewName("/open/wx");
+	         }else if(userAgent.indexOf("Alipay") >= 0){
+        		modelAndView.addObject("appid","2016090701864634");
+         		modelAndView.setViewName("/open/zfb");
+	         }else {
+	             //其它
+	             modelAndView.setViewName("error_pay");
+	         }
+	     }catch (Exception e) {
+	     	logger.error("#RefundService.scanCode# error code={}",code,e);
+	     	modelAndView.setViewName("error_pay");
+		}
+	     return modelAndView;
+    }
+    
+    
+    public ModelAndView getUserOpenId(String auth,String appId,String state,int type){
+    	logger.info("#RefundService.getUserOpenId# auth={},appId={},state={},type={}",auth,appId,state,type);
+    	ModelAndView modelAndView = new ModelAndView();
+    	try{
+    		String openId = "";
+    		if(type == 1){
+    			 openId = wxService.getOpenId(auth,appId);
+    		}else if(type ==2){
+    			AliPayInfo aliPayInfo = aliService.getAliPayInfoByAppId(appId);
+		        if(aliPayInfo == null){
+		        	 modelAndView.setViewName("error");
+		             return modelAndView;
+		        }
+		        openId = aliService.getAliUserId(appId, auth, aliPayInfo.getPrivateKey(), aliPayInfo.getGateWay());
+    		}else{
+    			modelAndView.setViewName("error");
+        		return modelAndView;
+    		}
+    		tbRefundCodeDao.updateOpenId(openId, state,type);
+    		modelAndView.setViewName("index");
+    		return modelAndView;
+	     }catch (Exception e) {
+	     	logger.error("#RefundService.getUserOpenId# auth={},appId={},state={},type={}",auth,appId,state,type,e);
+	     	modelAndView.setViewName("error_pay");
+		}
+	     return modelAndView;
+    }
+    
+    
+    
 }
 

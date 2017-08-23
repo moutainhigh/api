@@ -18,7 +18,8 @@ public interface TBRefundCodeDao {
 
     
     int updateOpenId(@Param("openId")String openId,
-    				 @Param("code")String code);
+    				 @Param("code")String code,
+    				 @Param("type")int type);
     
     List<RefundCode> getByCode(@Param("code")String code);
 

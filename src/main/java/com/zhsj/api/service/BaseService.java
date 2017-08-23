@@ -37,15 +37,11 @@ public class BaseService {
     @Autowired
     private TBVersionInfoDao tbVersionInfoDao;
     @Autowired
-    private JPushService jPushService;
-    @Autowired
     private StoreService storeService;
     @Autowired
     private StoreAccountService storeAccountService;
     @Autowired
     OrderService orderService;
-    @Autowired
-    private VPiaotongService vpiaotongService;
 
     public List<CityCodeBean> getCityCode(String cityCode){
         logger.info("#BaseService.getCityCode# cityCode={}",cityCode);
