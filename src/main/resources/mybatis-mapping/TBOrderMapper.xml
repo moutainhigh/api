@@ -621,7 +621,7 @@
 	 <select id="getBy3Id" resultType="orderBean">
 	 	select <include refid="SELECT_FIELDS"/>
 	 	from tb_order
-	 	where store_no = #{storeNo} and pay_method = #{orderType}
+	 	where store_no = #{storeNo}
 	 	<if test=" mchnt_order_no != null and mchnt_order_no != '' ">
             and mchnt_order_no = #{mchnt_order_no}
         </if>

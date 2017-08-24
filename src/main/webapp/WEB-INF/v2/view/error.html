@@ -21,7 +21,7 @@
         <p class="nameBold">
             退款失败
         </p>
-        <p class="nameCon">失败原因:交易无效、无法退款</p>
+        <p class="nameCon">失败原因:{{msg}}</p>
     </div>
     <button type="button" class="search-button" @click="goBack">订单详情</button>
 
@@ -41,7 +41,8 @@
             return {
                 isWebView: false,
                 list: [],
-                times: 5
+                times: 5,
+                msg:''
             }
         },
         created() {
@@ -50,7 +51,7 @@
             NewTool.RemYdui();
         },
         mounted() {
-
+             this.msg = sessionStorage.getItem('ermsg');
         },
         methods: {
             findDevice() {

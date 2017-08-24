@@ -41,7 +41,7 @@
             }
         },
         created() {
-            this.findDevice();
+//            this.findDevice();
             this.tofastClick();
             NewTool.RemYdui();
         },
@@ -54,6 +54,11 @@
                 }
                 else {
                     window.close();
+                    if (NewTool.device().device.isWeixin) {
+                        WeixinJSBridge.call('closeWindow');
+                    }
+
+                    AlipayJSBridge.call('closeWebview');
                     clearInterval(times)
                 }
             }, 1000)

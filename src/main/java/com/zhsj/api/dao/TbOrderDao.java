@@ -225,8 +225,8 @@ public interface TBOrderDao {
 	OrderBean getBy3Id(@Param("mchnt_order_no")String mchnt_order_no,
 					   @Param("transaction_id")String transaction_id,
 					   @Param("wwt_order_no")String wwt_order_no,
-					   @Param("storeNo")String storeNo,
-					   @Param("orderType")String orderType);
+					   @Param("storeNo")String storeNo);
+	
 	
 	List<OrderBean> getByUser(@Param("userId") long userId,
 							  @Param("storeNo")String storeNo,

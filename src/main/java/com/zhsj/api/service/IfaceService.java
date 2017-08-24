@@ -206,7 +206,7 @@ public class IfaceService {
     		
     		
 			OrderBean bean = orderService.getOrder(reqBean.getMchnt_order_no(),reqBean.getTransaction_id(),
-														reqBean.getWwt_order_no(),reqBean.getMchnt_cd(),payMethod);
+														reqBean.getWwt_order_no(),reqBean.getMchnt_cd());
 			if(bean == null){
 				return CommonResult.build(10005, "订单不存在");
 			}
@@ -261,11 +261,11 @@ public class IfaceService {
     			return CommonResult.build(10004, "商家不存在");
     		}
     		
-    		String payMethod = "WECHAT".equals(reqBean.getOrder_type())?"1":"2" ;
+//    		String payMethod = "WECHAT".equals(reqBean.getOrder_type())?"1":"2" ;
     		
     		
 			OrderBean bean = orderService.getOrder(reqBean.getMchnt_order_no(),reqBean.getTransaction_id(),
-														reqBean.getWwt_order_no(),reqBean.getMchnt_cd(),payMethod);
+														reqBean.getWwt_order_no(),reqBean.getMchnt_cd());
 			if(bean == null){
 				return CommonResult.build(10005, "订单不存在");
 			}
