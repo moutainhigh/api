@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
-    <title>账单查询</title>
+    <title>账单详情</title>
     <!--初始化样式表重置默认样式-->
     <link rel="stylesheet" href="../css/reset.css">
     <link rel="stylesheet" href="../css/refound.css">
@@ -71,7 +71,7 @@
 <!--二维码生成器库-->
 <script type="text/javascript" src="../script/qrcode.min.js"></script>
 <script>
-      var acid = '67';
+      var acid = NewTool.getURLParams('accountId');
     var vue = new Vue({
         el: '#app',
         data() {
@@ -89,8 +89,7 @@
             this.getErweima();
         },
         mounted() {
-
-
+           sessionStorage.setItem('userID',NewTool.getURLParams('accountId'));
         },
         methods: {
             findDevice() {
@@ -131,7 +130,8 @@
                         if (res.data.code === 0) {
                            this.url = res.data.data.url;
                            this.code = res.data.data.code;
-                           this.sendErweima()
+                           this.sendErweima();
+                           this.searchCode();
                         }
 
                     })
@@ -145,6 +145,17 @@
                     colorLight : '#ffffff',
                     correctLevel : QRCode.CorrectLevel.H
                 });
+            },
+            searchCode:function () {
+                var that = this;
+                setInterval(function () {
+                    axios.get(api+'/refund/searchByCode?code='+that.code)
+                        .then((res)=>{
+                            if(res.data.code===0){
+                                window.location.href='order.html?code='+that.code;
+                            }
+                        })
+                },5000)
             }
         }
 
