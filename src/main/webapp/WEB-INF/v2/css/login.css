@@ -1,0 +1,66 @@
+.webViewHead{
+    height: 0.85rem;
+    width: 100%;
+    background: #3e3e43;
+    text-align: center;
+    font-size: .4rem;
+    color: white;
+    line-height:.85rem;
+    position: relative;
+}
+.back{
+    height: .35rem;
+    position: absolute;
+    left: .2rem;
+    top: 50%;
+    margin-top: -.175rem;
+}
+.loginContainr{
+    width: calc(100% - 1.6rem);
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+}
+.login-title{
+    font-size: .4rem;
+    font-weight:600;
+    margin-top: 1.3rem;
+    color: #333333;
+    margin-bottom: 1.8rem;
+}
+[v-cloak]{
+    display: none;
+}
+.login-bg{
+    position: absolute;
+    bottom:0;
+    width: 100%;
+}
+input{
+    font-size:.33rem;
+    width: 100%;
+    padding: .2rem 0;
+    outline: none;
+    color: #9b9b9b;
+    background: none;
+    border: none;
+}
+.login-group{
+    font-size:0;
+    border-bottom: 1px solid #d8d8d8;
+    margin-top: .2rem;
+    padding-bottom: .1rem;
+}
+.login-button{
+    width: 100%;
+    border: none;
+    outline:none;
+    color: white;
+    background: #42cefc;
+    font-size:.33rem;
+    height: .9rem;
+    border-radius: 5px;
+    line-height:.9rem;
+    margin-top: .5rem;
+}

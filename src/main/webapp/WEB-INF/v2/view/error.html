@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>退款失败</title>
+    <!--初始化样式表重置默认样式-->
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/order.css">
+    <!--处理es6兼容问题 polyfill.js-->
+    <script src="../script/polyfill.min.js"></script>
+</head>
+<body style="background:#f7f7f7;">
+<div id="app" v-cloak>
+    <div class="webViewHead" v-if="isWebView">
+        <img src="../image/fanhb.png" class="back">
+        <span class="center-size">退款结果</span>
+    </div>
+    <div class="areasId">
+        <img src="../image/errors.png">
+        <p class="nameBold">
+            退款失败
+        </p>
+        <p class="nameCon">失败原因:交易无效、无法退款</p>
+    </div>
+    <button type="button" class="search-button" @click="goBack">订单详情</button>
+
+</div>
+<!--主体框架 vue.js 完整项目搭配 -->
+<script src="../script/vue.js"></script>
+<!--处理移动端点击事件等延迟行为 fastclick.js-->
+<script src="../script/fastclick.js"></script>
+<!--方法 rem布局 与 判断当前运行环境等-->
+<script src="../script/webUi.Tool.js"></script>
+<!--请求库-->
+<script src="../script/axios.min.js"></script>
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data() {
+            return {
+                isWebView: false,
+                list: [],
+                times: 5
+            }
+        },
+        created() {
+            this.findDevice();
+            this.tofastClick();
+            NewTool.RemYdui();
+        },
+        mounted() {
+
+        },
+        methods: {
+            findDevice() {
+                if (NewTool.device().device.isWebView && !NewTool.device().device.isWeixin) {
+                    this.isWebView = true;
+                }
+                else {
+                    this.isWebView = false;
+                }
+            },
+            tofastClick() {
+                if ('addEventListener' in document) {
+                    document.addEventListener('DOMContentLoaded', function () {
+                        FastClick.attach(document.body);
+                    }, false);
+                }
+            },
+            goBack() {
+                var id = NewTool.getURLParams('id');
+                window.location.href = 'order-detail.html?id=' + id;
+            }
+        }
+
+    })
+
+</script>
+</body>
+</html>

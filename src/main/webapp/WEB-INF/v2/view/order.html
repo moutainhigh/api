@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>订单列表</title>
+    <!--初始化样式表重置默认样式-->
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/order.css">
+    <!--处理es6兼容问题 polyfill.js-->
+    <script src="../script/polyfill.min.js"></script>
+    <script src="../script/config.js"></script>
+</head>
+<body>
+<div id="app" v-cloak>
+    <div class="webViewHead" v-if="isWebView">
+        <img src="../image/fanhb.png" class="back">
+        <span class="center-size">订单列表</span>
+    </div>
+    <div class="order-count">
+        共{{num}}笔订单
+    </div>
+    <div id="wrapper">
+          <ul class="order-list">
+              <li v-for="item in list">
+                  <a :href="'order-detail.html?id='+item.orderId">
+                     <img src="../image/weix.png" class="icon" v-if="item.payMethod==='1'">
+                      <img src="../image/zhifb.png" class="icon" v-if="item.payMethod==='2'">
+                      <img src="../image/yinl.png" class="icon" v-if="item.payMethod==='3'">
+                   <div class="order-right">
+                         <div class="item-top">
+                             <time>{{item.times}}</time>
+                             <span v-if="item.status==='0'">支付中</span>
+                             <span v-if="item.status==='1'">支付成功</span>
+                             <span v-if="item.status==='2'">支付失败 </span>
+                             <span v-if="item.status==='3'">退款中 </span>
+                             <span v-if="item.status==='4'">退款成功 </span>
+                             <span v-if="item.status==='5'">退款失败 </span>
+                             <mark>-{{item.actualMoney}}</mark>
+                         </div>
+                       <div class="item-down">
+                           <span>{{item.hours}}</span>
+                           <span style="float: right;">实收:{{item.actualMoney}}</span>
+                       </div>
+                   </div>
+                  </a>
+              </li>
+
+          </ul>
+    </div>
+</div>
+<!--主体框架 vue.js 完整项目搭配 -->
+<script src="../script/vue.js"></script>
+<!--处理移动端点击事件等延迟行为 fastclick.js-->
+<script src="../script/fastclick.js"></script>
+<!--方法 rem布局 与 判断当前运行环境等-->
+<script src="../script/webUi.Tool.js"></script>
+<!--请求库-->
+<script src="../script/axios.min.js"></script>
+<script>
+    var vue = new Vue({
+        el:'#app',
+        data(){
+            return{
+                isWebView:false,
+                num:'',
+                list:[]
+            }
+        },
+        created () {
+            this.findDevice();
+            this.tofastClick();
+            NewTool.RemYdui();
+            this.getcodeDetail()
+        },
+        mounted(){
+
+        },
+        methods:{
+            findDevice(){
+                if(NewTool.device().device.isWebView&&!NewTool.device().device.isWeixin){
+                    this.isWebView = true;
+                }
+                else{
+                    this.isWebView = false;
+                }
+            },
+            tofastClick(){
+                if ('addEventListener' in document) {
+                    document.addEventListener('DOMContentLoaded', function() {
+                        FastClick.attach(document.body);
+                    }, false);
+                }
+            },
+            getcodeDetail(){
+                var code = NewTool.getURLParams('code');
+                axios.get(api+'/refund/searchByCode?code='+code)
+                    .then((res)=>{
+                       if(res.data.code===0){
+                           console.log();
+                           for (var i =0;i<res.data.data.list.length;i++){
+                               res.data.data.list[i].times = NewTool.timeData({
+                                   timestamp:res.data.data.list[i].time
+                               })
+                               res.data.data.list[i].hours = NewTool.timehour({
+                                   timestamp:res.data.data.list[i].time
+                               })
+                           }
+                             this.num = res.data.data.num;
+                             this.list = res.data.data.list;
+                       }
+                    })
+            }
+        }
+
+    })
+
+</script>
+</body>
+</html>

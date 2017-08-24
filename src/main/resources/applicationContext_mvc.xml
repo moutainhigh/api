@@ -37,6 +37,12 @@
     <mvc:resources mapping="/resource/css/mchAdd/**" location="/WEB-INF/resource/css/mchAdd/" />
     <mvc:resources mapping="/resource/img/mchAdd/**" location="/WEB-INF/resource/img/mchAdd/" />
     
+    <mvc:resources mapping="/v2/css/**" location="/WEB-INF/v2/css/" />
+    <mvc:resources mapping="/v2/image/**" location="/WEB-INF/v2/image/" />
+    <mvc:resources mapping="/v2/script/**" location="/WEB-INF/v2/script/" />
+    <mvc:resources mapping="/v2/view/**" location="/WEB-INF/v2/view/" />
+    
+    
 
 
 

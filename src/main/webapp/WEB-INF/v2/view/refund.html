@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>账单查询</title>
+    <!--初始化样式表重置默认样式-->
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/refound.css">
+    <link rel="stylesheet" href="../css/webui.css">
+    <!--处理es6兼容问题 polyfill.js-->
+    <script src="../script/polyfill.min.js"></script>
+    <script src="../script/config.js"></script>
+
+    <style>
+        #app, body, html {
+            width: 100%;
+            min-height: 100%;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body style="background: #f7f7f7">
+<div id="app" v-cloak>
+    <div class="webViewHead" v-if="isWebView">
+        <img src="../image/fanhb.png" class="back">
+        <span class="center-size">退款</span>
+    </div>
+    <div class="refound_head">
+        <div class="item-top">
+            <span class="lines"></span>
+            <span class="text">订单号</span>
+        </div>
+        <div class="item-down">
+            <input type="text" placeholder="请输入订单号进行查询" v-model="orderId">
+        </div>
+
+
+    </div>
+    <button type="button" class="search-button" @click="search">查询</button>
+    <div class="refound_head">
+        <div class="item-top">
+            <span class="lines"></span>
+            <span class="text">用户扫码查询</span>
+        </div>
+        <div class="erweima">
+              <div id="qrcode">
+
+              </div>
+
+        </div>
+        <div class="titles_div">
+            <p class="titles">请用户使用微信或支付宝扫描上方二维码</p>
+            <p class="titles">查询用户对应的交易订单</p>
+        </div>
+
+    </div>
+
+</div>
+<!--主体框架 vue.js 完整项目搭配 -->
+<script src="../script/vue.js"></script>
+<!--处理移动端点击事件等延迟行为 fastclick.js-->
+<script src="../script/fastclick.js"></script>
+<!--方法 rem布局 与 判断当前运行环境等-->
+<script src="../script/webUi.Tool.js"></script>
+<!--请求库-->
+<script src="../script/axios.min.js"></script>
+<!--二维码生成器库-->
+<script type="text/javascript" src="../script/qrcode.min.js"></script>
+<script>
+      var acid = '67';
+    var vue = new Vue({
+        el: '#app',
+        data() {
+            return {
+                isWebView: false,
+                orderId: '',
+                url: '',
+                code:''
+            }
+        },
+        created() {
+            this.findDevice();
+            this.tofastClick();
+            NewTool.RemYdui();
+            this.getErweima();
+        },
+        mounted() {
+
+
+        },
+        methods: {
+            findDevice() {
+                if (NewTool.device().device.isWebView && !NewTool.device().device.isWeixin) {
+                    this.isWebView = true;
+                }
+                else {
+                    this.isWebView = false;
+                }
+            },
+            tofastClick() {
+                if ('addEventListener' in document) {
+                    document.addEventListener('DOMContentLoaded', function () {
+                        FastClick.attach(document.body);
+                    }, false);
+                }
+            },
+            search() {
+                if (this.orderId != '') {
+                    axios.get(api+'/refund/searchByNo?orderId='+this.orderId+'&transactionId='+this.orderId)
+                        .then(function (res) {
+                            if(res.data.code===0){
+                                window.location.href = 'order-detail.html?id=' + vue.orderId;
+                            }
+                            else{
+                                NewTool.alert({
+                                    containr:res.data.msg
+                                })
+
+                            }
+                        })
+
+                }
+            },
+            getErweima() {
+                axios.get(api+'/refund/refundCode?accountId='+acid)
+                    .then((res) => {
+                        if (res.data.code === 0) {
+                           this.url = res.data.data.url;
+                           this.code = res.data.data.code;
+                           this.sendErweima()
+                        }
+
+                    })
+            },
+            sendErweima(){
+                var qrcode = new QRCode('qrcode', {
+                    text: this.url,
+                    width: 256,
+                    height: 256,
+                    colorDark : '#000000',
+                    colorLight : '#ffffff',
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+            }
+        }
+
+    })
+
+</script>
+</body>
+</html>
