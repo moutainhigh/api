@@ -10,12 +10,21 @@
     <!--处理es6兼容问题 polyfill.js-->
     <script src="../script/polyfill.min.js"></script>
 </head>
+<style>
+    .centers img{
+        width: 60px;
+        height: 60px;
+    }
+    .centers p{
+        font-size:16px;
+    }
+</style>
 <body style="background:#f7f7f7;">
-<div id="app" v-cloak>
-    <div class="webViewHead" v-if="isWebView">
-        <img src="../image/fanhb.png" class="back">
-        <span class="center-size">温馨提示</span>
-    </div>
+<div id="app" >
+    <!--<div class="webViewHead" v-if="isWebView">-->
+        <!--<img src="../image/fanhb.png" class="back">-->
+        <!--<span class="center-size">温馨提示</span>-->
+    <!--</div>-->
     <div class="centers">
         <img src="../image/jind.png">
         <p>您的订单查询中,页面<span id="time">5</span>秒后关闭</p>
@@ -23,7 +32,6 @@
     </div>
 </div>
 <!--主体框架 vue.js 完整项目搭配 -->
-<script src="../script/vue.js"></script>
 <!--处理移动端点击事件等延迟行为 fastclick.js-->
 <script src="../script/fastclick.js"></script>
 <!--方法 rem布局 与 判断当前运行环境等-->
@@ -31,60 +39,32 @@
 <!--请求库-->
 <script src="../script/axios.min.js"></script>
 <script>
-    var vue = new Vue({
-        el: '#app',
-        data() {
-            return {
-                isWebView: false,
-                list: [],
-                times: 5
+    var  ua = window.navigator && window.navigator.userAgent || '';
+    window.onload = function () {
+        var times = document.querySelector('#time');
+        var time = setInterval(function () {
+        var nums = 5;
+            if ( times.innerHTML > 0) {
+                times.innerHTML = times.innerHTML - 1;
+                nums--;
             }
-        },
-        created() {
-//            this.findDevice();
-            this.tofastClick();
-            NewTool.RemYdui();
-        },
-        mounted() {
-            var times = document.querySelector('#time');
-            var time = setInterval(function () {
-
-                if (times.innerHTML > 0) {
-                    times.innerHTML = times.innerHTML - 1;
-                }
-                else {
-                    window.close();
-                    if (NewTool.device().device.isWeixin) {
-                        WeixinJSBridge.call('closeWindow');
-                    }
-
+            if( times.innerHTML<=0){
+//                window.close();
+                if(ua.indexOf('AliApp')>-1){
                     AlipayJSBridge.call('closeWebview');
-                    clearInterval(times)
                 }
-            }, 1000)
-        },
-        methods: {
-            findDevice() {
-                if (NewTool.device().device.isWebView && !NewTool.device().device.isWeixin) {
-                    this.isWebView = true;
-                }
-                else {
-                    this.isWebView = false;
-                }
-            },
-            tofastClick() {
-                if ('addEventListener' in document) {
-                    document.addEventListener('DOMContentLoaded', function () {
-                        FastClick.attach(document.body);
-                    }, false);
-                }
-            },
-            getTime() {
 
+                if (NewTool.device().device.isWeixin) {
+                    WeixinJSBridge.call('closeWindow');
+                }
+
+
+
+                clearInterval(time)
             }
-        }
+        }, 1000)
+    }
 
-    })
 
 </script>
 </body>

@@ -3,7 +3,7 @@
 <html>
 <head>
     <script language="javascript">
-    	var _href = "../v2/view/refund.html?account="+${accountId};
+    	var _href = "../v2/view/refund.html?accountId="+${accountId};
         window.location.href=_href;
     </script>
 </head>
