@@ -17,37 +17,48 @@
         <img src="../image/fanhb.png" class="back">
         <span class="center-size">订单列表</span>
     </div>
-    <div class="order-count">
-        共{{num}}笔订单
-    </div>
-    <div id="wrapper">
-          <ul class="order-list">
-              <li v-for="item in list">
-                  <a :href="'order-detail.html?id='+item.orderId">
-                     <img src="../image/weix.png" class="icon" v-if="item.payMethod==='1'">
-                      <img src="../image/zhifb.png" class="icon" v-if="item.payMethod==='2'">
-                      <img src="../image/yinl.png" class="icon" v-if="item.payMethod==='3'">
-                   <div class="order-right">
-                         <div class="item-top">
-                             <time>{{item.times}}</time>
-                             <span v-if="item.status==='0'">支付中</span>
-                             <span v-if="item.status==='1'">支付成功</span>
-                             <span v-if="item.status==='2'">支付失败 </span>
-                             <span v-if="item.status==='3'">退款中 </span>
-                             <span v-if="item.status==='4'">退款成功 </span>
-                             <span v-if="item.status==='5'">退款失败 </span>
-                             <mark>-{{item.actualMoney}}</mark>
-                         </div>
-                       <div class="item-down">
-                           <span>{{item.hours}}</span>
-                           <span style="float: right;">实收:{{item.actualMoney}}</span>
-                       </div>
-                   </div>
-                  </a>
-              </li>
+    <div v-if="list.length>0">
+        <div class="order-count">
+            共{{num}}笔订单
+        </div>
+        <div id="wrapper">
+            <ul class="order-list">
+                <li v-for="item in list">
+                    <a :href="'order-detail.html?id='+item.orderId">
+                        <img src="../image/weix.png" class="icon" v-if="item.payMethod==='1'">
+                        <img src="../image/zhifb.png" class="icon" v-if="item.payMethod==='2'">
+                        <img src="../image/yinl.png" class="icon" v-if="item.payMethod==='3'">
+                        <div class="order-right">
+                            <div class="item-top">
+                                <time>{{item.times}}</time>
+                                <span v-if="item.status==='0'">支付中</span>
+                                <span v-if="item.status==='1'">支付成功</span>
+                                <span v-if="item.status==='2'">支付失败 </span>
+                                <span v-if="item.status==='3'">退款中 </span>
+                                <span v-if="item.status==='4'">退款成功 </span>
+                                <span v-if="item.status==='5'">退款失败 </span>
+                                <mark>-{{item.actualMoney}}</mark>
+                            </div>
+                            <div class="item-down">
+                                <span>{{item.hours}}</span>
+                                <span style="float: right;" v-if="item.status==='3'||item.status==='4'||item.status==='5'">实收:{{item.actualMoney}}</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
 
-          </ul>
+            </ul>
+        </div>
     </div>
+    <div v-if="list">
+        <div class="centers">
+            <img src="../image/jind.png">
+            <p>很抱歉您最近没有交易记录</p>
+
+        </div>
+
+    </div>
+
 </div>
 <!--主体框架 vue.js 完整项目搭配 -->
 <script src="../script/vue.js"></script>
@@ -97,17 +108,19 @@
                 axios.get(api+'/refund/searchByCode?code='+code)
                     .then((res)=>{
                        if(res.data.code===0){
-                           console.log();
-                           for (var i =0;i<res.data.data.list.length;i++){
-                               res.data.data.list[i].times = NewTool.timeData({
-                                   timestamp:res.data.data.list[i].time
-                               })
-                               res.data.data.list[i].hours = NewTool.timehour({
-                                   timestamp:res.data.data.list[i].time
-                               })
+                           if(res.data.data.list>0){
+                               for (var i =0;i<res.data.data.list.length;i++){
+                                   res.data.data.list[i].times = NewTool.timeData({
+                                       timestamp:res.data.data.list[i].time
+                                   })
+                                   res.data.data.list[i].hours = NewTool.timehour({
+                                       timestamp:res.data.data.list[i].time
+                                   })
+                               }
+                               this.num = res.data.data.num;
+                               this.list = res.data.data.list;
                            }
-                             this.num = res.data.data.num;
-                             this.list = res.data.data.list;
+
                        }
                     })
             }

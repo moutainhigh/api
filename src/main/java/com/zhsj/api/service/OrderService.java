@@ -1061,8 +1061,8 @@ public class OrderService {
     	return flag;
     }
     
-    public OrderBean getOrder(String mchnt_order_no,String transaction_id,String wwt_order_no,String storeNo,String orderType){
-    	return tbOrderDao.getBy3Id( mchnt_order_no, transaction_id, wwt_order_no,storeNo,orderType);
+    public OrderBean getOrder(String mchnt_order_no,String transaction_id,String wwt_order_no,String storeNo){
+    	return tbOrderDao.getBy3Id( mchnt_order_no, transaction_id, wwt_order_no,storeNo);
     }
     
     public static void main(String[] args) {

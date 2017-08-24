@@ -85,7 +85,7 @@
                 <div class="input-item-left">
                     金额(元)
                 </div>
-                <input type="number" placeholder="请输入金额" class="numbers" v-model="moneys">
+                <input type="tel" placeholder="请输入金额" class="numbers" v-model="moneys">
             </div>
             <div class="button-group">
                 <button type="button" @click="reset">取消</button>
@@ -115,7 +115,8 @@
                 list: [],
                 moneys: '',
                 status: '',
-                orderid: ''
+                orderid: '',
+                moneyed:''
             }
         },
         created() {
@@ -152,7 +153,39 @@
                 this.can = true;
                 this.stues = false;
                 var id = NewTool.getURLParams('id');
-                if (this.status === '1' && this.moneys != '') {
+                var str = String(this.moneys).charAt(0);
+                var sd  =/^[-+]?\d*$/;
+                if(!sd.test(this.moneys)){
+                    NewTool.alert({
+                        containr:'不能输入小数点'
+                    })
+                       return
+                }
+                if(str==='0'){
+                    NewTool.alert({
+                        containr:'首位不能为0'
+                    })
+                    return
+                }
+                if(Number(this.moneyed)<this.moneys){
+                    NewTool.alert({
+                        containr:'退款金额不能大于实际金额'
+                    })
+                    return
+                }
+                if(this.status!='1'){
+                    NewTool.alert({
+                        containr:'当前状态不能退款'
+                    })
+                    return
+                }
+                if(this.moneys===''){
+                    NewTool.alert({
+                        containr:'退款金额不能为空'
+                    })
+                    return
+                }
+                if(sd.test(this.moneys)&&str!='0'&&Number(this.moneyed)>this.moneys&&this.status==='1'&&this.moneys!=''){
                     axios.get(api+'/refund/refundMoney?accountId=' + acid + '&price=' + this.moneys + '&orderId=' + this.orderid)
                         .then((res) => {
                             NewTool.loading({
@@ -162,11 +195,15 @@
                                 window.location.href = 'success.html';
                             }
                             else {
-                                window.location.href = 'error.html?id='+id;
+                                sessionStorage.setItem('ermsg',re.data.msg);
+                                setTimeout(function () {
+                                    window.location.href = 'error.html?id='+id;
+                                },1000)
+
                             }
                         })
                 }
-//
+
             },
             searchByOrderId() {
                 var id = NewTool.getURLParams('id');
@@ -196,7 +233,8 @@
                             res.data.data.times = times;
                             this.list = res.data.data;
                             this.status = res.data.data.status;
-                            this.orderid = res.data.data.orderId
+                            this.orderid = res.data.data.orderId;
+                            this.moneyed = res.data.data.actualMoney
                         }
                     })
             }
