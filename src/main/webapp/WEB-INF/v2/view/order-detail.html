@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
-    <title>订单详情</title>
+    <title>账单详情</title>
     <!--初始化样式表重置默认样式-->
     <link rel="stylesheet" href="../css/reset.css">
     <link rel="stylesheet" href="../css/order.css">
@@ -104,7 +104,7 @@
 <!--请求库-->
 <script src="../script/axios.min.js"></script>
 <script>
-    var acid = '67';
+    var acid = sessionStorage.getItem('userID');
     var vue = new Vue({
         el: '#app',
         data() {
