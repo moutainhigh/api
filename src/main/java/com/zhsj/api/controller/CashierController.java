@@ -280,6 +280,19 @@ public class CashierController {
     	return mv;
     }
     
+    @RequestMapping(value = "refundPageV2")
+    @ResponseBody
+    public Object refundPageV2(String storeNo,String accountId,ModelAndView mv){
+    	logger.info("#refundPageV2# storeNo={},accountId={}", storeNo, accountId);
+    	if(StringUtils.isEmpty(storeNo) && StringUtils.isEmpty(accountId)){
+    		return CommonResult.build(2, "参数有误");
+    	}
+    	mv.addObject("storeNo", storeNo);
+    	mv.addObject("accountId", accountId);
+    	mv.setViewName("app/redirectRefund");
+    	return mv;
+    }
+    
     @RequestMapping(value = "serach")
     @ResponseBody
     public Object serach(String storeNo, String orderId,String transId){

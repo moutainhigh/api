@@ -1,0 +1,91 @@
+.refound_head{
+    width: 100%;
+    overflow: hidden;
+    background: white;
+    margin-top: .3rem;
+}
+.item-top{
+    font-size:0;
+    margin: .3rem 0;
+}
+.text{
+    font-size:.32rem;
+    color: #333333;
+    font-weight:bold;
+    vertical-align: middle;
+    margin-left: .3rem;
+}
+.lines{
+    height: .4rem;
+    width: .1rem;
+    display: inline-block;
+    background: #33cafc;
+    vertical-align: middle;
+}
+#app{
+    overflow: hidden;
+}
+.item-down{
+    width: 100%;
+    overflow: hidden;
+    font-size:0;
+}
+.item-down input{
+    font-size:.35rem;
+    text-indent: .34rem;
+    outline:none;
+    width: 100%;
+    margin-bottom: .3rem;
+    color: #9b9b9b;
+}
+.search-button{
+    width: 90%;
+    display: block;
+    font-size:.35rem;
+    color: white;
+    border: none;
+    background: #3bccfc;
+    border-radius: 5px;
+    padding: .2rem 0;
+    margin: .5rem auto;
+}
+.refound_head{
+    background: white;
+}
+.erweima{
+    text-align: center;
+    overflow: hidden;
+    margin-top: .6rem;
+}
+.erweima img{
+    width:3rem;
+    height:3rem;
+    border: 4px solid #00bfff;
+    display: block;
+    margin: 0 auto;
+}
+.titles{
+    font-size:.35rem;
+    text-align: center;
+    line-height:25px;
+}
+.titles_div{
+    margin: .3rem 0;
+}
+.webViewHead{
+    height: 0.85rem;
+    width: 100%;
+    background: #00bfff;
+    text-align: center;
+    font-size: .4rem;
+    color: white;
+    line-height:.85rem;
+    position: relative;
+}
+.back{
+    height: .35rem;
+    position: absolute;
+    left: .2rem;
+    top: 50%;
+    margin-top: -.175rem;
+}

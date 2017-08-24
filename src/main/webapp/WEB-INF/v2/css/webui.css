@@ -1,0 +1,399 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+
+/*PC端弹窗*/
+
+.WebuiAlert {
+    width: 300px;
+    position: fixed;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    margin-left: -130px;
+    margin-top: -75px;
+    border-radius: 3px;
+    z-index: 10;
+}
+
+.WebuiAlertHead {
+    width: 100%;
+    height: 43px;
+    line-height: 43px;
+    text-indent: 10px;
+    font-size: 14px;
+    color: white;
+    background: #72D1FF;
+}
+
+.WebuiAlertBg {
+    width: 100%;
+    background: #000;
+    opacity: 0.3;
+    position: fixed;
+    top: 0;
+    height: 100%;
+}
+
+.WebuiAlertCon {
+    height: auto;
+    background: white;
+    overflow: auto;
+}
+
+.cons {
+    width: 90%;
+    display: block;
+    color: #2b9bc5;
+    font-size: 14px;
+    text-align: center;
+    margin: 20px auto;
+    line-height: 30px;
+}
+
+.WebuiAlertFoot {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.WebuiAlertFoot button {
+    width: 56px;
+    height: 25px;
+    border: none;
+    outline: none;
+    color: white;
+    border-radius: 3px;
+    background: #72D1FF;
+    cursor: pointer;
+}
+
+.WebuiAlertFoot button:hover {
+    background: #EC6D51;
+}
+
+.WebuiAlertFoot button:last-of-type {
+    margin-left: 10px;
+}
+
+.WebEasyAlert {
+    width: 300px;
+    height: auto;
+    z-index: 100;
+    position: fixed;
+    left: 50%;
+    margin-left: -150px;
+    overflow: auto;
+    top: 50%;
+}
+
+.WebEasyAlert .WebEasyHead {
+    height: 43px;
+    line-height: 43px;
+    text-indent: 10px;
+    font-size: 14px;
+    color: white;
+    background: #72D1FF;
+}
+
+.WebEasyAlert .WebEasyCon {
+    width: 100%;
+    background: white;
+    min-height: 100px;
+    overflow: auto;
+    text-align: center;
+}
+
+.WebEasyAlert .WebEasycenter {
+    width: 90%;
+    text-align: center;
+    margin: 20px auto;
+    color: #2b9bc5;
+    line-height: 25px;
+    font-size: 14px;
+}
+
+.WebEasyButton {
+    width: 56px;
+    height: 25px;
+    border: none;
+    outline: none;
+    margin-bottom: 10px;
+    color: white;
+    border-radius: 3px;
+    background: #72D1FF;
+    cursor: pointer;
+    transition: all .3s ease-in-out;
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    -ms-transition: all .3s ease-in-out;
+}
+
+.WebEasyButton:hover {
+    background: #EC6D51;
+}
+
+
+/*PC端弹窗结束*/
+
+
+/*移动端加载弹窗*/
+
+.Mloadings {
+    width: 122px;
+    height: 122px;
+    background: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    margin-left: -61px;
+    text-align: center;
+    margin-top: -61px;
+    border-radius: 5px;
+}
+
+.MloadingImg {
+    margin-top: 30px;
+    animation: loading 1s steps(12, end) infinite;
+    -webkit-animation: loading 1s steps(12, end) infinite;
+    -ms-animation: loading 1s steps(12, end) infinite;
+    -moz-animation: loading 1s steps(12, end) infinite;
+    -o-animation: loading 1s steps(12, end) infinite;
+}
+
+@keyframes loading {
+    0% {
+        -webkit-transform: rotate3d(0, 0, 1, 0deg);
+        transform: rotate3d(0, 0, 1, 0deg);
+        -ms-transform: rotate3d(0, 0, 1, 0deg);
+        -moz-transform: rotate3d(0, 0, 1, 0deg);
+        -o-transform: rotate3d(0, 0, 1, 0deg);
+    }
+    100% {
+        -webkit-transform: rotate3d(0, 0, 1, 360deg);
+        transform: rotate3d(0, 0, 1, 360deg);
+        -moz-transform: rotate3d(0, 0, 1, 360deg);
+        -ms-transform: rotate3d(0, 0, 1, 360deg);
+        -o-transform: rotate3d(0, 0, 1, 360deg);
+    }
+}
+
+-webkit-@keyframes loading {
+    0% {
+        -webkit-transform: rotate3d(0, 0, 1, 0deg);
+        transform: rotate3d(0, 0, 1, 0deg);
+        -ms-transform: rotate3d(0, 0, 1, 0deg);
+        -moz-transform: rotate3d(0, 0, 1, 0deg);
+        -o-transform: rotate3d(0, 0, 1, 0deg);
+    }
+    100% {
+        -webkit-transform: rotate3d(0, 0, 1, 360deg);
+        transform: rotate3d(0, 0, 1, 360deg);
+        -moz-transform: rotate3d(0, 0, 1, 360deg);
+        -ms-transform: rotate3d(0, 0, 1, 360deg);
+        -o-transform: rotate3d(0, 0, 1, 360deg);
+    }
+}
+
+-moz-@keyframes loading {
+    0% {
+        -webkit-transform: rotate3d(0, 0, 1, 0deg);
+        transform: rotate3d(0, 0, 1, 0deg);
+        -ms-transform: rotate3d(0, 0, 1, 0deg);
+        -moz-transform: rotate3d(0, 0, 1, 0deg);
+        -o-transform: rotate3d(0, 0, 1, 0deg);
+    }
+    100% {
+        -webkit-transform: rotate3d(0, 0, 1, 360deg);
+        transform: rotate3d(0, 0, 1, 360deg);
+        -moz-transform: rotate3d(0, 0, 1, 360deg);
+        -ms-transform: rotate3d(0, 0, 1, 360deg);
+        -o-transform: rotate3d(0, 0, 1, 360deg);
+    }
+}
+
+-ms-@keyframes loading {
+    0% {
+        -webkit-transform: rotate3d(0, 0, 1, 0deg);
+        transform: rotate3d(0, 0, 1, 0deg);
+        -ms-transform: rotate3d(0, 0, 1, 0deg);
+        -moz-transform: rotate3d(0, 0, 1, 0deg);
+        -o-transform: rotate3d(0, 0, 1, 0deg);
+    }
+    100% {
+        -webkit-transform: rotate3d(0, 0, 1, 360deg);
+        transform: rotate3d(0, 0, 1, 360deg);
+        -moz-transform: rotate3d(0, 0, 1, 360deg);
+        -ms-transform: rotate3d(0, 0, 1, 360deg);
+        -o-transform: rotate3d(0, 0, 1, 360deg);
+    }
+}
+
+-o-@keyframes loading {
+    0% {
+        -webkit-transform: rotate3d(0, 0, 1, 0deg);
+        transform: rotate3d(0, 0, 1, 0deg);
+        -ms-transform: rotate3d(0, 0, 1, 0deg);
+        -moz-transform: rotate3d(0, 0, 1, 0deg);
+        -o-transform: rotate3d(0, 0, 1, 0deg);
+    }
+    100% {
+        -webkit-transform: rotate3d(0, 0, 1, 360deg);
+        transform: rotate3d(0, 0, 1, 360deg);
+        -moz-transform: rotate3d(0, 0, 1, 360deg);
+        -ms-transform: rotate3d(0, 0, 1, 360deg);
+        -o-transform: rotate3d(0, 0, 1, 360deg);
+    }
+}
+
+.MCon {
+    color: white;
+    margin-top: 15px;
+}
+
+.MloadingBg {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+
+/*移动端加载弹窗结束*/
+
+
+/*移动端UI组件*/
+
+button {
+    border: none;
+    outline: none;
+}
+
+.WebUiNormalButton, .WebUiDangerButton {
+    width: 90%;
+    margin: 10px auto;
+    display: block;
+    height: 35px;
+    line-height: 35px;
+    font-size: 18px;
+    text-align: center;
+    color: white;
+    border-radius: 5px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.WebUiNormalButton {
+    background: #1AAD19;
+}
+
+.WebUiDangerButton {
+    background: #E64340;
+}
+
+.WebUiNormalButtonAct {
+    animation: ChangeBg .4s ease;
+}
+
+.WebUiDangerButtonAct {
+    animation: ChangeDBg .4s ease;
+}
+
+@keyframes ChangeBg {
+    0% {
+        background: #1AAD19;
+    }
+    50% {
+        background: #179B16;
+    }
+    100% {
+        background: #1AAD19;
+    }
+}
+
+@keyframes ChangeDBg {
+    0% {
+        background: #E64340;
+    }
+    50% {
+        background: #CE3C39;
+    }
+    100% {
+        background: #E64340;
+    }
+}
+
+.alertBg{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0,0,0,.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.m-alert{
+    width: 85%;
+    background: white;
+    border-radius: 2px;
+
+}
+.alert-say{
+    text-align: center;
+    padding: 20px 10px;
+    border-bottom: 1px solid whitesmoke;
+    color: #888;
+    font-size: 14px;
+    line-height: 20px;
+}
+.alert-button{
+    padding: 10px 0;
+    text-align: center;
+    color: #0BB20C;
+    font-size: 14px;
+}
+.ani{
+    animation: zoomIN .2s ease-in-out;
+    opacity: 1;
+}
+@keyframes  zoomIN {
+    0%{
+           transform: scale3d(0.5, 0.5, 0.5)
+            
+    }
+    50%{
+    }
+    100%{
+      transform: scale3d(1, 1, 1)
+    }
+ 
+}
+.subButton{
+    width: 50%;
+    float: left;
+    height: 100%;
+}
+.resButton{
+    width: 50%;
+    position: relative;
+    float: left;
+    color: #333;
+}
+.resButton:before{
+    content:'';
+    width: 1px;
+    height: 100%;
+    background: whitesmoke;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.alert-button{
+    overflow: hidden;
+}

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>订单详情</title>
+    <!--初始化样式表重置默认样式-->
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/order.css">
+    <link rel="stylesheet" href="../css/webui.css">
+    <!--处理es6兼容问题 polyfill.js-->
+    <script src="../script/polyfill.min.js"></script>
+    <script src="../script/config.js"></script>
+    <style>
+        #app, body, html {
+            width: 100%;
+            height: 100%;
+        }
+
+        .MCon {
+            font-size: 16px;
+        }
+
+    </style>
+</head>
+<body style="background: #f7f7f7">
+<div id="app" v-cloak>
+    <div class="webViewHead" v-if="isWebView">
+        <img src="../image/fanhb.png" class="back">
+        <span class="center-size">账单详情</span>
+    </div>
+    <div class="order-title" v-if="list.payMethod==='1'">
+        <img src="../image/weix.png">
+        <span>微信支付</span>
+    </div>
+    <div class="order-title" v-if="list.payMethod==='2'">
+        <img src="../image/zhifb.png">
+        <span>支付宝支付</span>
+    </div>
+    <div class="order-title" v-if="list.payMethod==='3'">
+        <img src="../image/yinl.png">
+        <span>银联支付</span>
+    </div>
+    <div class="order-detail-containr">
+        <div class="detail-item">
+            <span class="name">实收金额</span>
+            <span class="money">￥{{list.actualMoney}}</span>
+        </div>
+        <div class="detail-item" v-if="list.status==='3'||list.status==='4'||list.status==='5'">
+            <span class="name">退款金额</span>
+            <span class="money">￥{{list.refundMoney}}</span>
+        </div>
+        <div class="detail-item">
+            <span class="name">收款人</span>
+            <span class="name-right">{{list.operator}}</span>
+        </div>
+        <div class="detail-item" v-if="list.status==='3'||list.status==='4'||list.status==='5'">
+            <span class="name">退款人</span>
+            <span class="name-right">{{list.refundPersion}}</span>
+        </div>
+        <div class="detail-item">
+            <span class="name">交易时间</span>
+            <span class="name-right">{{list.times}}</span>
+        </div>
+        <div class="detail-item">
+            <span class="name">交易单号</span>
+            <span class="name-right">{{list.orderId}}</span>
+        </div>
+        <div class="detail-item">
+            <span class="name">交易状态</span>
+            <span class="name-right" v-if="list.status==='0'">支付中</span>
+            <span class="name-right" v-if="list.status==='1'">支付成功</span>
+            <span class="name-right" v-if="list.status==='2'">支付失败</span>
+            <span class="name-right" v-if="list.status==='3'">退款中</span>
+            <span class="name-right" v-if="list.status==='4'">退款成功</span>
+            <span class="name-right" v-if="list.status==='5'">退款失败</span>
+        </div>
+    </div>
+    <button type="button" class="order-buttons" @click="refund" v-if="status==='1'">退款</button>
+    <button type="button" class="order-buttons grays" v-if="status!='1'">当前状态不允许退款</button>
+    <div class="order-bg" v-if="stues">
+        <div class="order-bg-containr">
+            <p class="order-bg-title">请输入退款金额</p>
+            <div class="input-groupByorder">
+                <div class="input-item-left">
+                    金额(元)
+                </div>
+                <input type="number" placeholder="请输入金额" class="numbers" v-model="moneys">
+            </div>
+            <div class="button-group">
+                <button type="button" @click="reset">取消</button>
+                <button type="button" class="config" @click="config">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--主体框架 vue.js 完整项目搭配 -->
+<script src="../script/vue.js"></script>
+<!--处理移动端点击事件等延迟行为 fastclick.js-->
+<script src="../script/fastclick.js"></script>
+<!--方法 rem布局 与 判断当前运行环境等-->
+<script src="../script/webUi.Tool.js"></script>
+<!--请求库-->
+<script src="../script/axios.min.js"></script>
+<script>
+    var acid = '67';
+    var vue = new Vue({
+        el: '#app',
+        data() {
+            return {
+                isWebView: false,
+                stues: false,
+                can: false,
+                list: [],
+                moneys: '',
+                status: '',
+                orderid: ''
+            }
+        },
+        created() {
+            this.findDevice();
+            this.tofastClick();
+            NewTool.RemYdui();
+        },
+        mounted() {
+            this.searchByOrderId();
+        },
+        methods: {
+            findDevice() {
+                if (NewTool.device().device.isWebView && !NewTool.device().device.isWeixin) {
+                    this.isWebView = true;
+                }
+                else {
+                    this.isWebView = false;
+                }
+            },
+            tofastClick() {
+                if ('addEventListener' in document) {
+                    document.addEventListener('DOMContentLoaded', function () {
+                        FastClick.attach(document.body);
+                    }, false);
+                }
+            },
+            refund() {
+                this.stues = true;
+            },
+            reset() {
+                this.stues = false;
+            },
+            config() {
+                this.can = true;
+                this.stues = false;
+                var id = NewTool.getURLParams('id');
+                if (this.status === '1' && this.moneys != '') {
+                    axios.get(api+'/refund/refundMoney?accountId=' + acid + '&price=' + this.moneys + '&orderId=' + this.orderid)
+                        .then((res) => {
+                            NewTool.loading({
+                                containr: '正在处理订单'
+                            });
+                            if (res.data.code === 0) {
+                                window.location.href = 'success.html';
+                            }
+                            else {
+                                window.location.href = 'error.html?id='+id;
+                            }
+                        })
+                }
+//
+            },
+            searchByOrderId() {
+                var id = NewTool.getURLParams('id');
+                axios.get(api+'/refund/searchByNo?orderId=' + id + '&transactionId=' + id)
+                    .then((res) => {
+                        if (res.data.code === 0) {
+                            var timestamp = res.data.data.time;
+                            var d = new Date(timestamp * 1000);    //根据时间戳生成的时间对象
+                            var year = d.getFullYear();
+                            var Month = d.getMonth() + 1;
+                            if (Month.toString().length < 2) {
+                                Month = '0' + Month;
+                            }
+                            var datas = d.getDate();
+                            if (datas.toString().length < 2) {
+                                datas = '0' + datas;
+                            }
+                            var hour = d.getHours();
+                            if (hour.toString().length < 2) {
+                                hour = '0' + hour;
+                            }
+                            var minute = d.getMinutes();
+                            if (minute.toString().length < 2) {
+                                minute = '0' + minute;
+                            }
+                            var times = year + '-' + Month + '-' + datas + ' ' + hour + ':' + minute;
+                            res.data.data.times = times;
+                            this.list = res.data.data;
+                            this.status = res.data.data.status;
+                            this.orderid = res.data.data.orderId
+                        }
+                    })
+            }
+        }
+
+    })
+
+</script>
+</body>
+</html>
