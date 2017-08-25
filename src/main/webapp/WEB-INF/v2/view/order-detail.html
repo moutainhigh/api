@@ -116,7 +116,7 @@
                 moneys: '',
                 status: '',
                 orderid: '',
-                moneyed:''
+                moneyed: ''
             }
         },
         created() {
@@ -149,44 +149,61 @@
             reset() {
                 this.stues = false;
             },
+            searchesd: function () {
+                var str = String(this.moneys).charAt(0);
+                var sd = /^[-+]?\d*$/;
+                var strs = String(this.moneys).charAt(1);
+                if (str === '0' && strs === '.') {
+                    return true
+                }
+                if (str !== '0' && strs === '.') {
+                    return true
+                }
+                if (str !== '.' && strs !== '.') {
+                    return true
+                }
+                if (str === '.') {
+                    return false
+                }
+                else {
+                    return false
+                }
+            },
             config() {
                 this.can = true;
                 this.stues = false;
                 var id = NewTool.getURLParams('id');
                 var str = String(this.moneys).charAt(0);
-                var sd  =/^[-+]?\d*$/;
-                if(!sd.test(this.moneys)){
+                var sd = /^[-+]?\d*$/;
+                var strs = String(this.moneys).charAt(1);
+                console.log(this.moneys)
+                if (str === '0' && strs != '.') {
                     NewTool.alert({
-                        containr:'不能输入小数点'
-                    })
-                       return
-                }
-                if(str==='0'){
-                    NewTool.alert({
-                        containr:'首位不能为0'
+                        containr: '首位不能为0'
                     })
                     return
                 }
-                if(Number(this.moneyed)<this.moneys){
+                if (Number(this.moneyed) <Number(this.moneys)) {
                     NewTool.alert({
-                        containr:'退款金额不能大于实际金额'
+                        containr: '退款金额不能大于实际金额'
                     })
                     return
                 }
-                if(this.status!='1'){
+                if (this.status != '1') {
                     NewTool.alert({
-                        containr:'当前状态不能退款'
+                        containr: '当前状态不能退款'
                     })
                     return
                 }
-                if(this.moneys===''){
+                if (this.moneys === '') {
                     NewTool.alert({
-                        containr:'退款金额不能为空'
+                        containr: '退款金额不能为空'
                     })
                     return
                 }
-                if(sd.test(this.moneys)&&str!='0'&&Number(this.moneyed)>this.moneys&&this.status==='1'&&this.moneys!=''){
-                    axios.get(api+'/refund/refundMoney?accountId=' + acid + '&price=' + this.moneys + '&orderId=' + this.orderid)
+
+                if (this.searchesd() && Number(this.moneyed) >=Number(this.moneys) && this.status === '1' && this.moneys != '') {
+                    axios.get(api + '/refund/refundMoney?accountId=' + acid + '&price=' + this.moneys + '&orderId=' + this.orderid)
                         .then((res) => {
                             NewTool.loading({
                                 containr: '正在处理订单'
@@ -195,10 +212,10 @@
                                 window.location.href = 'success.html';
                             }
                             else {
-                                sessionStorage.setItem('ermsg',re.data.msg);
+                                sessionStorage.setItem('ermsg', res.data.msg);
                                 setTimeout(function () {
-                                    window.location.href = 'error.html?id='+id;
-                                },1000)
+                                    window.location.href = 'error.html?id=' + id;
+                                }, 1000)
 
                             }
                         })
@@ -207,7 +224,7 @@
             },
             searchByOrderId() {
                 var id = NewTool.getURLParams('id');
-                axios.get(api+'/refund/searchByNo?orderId=' + id + '&transactionId=' + id)
+                axios.get(api + '/refund/searchByNo?orderId=' + id + '&transactionId=' + id)
                     .then((res) => {
                         if (res.data.code === 0) {
                             var timestamp = res.data.data.time;

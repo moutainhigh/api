@@ -14,6 +14,7 @@ import com.zhsj.api.bean.result.ShiftNewBean;
 import com.zhsj.api.bean.result.ShiftBean;
 import com.zhsj.api.bean.result.StoreCountResult;
 import com.zhsj.api.constants.Const;
+import com.zhsj.api.constants.PayTypeCons;
 import com.zhsj.api.dao.TBOrderDao;
 import com.zhsj.api.task.async.MsgSendFailAsync;
 import com.zhsj.api.util.Arith;
@@ -86,6 +87,8 @@ public class OrderService {
     private VPiaotongService vpiaotongService;
     @Autowired
     private AyncTaskUtil ayncTaskUtil;
+    @Autowired
+    private NPinganService nPinganService;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -168,7 +171,7 @@ public class OrderService {
     		}
     		String result = "Fail";
     		switch(orderBean.getPayType()){
-				case 1: 
+				case PayTypeCons.OFFICIAL: 
 					//官方接口
 					if("1".equals(orderBean.getPayMethod())){//微信
 						result = weChatService.refundMoney(orderBean,price,userId);
@@ -177,22 +180,27 @@ public class OrderService {
 						return CommonResult.defaultError("支付方式不支持");
 					}
 					break;
-				case 2:
+				case PayTypeCons.MINSHENG_BANK:
 					//民生接口
 					result = minshengService.refundMoney(orderBean,price,userId);
 					break;
-				case 3:
+				case PayTypeCons.PINGAN_BANK:
 					//平安接口
 					result = pinganService.refundMoney(orderBean,price,userId);
 					break;
-				case 4:
+				case PayTypeCons.ZHONGXIN_BANK:
 					//中信接口
 					result = pinganService.refundMoney(orderBean,price,userId);
 					break;
-				case 6:
+				case PayTypeCons.FUYOU_CHANNEL:
 					//富有接口
 					result = fuyouService.refundMoney(orderBean,price,userId);
 					break;
+				case PayTypeCons.N_PINGAN_BANK_CHANNEL:
+					//新平安
+					result = nPinganService.refundMoney(orderBean,price,userId);
+					break;	
+				
 				default:
 					logger.info("#OrderService.refundMoney# orderNo={},price={},msg={}",orderNo,price,"支付方式不支持");
 					return CommonResult.defaultError("支付方式不支持");
@@ -219,7 +227,7 @@ public class OrderService {
     		}
     		String result = "Fail";
     		switch(orderBean.getPayType()){
-				case 1:
+				case PayTypeCons.OFFICIAL:
 					//官方接口
 					if("1".equals(orderBean.getPayMethod())){//微信
 						result = weChatService.searchRefund(orderBean);
@@ -228,21 +236,29 @@ public class OrderService {
 						return CommonResult.defaultError("支付方式不支持");
 					}
 					break;
-				case 2:
+				case PayTypeCons.MINSHENG_BANK:
 					//民生接口
 					result = minshengService.searchRefund(orderBean);
 					break;
-				case 3:
+				case PayTypeCons.PINGAN_BANK:
 					//平安接口
 					result = pinganService.searchRefund(orderBean);
 					break;
-				case 4:
+				case PayTypeCons.ZHONGXIN_BANK:
 					//中信接口
 					result = pinganService.searchRefund(orderBean);
 					break;
-				case 6:
+				case PayTypeCons.FUYOU_CHANNEL:
 					//富友接口
 					result = fuyouService.searchRefund(orderBean);
+					break;
+				case PayTypeCons.N_PINGAN_BANK_CHANNEL:
+					//平安接口
+					if(orderBean.getStatus() == 3){
+						result = "SUCCESS";
+					}else{
+						result = "FAIL";
+					}
 					break;
 				default:
 					logger.info("#OrderService.searchRefund# orderNo={},msg={}",orderNo,"支付方式不支持");
@@ -637,7 +653,11 @@ public class OrderService {
     	String storeNo = orderBean.getStoreNo();
     	int payType = orderBean.getPayType();
     	String payMethod = orderBean.getPayMethod();
-    	StorePayInfo storePayInfo = tbStorePayInfoDao.getByStoreNoAndTypeAndMethod(storeNo, payType, payMethod);
+    	List<StorePayInfo> storePayInfos = tbStorePayInfoDao.getByStoreNoAndType(storeNo, payType, payMethod);
+    	if(CollectionUtils.isEmpty(statusList)){
+    		return 0;
+    	}
+    	StorePayInfo storePayInfo = storePayInfos.get(0);
     	List<String> storeNos = new ArrayList<>();
     	if(StringUtils.isNotEmpty(storePayInfo.getField1()) && payType != 1 && payType != 6){
     		String field1 = storePayInfo.getField1();
@@ -955,7 +975,7 @@ public class OrderService {
 				logger.info("#OrderService.refundSuccess# 更新orderRefundBean出错了");
 				return CommonResult.build(2, "系统异常");
 			}
-			int code = tbOrderDao.updateStatusAndMoney(bean.getId(), 4,bean.getActualChargeAmount(),"re"+bean.getOrderId());
+			int code = tbOrderDao.updateStatusAndMoney(bean.getId(), 4,bean.getActualChargeAmount(),"re"+bean.getOrderId(),0);
 			if(code != 1){
 				logger.info("#OrderService.refundSuccess#  更新order出错了");
 				return CommonResult.build(2, "系统异常");
@@ -1031,7 +1051,7 @@ public class OrderService {
     			if("01".equals(card_type)){
     				//01借记卡
     				rateStr = payInfo.getField1();
-    			}else if("02".equals(card_type)){
+    			}else if("02".equals(card_type) || "03".equals(card_type)){
 //    				02信用卡
     				rateStr = payInfo.getField2();
     			}else{
