@@ -87,6 +87,8 @@ public class OrderService {
     private VPiaotongService vpiaotongService;
     @Autowired
     private AyncTaskUtil ayncTaskUtil;
+    @Autowired
+    private NPinganService nPinganService;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -194,6 +196,11 @@ public class OrderService {
 					//富有接口
 					result = fuyouService.refundMoney(orderBean,price,userId);
 					break;
+				case PayTypeCons.N_PINGAN_BANK_CHANNEL:
+					//新平安
+					result = nPinganService.refundMoney(orderBean,price,userId);
+					break;	
+				
 				default:
 					logger.info("#OrderService.refundMoney# orderNo={},price={},msg={}",orderNo,price,"支付方式不支持");
 					return CommonResult.defaultError("支付方式不支持");
@@ -244,6 +251,14 @@ public class OrderService {
 				case PayTypeCons.FUYOU_CHANNEL:
 					//富友接口
 					result = fuyouService.searchRefund(orderBean);
+					break;
+				case PayTypeCons.N_PINGAN_BANK_CHANNEL:
+					//平安接口
+					if(orderBean.getStatus() == 3){
+						result = "SUCCESS";
+					}else{
+						result = "FAIL";
+					}
 					break;
 				default:
 					logger.info("#OrderService.searchRefund# orderNo={},msg={}",orderNo,"支付方式不支持");
