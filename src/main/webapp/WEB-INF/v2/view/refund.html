@@ -149,7 +149,7 @@
             searchCode:function () {
                 var that = this;
                 setInterval(function () {
-                    axios.get(api+'/refund/searchByCode?code='+that.code)
+                    axios.get(api+'/refund/searchByCode?code='+that.code+"&"+new Date().getTime())
                         .then((res)=>{
                             if(res.data.code===0){
                                 window.location.href='order.html?code='+that.code;
