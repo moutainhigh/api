@@ -960,7 +960,7 @@ public class OrderService {
 				logger.info("#OrderService.refundSuccess# 更新orderRefundBean出错了");
 				return CommonResult.build(2, "系统异常");
 			}
-			int code = tbOrderDao.updateStatusAndMoney(bean.getId(), 4,bean.getActualChargeAmount(),"re"+bean.getOrderId());
+			int code = tbOrderDao.updateStatusAndMoney(bean.getId(), 4,bean.getActualChargeAmount(),"re"+bean.getOrderId(),0);
 			if(code != 1){
 				logger.info("#OrderService.refundSuccess#  更新order出错了");
 				return CommonResult.build(2, "系统异常");
@@ -1036,7 +1036,7 @@ public class OrderService {
     			if("01".equals(card_type)){
     				//01借记卡
     				rateStr = payInfo.getField1();
-    			}else if("02".equals(card_type)){
+    			}else if("02".equals(card_type) || "03".equals(card_type)){
 //    				02信用卡
     				rateStr = payInfo.getField2();
     			}else{
