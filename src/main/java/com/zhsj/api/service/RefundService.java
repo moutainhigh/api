@@ -281,7 +281,7 @@ public class RefundService {
         		return modelAndView;
     		}
     		tbRefundCodeDao.updateOpenId(openId, state,type);
-    		modelAndView.setViewName("app/redirectHode");
+    		modelAndView.setViewName("redirect:../v2/view/hode.html");
     		return modelAndView;
 	     }catch (Exception e) {
 	     	logger.error("#RefundService.getUserOpenId# auth={},appId={},state={},type={}",auth,appId,state,type,e);
