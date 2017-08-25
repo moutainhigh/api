@@ -37,7 +37,7 @@
                                 <span v-if="item.status==='3'">退款中 </span>
                                 <span v-if="item.status==='4'">退款成功 </span>
                                 <span v-if="item.status==='5'">退款失败 </span>
-                                <mark v-if="item.status==='3'||item.status==='4'||item.status==='5'">-{{item.actualMoney}}</mark>
+                                <mark v-if="item.status==='3'||item.status==='4'||item.status==='5'">-{{item.refundMoney}}</mark>
                                 <mark v-if="item.status==='0'||item.status==='1'||item.status==='2'">{{item.actualMoney}}</mark>
 
                             </div>
