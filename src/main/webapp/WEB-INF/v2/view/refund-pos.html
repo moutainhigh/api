@@ -96,7 +96,7 @@
     function getErweima () {
           $.ajax({
               type:'get',
-              url:api+'/refund/refundCode?accountId='+acid,
+              url:api+'/refund/refundCode?accountId='+acid+"&"+new Date().getTime(),
               success:function (res) {
                   if(res.code===0){
                        url = res.data.url;
