@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>账单详情</title>
+    <!--初始化样式表重置默认样式-->
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/refund-pos.css">
+    <link rel="stylesheet" href="../css/webui.css">
+    <script src="../script/config.js"></script>
+    <style>
+        #app, body, html {
+            width: 100%;
+            min-height: 100%;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body style="background: #f7f7f7">
+<div id="app">
+
+    <div class="refound_head">
+        <div class="item-top">
+            <span class="lines"></span>
+            <span class="text">订单号</span>
+        </div>
+        <div class="item-down">
+            <input type="text" placeholder="请输入订单号进行查询" id="orderId">
+        </div>
+
+
+    </div>
+    <button type="button" class="search-button" id="search">查询</button>
+    <div class="refound_head">
+        <div class="item-top">
+            <span class="lines"></span>
+            <span class="text">用户扫码查询</span>
+        </div>
+        <div class="erweima">
+            <div id="qrcode">
+
+            </div>
+
+        </div>
+        <div class="titles_div">
+            <p class="titles">请用户使用微信或支付宝扫描上方二维码</p>
+            <p class="titles">查询用户对应的交易订单</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="../script/webUi.Tool.js"></script>
+<!--请求库-->
+<script src="../script/jquery.js"></script>
+<!--二维码生成器库-->
+<script type="text/javascript" src="../script/qrcode.min.js"></script>
+<script>
+
+    function  getURLParams (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+
+    sessionStorage.setItem('userId',getURLParams('accountId'));
+    var acid = sessionStorage.getItem('userId');
+    var url ,code;
+    $("#search").click(function () {
+        if($("#orderId").val()!==''){
+
+            $.ajax({
+                type:'get',
+                url:api+'/refund/searchByNo?orderId='+$("#orderId").val()+'&transactionId='+$("#orderId").val(),
+                success:function (res) {
+
+                    if(res.code===0){
+                        window.location.href = 'order-detail-pos.html?id=' + $("#orderId").val();
+                    }
+                    else{
+                        alert(res.msg)
+
+                    }
+                }
+            })
+        }
+    })
+    function getErweima () {
+          $.ajax({
+              type:'get',
+              url:api+'/refund/refundCode?accountId='+acid,
+              success:function (res) {
+                  if(res.code===0){
+                       url = res.data.url;
+                       code = res.data.code;
+                          addErweima();
+                          searchCode();
+                  }
+              }
+          })
+    }
+    function addErweima() {
+        var qrcode = new QRCode('qrcode', {
+                    text: this.url,
+                    width: 256,
+                    height: 256,
+                    colorDark : '#000000',
+                    colorLight : '#ffffff',
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+    }
+    function searchCode() {
+        var that = this;
+                setInterval(function () {
+                    $.ajax({
+                        type: 'get',
+                        url: api + '/refund/searchByCode?code=' + code,
+                        success: function (res) {
+                            if (res.code === 0) {
+                                window.location.href = 'oder-pos.html?code=' + code;
+                            }
+                        }
+                    })
+                },5000)
+
+    }
+    getErweima()
+
+
+</script>
+</body>
+</html>

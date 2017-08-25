@@ -1,0 +1,355 @@
+.webViewHead{
+    height: 0.85rem;
+    width: 100%;
+    background: #00bfff;
+    text-align: center;
+    font-size: .4rem;
+    color: white;
+    line-height:.85rem;
+    position: relative;
+}
+.back{
+    height: .35rem;
+    position: absolute;
+    left: .2rem;
+    top: 50%;
+    margin-top: -.175rem;
+}
+
+.order-count{
+    background: #f7f7f7;
+}
+.order-count{
+    font-size: 16px;
+    color: #333333;
+    padding: 10px 0;
+    text-indent: 10px;
+}
+#wrapper{
+    width: 100%;
+}
+.order-list{
+    width:calc(100% - .6rem);
+    margin-left: .3rem;
+    font-size:.4rem;
+}
+.order-list li{
+    width: 100%;
+    border-bottom: 1px solid whitesmoke;
+    font-size:0;
+}
+.order-list li:last-of-type{
+    border-bottom: none;
+}
+.order-list li a{
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+}
+.icon{
+    width: 40px;
+    height: 40px;
+    margin: 10px ;
+
+}
+.order-right{
+    float: right;
+    width: 85%;
+    margin-top: 10px;
+    margin-right: 5px;
+
+}
+.item-top{
+    font-size:14px;
+}
+.item-top time{
+    color: #333333;
+}
+.item-top span{
+    font-size:16px;
+    margin-left: 5px;
+    color: #333333;
+}
+.item-top mark{
+    background: none;
+    float: right;
+    color: #9b9b9b;
+}
+.item-down span{
+    font-size:14px;
+    color: #9b9b9b;
+
+}
+.item-down{
+    margin-top: 10px;
+}
+#status{
+    font-size:14px;
+    color: #9b9b9b;
+}
+.order-title{
+    background: white;
+}
+.order-title img{
+    width: 40px;
+    height: 40px;
+    margin: 10px 0;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+.order-title span{
+    font-size:16px;
+    vertical-align: middle;
+    color: #333333;
+}
+.order-detail-containr{
+    background: white;
+    margin-top: .6rem;
+    overflow: hidden;
+    padding-bottom: 10px;
+}
+.detail-item{
+    width: calc(100% - .6rem);
+    margin-left: .3rem;
+    font-size:0;
+    display: flex;
+    display: -webkit-flex;
+    display: -moz-box;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+.detail-item .name{
+    font-size:14px;
+    color: #9b9b9b;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+.name-right{
+    font-size:14px;
+    color: #9b9b9b;
+    vertical-align: middle;
+}
+.money{
+    font-size:16px;
+    vertical-align: middle;
+    margin-top: -1px;
+    font-weight: 600;
+}
+.order-buttons{
+    width: 90%;
+    margin: 0 auto;
+    display: block;
+    margin-top: 10px;
+    border-radius: 5px!important;
+    font-size:16px;
+    color: white;
+    background: #3accfc;
+    border: none;
+    padding: 10px 0;
+
+}
+.order-bg{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top:0;
+    left:0;
+    background: rgba(0,0,0,.4);
+    display: none;
+}
+.order-bg-containr{
+    width: 80%;
+    margin-left: 10%;
+    background: white;
+    overflow: hidden;
+    font-size:.35rem;
+    border-radius: 5px;
+    position: absolute;
+    top: 40%;
+    margin-top: -60px;
+    animation: scales .2s ease-in;
+}
+@keyframes scales {
+    0%{
+        transform: scale3d(0.5, 0.5, 0.5)
+    }
+    50%{
+
+    }
+    100%{
+        transform: scale3d(1, 1, 1)
+    }
+}
+.order-bg-title{
+    font-size:14px;
+    text-align: center;
+    margin: 10px 0;
+    color: #454545;
+}
+.input-groupByorder{
+    width: 90%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+.input-item-left{
+    float: left;
+    height: 30px;
+    border: 1px solid #c8c8c8;
+    line-height:30px;
+    font-size:14px;
+    color: #9b9b9b;
+    width: 30%;
+    text-align: center;
+    display: inline-block;
+    border-right: none;
+}
+.numbers{
+    width: calc(65% - 2px);
+    height: 30px;
+    border: 1px solid #c8c8c8;
+    border-left: none;
+    font-size:14px;
+    font-weight: bold;
+    color: #333333;
+    outline:none;
+    text-align: right;
+    padding-right: 5%;
+    border-radius: 0px;
+    -webkit-appearance: none;
+
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+    font-size:14px;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    font-weight: normal;
+    font-size: .3rem;
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    font-weight: normal;
+    font-size: .3rem;
+}
+
+input:-ms-input-placeholder{
+    font-weight: normal;
+    font-size: 14px;
+    text-align: right;
+}
+
+input::-webkit-input-placeholder{
+    font-weight: normal;
+    font-size: 14px;
+    text-align: right;
+}
+.button-group{
+    width: 100%;
+    font-size:0;
+    margin-top: .3rem;
+}
+.button-group button{
+    width: 49%;
+    border: none;
+    font-size:14px;
+    background: none;
+    padding: 10px 0;
+    border-top: 1px solid #cccccc;
+}
+.button-group button:first-of-type{
+    border-right: 1px solid #cccccc;
+}
+.config{
+    color: #254f9b;
+}
+.button-group button:hover{
+    animation: colord .6s ease;
+}
+@keyframes colord {
+    0%{
+        background: white;
+    }
+    50%{
+        background: orange;
+        color: white;
+    }
+    100%{
+        background: white;
+    }
+}
+.grays{
+    background: #9b9b9b;
+}
+.centers{
+    text-align: center;
+    margin-top: 50%;
+    position: relative;
+    top:-20px;
+}
+.centers img{
+    width:60px;
+    margin-bottom: .5rem;
+}
+.centers p{
+    font-size:16px;
+    line-height:25px;
+    color: #cccccc;
+
+}
+.areasId{
+    background: white;
+    text-align: center;
+    overflow: hidden;
+}
+.areasId img{
+    width: 40px;
+    height: 40px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.nameBold{
+    font-size:16px;
+    font-weight:500;
+    color: #333333;
+}
+.nameCon{
+    font-size:14px;
+    width: 94%;
+    line-height:25px;
+    margin: 10px 3%;
+    margin-bottom: 20px;
+}
+.search-button{
+    width: 94%;
+    display: block;
+    margin: 0 auto;
+    margin-top: .4rem;
+    border: none;
+    padding: .2rem 0;
+    color: white;
+    background: #00bfff;
+    font-size:.4rem;
+    border-radius: 5px;
+}
+.money{
+    float: right;
+    margin-right: 10px;
+}
+#status{
+    float: right;
+    margin-right: 10px;
+}
+.name-right{
+    float: right;
+    margin-right: 10px;
+}
+.order-title{
+    display: none;
+}
