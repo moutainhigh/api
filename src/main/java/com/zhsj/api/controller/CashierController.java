@@ -289,7 +289,8 @@ public class CashierController {
     	}
     	mv.addObject("storeNo", storeNo);
     	mv.addObject("accountId", accountId);
-    	mv.setViewName("app/redirectRefund");
+//    	mv.setViewName("app/redirectRefund");
+    	mv.setViewName("redirect:../v2/view/refund.html");
     	return mv;
     }
     
