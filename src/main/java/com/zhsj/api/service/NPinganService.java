@@ -64,7 +64,14 @@ public class NPinganService {
 			postmap.put("sign_type", "RSA");
 			String resultData = this.postData(postmap,  storePayInfo.getField2(),MtConfig.getProperty("N_PINGAN_PRIVATE_KEY", ""), MtConfig.getProperty("N_PINGAN_URL", "")+"payrefund","RSA");
 			logger.info(resultData);
+			if("FAIL".equals(resultData)){
+				return "FAIL";
+			}
+			
 			Map<String, String> resMap = JSON.parseObject(resultData, Map.class);
+			if(resMap.get("errcode") != null){
+				return UnicodeUtils.unicode2String(resMap.get("msg"));
+			}
 			if("1".equals(resMap.get("status"))){
 				result = "SUCCESS";
 			}else {
@@ -99,7 +106,7 @@ public class NPinganService {
          */
         JSONObject respObject = JSON.parseObject(rspStr);
         if(!"0".equals(respObject.getString("errcode"))){
-        	return "FAIL";
+        	return rspStr;
         }
         
         Object dataStr = respObject.get("data");
