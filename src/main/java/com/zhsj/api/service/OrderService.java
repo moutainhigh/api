@@ -253,12 +253,7 @@ public class OrderService {
 					result = fuyouService.searchRefund(orderBean);
 					break;
 				case PayTypeCons.N_PINGAN_BANK_CHANNEL:
-					//平安接口
-					if(orderBean.getStatus() == 3){
-						result = "SUCCESS";
-					}else{
-						result = "FAIL";
-					}
+					result = nPinganService.orderView(orderBean);
 					break;
 				default:
 					logger.info("#OrderService.searchRefund# orderNo={},msg={}",orderNo,"支付方式不支持");
