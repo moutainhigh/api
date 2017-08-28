@@ -8,7 +8,10 @@
     <link rel="stylesheet" href="../css/reset.css">
     <link rel="stylesheet" href="../css/refund-pos.css">
     <link rel="stylesheet" href="../css/webui.css">
-    <script src="../script/config.js?v=1"></script>
+    <script>
+        var timestamp = Date.parse(new Date())
+    </script>
+    <script src="../script/config.js?v=20170828" id="configs"></script>
     <style>
         #app, body, html {
             width: 100%;
@@ -97,7 +100,11 @@
                         window.location.href = 'order-detail-pos.html?id=' + $("#orderId").val();
                     }
                     else{
-                        alert(res.msg)
+                        $(".alert-say").html(res.msg);
+                        $(".alertBg").show();
+                        $("#baSub").click(function () {
+                            $(".alertBg").hide();
+                        })
 
                     }
                 }
@@ -146,16 +153,18 @@
                     }
                     else{
                         clearInterval(timer);
+                        $(".alert-say").text('二维码已过期,请点击确定刷新页面');
                         $(".alertBg").show();
+                        $("#baSub").click(function () {
+                            window.location.reload();
+                        })
                     }
                 },5000)
 
     }
     getErweima()
 
-   $("#baSub").click(function () {
-       window.location.reload();
-   })
+
 </script>
 </body>
 </html>
