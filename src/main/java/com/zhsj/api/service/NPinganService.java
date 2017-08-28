@@ -1,5 +1,6 @@
 package com.zhsj.api.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.PinganOrgBean;
@@ -129,12 +131,65 @@ public class NPinganService {
         }
 	}
 	
-	
+	 public String orderView(OrderBean orderBean){
+    	logger.info("#NPinganService.orderView# orderBean={}",orderBean);
+		try{
+			List<StorePayInfo> storePayInfos = tbStorePayInfoDao.getByStoreNoAndType(orderBean.getStoreNo(), orderBean.getPayType(), orderBean.getPayMethod());
+			if(CollectionUtils.isEmpty(storePayInfos)){
+				return "支付类型错误";
+			}
+			StorePayInfo payInfo = storePayInfos.get(0);
+			// 固定参数
+	        TreeMap<String, String> postmap = new TreeMap<String, String>();    // 请求参数的map
+			postmap.put("open_id", payInfo.getField1());
+			postmap.put("timestamp", new DateUtil().unixTime()+"");
+			
+			TreeMap<String, String> datamap = new TreeMap<String, String>();    // data参数的map
+			datamap.put("out_no", orderBean.getOrderId());
+//				datamap.put("ord_no", "9150235849840956336711807");
+			String data = TLinxAESCoder.encrypt(JSON.toJSONString(datamap), payInfo.getField2());    // AES加密，并bin2hex
+			postmap.put("data", data);
+			
+			String resultData = this.postData(postmap,  payInfo.getField2(),"", MtConfig.getProperty("N_PINGAN_URL", "")+"order/view","AES");
+			logger.info(resultData);
+			if("FAIL".equals(resultData)){
+				return "FAIL";
+			}
+			JSONObject jsonObject = JSON.parseObject(resultData);
+			
+			if(jsonObject.getInteger("errcode") != null){
+				return UnicodeUtils.unicode2String(jsonObject.getString("msg"));
+			}
+			JSONArray array = jsonObject.getJSONArray("related_order");
+			if(array == null && array.size() <= 0){
+				return "FAIL";
+			}
+			JSONObject json = array.getJSONObject(0);
+			if(json.getInteger("status") != null && json.getInteger("status") == 1){
+				return "SUCCESS";
+			}
+			
+		}catch (Exception e) {
+			logger.error("#NPinganService.orderView# orderBean={}",orderBean,e);
+		}
+		return "FAIL";
+    }
+	 
 	public static void main(String[] args) {
-		OrderBean orderBean = new OrderBean();
-		orderBean.setActualChargeAmount(1);
-		orderBean.setOrderId("10674590170503627987206");
-		orderBean.setPayMethod("1");
-//		new PinganService().refundMoney(orderBean);
+		String openId = "50652a0b5e532810ed181a94f5368055";
+		String openKey = "516333c24f7d6b65187809d7fe00c570";
+//		https://mixpayuat4.orangebank.com.cn/mct1/
+		
+		StorePayInfo payInfo = new StorePayInfo();
+//		payInfo.setField1("txafCXQt058248b3230c9081ff90ce80");
+//		payInfo.setField2("aG0ck19g2HdthGRdSCfmiloOoGXoOzWZ");
+		payInfo.setField1(openId);
+		payInfo.setField2(openKey);
+		payInfo.setField4("Weixin");
+		payInfo.setPayMethod("1");
+//		payInfo.setField4("AlipayCS");
+//		payInfo.setPayMethod("2");
+		payInfo.setStoreName("小林");
+//		System.out.println(new NPinganService().orderView(payInfo, "10674560170828641461936"));
 	}
 }
