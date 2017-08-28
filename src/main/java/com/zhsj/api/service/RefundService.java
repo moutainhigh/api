@@ -201,6 +201,11 @@ public class RefundService {
     		if(orderBean.getStatus() == 3 || orderBean.getStatus() == 4 || orderBean.getStatus() == 5){
     			return CommonResult.defaultError("重复退款");
     		}
+    		String storeNo = tbStoreBindAccountDao.getStoreNoByAccountId(Long.parseLong(accountId));
+    		if(StringUtils.isEmpty(storeNo) || !storeNo.equals(orderBean.getStoreNo())){
+    			return CommonResult.defaultError("权限不够");
+    		}
+    		
 			double v1 = Double.parseDouble(price);
     		CommonResult refundReult = orderService.appRefund(orderBean.getId(),v1, Integer.parseInt(accountId));
     		if(refundReult.getCode() == 2){
