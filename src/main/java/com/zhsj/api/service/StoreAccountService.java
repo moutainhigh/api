@@ -16,6 +16,7 @@ import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.dao.TBRoleDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindAccountDao;
+import com.zhsj.api.dao.TBStoreBindDeviceDao;
 import com.zhsj.api.dao.TBStoreSignDao;
 import com.zhsj.api.dao.TbStoreDao;
 import com.zhsj.api.util.Arith;
@@ -37,6 +38,9 @@ public class StoreAccountService {
 	private TBStoreBindAccountDao tbStoreBindAccountDao;
 	@Autowired
 	private TBRoleDao tbRoleDao;
+	
+	@Autowired
+	private TBStoreBindDeviceDao tbStoreBindDeviceDao;
 	
 	public CommonResult signCashier(String account,String passwd,String lat,String lon,String regId,String imei,String auth){
 		logger.info("#StoreAccountService.signCashier# account={},passwd={},lat={},lon={},regId={},imei={}auth={}",
