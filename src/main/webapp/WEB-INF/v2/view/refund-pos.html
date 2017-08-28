@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../css/reset.css">
     <link rel="stylesheet" href="../css/refund-pos.css">
     <link rel="stylesheet" href="../css/webui.css">
-    <script src="../script/config.js"></script>
+    <script src="../script/config.js?v=1"></script>
     <style>
         #app, body, html {
             width: 100%;
@@ -52,6 +52,17 @@
         </div>
 
     </div>
+    <div class="alertBg" style="display: none">
+      <div class="m-alert ani">
+          <div class="alert-say">
+              二维码过期,请点击确定重新刷新页面
+          </div>
+          <div class="alert-button">
+              <div class="subButton" id="baSub" style="width: 100%;">确定</div>
+          </div>
+      </div>
+
+    </div>
 
 </div>
 
@@ -61,7 +72,7 @@
 <!--二维码生成器库-->
 <script type="text/javascript" src="../script/qrcode.min.js"></script>
 <script>
-
+    var timed = 0;
     function  getURLParams (name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
         var r = window.location.search.substr(1).match(reg);
@@ -94,9 +105,10 @@
         }
     })
     function getErweima () {
+        var timestamp = Date.parse(new Date())
           $.ajax({
               type:'get',
-              url:api+'/refund/refundCode?accountId='+acid+"&"+new Date().getTime(),
+              url:api+'/refund/refundCode?accountId='+acid+'&time='+timestamp,
               success:function (res) {
                   if(res.code===0){
                        url = res.data.url;
@@ -119,22 +131,31 @@
     }
     function searchCode() {
         var that = this;
-                setInterval(function () {
-                    $.ajax({
-                        type: 'get',
-                        url: api + '/refund/searchByCode?code=' + code,
-                        success: function (res) {
-                            if (res.code === 0) {
-                                window.location.href = 'oder-pos.html?code=' + code;
+               var timer = setInterval(function () {
+                    timed = 5000+timed;
+                    if(timed<=120000) {
+                        $.ajax({
+                            type: 'get',
+                            url: api + '/refund/searchByCode?code=' + code,
+                            success: function (res) {
+                                if (res.code === 0) {
+                                    window.location.href = 'oder-pos.html?code=' + code;
+                                }
                             }
-                        }
-                    })
+                        })
+                    }
+                    else{
+                        clearInterval(timer);
+                        $(".alertBg").show();
+                    }
                 },5000)
 
     }
     getErweima()
 
-
+   $("#baSub").click(function () {
+       window.location.reload();
+   })
 </script>
 </body>
 </html>
