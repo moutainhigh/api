@@ -128,9 +128,10 @@
     }
     var id = getURLParams('id');
     var money,stues;
+    var timestamp = Date.parse(new Date());
     $.ajax({
         type:'get',
-        url:api + '/refund/searchByNo?orderId=' + id + '&transactionId=' + id,
+        url:api + '/refund/searchByNo?orderId=' + id + '&transactionId=' + id+'&time='+timestamp,
         success:function (res) {
               console.log(res);
               if(res.data.status==='0'||res.data.status==='1'||res.data.status==='2'){

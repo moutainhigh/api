@@ -224,7 +224,8 @@
             },
             searchByOrderId() {
                 var id = NewTool.getURLParams('id');
-                axios.get(api + '/refund/searchByNo?orderId=' + id + '&transactionId=' + id)
+                var timestamp = Date.parse(new Date())
+                axios.get(api + '/refund/searchByNo?orderId=' + id + '&transactionId=' + id+'&time='+timestamp)
                     .then((res) => {
                         if (res.data.code === 0) {
                             var timestamp = res.data.data.time;
