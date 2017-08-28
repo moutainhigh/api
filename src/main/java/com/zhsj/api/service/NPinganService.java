@@ -1,35 +1,28 @@
 package com.zhsj.api.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zhsj.api.bean.OrderBean;
+import com.zhsj.api.bean.PinganOrgBean;
 import com.zhsj.api.bean.StorePayInfo;
-import com.zhsj.api.bean.refund.PinganRefundBean;
-import com.zhsj.api.bean.refund.PinganRefundResultBean;
-import com.zhsj.api.bean.refund.PinganRefundSearchBean;
-import com.zhsj.api.bean.refund.PinganRefundSearchResult;
+import com.zhsj.api.dao.TBPinganOrgDao;
 import com.zhsj.api.dao.TbStorePayInfoDao;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.MtConfig;
 import com.zhsj.api.util.UnicodeUtils;
-import com.zhsj.api.util.XMLBeanUtils;
 import com.zhsj.api.util.npingan.TLinx2Util;
 import com.zhsj.api.util.npingan.TLinxAESCoder;
 import com.zhsj.api.util.npingan.TLinxSHA1;
-import com.zhsj.api.util.wft.HttpsRequest;
-import com.zhsj.api.util.wft.RandomStringGenerator;
-import com.zhsj.api.util.wft.Signature;
 
 @Service
 public class NPinganService {
@@ -38,6 +31,8 @@ public class NPinganService {
     
     @Autowired
     private TbStorePayInfoDao tbStorePayInfoDao;
+    @Autowired
+    private TBPinganOrgDao tbPinganOrgDao;
 
 	public String refundMoney(OrderBean orderBean,double price,int userId){
 		logger.info("#NPinganService.refundMoney# orderBean={},price={},userId={}",orderBean,price,userId);
@@ -48,6 +43,13 @@ public class NPinganService {
 				return "支付类型错误";
 			}
 			StorePayInfo storePayInfo = storePayInfos.get(0);
+			String privateKey = "";
+			if(StringUtils.isNotEmpty(storePayInfo.getField6())){
+				PinganOrgBean pinganOrgBean = tbPinganOrgDao.getById(Long.parseLong(storePayInfo.getField6()));
+				if(pinganOrgBean != null){
+					privateKey = pinganOrgBean.getPrivateKey();
+				}
+			}
 			
 			// 固定参数
 	        TreeMap<String, String> postmap = new TreeMap<String, String>();    // 请求参数的map
@@ -62,7 +64,7 @@ public class NPinganService {
 			String data = TLinxAESCoder.encrypt(JSON.toJSONString(datamap), storePayInfo.getField2());    // AES加密，并bin2hex
 			postmap.put("data", data);
 			postmap.put("sign_type", "RSA");
-			String resultData = this.postData(postmap,  storePayInfo.getField2(),MtConfig.getProperty("N_PINGAN_PRIVATE_KEY", ""), MtConfig.getProperty("N_PINGAN_URL", "")+"payrefund","RSA");
+			String resultData = this.postData(postmap,  storePayInfo.getField2(),privateKey, MtConfig.getProperty("N_PINGAN_URL", "")+"payrefund","RSA");
 			logger.info(resultData);
 			if("FAIL".equals(resultData)){
 				return "FAIL";

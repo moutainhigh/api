@@ -15,6 +15,7 @@ public class StorePayInfo {
     private String field3;
     private String field4;
     private String field5;
+    private String field6;
     private String remark;
     private int ctime;
     private int utime;
@@ -156,6 +157,14 @@ public class StorePayInfo {
 
 	public void setField5(String field5) {
 		this.field5 = field5;
+	}
+
+	public String getField6() {
+		return field6;
+	}
+
+	public void setField6(String field6) {
+		this.field6 = field6;
 	}
 	
     
