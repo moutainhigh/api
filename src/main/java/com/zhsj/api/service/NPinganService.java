@@ -134,11 +134,22 @@ public class NPinganService {
 	 public String orderView(OrderBean orderBean){
     	logger.info("#NPinganService.orderView# orderBean={}",orderBean);
 		try{
-			List<StorePayInfo> storePayInfos = tbStorePayInfoDao.getByStoreNoAndType(orderBean.getStoreNo(), orderBean.getPayType(), orderBean.getPayMethod());
-			if(CollectionUtils.isEmpty(storePayInfos)){
-				return "支付类型错误";
-			}
-			StorePayInfo payInfo = storePayInfos.get(0);
+//			List<StorePayInfo> storePayInfos = tbStorePayInfoDao.getByStoreNoAndType(orderBean.getStoreNo(), orderBean.getPayType(), orderBean.getPayMethod());
+//			if(CollectionUtils.isEmpty(storePayInfos)){
+//				return "支付类型错误";
+//			}
+//			StorePayInfo payInfo = storePayInfos.get(0);
+			
+			String openId = "50652a0b5e532810ed181a94f5368055";
+			String openKey = "516333c24f7d6b65187809d7fe00c570";
+//			https://mixpayuat4.orangebank.com.cn/mct1/
+			
+			StorePayInfo payInfo = new StorePayInfo();
+//			payInfo.setField1("txafCXQt058248b3230c9081ff90ce80");
+//			payInfo.setField2("aG0ck19g2HdthGRdSCfmiloOoGXoOzWZ");
+			payInfo.setField1(openId);
+			payInfo.setField2(openKey);
+			
 			// 固定参数
 	        TreeMap<String, String> postmap = new TreeMap<String, String>();    // 请求参数的map
 			postmap.put("open_id", payInfo.getField1());
@@ -161,7 +172,7 @@ public class NPinganService {
 				return UnicodeUtils.unicode2String(jsonObject.getString("msg"));
 			}
 			JSONArray array = jsonObject.getJSONArray("related_order");
-			if(array == null && array.size() <= 0){
+			if(array == null || array.size() <= 0){
 				return "FAIL";
 			}
 			JSONObject json = array.getJSONObject(0);
@@ -190,6 +201,8 @@ public class NPinganService {
 //		payInfo.setField4("AlipayCS");
 //		payInfo.setPayMethod("2");
 		payInfo.setStoreName("小林");
-//		System.out.println(new NPinganService().orderView(payInfo, "10674560170828641461936"));
+		OrderBean bean = new OrderBean();
+		bean.setOrderId("10674560170828688861173");
+		System.out.println(new NPinganService().orderView(bean));
 	}
 }
