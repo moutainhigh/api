@@ -20,6 +20,7 @@ import com.zhsj.api.dao.TBModuleBindRoleDao;
 import com.zhsj.api.dao.TBModuleDao;
 import com.zhsj.api.dao.TBStoreAccountBindRoleDao;
 import com.zhsj.api.util.CommonResult;
+import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.login.LoginUserUtil;
 
 @Service
@@ -163,7 +164,7 @@ public class ModuleService {
 					continue;
 				 }
 				 bean.setIconUrl(uri+bean.getIconUrl());
-				 bean.setUrl(uri+bean.getUrl()+"?storeNo="+args[0]+"&accountId="+args[1]);
+				 bean.setUrl(uri+bean.getUrl()+"?storeNo="+args[0]+"&accountId="+args[1]+"&v="+DateUtil.unixTime());
 				 resultList.add(bean);
 			 }
 			 return CommonResult.success("", resultList);

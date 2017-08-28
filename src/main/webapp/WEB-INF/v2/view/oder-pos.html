@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>订单列表</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/order-pos.css">
+    <script src="../script/config.js?v=20170828"></script>
+</head>
+<body>
+<div id="app" >
+
+    <div  id="a">
+        <div class="order-count">
+            共<span id="num"></span>笔订单
+        </div>
+        <div id="wrapper">
+            <ul class="order-list">
+
+
+            </ul>
+        </div>
+    </div>
+    <div >
+        <div class="centers">
+            <img src="../image/jind.png">
+            <p>很抱歉您最近没有交易记录</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!--请求库-->
+<script src="../script/jquery.js"></script>
+<script>
+     function timeData(options) {
+        var timestamp = options;
+        var d = new Date(timestamp * 1000);    //根据时间戳生成的时间对象
+        var year = d.getFullYear();
+        var Month = d.getMonth() + 1;
+        if (Month.toString().length < 2) {
+            Month = '0' + Month;
+        }
+        var datas = d.getDate();
+        if (datas.toString().length < 2) {
+            datas = '0' + datas;
+        }
+        var hour = d.getHours();
+        if (hour.toString().length < 2) {
+            hour = '0' + hour;
+        }
+        var minute = d.getMinutes();
+        if (minute.toString().length < 2) {
+            minute = '0' + minute;
+        }
+        var years = year + '-' + Month + '-' + datas;
+        return years;
+    }
+      function timehour(options) {
+         var timestamp = options;
+         var d = new Date(timestamp * 1000);    //根据时间戳生成的时间对象
+         var year = d.getFullYear();
+         var Month = d.getMonth() + 1;
+         if (Month.toString().length < 2) {
+             Month = '0' + Month;
+         }
+         var datas = d.getDate();
+         if (datas.toString().length < 2) {
+             datas = '0' + datas;
+         }
+         var hour = d.getHours();
+         if (hour.toString().length < 2) {
+             hour = '0' + hour;
+         }
+         var minute = d.getMinutes();
+         if (minute.toString().length < 2) {
+             minute = '0' + minute;
+         }
+         var hours = hour + ':' + minute;
+         return hours;
+     }
+    function  getURLParams (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+    var code = getURLParams('code')
+  $.ajax({
+      type:'get',
+      url:api+'/refund/searchByCode?code='+code,
+      success:function (res) {
+          if(res.code===0){
+              if(res.data.list.length>0){
+                  $(".centers").hide();
+              }
+              else{
+                  $(".centers").show();
+                  $("#a").hide()
+              }
+               $("#num").text(res.data.num);
+                for (var i =0;i<res.data.list.length;i++){
+                      var li = document.createElement('li');
+                      var a = document.createElement('a');
+                      a.href = 'order-detail-pos.html?id='+res.data.list[i].orderId;
+                      var img = document.createElement('img');
+                      img.className='icon';
+                      if(res.data.list[i].payMethod==='1'){
+                          img.src='../image/weix.png';
+                      }
+                    if(res.data.list[i].payMethod==='2'){
+                        img.src='../image/zhifb.png';
+                    }
+                    if(res.data.list[i].payMethod==='3'){
+                        img.src='../image/yinl.png';
+                    }
+                    var div = document.createElement('div');
+                    div.className  = 'order-right';
+                    var top = document.createElement('div');
+                    top.className = 'item-top';
+                    var time  = document.createElement('time');
+                    time.innerHTML = timeData(res.data.list[i].time);
+                    var span = document.createElement('span');
+                    if(res.data.list[i].status==='0'){
+                        span.innerHTML = '支付中'
+                    }
+                    if(res.data.list[i].status==='1'){
+                        span.innerHTML = '支付成功'
+                    }
+                    if(res.data.list[i].status==='2'){
+                        span.innerHTML = '支付失败'
+                    }
+                    if(res.data.list[i].status==='3'){
+                        span.innerHTML = '退款中'
+                    }
+                    if(res.data.list[i].status==='4'){
+                        span.innerHTML = '退款成功 '
+                    }
+                    if(res.data.list[i].status==='5'){
+                        span.innerHTML = '退款失败 '
+                    }
+                    var mark = document.createElement('mark');
+                    if(res.data.list[i].status==='3'||res.data.list[i].status==='4'||res.data.list[i].status==='5'){
+                         mark.innerHTML = '-'+res.data.list[i].actualMoney
+                     }
+                    if(res.data.list[i].status==='0'||res.data.list[i].status==='1'||res.data.list[i].status==='2'){
+                        mark.innerHTML = res.data.list[i].actualMoney
+                    }
+                     top.appendChild(time);
+                     top.appendChild(span);
+                     top.appendChild(mark);
+                     var down = document.createElement('div');
+                     down.className = 'item-down';
+                     var downspan = document.createElement('span');
+                     downspan.innerHTML = timehour(res.data.list[i].time);
+                    if(res.data.list[i].status==='3'||res.data.list[i].status==='4'||res.data.list[i].status==='5'){
+                      var ss = document.createElement('span');
+                       ss.innerHTML = '实收:'+res.data.list[i].actualMoney;
+                       ss.style.float='right';
+                        down.appendChild(ss);
+                    }
+                    down.appendChild(downspan);
+                    div.appendChild(top)
+                    a.appendChild(img);
+                    a.appendChild(div)
+                    div.appendChild(down);
+                    li.appendChild(a);
+                    $(".order-list").append(li);
+                }
+          }
+      }
+  })
+
+</script>
+</body>
+</html>

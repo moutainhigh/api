@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>账单详情</title>
+    <!--初始化样式表重置默认样式-->
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/order-pos.css">
+    <link rel="stylesheet" href="../css/webui.css">
+    <script src="../script/config.js?v=20170828"></script>
+    <style>
+        #app, body, html {
+            width: 100%;
+            height: 100%;
+        }
+
+        .MCon {
+            font-size: 16px;
+        }
+
+    </style>
+</head>
+<body style="background: #f7f7f7">
+<div id="app" >
+
+    <div class="order-title" id="wx">
+        <img src="../image/weix.png">
+        <span>微信支付</span>
+    </div>
+    <div class="order-title" id="zfb">
+        <img src="../image/zhifb.png">
+        <span>支付宝支付</span>
+    </div>
+    <div class="order-title"  id="yl">
+        <img src="../image/yinl.png">
+        <span>银联支付</span>
+    </div>
+    <div class="order-detail-containr">
+        <div class="detail-item">
+            <span class="name">实收金额</span>
+            <span class="money" id="actualMoney"></span>
+        </div>
+        <div class="detail-item" id="tkje">
+            <span class="name">退款金额</span>
+            <span class="money" id="refundMoney"></span>
+        </div>
+        <div class="detail-item">
+            <span class="name">收款人</span>
+            <span class="name-right" id="operator"></span>
+        </div>
+        <div class="detail-item"  id="tkr">
+            <span class="name">退款人</span>
+            <span class="name-right" id="refundPersion"></span>
+        </div>
+        <div class="detail-item">
+            <span class="name">交易时间</span>
+            <span class="name-right" id="time"></span>
+        </div>
+        <div class="detail-item">
+            <span class="name">交易单号</span>
+            <span class="name-right" id="orderId"></span>
+        </div>
+        <div class="detail-item">
+            <span class="name">交易状态</span>
+            <span id="status"></span>
+            <!--<span class="name-right" v-if="list.status==='0'">支付中</span>-->
+            <!--<span class="name-right" v-if="list.status==='1'">支付成功</span>-->
+            <!--<span class="name-right" v-if="list.status==='2'">支付失败</span>-->
+            <!--<span class="name-right" v-if="list.status==='3'">退款中</span>-->
+            <!--<span class="name-right" v-if="list.status==='4'">退款成功</span>-->
+            <!--<span class="name-right" v-if="list.status==='5'">退款失败</span>-->
+        </div>
+    </div>
+    <button type="button" class="order-buttons" id="canTui">退款</button>
+    <button type="button" class="order-buttons grays" id="cantTui">当前状态不允许退款</button>
+    <div class="order-bg" >
+        <div class="order-bg-containr">
+            <p class="order-bg-title">请输入退款金额</p>
+            <div class="input-groupByorder">
+                <div class="input-item-left">
+                    金额(元)
+                </div>
+                <input type="tel" placeholder="请输入金额" class="numbers" v-model="moneys">
+            </div>
+            <div class="button-group">
+                <button type="button"  id="reset">取消</button>
+                <button type="button" class="config" id="config">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="../script/jquery.js"></script>
+<script>
+    var acid = sessionStorage.getItem('userId');
+    function  getURLParams (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+    function timeALL(options) {
+        var timestamp = options;
+        var d = new Date(timestamp * 1000);    //根据时间戳生成的时间对象
+        var year = d.getFullYear();
+        var Month = d.getMonth() + 1;
+        if (Month.toString().length < 2) {
+            Month = '0' + Month;
+        }
+        var datas = d.getDate();
+        if (datas.toString().length < 2) {
+            datas = '0' + datas;
+        }
+        var hour = d.getHours();
+        if (hour.toString().length < 2) {
+            hour = '0' + hour;
+        }
+        var minute = d.getMinutes();
+        if (minute.toString().length < 2) {
+            minute = '0' + minute;
+        }
+        var times = year + '-' + Month + '-' + datas + ' ' + hour + ':' + minute;
+        return times;
+    }
+    var id = getURLParams('id');
+    var money,stues;
+    var timestamp = Date.parse(new Date());
+    $.ajax({
+        type:'get',
+        url:api + '/refund/searchByNo?orderId=' + id + '&transactionId=' + id+'&time='+timestamp,
+        success:function (res) {
+              console.log(res);
+              if(res.data.status==='0'||res.data.status==='1'||res.data.status==='2'){
+                     $("#tkje,#tkr").hide();
+                     $("#actualMoney").text('￥'+res.data.actualMoney);
+                     $("#operator").text(res.data.operator);
+                     $("#orderId").text(res.data.orderId);
+                     $("#time").text(timeALL(res.data.time));
+                      money = res.data.actualMoney;
+                      stues= res.data.status;
+                      if(res.data.status==='0'){
+                           $("#status").text('支付中');
+                         $("#canTui").hide();
+                         $("#cantTui").show();
+                     }
+                      if(res.data.status==='1'){
+                          $("#status").text('支付成功');
+                          $("#canTui").show();
+                          $("#cantTui").hide();
+                      }
+                      if(res.data.status==='2'){
+                          $("#status").text('支付失败');
+                          $("#canTui").hide();
+                          $("#cantTui").show();
+                      }
+                      if(res.data.status==='3'){
+                          $("#status").text('退款中');
+                          $("#canTui").hide();
+                          $("#cantTui").show();
+                      }
+                      if(res.data.status==='4'){
+                          $("#status").text('退款成功');
+                          $("#canTui").hide();
+                          $("#cantTui").show();
+                      }
+                      if(res.data.status==='5'){
+                          $("#status").text('退款失败');
+                          $("#canTui").hide();
+                          $("#cantTui").show();
+                      }
+                      if(res.data.payMethod==='1'){
+                            $("#wx").show();
+                      }
+                      if(res.data.payMethod==='2'){
+                            $("#zfb").show();
+                      }
+                      if(res.data.payMethod==='3'){
+                            $("#yl").show();
+                      }
+
+              }
+              if(res.data.status==='4'||res.data.status==='5'||res.data.status==='3'){
+                  $("#actualMoney").text('￥'+res.data.actualMoney);
+                  $("#operator").text(res.data.operator);
+                  $("#orderId").text(res.data.orderId);
+                  $("#time").text(timeALL(res.data.time));
+                  $("#refundPersion").text(res.data.refundPersion);
+                  $("#refundMoney").text('￥'+res.data.refundMoney)
+                  $("#canTui").hide();
+                  $("#cantTui").show();
+                  if(res.data.payMethod==='1'){
+                      $("#wx").show();
+                  }
+                  if(res.data.payMethod==='2'){
+                      $("#zfb").show();
+                  }
+                  if(res.data.payMethod==='3'){
+                      $("#yl").show();
+                  }
+                  if(res.data.status==='0'){
+                      $("#status").text('支付中');
+                  }
+                  if(res.data.status==='1'){
+                      $("#status").text('支付成功');
+
+                  }
+                  if(res.data.status==='2'){
+                      $("#status").text('支付失败');
+
+                  }
+                  if(res.data.status==='3'){
+                      $("#status").text('退款中');
+
+                  }
+                  if(res.data.status==='4'){
+                      $("#status").text('退款成功');
+
+                  }
+                  if(res.data.status==='5'){
+                      $("#status").text('退款失败');
+
+                  }
+              }
+        }
+    })
+   $("#canTui").click(function () {
+        $(".order-bg").show();
+   })
+    $("#reset").click(function () {
+        $(".order-bg").hide();
+    })
+    $("#config").click(function () {
+        var id = getURLParams('id');
+        var str = String($(".numbers").val()).charAt(0);
+        var sd = /^[-+]?\d*$/;
+        var strs = String($(".numbers").val()).charAt(1);
+        if (str === '0' && strs !== '.') {
+            alert('首位数字不能为0')
+            return
+        }
+        if (Number($(".numbers").val()) >Number(money)) {
+          alert('退款金额不能大于实际金额')
+            return
+        }
+        if (stues!== '1') {
+              alert('当前状态不能退款');
+            return
+        }
+        if ($(".numbers").val() === '') {
+               alert('退款金额不能为空');
+            return
+        }
+        if(Number(money)===0){
+            alert('输入金额不能为空')
+        }
+        if (searchesd() && Number(money) >=Number($(".numbers").val()) && stues === '1' && $(".numbers").val() !== '') {
+            $("#config").unbind();
+            $.ajax({
+                type:'get',
+                url:api + '/refund/refundMoney?accountId=' + acid + '&price=' + $(".numbers").val() + '&orderId=' + id,
+                success:function (res) {
+                    if (res.code === 0) {
+                        window.location.href = 'success-pos.html';
+                    }
+                    else {
+                        sessionStorage.setItem('ermsg', res.msg);
+                        setTimeout(function () {
+                            window.location.href = 'error-pos.html?id=' + id;
+                        }, 1000)
+
+                    }
+                }
+            })
+
+        }
+    })
+    function searchesd() {
+        var str = String($(".numbers").val()).charAt(0);
+        var sd = /^[-+]?\d*$/;
+        var strs = String($(".numbers").val()).charAt(1);
+
+        if (str === '0' && strs === '.') {
+            return true
+        }
+        if (str !== '0' && strs === '.') {
+            return true
+        }
+        if (str !== '.' && strs !== '.') {
+            return true
+        }
+        if (str === '.') {
+            return false
+        }
+        if(Number($(".numbers").val())<=0){
+            return false;
+        }
+        else {
+            return false
+        }
+    }
+</script>
+</body>
+</html>

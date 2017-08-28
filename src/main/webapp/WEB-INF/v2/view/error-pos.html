@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>退款失败</title>
+    <!--初始化样式表重置默认样式-->    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/order-pos.css">
+
+<body style="background:#f7f7f7;">
+<div id="app" >
+
+    <div class="areasId">
+        <img src="../image/errors.png">
+        <p class="nameBold">
+            退款失败
+        </p>
+        <p class="nameCon">失败原因:<span id="msg"></span></p>
+    </div>
+
+
+</div>
+
+<script src="../script/jquery.js"></script>
+<script>
+    var msg = sessionStorage.getItem('ermsg');
+    $("#msg").text(msg);
+
+
+</script>
+</body>
+</html>

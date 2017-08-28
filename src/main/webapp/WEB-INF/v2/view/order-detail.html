@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../css/webui.css">
     <!--处理es6兼容问题 polyfill.js-->
     <script src="../script/polyfill.min.js"></script>
-    <script src="../script/config.js"></script>
+    <script src="../script/config.js?v=20170828"></script>
     <style>
         #app, body, html {
             width: 100%;
@@ -224,7 +224,8 @@
             },
             searchByOrderId() {
                 var id = NewTool.getURLParams('id');
-                axios.get(api + '/refund/searchByNo?orderId=' + id + '&transactionId=' + id)
+                var timestamp = Date.parse(new Date())
+                axios.get(api + '/refund/searchByNo?orderId=' + id + '&transactionId=' + id+'&time='+timestamp)
                     .then((res) => {
                         if (res.data.code === 0) {
                             var timestamp = res.data.data.time;

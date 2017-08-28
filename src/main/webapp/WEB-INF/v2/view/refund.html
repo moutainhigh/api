@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../css/webui.css">
     <!--处理es6兼容问题 polyfill.js-->
     <script src="../script/polyfill.min.js"></script>
-    <script src="../script/config.js"></script>
+    <script src="../script/config.js?v=20170828"></script>
 
     <style>
         #app, body, html {
@@ -19,6 +19,12 @@
         }
 
         [v-cloak] {
+            display: none;
+        }
+        .subButton{
+            width: 100%!important;
+        }
+        .resButton{
             display: none;
         }
     </style>
@@ -72,6 +78,7 @@
 <script type="text/javascript" src="../script/qrcode.min.js"></script>
 <script>
       var acid = NewTool.getURLParams('accountId');
+      var timed = 0;
     var vue = new Vue({
         el: '#app',
         data() {
@@ -125,7 +132,8 @@
                 }
             },
             getErweima() {
-                axios.get(api+'/refund/refundCode?accountId='+acid)
+                var timestamp = Date.parse(new Date())
+                axios.get(api+'/refund/refundCode?accountId='+acid+'&time='+timestamp)
                     .then((res) => {
                         if (res.data.code === 0) {
                            this.url = res.data.data.url;
@@ -148,13 +156,27 @@
             },
             searchCode:function () {
                 var that = this;
-                setInterval(function () {
-                    axios.get(api+'/refund/searchByCode?code='+that.code)
-                        .then((res)=>{
-                            if(res.data.code===0){
-                                window.location.href='order.html?code='+that.code;
-                            }
-                        })
+               var timer =  setInterval(function () {
+                    timed = 5000+timed;
+
+                   if(timed<=120000){
+                       axios.get(api+'/refund/searchByCode?code='+that.code)
+                           .then((res)=>{
+                               if(res.data.code===0){
+                                   window.location.href='order.html?code='+that.code;
+                               }
+                           })
+                   }
+                   else{
+                       clearInterval(timer)
+                       NewTool.buttonAlert({
+                           containr:'二维码已过期，请点击确定重新刷新页面',
+                           sub:function () {
+                               window.location.reload();
+                           }
+                       })
+                   }
+
                 },5000)
             }
         }
