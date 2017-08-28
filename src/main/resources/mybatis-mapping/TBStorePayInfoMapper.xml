@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhsj.api.dao.TbStorePayInfoDao">
     <sql id="SELECT_FIELDS">
-        id,store_no,pay_type,pay_method,field1,field2,field3,field4,field5,status,utime,ctime,remark,app_id,sub_appid,mch_id
+        id,store_no,pay_type,pay_method,field1,field2,field3,field4,field5,field6,status,utime,ctime,remark,app_id,sub_appid,mch_id
     </sql>
 
     <select id="getStorePayInfoByNO" resultType="storePayInfo" >

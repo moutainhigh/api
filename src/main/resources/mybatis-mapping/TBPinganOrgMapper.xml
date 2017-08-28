@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBPinganOrgDao">
+    <sql id="SELECT_FIELDS">
+        id,parent_id,name,private_key
+    </sql>
+
+    <select id="getById" resultType="pinganOrgBean">
+        SELECT <include refid="SELECT_FIELDS"/>
+        FROM tb_pingan_org
+        where id = #{id}
+    </select>
+
+
+
+</mapper>
