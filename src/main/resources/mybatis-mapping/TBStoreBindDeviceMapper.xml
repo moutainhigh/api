@@ -5,7 +5,7 @@
 		id,store_no,imei,online,status
     </sql>
     
-    <select id="searchOnline">
+    <select id="searchOnline" resultType="int">
     	select online
     	from tb_store_bind_device
     	where store_no = #{storeNo} and imei=#{imei}

@@ -508,9 +508,10 @@ public class JPushService {
 //    			System.out.print(result);
 //    		}
 //    	}
-    	String url = "https://device.jpush.cn/v3/devices/140fe1da9e9a73f88cc";
-    	String postData = "{\"alias\":\"861413030159795\"}";
-    	String result = new JPushService().sendPost(url, postData);
+    	String url = "https://device.jpush.cn/v3/devices/190e35f7e072e5546d4";
+//    	String postData = "{\"alias\":\"861413030159795\"}";
+//    	String result = new JPushService().sendPost(url, postData);
+    	String result = new JPushService().sendGet(url);
     	System.out.println(result);
     	 result = new JPushService().sendGet(url);
     	System.out.println(result);
