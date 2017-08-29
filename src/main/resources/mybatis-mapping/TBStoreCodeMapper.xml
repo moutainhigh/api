@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhsj.api.dao.TBStoreCodeDao">
+    <sql id="SELECT_FIELDS">
+        id,name,code,store_no,imei,status
+    </sql>
+
+ 	<select id="getByStoreCode" resultType="storeCodeBean">
+        SELECT <include refid="SELECT_FIELDS"/>
+        FROM tb_store_code
+        where store_no = #{storeNo} and code = #{code} and status = 1
+    </select>
+
+
+</mapper>

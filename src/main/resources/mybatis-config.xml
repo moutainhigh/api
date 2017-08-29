@@ -44,7 +44,7 @@
     	<typeAlias type="com.zhsj.api.bean.RefundCode" alias="refundCode"/>
     	<typeAlias type="com.zhsj.api.bean.AliPayInfo" alias="aliPayInfo"/>
     	<typeAlias type="com.zhsj.api.bean.PinganOrgBean" alias="pinganOrgBean"/>
-    	
+    	<typeAlias type="com.zhsj.api.bean.StoreCodeBean" alias="storeCodeBean"/>
     	
     	
     </typeAliases>

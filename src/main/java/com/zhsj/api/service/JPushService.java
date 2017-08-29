@@ -16,19 +16,25 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import com.sun.tools.classfile.StackMapTable_attribute.same_frame;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.StoreAccountBean;
+import com.zhsj.api.bean.StoreCodeBean;
 import com.zhsj.api.bean.jpush.PaySuccessBean;
 import com.zhsj.api.bean.jpush.RefundBean;
 import com.zhsj.api.dao.TBSendJGMsgDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindAccountDao;
+import com.zhsj.api.dao.TBStoreBindDeviceDao;
+import com.zhsj.api.dao.TBStoreCodeDao;
 import com.zhsj.api.exception.ApiException;
 import com.zhsj.api.retry.SimpleRetryTemplate;
 import com.zhsj.api.util.CommonResult;
@@ -51,6 +57,10 @@ public class JPushService {
     private PrinterService printerService;
     @Autowired
     private TBSendJGMsgDao tbSendJGMsgDao;
+    @Autowired
+    private TBStoreCodeDao tbStoreCodeDao;
+    @Autowired
+    private TBStoreBindDeviceDao tbStoreBindDeviceDao;
     
     public CommonResult sendSuccessMsg(String orderNo){
     	logger.info("#JPushService.sendSuccessMsg# orderNO={}",orderNo);
@@ -70,6 +80,26 @@ public class JPushService {
     		if(CollectionUtils.isEmpty(accountBeans)){
     			return CommonResult.success("没有签到用户");
     		}
+    		
+    		if(StringUtils.isNotEmpty(orderBean.getCode())){
+    			List<StoreCodeBean> list = tbStoreCodeDao.getByStoreCode(orderBean.getStoreNo(), orderBean.getCode());
+    	    	if(!CollectionUtils.isEmpty(list)){
+    	    		StoreCodeBean bean = list.get(0);
+        			if(StringUtils.isNotEmpty(bean.getImei())){
+        				int online = tbStoreBindDeviceDao.searchOnline(orderBean.getStoreNo(), bean.getImei());
+        				if(online != 1){
+        					return CommonResult.success("设备不在线");
+        				}else{
+        					//发送消息
+        					String json = toSuccessMsg(orderBean,bean,null,bean.getImei());
+        	    			sendJGMsg(json,orderNo);
+        	    			return CommonResult.success("");
+        				}
+        			}
+    	    	}
+    	    	
+    		}
+    		
     		List<String> jIds = new ArrayList<>();
     		for(StoreAccountBean accountBean:accountBeans){
     			if(StringUtils.isNotEmpty(accountBean.getjId())){
@@ -88,7 +118,7 @@ public class JPushService {
     		int totalPage = totalSize / maxSize + ((totalSize % maxSize) == 0 ? 0 : 1);
     		for (int i = 0; i < totalPage; i++) {
     			List<String> regIds = jIds.subList(i * maxSize,  Math.min(totalSize, (i + 1) * maxSize));
-    			String json = toSuccessMsg(orderBean, regIds);
+    			String json = toSuccessMsg(orderBean,null, regIds,null);
     			sendJGMsg(json,orderNo);
     		}
     		
@@ -99,7 +129,6 @@ public class JPushService {
     	return CommonResult.defaultError("系统出错");
     	
     }
-    
     
     public CommonResult sendRefundMsg(String orderNo,long accountId){
     	logger.info("#JPushService.sendRefundMsg# orderNO={}",orderNo);
@@ -144,6 +173,18 @@ public class JPushService {
     }
 
     
+    public CommonResult modiAlias(String jid,String imei){
+    	logger.info("#JPushService.modiAlias# jid={},imei={}",jid,imei);
+    	try{
+    		this.setAlias(jid, imei, 3, 1000);
+    		return CommonResult.success("");
+    	}catch (Exception e) {
+    		logger.error("#JPushService.modiAlias# jid={},imei={}",jid,imei,e);
+		}
+    	return CommonResult.defaultError("系统出错");
+    	
+    }
+    
     private void sendJGMsg(String json,String orderId){
     	logger.info("#JPushService.sendJGMsg orderId={},json={}#",orderId,json);
     	
@@ -169,17 +210,23 @@ public class JPushService {
 		}
     }
     
-    private String toSuccessMsg(OrderBean bean,List<String> regIds){
-    	PaySuccessBean psBean = orderService.getPaySuccessBean(bean);
+    private String toSuccessMsg(OrderBean bean,StoreCodeBean codeBean,List<String> regIds,String imei){
+    	PaySuccessBean psBean = orderService.getPaySuccessBean(bean,codeBean);
     	
     	JSONObject jsonObject = new JSONObject();
     	jsonObject.put("platform", "all");//推送平台
     	
     	//推送设备
-    	JSONArray regArray = new JSONArray();
-    	regArray.addAll(regIds);
     	JSONObject audience = new JSONObject();
-    	audience.put("registration_id", regArray);
+    	if(StringUtils.isEmpty(imei)){
+    		JSONArray regArray = new JSONArray();
+        	regArray.addAll(regIds);
+        	audience.put("registration_id", regArray);
+    	}else{
+    		JSONArray regArray = new JSONArray();
+        	regArray.add(imei);
+        	audience.put("alias", regArray);
+    	}
     	jsonObject.put("audience", audience);
     	
     	//ios以通知下发消息
@@ -397,6 +444,25 @@ public class JPushService {
     	return num;
     }
     
+    private void setAlias(final String rid,final String alias,final int retryTimes,final long time) {
+    	try{
+    		 new SimpleRetryTemplate<Integer>() {
+    			@Override
+    			public Integer invoke() throws Exception {
+    				String url = "https://device.jpush.cn/v3/devices/"+rid;
+    		    	String postData = "{\"alias\":\""+alias+"\"}";
+    		    	String result = new JPushService().sendPost(url, postData);
+    		    	if(StringUtils.isNotEmpty(result)){
+    		    		throw new ApiException(1002, "设置别名设备失败");
+    		    	}
+    		    	return 0;
+    			}
+    		}.retryWithException(Exception.class,retryTimes).executeWithRetry(time);
+    	}catch (Exception e) {
+			logger.warn("#searchJPushMsg#,e={}","极光查询失败",e);
+		}
+    }
+    
     public static void main(String[] args) throws Exception {
 ////		new JPushService().sendSuccessMsg("18071adc033cab91e3e");
 //    	List list = new ArrayList<>();
@@ -420,18 +486,18 @@ public class JPushService {
 //    	String json = new JPushService().toSuccessMsg(orderBean, list);
 //    	System.out.println(json);
 //		String result = sendPost("https://api.jpush.cn/v3/push", json);
-    	String urla = "https://api.jpush.cn/v3/push/cid";
-    	String resulurlat = new JPushService().sendGet(urla);
-    	System.out.println(resulurlat);
+//    	String urla = "https://api.jpush.cn/v3/push/cid";
+//    	String resulurlat = new JPushService().sendGet(urla);
+//    	System.out.println(resulurlat);
     	
 //    	String json = "{\"cid\":\"e6b6ec672479ecd3a154a1d0-c9a8faf0-5027-479b-ac83-5e1d95cef93d\",\"message\":{\"msg_content\":{\"nt\":\"你有一笔0.01元订单支付成功\",\"time\":\"2017-05-25 10:16\",\"cmd\":1,\"no\":\"12\",\"am\":\"0.01\",\"pt\":\"微信\",\"pm\":\"0.01\",\"st\":\"成功\",\"code\":\"671\",\"url\":\"http://wwt.bj37du.com/api/10001170525369841513\",\"qr\":\"qrcode\"}},\"platform\":\"all\",\"audience\":{\"registration_id\":[\"18071adc033cab91e3e\"]},\"options\":{\"time_to_live\":1800,\"sendno\":\"33\"}}";
 //    	String resultString = new JPushService().sendPost("https://api.jpush.cn/v3/push", json);
 //    	System.out.println(resultString);
 //    	Map<String, String> map = JSON.parseObject(resultString, Map.class);
 //    	System.out.println(map.get("msg_id"));
-    	String url = "https://report.jpush.cn/v3/received?msg_ids=29273397870741827";//+map.get("msg_id");
-    	String result = new JPushService().sendGet(url);
-    	System.out.println(result);
+//    	String url = "https://report.jpush.cn/v3/received?msg_ids=29273397870741827";//+map.get("msg_id");
+//    	String result = new JPushService().sendGet(url);
+//    	System.out.println(result);
 //    	JSONArray jsonArray = JSON.parseArray(result);
 //    	for(int i=0;i<jsonArray.size();i++){
 //    		String jmsg = jsonArray.get(i).toString();
@@ -442,7 +508,12 @@ public class JPushService {
 //    			System.out.print(result);
 //    		}
 //    	}
-		
+    	String url = "https://device.jpush.cn/v3/devices/140fe1da9e9a73f88cc";
+    	String postData = "{\"alias\":\"861413030159795\"}";
+    	String result = new JPushService().sendPost(url, postData);
+    	System.out.println(result);
+    	 result = new JPushService().sendGet(url);
+    	System.out.println(result);
 	}
     
     

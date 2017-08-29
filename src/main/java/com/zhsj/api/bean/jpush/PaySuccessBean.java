@@ -1,6 +1,7 @@
 package com.zhsj.api.bean.jpush;
 
 import com.zhsj.api.bean.OrderBean;
+import com.zhsj.api.bean.StoreCodeBean;
 import com.zhsj.api.util.Arith;
 import com.zhsj.api.util.DateUtil;
 
@@ -92,7 +93,7 @@ public class PaySuccessBean {
 	public void setDc(String dc) {
 		this.dc = dc;
 	}
-	public PaySuccessBean toBean(OrderBean bean,String qrcode,String uri,String desc){
+	public PaySuccessBean toBean(OrderBean bean,StoreCodeBean codeBean,String qrcode,String uri,String desc){
 		if(bean == null){
 			return null;
 		}
@@ -108,6 +109,9 @@ public class PaySuccessBean {
 		pb.setCode(bean.getAccountId()+""+((int)Arith.mul(bean.getPlanChargeAmount(),100)));
 		pb.setQr(qrcode);
 		pb.setNt(pb.getPt()+"收款"+bean.getPlanChargeAmount()+"元");
+		if(codeBean != null){
+			pb.setNt(codeBean.getName()+pb.getNt());
+		}
 		pb.setDc(desc);
 		return pb;
 	}

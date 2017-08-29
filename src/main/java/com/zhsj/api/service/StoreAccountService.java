@@ -16,6 +16,7 @@ import com.zhsj.api.bean.StoreBean;
 import com.zhsj.api.dao.TBRoleDao;
 import com.zhsj.api.dao.TBStoreAccountDao;
 import com.zhsj.api.dao.TBStoreBindAccountDao;
+import com.zhsj.api.dao.TBStoreBindDeviceDao;
 import com.zhsj.api.dao.TBStoreSignDao;
 import com.zhsj.api.dao.TbStoreDao;
 import com.zhsj.api.util.Arith;
@@ -37,6 +38,10 @@ public class StoreAccountService {
 	private TBStoreBindAccountDao tbStoreBindAccountDao;
 	@Autowired
 	private TBRoleDao tbRoleDao;
+	@Autowired
+	private JPushService jPushService;
+	@Autowired
+	private TBStoreBindDeviceDao tbStoreBindDeviceDao;
 	
 	public CommonResult signCashier(String account,String passwd,String lat,String lon,String regId,String imei,String auth){
 		logger.info("#StoreAccountService.signCashier# account={},passwd={},lat={},lon={},regId={},imei={}auth={}",
@@ -59,6 +64,9 @@ public class StoreAccountService {
 			if(storeBean == null ){
 				return CommonResult.defaultError("商家不在营业状态");
 			}
+			
+			jPushService.modiAlias(regId, imei);
+			tbStoreBindDeviceDao.updateOnlineByStoreNo(1, storeNo, imei);
 			
 			tbStoreAccountDao.initSignStatus(regId);
 			tbStoreAccountDao.updateSignStatus(storeAccountBean.getId(),regId, 1,1,imei);
@@ -90,6 +98,7 @@ public class StoreAccountService {
 			String storeNo = tbStoreBindAccountDao.getStoreNoByAccountId(storeAccountBean.getId());
 			tbStoreAccountDao.updateSignStatus(storeAccountBean.getId(),"", 2,0,"");
 			tbStoreSignDao.insert(storeAccountBean.getId(), lat, lon, 2,storeNo,imei);
+			tbStoreBindDeviceDao.updateOnlineByStoreNo(0, storeNo, imei);
 			return CommonResult.success("交班成功");
 		}catch(Exception e){
 			logger.error("#StoreAccountService.signOutCashier# account={},lat={},lon={},auth={}",

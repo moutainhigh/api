@@ -6,6 +6,7 @@ import com.zhsj.api.bean.OrderRefundBean;
 import com.zhsj.api.bean.StoreAccountBean;
 import com.zhsj.api.bean.StoreAccountSignBean;
 import com.zhsj.api.bean.StoreBean;
+import com.zhsj.api.bean.StoreCodeBean;
 import com.zhsj.api.bean.StorePayInfo;
 import com.zhsj.api.bean.jpush.PaySuccessBean;
 import com.zhsj.api.bean.result.OrderSta;
@@ -1092,14 +1093,14 @@ public class OrderService {
     	return bigd.doubleValue();
     }
     
-    public PaySuccessBean getPaySuccessBean(OrderBean bean){
+    public PaySuccessBean getPaySuccessBean(OrderBean bean,StoreCodeBean codeBean){
     	String qr = vpiaotongService.getStoreQRCode(bean.getStoreNo(), bean.getOrderId(), bean.getActualChargeAmount());
     	String desc = "";
     	if(StringUtils.isNotEmpty(qr)){
     		desc = Const.ELE_INVOICE_DESC;
     	}
 		String apiUri = MtConfig.getProperty("API_URL", "");
-		return new PaySuccessBean().toBean(bean, qr,apiUri,desc);
+		return new PaySuccessBean().toBean(bean,codeBean, qr,apiUri,desc);
     }
     
     private String bigToStr(BigDecimal bigd){

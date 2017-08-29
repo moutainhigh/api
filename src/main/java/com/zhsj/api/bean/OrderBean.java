@@ -35,6 +35,8 @@ public class OrderBean {
     private String transactionId;
     private String mchntOrderNo;
     
+    private String code;
+    
 
     public long getCtime() {
         return ctime;
@@ -272,6 +274,14 @@ public class OrderBean {
 
 	public void setMchntOrderNo(String mchntOrderNo) {
 		this.mchntOrderNo = mchntOrderNo;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
     
 	
