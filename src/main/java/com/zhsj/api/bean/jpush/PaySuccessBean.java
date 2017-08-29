@@ -109,10 +109,11 @@ public class PaySuccessBean {
 		pb.setCode(bean.getAccountId()+""+((int)Arith.mul(bean.getPlanChargeAmount(),100)));
 		pb.setQr(qrcode);
 		pb.setNt(pb.getPt()+"收款"+bean.getPlanChargeAmount()+"元");
+		pb.setDc(desc);
 		if(codeBean != null){
 			pb.setNt(codeBean.getName()+pb.getNt());
+			pb.setDc(codeBean.getName()+"#"+codeBean.getCode()+"收款");
 		}
-		pb.setDc(desc);
 		return pb;
 	}
 	
