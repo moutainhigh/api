@@ -122,7 +122,7 @@ public class BaseService {
 			}
 			OrderBean bean = orderService.getByOrderId(commonResult.getData().toString());
 			
-			PaySuccessBean psBean = orderService.getPaySuccessBean(bean);
+			PaySuccessBean psBean = orderService.getPaySuccessBean(bean,null);
 			return commonResult.success("", psBean);
     	} catch (Exception e) {
 			logger.error("#BaseService.microPay# storeNo={},userId={},price={},authCode={},auth={}",

@@ -4,6 +4,12 @@
     <sql id="SELECT_FIELDS">
 		id,store_no,imei,online,status
     </sql>
+    
+    <select id="searchOnline">
+    	select online
+    	from tb_store_bind_device
+    	where store_no = #{storeNo} and imei=#{imei}
+    </select>
 
 	<update id="updateOnlineByStoreNo">
 		update tb_store_bind_device

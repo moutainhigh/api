@@ -17,5 +17,8 @@ public interface TBStoreBindDeviceDao {
 	int updateOnlineByImei(@Param("online")int online,
 			  			   @Param("imei")String imei);
 	
+	int searchOnline(@Param("storeNo")String storeNo,
+					  @Param("imei")String imei);
+	
 
 }
