@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhsj.api.bean.OrderBean;
 import com.zhsj.api.bean.StoreBalanceDetailBean;
 import com.zhsj.api.bean.StoreBean;
-import com.zhsj.api.bean.UserBean;
 import com.zhsj.api.bean.WeixinUserBean;
 import com.zhsj.api.bean.result.QueryTransfers;
 import com.zhsj.api.bean.result.ShiftBean;
@@ -18,24 +17,17 @@ import com.zhsj.api.util.DateUtil;
 import com.zhsj.api.util.HttpsRequest;
 import com.zhsj.api.util.HttpClient;
 import com.zhsj.api.util.MtConfig;
-import com.zhsj.api.util.SSLUtil;
 import com.zhsj.api.util.StoreUtils;
 import com.zhsj.api.util.XMLBeanUtils;
 import com.zhsj.api.util.login.LoginUserUtil;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import java.io.IOException;
 import java.lang.String;
 import java.math.BigDecimal;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,12 +41,6 @@ import java.util.UUID;
 public class WXService {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(WXService.class);
 
-    @Autowired
-    private TbUserDao bmUserDao;
-    @Autowired
-    private OrderService orderService;
-    @Autowired
-    private StoreService storeService;
     @Autowired
     private TBStoreBindAccountDao tbStoreBindAccountDao;
     @Autowired
@@ -445,6 +431,80 @@ public class WXService {
             logger.error("#WXService.sendStoreThift# storeNo={}",storeNo,e);
         }
     }
+    
+    public void sendMessageStore(OrderBean orderBean){
+        logger.info("#WXService.sendMessageStore# storeNo={},orderId={}",orderBean.getStoreNo(),orderBean.getOrderId());
+        try{
+            StoreBean storeBean = tbStoreDao.getStoreByNo(orderBean.getStoreNo());
+            if(storeBean == null || StringUtils.isEmpty(storeBean.getAppId())){
+                logger.info("#WXService.sendMessageStore# fail appId is null storeNo={}",storeBean.getStoreNo());
+                return;
+            }
+            List<Long> accountIdList = tbStoreBindAccountDao.getAccountIdByStoreNo(orderBean.getStoreNo());
+            if(CollectionUtils.isEmpty(accountIdList)){
+                return;
+            }
+            String roleId = MtConfig.getProperty("RECEIVE_SUCCESS_MESSAGE_ROLE", "");
+            List<Long> idList = new ArrayList<>();
+            List<Long> saleIdList = tbStoreAccountBindRoleDao.filterAccountIdByRole(Long.parseLong(roleId),accountIdList);
+            if(!CollectionUtils.isEmpty(saleIdList)){
+            	idList.addAll(saleIdList);
+            }
+            roleId = MtConfig.getProperty("STORE_MANAGER_ROLE", "");
+            List<Long> managerIdList = tbStoreAccountBindRoleDao.filterAccountIdByRole(Long.parseLong(roleId), accountIdList);
+            if(!CollectionUtils.isEmpty(managerIdList)){
+            	idList.addAll(managerIdList);
+            }
+            if(CollectionUtils.isEmpty(idList)){
+            	return;
+            }
+            List<String> openIdList = tbStoreAccountDao.getOpenIdByAccountId(idList);
+            if(CollectionUtils.isEmpty(openIdList)){
+                return;
+            }
+            String appId = storeBean.getAppId();
+            
+            String stroeMessage = MtConfig.getProperty("STORE_MESSAGE", "");
+
+            String openIds = "";
+            for(String openId:openIdList){
+                if(StringUtils.isEmpty(openId)){
+                    continue;
+                }
+                openIds += openId+",";
+            }
+            if(StringUtils.isEmpty(openIds)){
+                logger.info("#WXService.sendMessageStore# storeNo={},orderId={},没有收银员",orderBean.getStoreNo(),orderBean.getOrderId());
+            	return;
+            }
+            String payMethod = "";
+            if("1".equals(orderBean.getPayMethod())){
+            	payMethod = "微信";
+            }else if("2".equals(orderBean.getPayMethod())){
+            	payMethod = "支付宝";
+            }else if("3".equals(orderBean.getPayMethod())){
+            	payMethod = "银联卡";
+            }
+            
+            stroeMessage = stroeMessage.replace("_first", " \"value\": \"您好,您有一笔订单收款成功\"");
+            stroeMessage = stroeMessage.replace("_keyword1","\"value\": \""+ orderBean.getActualChargeAmount()+"\\n优惠金额："+Arith.sub(orderBean.getPlanChargeAmount(),orderBean.getActualChargeAmount()) + "\"");
+            stroeMessage = stroeMessage.replace("_keyword2","\"value\": \""+payMethod+"\"");
+            stroeMessage = stroeMessage.replace("_keyword3","\"value\": \" "+ DateUtil.getTime(orderBean.getCtime()*1000) + "\"");
+            stroeMessage = stroeMessage.replace("_keyword4","\"value\": \" "+ orderBean.getOrderId() + "\"");
+            stroeMessage = stroeMessage.replace("_remark", " \"value\": \"有任何疑问咨询公众号\"");
+            String url = MtConfig.getProperty("OPEN_URL", "")+ "/sendMessage";
+         	Map<String, String> parameters = new HashMap();
+         	parameters.put("appId", appId);
+         	parameters.put("openIds", openIds);
+         	parameters.put("message", stroeMessage);
+         	parameters.put("url",  MtConfig.getProperty("API_URL", "")+"/shop/transactionOrder?auth=&id="+orderBean.getId());
+         	String result = HttpClient.sendGet(url, parameters);
+         	logger.info("#WXService.sendMessageStore# result orderId={},result={}",orderBean.getOrderId(),result);
+        }catch(Exception e){
+            logger.error("#WXService.sendMessageStore# orderBean.orderId", orderBean.getOrderId());
+        }
+    }
+    
     
     public static void main(String[] args) throws Exception {
     	ShiftBean bean = new ShiftBean();

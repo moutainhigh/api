@@ -89,6 +89,8 @@ public class OrderService {
     private AyncTaskUtil ayncTaskUtil;
     @Autowired
     private NPinganService nPinganService;
+    @Autowired
+    private WXService wxService;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -767,6 +769,7 @@ public class OrderService {
     		if(orderBean.getStatus() == status){
     			return CommonResult.success("更新成功");
     		}
+    		wxService.sendMessageStore(orderBean);
     		return CommonResult.success("更新失败");
         }catch (Exception e) {
         	logger.error("#OrderService.updateOrderStatus# userId={},storeNo={},orderNo={},cashierTradeNo={},status={},auth={}",
