@@ -52,6 +52,8 @@ public class ShopService {
     TbUserDao tbUserDao;
     @Autowired
     TBStoreBalanceDetailsDao tbStoreBalanceDetailsDao;
+    @Autowired
+    TBStoreCodeDao tbStoreCodeDao;
 
     public Map<String,String> loginByOpenId(String code,String appId){
         logger.info("#ShopService.loginByOpenId# code={},appId={}",code,appId);
@@ -275,6 +277,12 @@ public class ShopService {
         }
         StoreBean storeBean = tbStoreDao.getStoreByNo(orderBean.getStoreNo());
         orderBean.setStoreName(storeBean.getName());
+        if(!StringUtils.isEmpty(orderBean.getCode())){
+        	List<StoreCodeBean> list = tbStoreCodeDao.getByStoreCode(orderBean.getStoreNo(), orderBean.getCode());
+        	if(!CollectionUtils.isEmpty(list)){
+        	     orderBean.setCode(list.get(0).getName()+"(#"+orderBean.getCode()+")");
+        	}
+        }
         return orderBean;
     }
 
