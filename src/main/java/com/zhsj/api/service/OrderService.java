@@ -90,6 +90,8 @@ public class OrderService {
     private AyncTaskUtil ayncTaskUtil;
     @Autowired
     private NPinganService nPinganService;
+    @Autowired
+    private WXService wxService;
 
     public void updateOrderByOrderId(int status,String orderId){
     	tbOrderDao.updateOrderByOrderId(status,orderId);
@@ -760,12 +762,9 @@ public class OrderService {
     			return CommonResult.defaultError("商家不存在");
     		}
     		int num = tbOrderDao.updateByAccount(status, 0, orderNo, Long.parseLong(userId), cashierTradeNo);
-    		if(num > 0){
-    			return CommonResult.success("更新成功");
-    		}
-    		
     		OrderBean orderBean = tbOrderDao.getByOrderId(orderNo);
-    		if(orderBean.getStatus() == status){
+    		if(num > 0 || (orderBean != null && orderBean.getStatus() == status)){
+    			wxService.sendMessageStore(orderBean);
     			return CommonResult.success("更新成功");
     		}
     		return CommonResult.success("更新失败");

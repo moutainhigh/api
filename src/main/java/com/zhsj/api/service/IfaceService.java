@@ -47,8 +47,6 @@ public class IfaceService {
     @Autowired
     private OrderService orderService;
     @Autowired
-    private FuyouService fuyouService;
-    @Autowired
     private TBStoreAccountDao tbStoreAccountDao;
     
     public CommonResult micropay(String req){
@@ -65,6 +63,8 @@ public class IfaceService {
     			channel = PayChannelCons.WSY_CHANNEL.getType(); 
     		}else if(PayChannelCons.YDC_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
     			channel = PayChannelCons.YDC_CHANNEL.getType();
+    		}else if(PayChannelCons.XY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.XY_CHANNEL.getType();
     		}else{
     			return CommonResult.build(10006, "组织不存在");
     		}
@@ -130,6 +130,8 @@ public class IfaceService {
     			channel = PayChannelCons.WSY_CHANNEL.getType(); 
     		}else if(PayChannelCons.YDC_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
     			channel = PayChannelCons.YDC_CHANNEL.getType();
+    		}else if(PayChannelCons.XY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.XY_CHANNEL.getType();
     		}else{
     			return CommonResult.build(10006, "组织不存在");
     		}
@@ -316,6 +318,8 @@ public class IfaceService {
     			channel = PayChannelCons.WSY_CHANNEL.getType(); 
     		}else if(PayChannelCons.YDC_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
     			channel = PayChannelCons.YDC_CHANNEL.getType();
+    		}else if(PayChannelCons.XY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.XY_CHANNEL.getType();
     		}else{
     			return CommonResult.build(10006, "组织不存在");
     		}
@@ -374,6 +378,8 @@ public class IfaceService {
     			channel = PayChannelCons.WSY_CHANNEL.getType(); 
     		}else if(PayChannelCons.YDC_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
     			channel = PayChannelCons.YDC_CHANNEL.getType();
+    		}else if(PayChannelCons.XY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.XY_CHANNEL.getType();
     		}else{
     			return CommonResult.build(10006, "组织不存在");
     		}
