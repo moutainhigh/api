@@ -376,7 +376,7 @@
      <select id="getListByParamMap" resultType="orderBean">
         SELECT 
         id,order_id orderId,plan_charge_amount planChargeAmount,actual_charge_amount actualChargeAmount,status,pay_type payType,pay_method payMethod,store_no storeNo, ctime,
-        store_discount_price storeDiscountPrice,org_discount_price orgDiscountPrice,refund_money refundMoney
+        store_discount_price storeDiscountPrice,org_discount_price orgDiscountPrice,refund_money refundMoney, code
         FROM tb_order
         <where>
             ctime between #{startTime} and #{endTime}

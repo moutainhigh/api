@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -62,6 +63,12 @@ pageEncoding="UTF-8"%>
                     <span class="span-label">收款门店</span>
                     <span class="span-result" id="storeName"></span>
                 </p>
+                <c:if test="${order.code != '' and order.code != null }">
+	                <p class="clearfix">
+	                    <span class="span-label">活动码</span>
+	                    <span class="span-result" id="code">${order.code }</span>
+	                </p>
+                </c:if>
             </div>
         </section>
 

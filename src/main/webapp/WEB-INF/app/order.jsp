@@ -443,6 +443,15 @@ $('.tran_time .clearfix li').on("click",function(){
 		}
 		return state;
   }
+  
+  
+  function getCode(code){
+	  if(code == ""){
+		  return "";
+	  }else{
+		  return "(#"+code+")";
+	  }
+  }
     	   function order(page){
     			   var date = new Date();
     			   date = date.Format("yyyy/MM/dd");
@@ -507,7 +516,7 @@ $('.tran_time .clearfix li').on("click",function(){
 	    						   +  '             <h2 class="old-price">￥'+obj[i].planChargeAmount+'</h2>'
 	    						   +  '        </li>';
 	    						   if(obj[i].status != 4){
-	    							   content += ' <li class="fl business-cheap"><h2 class="business-num">'+getStatus(obj[i].status)+'</h2><h2 >';
+	    							   content += ' <li class="fl business-cheap"><h2 class="business-num">'+getStatus(obj[i].status)+getCode(obj[i].code)+'</h2><h2 >';
 		    						   if(obj[i].storeDiscountPrice != 0){
 		    						       content +=  '<span class="business">商家优惠</span>';
 		    						   }
