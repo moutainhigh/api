@@ -477,10 +477,14 @@ public class ShopService {
     		return CommonResult.defaultError("error");
     	}
     	try{
-    	   storeAccountBean.setPassword(Md5.encrypt(storeAccountBean.getPassword()));
-    	   tbStoreAccountDao.insert(storeAccountBean);
-    	   tbStoreBindAccountDao.insert(storeBean.getStoreNo(), storeAccountBean.getId());
-    	   tbStoreAccountBindRoleDao.insert(storeAccountBean.getId(), roleId);
+    		StoreAccountBean sab = tbStoreAccountDao.getOneByAccount(storeAccountBean.getAccount());
+    		if(sab != null){
+    			return CommonResult.build(2, "账号已被注册");
+    		}
+    		storeAccountBean.setPassword(Md5.encrypt(storeAccountBean.getPassword()));
+    		tbStoreAccountDao.insert(storeAccountBean);
+    		tbStoreBindAccountDao.insert(storeBean.getStoreNo(), storeAccountBean.getId());
+    		tbStoreAccountBindRoleDao.insert(storeAccountBean.getId(), roleId);
     	}catch(Exception e){
     		logger.error("#ShopService.saveStoreAccount #storeAccountBean= {},#roleId = {}",storeAccountBean, roleId,e);
     	}
