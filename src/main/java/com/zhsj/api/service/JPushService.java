@@ -22,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.sun.org.apache.bcel.internal.generic.RETURN;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import com.sun.tools.classfile.StackMapTable_attribute.same_frame;
@@ -176,7 +177,10 @@ public class JPushService {
     public CommonResult modiAlias(String jid,String imei){
     	logger.info("#JPushService.modiAlias# jid={},imei={}",jid,imei);
     	try{
-    		this.setAlias(jid, imei, 3, 1000);
+    		String alias = this.getAlias(jid, 3, 1000);
+    		if(!imei.equals(alias)){
+    			this.setAlias(jid, imei, 3, 1000);
+    		}
     		return CommonResult.success("");
     	}catch (Exception e) {
     		logger.error("#JPushService.modiAlias# jid={},imei={}",jid,imei,e);
@@ -428,12 +432,14 @@ public class JPushService {
     				String url = "https://report.jpush.cn/v3/received?msg_ids="+msgId;
     				String result = new JPushService().sendGet(url);
         	    	JSONArray jsonArray = JSON.parseArray(result);
-        	    	for(int i=0;i<jsonArray.size();i++){
-        	    		String jmsg = jsonArray.get(i).toString();
-        	    		Map<String, Object> getMap = JSON.parseObject(jmsg,Map.class);
-        	    		if(getMap.get("android_received") != null || getMap.get("ios_msg_received")!=null){
-        	    			return 1;
-        	    		}
+        	    	if(jsonArray != null){
+        	    		for(int i=0;i<jsonArray.size();i++){
+            	    		String jmsg = jsonArray.get(i).toString();
+            	    		Map<String, Object> getMap = JSON.parseObject(jmsg,Map.class);
+            	    		if(getMap.get("android_received") != null || getMap.get("ios_msg_received")!=null){
+            	    			return 1;
+            	    		}
+            	    	}
         	    	}
         	    	throw new ApiException(1002, "极光查询失败");
     			}
@@ -461,6 +467,30 @@ public class JPushService {
     	}catch (Exception e) {
 			logger.warn("#searchJPushMsg#,e={}","极光查询失败",e);
 		}
+    }
+    
+    private String getAlias(final String rid,final int retryTimes,final long time) {
+    	String alias = "";
+    	try{
+    		alias = new SimpleRetryTemplate<String>() {
+    			@Override
+    			public String invoke() throws Exception {
+    				String url = "https://device.jpush.cn/v3/devices/"+rid;
+    		    	String result = new JPushService().sendGet(url);
+    		    	if(StringUtils.isEmpty(result)){
+    		    		throw new ApiException(1002, "查询别名设备失败");
+    		    	}
+    		    	JSONObject jsonObject = JSON.parseObject(result);
+    		    	if(jsonObject == null){
+    		    		throw new ApiException(1002, "查询别名设备失败");
+    		    	}
+    		    	return jsonObject.getString("alias");
+    			}
+    		}.retryWithException(Exception.class,retryTimes).executeWithRetry(time);
+    	}catch (Exception e) {
+			logger.warn("#searchJPushMsg#,e={}","极光查询失败",e);
+		}
+    	return alias;
     }
     
     public static void main(String[] args) throws Exception {
@@ -508,13 +538,16 @@ public class JPushService {
 //    			System.out.print(result);
 //    		}
 //    	}
-    	String url = "https://device.jpush.cn/v3/devices/190e35f7e072e5546d4";
+//    	String url = "https://device.jpush.cn/v3/devices/190e35f7e072e5546d4";
 //    	String postData = "{\"alias\":\"861413030159795\"}";
 //    	String result = new JPushService().sendPost(url, postData);
-    	String result = new JPushService().sendGet(url);
-    	System.out.println(result);
-    	 result = new JPushService().sendGet(url);
-    	System.out.println(result);
+//    	String result = new JPushService().sendGet(url);
+    	System.out.println(new JPushService().getAlias("190e35f7e072e5546d4", 3, 1000));
+//    	 result = new JPushService().sendGet(url);
+//    	System.out.println(result);
+    	JSONArray jsonArray = JSON.parseArray("");
+    	System.out.print(jsonArray);
+
 	}
     
     
