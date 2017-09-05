@@ -1,1 +1,1 @@
-var api = 'http://wwt.bj37du.com/api';
+var api = 'http://api.zhihuishangjie.cn/api';

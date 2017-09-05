@@ -18,6 +18,8 @@ import com.zhsj.api.service.ShopService;
 import com.zhsj.api.service.StoreAccountService;
 import com.zhsj.api.service.StoreService;
 import com.zhsj.api.util.CommonResult;
+import com.zhsj.api.util.DateUtil;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -290,7 +292,7 @@ public class CashierController {
     	mv.addObject("storeNo", storeNo);
     	mv.addObject("accountId", accountId);
 //    	mv.setViewName("app/redirectRefund");
-    	mv.setViewName("redirect:../v2/view/refund-pos.html");
+    	mv.setViewName("redirect:../v2/view/refund-pos.html?time="+DateUtil.unixTime());
     	return mv;
     }
     
