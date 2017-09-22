@@ -272,6 +272,7 @@ public class FuyouService {
 			map.put("city_cd", cityMap.get(mchInfo.getCity()));
 			map.put("county_cd", cityMap.get(mchInfo.getCounty()));
 			map.put("business", btypeBean.getCode());
+			map.put("contact_addr", mchInfo.getAddress());
 			
 			/********结算信息*********/
 			map.put("acnt_type", mchInfo.getAcnt_type());
