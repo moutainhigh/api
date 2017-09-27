@@ -12,6 +12,8 @@ import com.zhsj.api.bean.iface.MicroPayReqBean;
 import com.zhsj.api.bean.iface.MicroPayReqV2Bean;
 import com.zhsj.api.bean.iface.MicroPayResBean;
 import com.zhsj.api.bean.iface.MicroPayResV2Bean;
+import com.zhsj.api.bean.iface.PreCreateReqBean;
+import com.zhsj.api.bean.iface.PreCreateResBean;
 import com.zhsj.api.bean.iface.QueryReqBean;
 import com.zhsj.api.bean.iface.QueryReqV2Bean;
 import com.zhsj.api.bean.iface.QueryResBean;
@@ -65,6 +67,8 @@ public class IfaceService {
     			channel = PayChannelCons.YDC_CHANNEL.getType();
     		}else if(PayChannelCons.XY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
     			channel = PayChannelCons.XY_CHANNEL.getType();
+    		}else if(PayChannelCons.SY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.SY_CHANNEL.getType();
     		}else{
     			return CommonResult.build(10006, "组织不存在");
     		}
@@ -132,6 +136,8 @@ public class IfaceService {
     			channel = PayChannelCons.YDC_CHANNEL.getType();
     		}else if(PayChannelCons.XY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
     			channel = PayChannelCons.XY_CHANNEL.getType();
+    		}else if(PayChannelCons.SY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.SY_CHANNEL.getType();
     		}else{
     			return CommonResult.build(10006, "组织不存在");
     		}
@@ -320,6 +326,8 @@ public class IfaceService {
     			channel = PayChannelCons.YDC_CHANNEL.getType();
     		}else if(PayChannelCons.XY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
     			channel = PayChannelCons.XY_CHANNEL.getType();
+    		}else if(PayChannelCons.SY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.SY_CHANNEL.getType();
     		}else{
     			return CommonResult.build(10006, "组织不存在");
     		}
@@ -380,6 +388,8 @@ public class IfaceService {
     			channel = PayChannelCons.YDC_CHANNEL.getType();
     		}else if(PayChannelCons.XY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
     			channel = PayChannelCons.XY_CHANNEL.getType();
+    		}else if(PayChannelCons.SY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.SY_CHANNEL.getType();
     		}else{
     			return CommonResult.build(10006, "组织不存在");
     		}
@@ -427,6 +437,87 @@ public class IfaceService {
     		return refundReult;
     	}catch (Exception e) {
     		logger.error("#IfaceService.commonRefundV2# req={}",req,e);
+		}
+    	return CommonResult.defaultError("系统出错");
+    }
+    
+    public CommonResult preCreate(String req){
+    	logger.info("#IfaceService.preCreate# req={}",req);
+    	try{
+    		PreCreateReqBean reqBean = JSON.parseObject(req, PreCreateReqBean.class);
+    		
+    		CommonResult result = this.checkMicroPay(reqBean);
+    		if(result.getCode() != 0){
+    			return result;
+    		}
+    		int channel = 0;
+    		if(PayChannelCons.WSY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.WSY_CHANNEL.getType(); 
+    		}else if(PayChannelCons.YDC_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.YDC_CHANNEL.getType();
+    		}else if(PayChannelCons.XY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.XY_CHANNEL.getType();
+    		}else if(PayChannelCons.SY_CHANNEL.getDesc().equals(reqBean.getIns_cd())){
+    			channel = PayChannelCons.SY_CHANNEL.getType();
+    		}else{
+    			return CommonResult.build(10006, "组织不存在");
+    		}
+    		
+    		StoreBean storeBean = storeService.getStoreByNO(reqBean.getMchnt_cd());
+    		if(storeBean == null){
+    			return CommonResult.build(10004, "商家不存在");
+    		}
+    		
+    		int payMethod = 0;
+    		if("WECHAT".equals(reqBean.getOrder_type())){
+    			payMethod = 1;
+    		}else if ("ALIPAY".equals(reqBean.getOrder_type())) {
+    			payMethod = 2;
+			}
+    		if(payMethod == 0){
+    			return CommonResult.build(10010, "支付类型不支持");
+    		}
+    		
+    		double price = Arith.div(Double.parseDouble(reqBean.getOrder_amt()),100,2);
+    		
+    		String uri = MtConfig.getProperty("PAY_URL", "")+"preCreate";
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("payMethod", payMethod);
+			map.put("storeNo", reqBean.getMchnt_cd());
+			map.put("orderPrice", price);
+			map.put("openId", reqBean.getOpenid());
+			map.put("payChannel",channel);
+			map.put("mchNo", reqBean.getMchnt_order_no());
+			map.put("notifyUrl", reqBean.getNotify_url());
+			
+			String content = HttpClient.sendPost(uri, map);
+			CommonResult commonResult = JSON.parseObject(content, CommonResult.class);
+			if(commonResult.getCode() != 0){
+				return commonResult;
+			}
+			
+			
+			Map<String, String> resMap = JSON.parseObject(commonResult.getData().toString(), Map.class);
+			PreCreateResBean resBean = new PreCreateResBean();
+    		
+    		resBean.setIns_cd(reqBean.getIns_cd());
+    		resBean.setMchnt_cd(reqBean.getMchnt_cd());
+			resBean.setRandom_str(RandomStringGenerator.getRandomStringByLength(8));
+    		resBean.setOrder_type(reqBean.getOrder_type());
+    		resBean.setWwt_order_no(resMap.get("orderId"));
+    		resBean.setMchnt_order_no(reqBean.getMchnt_order_no());
+    		resBean.setSdk_appid(resMap.get("appId"));
+    		resBean.setSdk_noncestr(resMap.get("nonceStr"));
+    		resBean.setSdk_package(resMap.get("package"));
+    		resBean.setSdk_signtype(resMap.get("signType"));
+    		resBean.setSdk_timestamp(resMap.get("timeStamp"));
+    		resBean.setTrade_no(resMap.get("trade_no"));
+    		
+			resBean.setSign(resBean.sign());
+			return CommonResult.build(0, "SUCCESS", resBean);
+
+    	}catch (Exception e) {
+    		logger.error("#IfaceService.preCreate# req={}",req,e);
 		}
     	return CommonResult.defaultError("系统出错");
     }

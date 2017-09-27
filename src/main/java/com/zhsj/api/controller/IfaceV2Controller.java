@@ -71,4 +71,21 @@ public class IfaceV2Controller {
     	return result;
     }
     
+    /**
+     * 公众号/服务窗/固定二维码统一下单
+     * @param req
+     * @return
+     */
+    @RequestMapping(value = "/preCreate", method = RequestMethod.POST)
+    @ResponseBody
+    public Object preCreate(@RequestBody String req){
+    	logger.info("#IfaceV2Controller.preCreate# req={}",req);
+    	if(StringUtils.isEmpty(req)){
+    		return CommonResult.build(2, "参数出错");
+    	}
+    	CommonResult result = ifaceService.preCreate(req);
+    	logger.info("#IfaceV2Controller.preCreate# req={} result ={}",req,result);
+    	return result;
+    }
+    
 }
