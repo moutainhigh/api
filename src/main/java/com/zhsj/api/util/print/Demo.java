@@ -19,7 +19,7 @@ public class Demo {
 	public static void main(String[] args) throws Exception{
 //		String device_id = "1083";
 //		String secertKey = "rego-yn-20150826";
-		String device_id = "6005";
+		String device_id = "6777";
 		String secertKey = "zlbz-cloud";
 //		System.err.println(PrinterUtil.queryState(device_id, secertKey));
 		
@@ -29,11 +29,14 @@ public class Demo {
 //				secertKey, content );
 //		System.err.println(result);
 		
-		String initial = CloudPrinter.PRINTER_INIT;
-		byte[] initByte = PrinterUtil.hexStringToBytes(initial);
-		String printInitial = PrinterUtil.requestPrintPost(device_id,secertKey, initByte);
-		System.out.println("print01" + printInitial);
-		getC(device_id,secertKey,"测试","2017-04-11",1000);
+//		String initial = CloudPrinter.PRINTER_INIT;
+//		byte[] initByte = PrinterUtil.hexStringToBytes(initial);
+//		String printInitial = PrinterUtil.requestPrintPost(device_id,secertKey, initByte);
+//		System.out.println("print01" + printInitial);
+//		getC(device_id,secertKey,"测试","2017-04-11",1000);
+		byte[] dd = getContent1("demo","","","");
+		String printInitial1 = PrinterUtil.requestPrintPost(device_id,secertKey, dd);
+		System.out.println("print01" + printInitial1);
 	}
 	
 	

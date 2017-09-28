@@ -92,8 +92,8 @@ public class CloudPrinter {
 	 * 1d2111 字体大小
 	 * 1b337f 行高
 	 */
-	public static final String  TITLESE_TTING = "1b61011B21081b5602";
-	public static final String  BOTTOM_TTING = "1b61011b56011B2100";
+	public static final String  TITLESE_TTING = "1b401b61011B2108";
+	public static final String  BOTTOM_TTING = "1b61011B2100";
 	/**
 	 * 设置内容格式
 	 * 1b6101 居中 
@@ -102,7 +102,7 @@ public class CloudPrinter {
 	 * 1d2111 字体默认大小
 	 * 1b332f 行高
 	 */
-	public static final String  CONTENT_SETTING = "1b61001b56011B2100";
+	public static final String  CONTENT_SETTING = "1b61001B2100";
 	/**
 	 * 设置公司内容格式
 	 * 1b6101 居中 

@@ -296,6 +296,7 @@ public static String requestPrintPost(String deviceId, String secertKey, byte[] 
 		CloudPrinter.SEND, deviceId,secertKey, timestamp);
 		try {
 			String strEncodeBase64 = new BASE64Encoder().encode(content);
+			strEncodeBase64 = strEncodeBase64.replaceAll("\r\n", "");
 			String sign = Tool.SHA1(str + strEncodeBase64);
 			URL realUrl = new URL(url1 + str + CloudPrinter.SIGN + "=" + sign);
 			// 打开和URL之间的连接
