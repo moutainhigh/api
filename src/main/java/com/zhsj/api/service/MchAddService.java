@@ -99,13 +99,16 @@ public class MchAddService {
             storeBean = new StoreBean();
             storeBean.setParentNo("0");
             storeBean.setStoreNo(storeNo);
-            storeBean.setOrgIds(orgBean.getOrgIds() + "," + orgBean.getId());
+            if(StringUtils.isNotEmpty(orgBean.getOrgIds())){
+            	storeBean.setOrgIds(orgBean.getOrgIds() + "," + orgBean.getId());
+            }
             storeBean.setSaleId(saleId);
             storeBean.setName(storeName);
             tbStoreDao.insert(storeBean);
 
             tbStoreBindAccountDao.insert(storeNo, storeAccountBean.getId());
-            tbStoreBindOrgDao.insert(storeNo, orgBean.getId(), orgBean.getOrgIds() + "," + orgBean.getId());
+            tbStoreBindOrgDao.insert(storeNo, orgBean.getId(), 
+            		StringUtils.isNotEmpty(orgBean.getOrgIds())?orgBean.getOrgIds() + "," + orgBean.getId():"");
             String json = "";
             if(type == 1){
             	MchInfoAddBean mchInfo = new MchInfoAddBean();

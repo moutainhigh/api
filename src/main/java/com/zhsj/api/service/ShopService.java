@@ -628,7 +628,7 @@ public class ShopService {
     
     public void updateAdd(StoreBalanceDetailBean storeBalanceDetailBean,double amount,String storeNo,double price){
     	  logger.info("#ShopService.updateAdd #StoreBalanceDetailBean = {}",storeBalanceDetailBean);
-    	//更新数据
+    	  //更新数据
 		  storeBalanceDetailBean.setPaymentStatus(2);
 		  try{
 			  int failResultId = tbStoreBalanceDetailsDao.update(storeBalanceDetailBean);
@@ -638,7 +638,7 @@ public class ShopService {
 		  }catch(Exception e){
 			  logger.error("#ShopService.updateAdd 更新提现#StoreBalnceDetailBean = {},",storeBalanceDetailBean,e);
 		  }
-		 //插入数据
+		  //插入数据
 		  StoreBalanceDetailBean asbd = new StoreBalanceDetailBean();
 		  asbd.setStoreNo(storeBalanceDetailBean.getStoreNo());
 		  asbd.setType(3);
