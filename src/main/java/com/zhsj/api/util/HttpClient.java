@@ -51,9 +51,9 @@ public class HttpClient {
 			// 打开URL连接
 			java.net.HttpURLConnection httpConn = (java.net.HttpURLConnection) connURL.openConnection();
 			// 设置通用属性
-			httpConn.setRequestProperty("Accept", "*/*");
-			httpConn.setRequestProperty("Connection", "Keep-Alive");
-			httpConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)");
+//			httpConn.setRequestProperty("Accept", "*/*");
+//			httpConn.setRequestProperty("Connection", "Keep-Alive");
+//			httpConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)");
 			// 建立实际的连接
 			httpConn.connect();
 			// 响应头部获取
@@ -121,6 +121,8 @@ public class HttpClient {
 			httpConn.setRequestProperty("Accept", "*/*");
 			httpConn.setRequestProperty("Connection", "Keep-Alive");
 			httpConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)");
+			//
+			httpConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 			// 设置POST方式
 			httpConn.setDoInput(true);
 			httpConn.setDoOutput(true);
