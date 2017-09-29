@@ -17,6 +17,7 @@ public class PreCreateResBean extends BaseBean{
 	private String sdk_noncestr;
 	private String sdk_package;
 	private String sdk_signtype;
+	private String sdk_sign;
 	private String trade_no;
 
 	public String getIns_cd() {
@@ -121,6 +122,14 @@ public class PreCreateResBean extends BaseBean{
 
 	public void setTrade_no(String trade_no) {
 		this.trade_no = trade_no;
+	}
+
+	public String getSdk_sign() {
+		return sdk_sign;
+	}
+
+	public void setSdk_sign(String sdk_sign) {
+		this.sdk_sign = sdk_sign;
 	}
 
 	@Override

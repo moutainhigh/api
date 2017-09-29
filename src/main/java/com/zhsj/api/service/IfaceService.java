@@ -511,8 +511,8 @@ public class IfaceService {
     		resBean.setSdk_package(resMap.get("package"));
     		resBean.setSdk_signtype(resMap.get("signType"));
     		resBean.setSdk_timestamp(resMap.get("timeStamp"));
+    		resBean.setSdk_sign(resMap.get("paySign"));
     		resBean.setTrade_no(resMap.get("trade_no"));
-    		
 			resBean.setSign(resBean.sign());
 			return CommonResult.build(0, "SUCCESS", resBean);
 
