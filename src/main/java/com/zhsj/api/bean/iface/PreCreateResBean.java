@@ -10,11 +10,9 @@ public class PreCreateResBean extends BaseBean{
 	private String random_str;
 	private String sign;
 	private String pay_url;
-	
-//	
-//	private String order_type;
-//	private String mchnt_order_no;
-//	private String wwt_order_no;
+	private String order_type;
+	private String mchnt_order_no;
+	private String wwt_order_no;
 //	private String sdk_appid;
 //	private String sdk_timestamp;
 //	private String sdk_noncestr;
@@ -61,6 +59,30 @@ public class PreCreateResBean extends BaseBean{
 
 	public void setPay_url(String pay_url) {
 		this.pay_url = pay_url;
+	}
+
+	public String getOrder_type() {
+		return order_type;
+	}
+
+	public void setOrder_type(String order_type) {
+		this.order_type = order_type;
+	}
+
+	public String getMchnt_order_no() {
+		return mchnt_order_no;
+	}
+
+	public void setMchnt_order_no(String mchnt_order_no) {
+		this.mchnt_order_no = mchnt_order_no;
+	}
+
+	public String getWwt_order_no() {
+		return wwt_order_no;
+	}
+
+	public void setWwt_order_no(String wwt_order_no) {
+		this.wwt_order_no = wwt_order_no;
 	}
 
 	@Override

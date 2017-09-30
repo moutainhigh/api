@@ -514,6 +514,9 @@ public class IfaceService {
 			sbBuffer.append(pid);
 			
 			resBean.setPay_url(sbBuffer.toString());
+			resBean.setOrder_type(reqBean.getOrder_type());
+			resBean.setMchnt_order_no(reqBean.getMchnt_order_no());
+			resBean.setWwt_order_no(oid);
 			resBean.setSign(resBean.sign());
 			return CommonResult.build(0, "SUCCESS", resBean);
 
