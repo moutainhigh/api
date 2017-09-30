@@ -503,16 +503,17 @@ public class IfaceService {
     		resBean.setIns_cd(reqBean.getIns_cd());
     		resBean.setMchnt_cd(reqBean.getMchnt_cd());
 			resBean.setRandom_str(RandomStringGenerator.getRandomStringByLength(8));
-    		resBean.setOrder_type(reqBean.getOrder_type());
-    		resBean.setWwt_order_no(resMap.get("orderId"));
-    		resBean.setMchnt_order_no(reqBean.getMchnt_order_no());
-    		resBean.setSdk_appid(resMap.get("appId"));
-    		resBean.setSdk_noncestr(resMap.get("nonceStr"));
-    		resBean.setSdk_package(resMap.get("package"));
-    		resBean.setSdk_signtype(resMap.get("signType"));
-    		resBean.setSdk_timestamp(resMap.get("timeStamp"));
-    		resBean.setSdk_sign(resMap.get("paySign"));
-    		resBean.setTrade_no(resMap.get("trade_no"));
+			String oid = resMap.get("orderId");
+			String pid = resMap.get("openId");
+			StringBuffer sbBuffer = new StringBuffer();
+			sbBuffer.append(MtConfig.getProperty("PAY_URL", ""));
+			sbBuffer.append("/payOrder?");
+			sbBuffer.append("orderId=");
+			sbBuffer.append(oid);
+			sbBuffer.append("&openId=");
+			sbBuffer.append(pid);
+			
+			resBean.setPay_url(sbBuffer.toString());
 			resBean.setSign(resBean.sign());
 			return CommonResult.build(0, "SUCCESS", resBean);
 
