@@ -478,7 +478,7 @@ public class IfaceService {
     			return CommonResult.build(10010, "支付类型不支持");
     		}
     		
-    		double price = Arith.div(Double.parseDouble(reqBean.getOrder_amt()),100,2);
+    		double price = Double.parseDouble(reqBean.getOrder_amt());
     		
     		String uri = MtConfig.getProperty("PAY_URL", "")+"preCreate";
 			Map<String, Object> map = new HashMap<String, Object>();
