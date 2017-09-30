@@ -507,7 +507,7 @@ public class IfaceService {
 			String pid = resMap.get("openId");
 			StringBuffer sbBuffer = new StringBuffer();
 			sbBuffer.append(MtConfig.getProperty("PAY_URL", ""));
-			sbBuffer.append("/payOrder?");
+			sbBuffer.append("payOrder?");
 			sbBuffer.append("orderId=");
 			sbBuffer.append(oid);
 			sbBuffer.append("&openId=");
