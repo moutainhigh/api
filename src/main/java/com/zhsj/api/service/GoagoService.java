@@ -50,8 +50,40 @@ public class GoagoService {
 		}
 		String hasNext = jsonObject.getString("hasNext");
 		JSONArray infos = jsonObject.getJSONArray("billInfoList");
-		for(){
+		if(infos == null || infos.isEmpty()){
+			return;
+		}
+		for(int i = 0;i<infos.size();i++ ){
+			JSONObject obj = infos.getJSONObject(i);
+//			System.out.println(obj.toJSONString());
 			
+			String id = obj.getString("id");
+			String shopId = obj.getString("shopId");
+			String shopEntityId = obj.getString("shopEntityId");
+			String receivableAmount = obj.getString("receivableAmount");
+			String totalFee = obj.getString("totalFee");
+			String paidAmount = obj.getString("paidAmount");
+			String discountAmount = obj.getString("discountAmount");
+			String couponAmount = obj.getString("couponAmount");
+			String roomNo = obj.getString("roomNo");
+			String deskNo = obj.getString("deskNo");
+			JSONArray goodsDetails = obj.getJSONArray("goodsDetails");
+			System.out.print(id+"	");
+			System.out.print(totalFee+"	");
+			System.out.print(receivableAmount+"	");
+			System.out.print(roomNo+"	");
+			System.out.print(deskNo+"	");
+			if(goodsDetails != null){
+				for(int j=0;j<goodsDetails.size();j++){
+					JSONObject good = goodsDetails.getJSONObject(j);
+					String name = good.getString("name");
+					String price = good.getString("price");
+					String totalNum = good.getString("totalnum");
+					String totalPrice = good.getString("totalprice");
+					System.out.println(name+"	"+price+"	"+totalNum+"	"+totalPrice);
+				}
+			}
+			System.out.println("=======================");
 		}
 	}
 	
