@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../css/reset.css">
     <link rel="stylesheet" href="../css/order-pos.css">
     <link rel="stylesheet" href="../css/webui.css">
-    <script src="../script/config.js?v=20170901"></script>
+    <script src="../script/config.js?v=20171013"></script>
     <style>
         #app, body, html {
             width: 100%;
@@ -127,13 +127,14 @@
         return times;
     }
     var id = getURLParams('id');
-    var money,stues;
+    var money,stues,payMethod;
     var timestamp = Date.parse(new Date());
     $.ajax({
         type:'get',
         url:api + '/refund/searchByNo?orderId=' + id + '&transactionId=' + id+'&time='+timestamp,
         success:function (res) {
               console.log(res);
+              payMethod = res.data.payMethod;
               if(res.data.status==='0'||res.data.status==='1'||res.data.status==='2'){
                      $("#tkje,#tkr").hide();
                      $("#actualMoney").text('￥'+res.data.actualMoney);
@@ -264,7 +265,7 @@
                 url:api + '/refund/refundMoney?accountId=' + acid + '&price=' + $(".numbers").val() + '&orderId=' + id,
                 success:function (res) {
                     if (res.code === 0) {
-                        window.location.href = 'success-pos.html';
+                        window.location.href = 'success-pos.html?payMethod='+payMethod;
                     }
                     else {
                         sessionStorage.setItem('ermsg', res.msg);

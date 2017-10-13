@@ -97,7 +97,7 @@
             <mvc:mapping path="/module/**" />
             <mvc:mapping path="/order/**" />
             <mvc:mapping path="/mchAdd/**" />
-             <mvc:mapping path="/mchAddFY/**" />
+            <mvc:mapping path="/mchAddFY/**" />
             <mvc:mapping path="/merchant/**" />
             <mvc:mapping path="/storeManage/**"/>
 <!--             <mvc:mapping path="/printer/**" /> -->
@@ -119,6 +119,7 @@
             <mvc:exclude-mapping path="/storeManage/refund"/>
             <mvc:exclude-mapping path="/storeManage/orderList" />
             <mvc:exclude-mapping path="/order/v2/*" />
+            <mvc:exclude-mapping path="/cloudHorn/**"/>
             <bean class="com.zhsj.api.interceptors.LoginInterceptor" />
         </mvc:interceptor>
     </mvc:interceptors>
