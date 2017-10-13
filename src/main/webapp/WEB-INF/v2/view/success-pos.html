@@ -21,7 +21,30 @@
     </div>
 
 </div>
-
+<script src="../script/jquery.js"></script>
+<script type="text/javascript">
+$(function(){
+	function  getURLParams (name) {
+	    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+	    var r = window.location.search.substr(1).match(reg);
+	    if (r != null) {
+	        return unescape(r[2]);
+	    }
+	    return null;
+	}
+	var payMethod = getURLParams('payMethod');
+	var imgsrc="";
+	if(payMethod == 1){
+		imgsrc = "../image/weix.png";
+	}else if(payMethod == 2){
+		imgsrc = "../image/zhifb.png";
+	}else{
+		imgsrc = "../image/yinl.png";
+	}
+	$("img").attr("src",imgsrc);
+	
+});
+</script>
 
 
 
