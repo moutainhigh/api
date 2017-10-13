@@ -289,7 +289,8 @@ public class IfaceService {
 			}
 			
 			QueryResV2Bean resBean = new QueryResV2Bean();
-			resBean.setOrder_type(reqBean.getOrder_type());
+			String order_type = "1".equals(bean.getPayMethod())?"WECHAT":"ALIPAY" ;
+			resBean.setOrder_type(order_type);
 			resBean.setIns_cd(reqBean.getIns_cd());
 			resBean.setMchnt_cd(reqBean.getMchnt_cd());
 			resBean.setTerm_id(termId);
