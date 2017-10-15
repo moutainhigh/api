@@ -72,7 +72,7 @@ public class FuyouService {
 				map.put("order_type", "ALIPAY");
 			}
 			map.put("mchnt_order_no", orderBean.getOrderId());
-			map.put("refund_order_no", "re"+orderBean.getOrderId());
+			map.put("refund_order_no", "re"+orderBean.getOrderId()+RandomStringGenerator.getRandomStringByLength(3));
 			map.put("total_amt", String.valueOf((int)(Arith.mul(price, 100))));
 			map.put("refund_amt", String.valueOf((int)(Arith.mul(price, 100))));
 			map.put("operator_id", "");
